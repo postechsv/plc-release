@@ -1,0 +1,12 @@
+INPUT:
+DGSwbd1 :: DG1_StartReq |-> ??
+DGSwbd1 :: CB1_Close |-> ??
+DGSwbd1 :: CB1_Open |-> ??
+DGSwbd1 :: CB1_pOpenTime |-> ??
+DGSwbd1 :: CB2_pOpenTime |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (NOT(  	(DGSwbd1 :: DG1_Remote)  	AND (DGSwbd1 :: CB1_Closed)  	AND  (DGSwbd1 :: DG1_RunRated)  	AND  (DGSwbd1 :: CB1_Open) )  OR (DGSwbd1 :: CB1_Opened)) AND (0 <= DGSwbd1 :: CYCLE AND DGSwbd1 :: CYCLE <= 20) )

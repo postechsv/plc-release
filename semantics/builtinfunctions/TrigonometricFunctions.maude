@@ -1,0 +1,73 @@
+fmod TRIGONOMETRIC-FUNCTIONS is
+  inc ALU-SEMANTICS .
+  inc FLOAT .
+  inc CONVERSION .
+
+  vars A B C D E : Rat .
+  vars F1 F2 F3 : Float .
+  var PARAMETERS : List{PValue} .
+  var PV : PValue .
+  vars B1 B2 : PBool .
+  var K : K .
+
+  vars GENV : Env .
+  vars N PH PE M : Nat .
+  var STR : Map{Location, PValue} .
+
+  ops SIN COS TAN ASIN ACOS ATAN ATAN2 UseDegrees @getDegreeChecker : -> FunId .
+  ops @SIN @COS @TAN @ASIN @ACOS @ATAN @ATAN2 @UseDegrees : -> FunId .
+
+  ---Trigonometric functions
+  op pi : -> FiniteFloat .  
+  eq pi = 3.1415926535897931 .
+
+  vars MPR CPR : ProcessId .
+  vars REST_STACK : List{ProcessId} .
+
+  eq proc(MPR, k(@getDegreeChecker(nilPExpList) ~> K), CPR :: REST_STACK) genv((GENV, '___degreeChecker |-> loc(N))) store((STR, loc(N) |-> B1))
+  = proc(MPR, k(B1 ~> K), CPR :: REST_STACK) genv((GENV, '___degreeChecker |-> loc(N))) store((STR, loc(N) |-> B1)) .
+
+  eq k(SIN(# A)  ~> K) genv(__getDegreeChecker) = k(@getDegreeChecker(nilPExpList) ~> @SIN(# A)  ~> K) .
+  eq k(COS(# A)  ~> K) = k(@getDegreeChecker(nilPExpList) ~> @COS(# A)  ~> K) .
+  eq k(TAN(# A)  ~> K) = k(@getDegreeChecker(nilPExpList) ~> @TAN(# A)  ~> K) .
+  eq k(ASIN(# A)  ~> K) = k(@getDegreeChecker(nilPExpList) ~> @ASIN(# A)  ~> K) .
+  eq k(ACOS(# A)  ~> K) = k(@getDegreeChecker(nilPExpList) ~> @ACOS(# A)  ~> K) .
+  eq k(ATAN(# A)  ~> K) = k(@getDegreeChecker(nilPExpList) ~> @ATAN(# A)  ~> K) . 
+  eq k(ATAN2(# A, # B)  ~> K) = k(@getDegreeChecker(nilPExpList) ~> @ATAN2(# A, # B)  ~> K) .
+
+
+  ---SIN
+  eq k(FALSE ~> @SIN(# A) ~> K) = k(# rat(sin(float(A))) ~> K) .
+  eq k(TRUE ~> @SIN(# A) ~> K) = k(# rat(sin(pi * float(180) * float(A))) ~> K ) .
+  
+  ---COS 
+  eq k(FALSE ~> @COS(# A) ~> K) =  k(# rat(cos(float(A))) ~> K) .
+  eq k(TRUE ~> @COS(# A) ~> K) =  k(# rat(cos(pi * float(180) * float(A))) ~> K) .
+
+  ---TAN 
+  eq k(FALSE ~> @TAN(# A) ~> K) = k(# rat(tan(float(A))) ~> K) .
+  eq k(TRUE ~> @TAN(# A) ~> K) = k(# rat(tan(pi * float(180) * float(A))) ~> K) .
+
+  ---ASIN 
+  eq k(FALSE ~> @ASIN(# A) ~> K) = k(# rat(asin(float(A))) ~> K) .
+  eq k(TRUE ~> @ASIN(# A) ~> K) = k(# rat(asin(pi * float(180) * float(A))) ~> K) .
+  
+  ---ACOS 
+  eq k(FALSE ~> @ACOS(# A) ~> K) = k(# rat(acos(float(A))) ~> K) .
+  eq k(TRUE ~> @ACOS(# A) ~> K) = k(# rat(acos(pi * float(180) * float(A))) ~> K) .
+  
+  ---ATAN 
+  eq k(FALSE ~> @ATAN(# A) ~> K) = k(# rat(atan(float(A))) ~> K) .
+  eq k(TRUE ~> @ATAN(# A)  ~> K) = k(# rat(atan(pi * float(180) * float(A))) ~> K) .
+  
+  ---ATAN2
+  eq k(FALSE ~> @ATAN2(# A, # B)  ~> K) = k(# rat(atan(float(A) , float(B))) ~> K) .
+  eq k(TRUE ~> @ATAN2(# A, # B)  ~> K) = k(# rat(atan(pi * float(180) * float(A), pi * float(180) * float(B))) ~> K) .
+
+  ---UseDegrees
+  eq k(UseDegrees(TRUE) ~> K) = k('___degreeChecker := TRUE ; ~> TRUE ~> K) .
+  eq k(UseDegrees(FALSE) ~> K) = k('___degreeChecker := FALSE ; ~>  FALSE  ~> K) .
+  
+endfm
+
+

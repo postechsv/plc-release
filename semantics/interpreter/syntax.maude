@@ -1,0 +1,2 @@
+load ../syntax/syntax 
+load ../syntax/straton-project.maude

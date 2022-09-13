@@ -1,0 +1,5 @@
+    IF Activate THEN
+        Output := Variable;
+    ELSE
+        Output := 7;
+    END_IF;

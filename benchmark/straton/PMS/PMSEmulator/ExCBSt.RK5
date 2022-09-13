@@ -1,0 +1,12 @@
+#debug
+
+{ExCBSt: (2): //4}
+508 4 526 :\7 
+#L:7
+#V(R)[0,0]{}:6=Current
+#V(B)[0,0]{}:4=SyncReq
+#V(e)[0,0]{}:2=Mode
+#enumtype=CBModeEm
+#V(B)[0,0]{}:3=Closed
+#V(B)[0,0]{}:1=Opened
+#V(B)[0,0]{}:5=SyncDone

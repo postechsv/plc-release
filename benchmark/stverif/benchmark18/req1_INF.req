@@ -1,0 +1,25 @@
+INPUT:
+Main :: Activate |-> ??
+Main :: Ready |-> ??
+Main :: Error |-> ??
+Main :: DiagCode |-> ??
+Main :: S_Mode0 |-> ??
+Main :: S_Mode1 |-> ??
+Main :: S_Mode2 |-> ??
+Main :: S_Mode3 |-> ??
+Main :: S_Mode4 |-> ??
+Main :: S_Mode5 |-> ??
+Main :: S_Mode6 |-> ??
+Main :: S_Mode7 |-> ??
+Main :: S_Unlock |-> ??
+Main :: S_SetMode |-> ??
+Main :: AutoSetMode |-> ??
+Main :: ModeMonitorTime |-> ??
+Main :: Reset |-> ??
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ((NOT (Main :: Error)) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20))

@@ -1,0 +1,5 @@
+if PF <> 0 then
+    ReLoad := (EffLoad/PF) * ROOT(1-PF*PF, 2);
+else
+    ReLoad := 0;
+end_if;

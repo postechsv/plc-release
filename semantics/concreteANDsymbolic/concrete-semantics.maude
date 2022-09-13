@@ -1,0 +1,142 @@
+fmod PLC-CONCRETE-ARITHMETIC is
+  inc PLC-CONCRETE-PRIMITIVES .
+  inc CODE-CONFIG .
+
+  vars B1 B2 : Bool .
+  vars T1 T2 : Rat .
+  vars I1 I2 : Int .
+  var K : K .
+
+  eq [T1] + [T2]  = [T1 + T2]  .
+  eq [T1] - [T2]  = [T1 - T2]  .
+  ceq [T1] / [T2]  = [T1 / T2] if T2 =/= 0/1 .
+  eq [T1] * [T2]  = [T1 * T2]  .
+  eq [T1] ** [T2]  = [T1 ^ T2]  .
+  eq [T1] % [T2]  = [T1 rem T2]  .
+  eq - [T1] = [- T1]  .
+
+  eq [T1] < [T2]  = [T1 < T2]  .
+  eq [T1] > [T2]  = [T1 > T2]  .
+  eq [T1] <= [T2]  = [T1 <= T2]  .
+  eq [T1] >= [T2]  = [T1 >= T2]  .
+  eq [T1] ==== [T2]  = [T1 == T2]  .
+  eq [T1] <> [T2]  = [T1 =/= T2]  .
+
+
+  eq T[I1] + T[I2]  = T[I1 + I2]  .
+  eq T[I1] - T[I2]  = T[I1 - I2]  .
+  ceq T[I1] / T[I2]  = T[I1 / I2] if I2 =/= 0  .
+  eq T[I1] * T[I2]  = T[I1 * I2]  .
+  eq T[I1] % T[I2]  = T[I1 rem I2]  .
+
+  eq T[I1] < T[I2]  = [I1 < I2]  .
+  eq T[I1] > T[I2]  = [I1 > I2]  .
+  eq T[I1] <= T[I2]  = [I1 <= I2]  .
+  eq T[I1] >= T[I2]  = [I1 >= I2]  .
+  eq T[I1] ==== T[I2]  = [I1 == I2]  .
+  eq T[I1] <> T[I2]  = [I1 =/= I2]  .
+
+  eq [B1] AND [B2]  = [B1 and B2]  .
+  eq [B1] OR [B2]  = [B1 or B2]  .
+  eq NOT [B1]  = [not B1]  .
+
+  eq [B1] ==== [B2]  = [B1 == B2]  .
+
+  ---bitfield
+  eq [T1] . [N1:Nat] = [ (T1 >> N1:Nat) & 1 ] .
+endfm
+
+fmod PLC-CONCRETE-CHECKSAT is
+  inc PLC-CONCRETE-PRIMITIVES .
+
+  eq notFALSE( [ true ] ) = true .
+  eq notFALSE( [ false ] ) = false .
+
+  eq checkSAT([ true ]) = true .
+  eq checkSAT([ false ]) = false .
+
+  eq checkSATwithAssignment([ true ]) = SAT .
+  eq checkSATwithAssignment([ false ]) = UNSAT .
+endfm
+
+fmod CONCRETE-ARITHMETIC-FUNCTIONS is
+  inc FLOAT .
+  inc CONVERSION .
+  inc PLC-CONCRETE-PRIMITIVES .
+  inc ARITHMETIC-FUNCTIONS .
+
+  vars A B : Rat .
+  var K : K .
+  var RESTPROCS : KConfig .
+  var RESTCOMPONENTPROC : KConfig .  
+  var RN : Nat .
+
+  ---EXP 
+  eq k(EXP([A]) ~> K) =  k([rat(exp(float(A)))] ~> K) .
+  ---EXPT
+  eq k(EXPT([A] , [B]) ~> K) =  k([(A ^ B)] ~> K) .
+  ---LOG
+  eq k(LOG([A]) ~> K) =  k([rat( log(float(A))  * (1.0 / log(float(10))))] ~> K) .
+  ---LN
+  eq k(LN([A]) ~> K) =  k([rat(log(float(A)))] ~> K) .
+  ---POW 
+  eq k(POW([A] , [B]) ~> K) =  k([(A ^ B)] ~> K) .
+  ---ROOT - only root square
+  eq k(ROOT([A] , [B]) ~> K) =  k([rat(sqrt(float(A)))] ~> K) .
+  ---TRUNC
+  eq k(TRUNC([A]) ~> K) =  k([trunc(A)] ~> K) .
+---(
+  ceq procs(proc(procSwitch(true) (k(RAND([A]) ~> K)) RESTCOMPONENTPROC ) RESTPROCS)  randomSeed(RN)
+  = procs(proc(procSwitch(true) (k([random(RN) rem A] ~> K)) RESTCOMPONENTPROC) RESTPROCS)  randomSeed(random(RN)) if A > 0 .
+
+  ceq procs(proc(procSwitch(true) (k(RAND([A]) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) randomSeed(RN)
+  = procs(proc(procSwitch(true) (k([A] ~> K)) RESTCOMPONENTPROC) RESTPROCS) randomSeed(RN) if A == 0 .
+---)
+  eq k(RAND([A]) ~> K) =  k([0] ~> K) .
+
+---ops SIN COS TAN ASIN ACOS ATAN : -> FunId .
+
+  eq k(SIN([A]) ~> K) =  k([rat(sin(float(A)))] ~> K) .
+  eq k(COS([A]) ~> K) =  k([rat(cos(float(A)))] ~> K) .
+  eq k(TAN([A]) ~> K) =  k([rat(tan(float(A)))] ~> K) .
+
+  eq k(ASIN([A]) ~> K) =  k([rat(asin(float(A)))] ~> K) .
+  eq k(ACOS([A]) ~> K) =  k([rat(acos(float(A)))] ~> K) .
+  eq k(ATAN([A]) ~> K) =  k([rat(atan(float(A)))] ~> K) .
+
+
+endfm
+
+mod CONCRETE-DATA-CONVERSION is
+  inc DATA-CONVERSION .
+  inc PLC-CONCRETE-PRIMITIVES .
+
+  var RV : Rat .
+  var B1 : Bool .
+  var N : Nat .
+
+  eq truncVal([RV]) = [trunc(RV)] .
+  
+  eq checkBOOL([B1]) = [true] .
+  eq checkBOOL([RV]) = [false] .
+  eq checkBOOL(T[N]) = [false] .
+
+  eq convertBOOL([true]) = [1] .
+  eq convertBOOL([false]) = [0] .
+
+  eq removeTime(T[N]) = [N] .
+  eq removeTime([RV]) = [RV] .
+
+  eq addTime([N]) = T[N] .
+
+  eq convertToREAL([RV]) = [RV] .
+endm
+
+
+fmod CONCRETE-SEMANTIC-CONVERSION is 
+  inc CONVERSION-SEMANTICVAL .
+  inc PLC-CONCRETE-PRIMITIVES .
+  eq conversion0and1toBOOL(BOOL, [1]) = [true] .
+  eq conversion0and1toBOOL(BOOL, [0]) = [false] .
+endfm
+

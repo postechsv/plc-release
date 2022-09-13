@@ -1,0 +1,32 @@
+-description = ""
+-id = req1
+-job = verif
+-job.backend = cbmc
+-job.reporters.0 = summary
+-job.reporters.1 = html
+-job.reporters.2 = plaintext
+-job.req = pattern
+-job.req.inputs.0 = instance.S1_S_EStopIn
+-job.req.inputs.1 = instance.S2_S_AutoMode
+-job.req.inputs.2 = instance.S2_S_SetupMode
+-job.req.inputs.3 = instance.S4_S_EnableSwitchCh1
+-job.req.inputs.4 = instance.S4_S_EnableSwitchCh2
+-job.req.inputs.5 = instance.S5_S_GuardSwitch
+-job.req.inputs.6 = instance.S7_S_GuardLock
+-job.req.inputs.7 = instance.S0_Reset
+-job.req.inputs.8 = instance.S8_UnlockGuard
+-job.req.inputs.9 = instance.M1_S_AcknowledgeSS1
+-job.req.inputs.10 = instance.M1_S_AcknowledgeSafeMotion
+-job.req.pattern_id = pattern-invariant
+-job.req.pattern_params.1 = "(NOT instance.S_SafeStop_M1 AND NOT instance.S_SafeMotion_M1  AND NOT instance.S_Enable_M1  AND NOT instance.S_UnlockGuard_K1) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)   "
+-lf = step7
+-lf.entry = Main
+-name = ""
+-job.backend.timeout = 7200
+-job.backend.unwind = 21
+-job.backend.timeout_executor_path = ""
+-job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+-output = benchmark/plcverif/cmd/workspace2/benchmark17/output
+-sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark17/benchmark17.scl
+-sourcefiles.1 = benchmark/plcverif/cmd/workspace2/benchmark17/plcopen.scl
+

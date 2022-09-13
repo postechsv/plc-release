@@ -1,0 +1,13 @@
+INPUT:
+Main :: input1 |-> ??
+Main :: input2 |-> ??
+Main :: input3 |-> ??
+Main :: input4 |-> ??
+Main :: input5 |-> ??
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main :: M == Main :: N) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

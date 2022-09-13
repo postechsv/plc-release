@@ -1,0 +1,34 @@
+FUNCTION_BLOCK AssignSwbdGroupAndLoad
+	VAR_INPUT
+		ClosedCB  : BOOL;
+		SwbdData1 : ExSwbdBridgeSt;
+		SwbdData2 : ExSwbdBridgeSt;
+	END_VAR
+	VAR_OUTPUT
+		GroupSwbd1   : DINT;
+		GroupSwbd2   : DINT;
+		LoadGroup    : ARRAY [0 .. 1] OF REAL;
+		ReLoadGroup  : ARRAY [0 .. 1] OF REAL;
+		CurrentGroup : ARRAY [0 .. 1] OF REAL;
+	END_VAR
+BEGIN
+	IF ClosedCB THEN
+		GroupSwbd1 := 0;
+		GroupSwbd2 := 0;
+		LoadGroup[0] := SwbdData1.SwbdLoad + SwbdData2.SwbdLoad;
+		LoadGroup[1] := 0;
+		ReLoadGroup[0] := SwbdData1.SwbdReLoad + SwbdData2.SwbdReLoad;
+		ReLoadGroup[1] := 0;
+		CurrentGroup[0] := SwbdData1.SuppliedCurrent + SwbdData2.SuppliedCurrent;
+		CurrentGroup[1] := 0;
+	ELSE
+		GroupSwbd1 := 0;
+		GroupSwbd2 := 1;
+		LoadGroup[0] := SwbdData1.SwbdLoad;
+		LoadGroup[1] := SwbdData2.SwbdLoad;
+		ReLoadGroup[0] := SwbdData1.SwbdReLoad;
+		ReLoadGroup[1] := SwbdData2.SwbdReLoad;
+		CurrentGroup[0] := SwbdData1.SuppliedCurrent;
+		CurrentGroup[1] := SwbdData2.SuppliedCurrent;
+	END_IF;
+END_FUNCTION_BLOCK

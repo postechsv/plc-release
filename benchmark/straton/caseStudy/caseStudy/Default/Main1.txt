@@ -1,0 +1,12 @@
+[SHORT]
+V-OUT=~
+V-CYCLE=
+V-NEWVAR=~
+V-MOUT=~
+V-P1=~
+[LONG]
+V-OUT=~
+V-CYCLE=
+V-NEWVAR=~
+V-MOUT=~
+V-P1=~

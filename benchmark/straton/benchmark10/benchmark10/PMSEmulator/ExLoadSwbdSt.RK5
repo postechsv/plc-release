@@ -1,0 +1,10 @@
+#debug
+
+{ExLoadSwbdSt: (2): //3}
+508 3 526 :\6 
+#L:6
+#V(R)[0,0]{}:1=LoadPF
+#V(R)[0,0]{}:5=Current
+#V(R)[0,0]{}:2=Load
+#V(R)[0,0]{}:3=ReLoad
+#V(R)[0,0]{}:4=NetVoltage

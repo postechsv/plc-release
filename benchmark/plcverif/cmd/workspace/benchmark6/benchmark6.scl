@@ -1,0 +1,45 @@
+FUNCTION_BLOCK ALERT
+	VAR_INPUT
+		x    : DINT := 0;
+		y    : DINT := 0;
+		tank : DINT := 0;
+	END_VAR
+	VAR_OUTPUT
+		collision : BOOL := FALSE;
+		sinking   : BOOL := FALSE;
+	END_VAR
+BEGIN
+	IF (x < 5 AND y < 5) THEN
+		collision := TRUE;
+	ELSE
+		collision := FALSE;
+	END_IF;
+
+	IF (tank > 5) THEN
+		sinking := TRUE;
+	ELSE
+		sinking := FALSE;
+	END_IF;
+END_FUNCTION_BLOCK
+
+
+PROGRAM Main
+	VAR
+		x         : DINT := 4;
+		y         : DINT := 3;
+		INSTALERT : ALERT;
+		tank      : DINT := 777;
+		collision : BOOL := FALSE;
+		sinking   : BOOL := FALSE;
+		CYCLE     : DINT := 0;
+	END_VAR
+BEGIN
+	CYCLE := CYCLE + 1;
+	INSTALERT(
+		x := x,
+		y := y,
+		tank := tank
+	) ;
+	collision := INSTALERT.collision;
+	sinking := INSTALERT.sinking;
+END_PROGRAM

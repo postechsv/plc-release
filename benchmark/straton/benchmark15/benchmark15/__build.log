@@ -1,0 +1,32 @@
+Compiler V10.0.0.239
+어플리케이션 기호들 로딩중...
+SF_Equivalent
+SF_Antivalent
+SF_ModeSelector
+SF_EmergencyStop
+SF_ESPE
+SF_SafetyRequest
+SF_GuardLocking
+SF_SafelyLimitSpeed
+SF_TwoHandControlTypeII
+SF_TwoHandControlTypeIII
+SF_GuardMonitoring
+SF_SafeStop1
+SF_EnableSwitch
+SF_MutingSeq
+어떤 에러도 발견 않았습니다.
+
+어플리케이션 기호들 로딩중...
+Demo Mode: run time execution limited in time!
+Main
+pStartup
+pShutDown
+pOnDivZero
+pOnBadIndex
+어플리케이션 데이터 빌드 중...
+< 34 BOOL/SINT; 0 INT; 26 DINT/REAL; 0 LINT/LREAL; 3 TIME; 0 STRING;  - CRC = 3dd47daf >
+On Line Change is disabled
+< 19 POUs - 3 programs, 2 sub-programs, 14 UDFBs >
+코드 재배치중...
+< Code CRC=4fa8c887 - File CRC=b050aad8 - Size=7384 >
+어떤 에러도 발견 않았습니다.

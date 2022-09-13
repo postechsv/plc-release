@@ -1,0 +1,78 @@
+PROGRAM Main
+	VAR
+		input1         : DINT := 0;
+		input2         : DINT := 0;
+		input3         : DINT := 0;
+		input4         : DINT := 0;
+		input5         : DINT := 0;
+		M              : DINT;
+		N              : DINT;
+		CYCLE          : DINT := 0;
+		INSTANCE_MAX   : USER_MAX;
+		INSTANCE_MIN   : USER_MIN;
+		TEMP_MAX       : USER_MAX;
+		TEMP_MAX_OUT   : DINT;
+		TEMP_MIN_2     : USER_MIN;
+		TEMP_MIN_2_OUT : DINT;
+		TEMP_MIN_3     : USER_MIN;
+		TEMP_MIN_3_OUT : DINT;
+	END_VAR
+BEGIN
+	CYCLE := CYCLE + 1;
+	TEMP_MAX(
+		in1 := input2,
+		in2 := input3
+	) ;
+	TEMP_MAX_OUT := TEMP_MAX.OUT;
+	INSTANCE_MAX(
+		in1 := input1,
+		in2 := TEMP_MAX_OUT
+	);
+	M := INSTANCE_MAX.OUT;
+	TEMP_MIN_2(
+		in1 := input4,
+		in2 := input5
+	);
+	TEMP_MIN_2_OUT := TEMP_MIN_2.OUT;
+	TEMP_MIN_3(
+		in1 := input2,
+		in2 := input3 * TEMP_MIN_2_OUT + input2
+	);
+	TEMP_MIN_3_OUT := TEMP_MIN_3.OUT;
+	INSTANCE_MIN(
+		in1 := input1,
+		in2 := TEMP_MIN_3_OUT + input3
+	);
+	N := INSTANCE_MIN.OUT;
+END_PROGRAM
+
+
+FUNCTION_BLOCK USER_MAX
+	VAR_INPUT
+		in1, in2 : DINT;
+	END_VAR
+	VAR_OUTPUT
+		OUT : DINT;
+	END_VAR
+BEGIN
+	IF in1 > in2 THEN
+		OUT := in1;
+	ELSE
+		OUT := in2;
+	END_IF;
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK USER_MIN
+	VAR_INPUT
+		in1, in2 : DINT;
+	END_VAR
+	VAR_OUTPUT
+		OUT : DINT;
+	END_VAR
+BEGIN
+	IF in1 < in2 THEN
+		OUT := in1;
+	ELSE
+		OUT := in2;
+	END_IF;
+END_FUNCTION_BLOCK

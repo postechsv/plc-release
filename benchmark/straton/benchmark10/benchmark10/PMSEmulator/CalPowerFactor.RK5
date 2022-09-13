@@ -1,0 +1,53 @@
+[:__MODULE_CALPOWERFACTOR] 
+
+{@BEGIN:CalPowerFactor}
+[:__LABEL1476] 
+
+<IF:CCBLEND>
+534 526 8 539 13 290 
+531 2 540 539 
+45?152 538 540 
+8 539 13 294 
+531 2 542 539 
+45?152 541 542 
+530 286 [JA:__LABEL1479] 
+285 135 2 286 286 234 
+[:__LABEL1479] 
+
+{CalPowerFactor: (1): }
+508 0 37 364 538 430 
+[:__LABEL1481] 
+[:__LABEL1482] 
+530 364 [JA:__LABEL1483] 
+
+{CalPowerFactor: (2): }
+508 0 8 539 13 295 
+5 543 538 538 
+5 544 541 541 
+9 545 543 544 
+37 364 545 430 
+529 364 [JA:__LABEL1484] 
+423 9 [:__LABEL1484] 
+7 543 538 545 
+532 2 543 539 
+{CalPowerFactor: (3): }
+508 0 526 528 [JA:__LABEL1480] 
+[:__LABEL1483] 
+
+{CalPowerFactor: (4): }
+508 0 8 539 13 295 
+532 2 458 539 
+{CalPowerFactor: (5): }
+508 0 526 [:__LABEL1480] 
+
+{CalPowerFactor: (6): }
+508 0 526 [:__LABEL1478] 
+
+{CalPowerFactor: (1): }
+508 0 526 
+<ENDIF>
+234 
+[:__LABEL1477] 
+
+{@END:CalPowerFactor}
+[:__MODULE_END_CALPOWERFACTOR] 

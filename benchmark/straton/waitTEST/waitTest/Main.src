@@ -1,0 +1,8 @@
+NewVar := NOT NewVar ;
+
+WAIT(FALSE) ;
+
+NewVar := NOT NewVar ;
+
+CYCLE := CYCLE + 1 ;
+

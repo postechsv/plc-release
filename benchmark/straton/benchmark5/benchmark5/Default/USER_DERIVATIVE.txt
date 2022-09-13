@@ -1,0 +1,16 @@
+[SHORT]
+V-X2=
+V-XOUT=
+V-X3=
+V-X1=
+V-CYCLE=
+V-XIN=
+V-RUN=
+[LONG]
+V-X2=
+V-XOUT=
+V-X3=
+V-X1=
+V-CYCLE=
+V-XIN=
+V-RUN=

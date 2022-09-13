@@ -1,0 +1,11 @@
+[SHORT]
+V-A2=~
+V-A1=~
+[LONG]
+V-A2=~
+P-ROUND_REAL=Round a REAL value to the nearest integer
+P-MAKE_LWORD=Build a LWORD withh 2 DWORDs
+A-<PROJECT>=
+P-LO_DWORD=Get 32 lowest bits of a LWORD
+P-HI_DWORD=Get 32 highest bits of a LWORD
+V-A1=~

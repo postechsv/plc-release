@@ -1,0 +1,191 @@
+    CYCLE := CYCLE + 1;
+
+    IF flagState = stateAfterBoot THEN
+        compressor := 0;
+        tableMotPow := 0;
+        tableMotDir := 0;
+        magazinLed := 0;
+        magazinPusherOn := 0;
+        magazinPusherOff := 0;
+        conveyerMotPow := 0;
+        conveyerMotDir := 0;
+        conveyerLed := 0;
+        conveyerPusherOn := 0;
+        conveyerPusherOff := 0;
+        turnDestPos := 0;
+        vertDestPos := 0;
+        armDestPos := 0;
+        clawDestPos := 0;
+
+        IF turnCurrPos = 0 AND armCurrPos = 0 AND clawCurrPos = 0 THEN
+            flagState := stateInit;
+        END_IF;
+    ELSIF flagState = stateInit THEN
+        flagDelay := 0;
+        conveyerLed := 1;
+        magazinLed := 1;
+        turnDestPos := dropPosTurn;
+        armDestPos := dropPosArm;
+
+        IF turnCurrPos = dropPosTurn AND armCurrPos = dropPosArm AND vertCurrPos = 0 THEN
+            IF clawCurrPos = 0 THEN
+                flagState := stateWaitForItem;
+            ELSE
+                clawDestPos := 0;
+            END_IF;
+        END_IF;
+    ELSIF flagState = stateWaitForItem THEN
+        IF magazinPhoto = 1 THEN
+            magazinLed := 0;
+            flagState := stateWaitForCompressor1;
+        END_IF;
+    ELSIF flagState = stateWaitForCompressor1 THEN
+        compressor := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= compressorDelay THEN
+            compressor := 0;
+            flagDelay := 0;
+            flagState := stateExtractItem1;
+        END_IF;
+    ELSIF flagState = stateExtractItem1 THEN
+        magazinPusherOn := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= extractionDelay THEN
+            magazinPusherOn := 0;
+            flagDelay := 0;
+            flagState := stateWaitForCompressor2;
+        END_IF;
+    ELSIF flagState = stateWaitForCompressor2 THEN
+        compressor := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= compressorDelay THEN
+            compressor := 0;
+            flagDelay := 0;
+            flagState := stateExtractItem2;
+        END_IF;
+    ELSIF flagState = stateExtractItem2 THEN
+        magazinPusherOff := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= extractionDelay THEN
+            magazinPusherOff := 0;
+            flagDelay := 0;
+            flagState := stateRotateTable1;
+        END_IF;
+    ELSIF flagState = stateRotateTable1 THEN
+        tableMotPow := 200;
+
+        IF puncherButton = 0 THEN
+            tableMotPow := 0;
+            flagState := stateWaitForCompressor3;
+        END_IF;
+    ELSIF flagState = stateWaitForCompressor3 THEN
+        compressor := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= compressorDelay THEN
+            compressor := 0;
+            flagDelay := 0;
+            flagState := statePunchItem;
+        END_IF;
+    ELSIF flagState = statePunchItem THEN
+        puncher := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= extractionDelay THEN
+            puncher := 0;
+            flagDelay := 0;
+            flagState := stateRotateTable2;
+        END_IF;
+    ELSIF flagState = stateRotateTable2 THEN
+        tableMotPow := 200;
+
+        IF conveyerButton = 0 THEN
+            tableMotPow := 0;
+            flagState := stateWaitForCompressor4;
+        END_IF;
+    ELSIF flagState = stateWaitForCompressor4 THEN
+        compressor := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= compressorDelay THEN
+            compressor := 0;
+            flagDelay := 0;
+            flagState := stateMoveToConveyer1;
+        END_IF;
+    ELSIF flagState = stateMoveToConveyer1 THEN
+        conveyerPusherOn := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= extractionDelay THEN
+            conveyerPusherOn := 0;
+            flagDelay := 0;
+            flagState := stateWaitForCompressor5;
+        END_IF;
+    ELSIF flagState = stateWaitForCompressor5 THEN
+        compressor := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= compressorDelay THEN
+            compressor := 0;
+            flagDelay := 0;
+            flagState := stateMoveToConveyer2;
+        END_IF;
+    ELSIF flagState = stateMoveToConveyer2 THEN
+        conveyerPusherOff := 1;
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay >= extractionDelay THEN
+            conveyerPusherOff := 0;
+            flagDelay := 0;
+            flagState := stateRunConveyer;
+        END_IF;
+    ELSIF flagState = stateRunConveyer THEN
+        conveyerMotPow := 200;
+
+        IF conveyerPhoto = 1 THEN
+            conveyerLed := 0;
+            flagDelay := 0;
+            flagState := stateMoveToRobot;
+        END_IF;
+    ELSIF flagState = stateMoveToRobot THEN
+        flagDelay := flagDelay + 1;
+
+        IF flagDelay > conveyerDelay THEN
+            conveyerMotPow := 0;
+            flagDelay := 0;
+            flagState := stateTurnToItem;
+        END_IF;
+    ELSIF flagState = stateTurnToItem THEN
+        turnDestPos := pickPosTurn;
+        vertDestPos := pickPosVert;
+        armDestPos := pickPosArm;
+
+        IF turnCurrPos = pickPosTurn AND vertCurrPos = pickPosVert AND armCurrPos = pickPosArm THEN
+            flagState := stateTakeItem;
+        END_IF;
+    ELSIF flagState = stateTakeItem THEN
+        clawDestPos := pickPosClaw;
+
+        IF clawCurrPos = pickPosClaw THEN
+            flagState := stateTurnToMagazin;
+        END_IF;
+    ELSIF flagState = stateTurnToMagazin THEN
+        vertDestPos := 0;
+
+        IF vertCurrPos < moveThreshold THEN
+            flagState := stateInit;
+        END_IF;
+    ELSE
+        outError := true;
+        compressor := 0;
+        puncher := 0;
+        tableMotPow := 0;
+        tableMotDir := 2;
+        conveyerMotPow := 0;
+        conveyerMotDir := 2;
+    END_IF;
+    outState := flagState;

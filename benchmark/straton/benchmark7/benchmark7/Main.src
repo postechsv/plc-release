@@ -1,0 +1,30 @@
+    CYCLE := CYCLE + 1;
+    CMP1(
+        IN1 := INPUT1,
+        IN2 := INPUT3
+    ) ;
+    CMP2(
+        IN1 := INPUT5,
+        IN2 := INPUT3
+    ) ;
+    CMP3(
+        IN1 := INPUT2,
+        IN2 := INPUT7
+    ) ;
+    CMP4(
+        IN1 := INPUT4,
+        IN2 := INPUT7
+    ) ;
+    CMP5(
+        IN1 := INPUT6,
+        IN2 := INPUT7
+    ) ;
+    CMP6(
+        IN1 := INPUT4,
+        IN2 := INPUT1
+    ) ;
+    CMP7(
+        IN1 := INPUT4,
+        IN2 := INPUT2
+    ) ;
+    OUT := CMP1.LT AND CMP2.EQ AND CMP3.QT AND CMP4.LT AND CMP5.LT AND CMP6.LT AND CMP7.LT;

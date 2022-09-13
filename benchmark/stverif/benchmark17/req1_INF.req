@@ -1,0 +1,21 @@
+INPUT:
+Main :: S1_S_EStopIn |-> ??
+Main :: S2_S_AutoMode |-> ??
+Main :: S2_S_SetupMode |-> ??
+Main :: S4_S_EnableSwitchCh1 |-> ??
+Main :: S4_S_EnableSwitchCh2 |-> ??
+Main :: S5_S_GuardSwitch |-> ??
+Main :: S7_S_GuardLock |-> ??
+Main :: S0_Reset |-> ??
+Main :: S8_UnlockGuard |-> ??
+Main :: M1_S_AcknowledgeSS1 |-> ??
+Main :: M1_S_AcknowledgeSafeMotion |-> ??
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY (
+(NOT (Main :: S_SafeStop_M1) AND NOT (Main :: S_SafeMotion_M1)  AND NOT (Main :: S_Enable_M1)  AND NOT (Main :: S_UnlockGuard_K1)) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20)
+)

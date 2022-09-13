@@ -1,0 +1,25 @@
+if ClosedCB then
+    GroupSwbd1 := 0;    
+    GroupSwbd2 := 0;
+    
+    LoadGroup[0] := SwbdData1.SwbdLoad + SwbdData2.SwbdLoad;
+    LoadGroup[1] := 0;
+    
+    ReLoadGroup[0] := SwbdData1.SwbdReLoad + SwbdData2.SwbdReLoad;
+    ReLoadGroup[1] := 0;
+    
+    CurrentGroup[0] := SwbdData1.SuppliedCurrent + SwbdData2.SuppliedCurrent;
+    CurrentGroup[1] := 0;
+else
+    GroupSwbd1 := 0;    
+    GroupSwbd2 := 1;
+    
+    LoadGroup[0] := SwbdData1.SwbdLoad;
+    LoadGroup[1] := SwbdData2.SwbdLoad;
+    
+    ReLoadGroup[0] := SwbdData1.SwbdReLoad;
+    ReLoadGroup[1] := SwbdData2.SwbdReLoad;
+    
+    CurrentGroup[0] := SwbdData1.SuppliedCurrent;
+    CurrentGroup[1] := SwbdData2.SuppliedCurrent;
+end_if;

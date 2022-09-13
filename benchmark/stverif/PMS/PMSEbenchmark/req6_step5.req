@@ -1,0 +1,11 @@
+INPUT:
+DGSwbd1 :: DG1_StartReq |-> ??
+DGSwbd1 :: DG1_StopReq |-> ??
+DGSwbd1 :: CB1_pOpenTime |-> ??
+DGSwbd1 :: CB2_pOpenTime |-> ??
+
+STEP:
+5
+
+CONDITION:
+(GLOBALLY((DGSwbd1 :: DG1_RunRated AND DGSwbd1 :: CB1_Closed) ==> WNEXT(DGSwbd1 :: (DG1_exDGSwbd1Data . Connected))))

@@ -1,0 +1,22 @@
+FUNCTION_BLOCK PLC_CODER_TIMER
+	VAR_INPUT
+		timerAction : INT;
+	END_VAR
+	VAR_OUTPUT
+		done : BOOL;
+	END_VAR
+	VAR
+		plcTimerExpired : BOOL;
+	END_VAR
+BEGIN
+	CASE timerAction OF
+		1:
+			plcTimerExpired := FALSE;
+			done := FALSE;
+		2:
+			done := plcTimerExpired;
+		3:
+			done := NOT (plcTimerExpired);
+	END_CASE;
+
+END_FUNCTION_BLOCK

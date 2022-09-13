@@ -1,0 +1,14 @@
+    ERROR := PV - SP;
+    ITERM(
+        RUN := AUTO,
+        R1 := NOT AUTO,
+        XIN := ERROR,
+        X0 := TR * (X0 - ERROR),
+        CYCLE := CYCLE
+    ) ;
+    DTERM(
+        RUN := AUTO,
+        XIN := ERROR,
+        CYCLE := CYCLE
+    ) ;
+    XOUT := KP * (ERROR + ITERM.XOUT / TR + DTERM.XOUT * TD);

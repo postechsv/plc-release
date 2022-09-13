@@ -1,0 +1,5 @@
+    IF in1 < in2 THEN
+        OUT := in1;
+    ELSE
+        OUT := in2;
+    END_IF;

@@ -1,0 +1,38 @@
+fmod PLC-CONCRETE-PRIMITIVES is
+  inc PLC-PRIMITIVES .
+  inc COMMON-SEMANTIC-VALUE .
+  including RAT .
+  including FLOAT .
+  inc BOOL .
+  including STRING .
+  inc CODE-CONFIG .
+
+  op [_] : Rat -> RatSemanticVal [ctor prec 0] .
+  op [_] : Bool -> BoolSemanticVal [ctor prec 0] .
+  op T[_] : Nat -> TimeSemanticVal [ctor prec 0] .
+endfm
+
+fmod PLC-CONCRETE-SYN2SEM-SEM2SYN is
+  inc PLC-CONCRETE-PRIMITIVES .
+
+  var R1 : Rat .
+  var N1 : Nat .
+  var TYPE : PType .
+
+  eq syn2sem( # R1 ) = [ R1 ] .
+  eq syn2sem(T# N1 ms) = T[N1] .
+
+  eq syn2sem( # R1 , TYPE  ) = [ R1 ] .
+  
+  eq syn2sem(T# N1 ms , TIME) = T[N1] .
+
+  eq sem2syn([R:Rat]) = # R:Rat .
+  eq sem2syn(T[N1]) = T# N1 ms .
+  eq sem2syn([true]) = TRUE .
+  eq sem2syn([false]) = FALSE .
+
+  eq syn2sem( TRUE ) = [true] .
+  eq syn2sem( FALSE ) = [false] .
+  eq syn2sem( TRUE , BOOL ) = [true] .
+  eq syn2sem( FALSE , BOOL ) = [false] .
+endfm

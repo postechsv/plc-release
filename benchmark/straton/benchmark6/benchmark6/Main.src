@@ -1,0 +1,8 @@
+    CYCLE := CYCLE + 1;
+    INSTALERT(
+        x := x,
+        y := y,
+        tank := tank
+    ) ;
+    collision := INSTALERT.collision;
+    sinking := INSTALERT.sinking;

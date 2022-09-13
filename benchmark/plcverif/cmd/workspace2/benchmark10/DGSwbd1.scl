@@ -1,0 +1,264 @@
+FUNCTION_BLOCK DGSwbd1
+	VAR
+		Inst_SimCB1           : SimCB;
+		Inst_SimDG1           : SimDG;
+		Inst_SimCB2           : SimCB;
+		Inst_SimDG2           : SimDG;
+		CB1_exCBData          : ExCBSt;
+		CB2_exCBData          : ExCBSt;
+		CB1_Open              : BOOL;
+		CB1_Close             : BOOL;
+		CB1_mRemote           : BOOL := TRUE;
+		CB1_mOpen             : BOOL;
+		CB1_mClose            : BOOL;
+		CB1_fcOpen            : BOOL;
+		CB1_fcClose           : BOOL;
+		CB1_fcTransient       : BOOL;
+		CB1_fcEarthed         : BOOL;
+		CB1_fcTrip            : BOOL;
+		CB1_pOpenTime         : REAL := 1000.0;
+		CB1_pCloseTime        : REAL := 1000.0;
+		CB1_Remote            : BOOL;
+		CB1_Opened            : BOOL;
+		CB1_Closed            : BOOL;
+		CB1_Earthed           : BOOL;
+		CB1_Tripped           : BOOL;
+		CB1_Available         : BOOL;
+		CB2_Open              : BOOL;
+		CB2_Close             : BOOL;
+		CB2_mRemote           : BOOL := TRUE;
+		CB2_mOpen             : BOOL;
+		CB2_mClose            : BOOL;
+		CB2_fcOpen            : BOOL;
+		CB2_fcClose           : BOOL;
+		CB2_fcTransient       : BOOL;
+		CB2_fcEarthed         : BOOL;
+		CB2_fcTrip            : BOOL;
+		CB2_pOpenTime         : REAL := 1000.0;
+		CB2_pCloseTime        : REAL := 1000.0;
+		CB2_Remote            : BOOL;
+		CB2_Opened            : BOOL;
+		CB2_Closed            : BOOL;
+		CB2_Earthed           : BOOL;
+		CB2_Tripped           : BOOL;
+		CB2_Available         : BOOL;
+		DG1_StartReq          : BOOL;
+		DG1_StopReq           : BOOL;
+		DG1_Shutdown          : BOOL;
+		DG1_ShutdownReset     : BOOL;
+		DG1_mRemote           : BOOL := TRUE;
+		DG1_IncLoad           : BOOL;
+		DG1_DecLoad           : BOOL;
+		DG1_BackupModeReq     : BOOL;
+		DG1_pNominalVoltage   : REAL := 6600.0;
+		DG1_pNominalFrequency : REAL := 60.0;
+		DG1_pNominalRPM       : REAL := 720.0;
+		DG1_pRunIdleLimit     : REAL := 60.0;
+		DG1_pRunRatedLimit    : REAL := 90.0;
+		DG1_pRPMRiseTime      : REAL := 4000.0;
+		DG1_pVoltageRiseTime  : REAL := 5000.0;
+		DG1_pStopTime         : REAL := 5000.0;
+		DG1_pSyncTime         : REAL := 3000.0;
+		DG1_Remote            : BOOL;
+		DG1_RunIdle           : BOOL;
+		DG1_RunRated          : BOOL;
+		DG1_Power             : REAL;
+		DG1_Voltage           : REAL;
+		DG1_Current           : REAL;
+		DG1_Frequency         : REAL;
+		DG1_RPM               : REAL;
+		DG1_FuelRackPos       : REAL;
+		DG1_BackupMode        : BOOL;
+		DG2_StartReq          : BOOL;
+		DG2_StopReq           : BOOL;
+		DG2_Shutdown          : BOOL;
+		DG2_ShutdownReset     : BOOL;
+		DG2_mRemote           : BOOL := TRUE;
+		DG2_IncLoad           : BOOL;
+		DG2_DecLoad           : BOOL;
+		DG2_BackupMode        : BOOL;
+		DG2_pNominalVoltage   : REAL := 6600.0;
+		DG2_pNominalFrequency : REAL := 60.0;
+		DG2_pNominalRPM       : REAL := 720.0;
+		DG2_pRunIdleLimit     : REAL := 60.0;
+		DG2_pRunRatedLimit    : REAL := 90.0;
+		DG2_pRPMRiseTime      : REAL := 4000.0;
+		DG2_pVoltageRiseTime  : REAL := 5000.0;
+		DG2_pStopTime         : REAL := 5000.0;
+		DG2_pSyncTime         : REAL := 3000.0;
+		DG2_Remote            : BOOL;
+		DG2_RunIdle           : BOOL;
+		DG2_RunRated          : BOOL;
+		DG2_Power             : REAL;
+		DG2_Voltage           : REAL;
+		DG2_Current           : REAL;
+		DG2_Frequency         : REAL;
+		DG2_RPM               : REAL;
+		DG2_FuelRackPos       : REAL;
+		DG2_BackupModeReq     : BOOL;
+		CB1_Current           : REAL;
+		CB2_Current           : REAL;
+		DG1_ReadyToStart      : BOOL;
+		DG2_ReadyToStart      : BOOL;
+		DG2_ShutdownReq       : BOOL;
+		DG1_ShutdownReq       : BOOL;
+		CYCLE                 : DINT := 0;
+	END_VAR
+BEGIN
+	CYCLE := CYCLE + 1;
+	GLOBAL_TIME := GLOBAL_TIME + CYCLE_TIME;
+	DG1_StartReq := PMS1_Addr80.BitPos4;
+	DG1_StopReq := PMS1_Addr80.BitPos5;
+	DG1_ShutdownReq := PMS1_Addr80.BitPos6;
+	DG1_ShutdownReset := PMS1_Addr80.BitPos7;
+	DG1_IncLoad := PMS1_Addr80.BitPos2;
+	DG1_DecLoad := PMS1_Addr80.BitPos3;
+	Inst_SimDG1(
+		StartReq := DG1_StartReq,
+		StopReq := DG1_StopReq,
+		ShutdownReq := DG1_ShutdownReq,
+		ShutdownReset := DG1_ShutdownReset,
+		mRemote := DG1_mRemote,
+		IncPower := DG1_IncLoad,
+		DecPower := DG1_DecLoad,
+		BackUpModeReq := DG1_BackupModeReq,
+		pNominalVoltage := DG1_pNominalVoltage,
+		pNominalFrequency := DG1_pNominalFrequency,
+		pNominalRPM := DG1_pNominalRPM,
+		pRunIdleLimit := DG1_pRunIdleLimit,
+		pRunRatedLimit := DG1_pRunRatedLimit,
+		pRPMRiseTime := DG1_pRPMRiseTime,
+		pVoltageRiseTime := DG1_pVoltageRiseTime,
+		pStopTime := DG1_pStopTime,
+		pSyncTime := DG1_pSyncTime,
+		exCBData := CB1_exCBData,
+		exDGSwbdData := DG1_exDGSwbd1Data
+	);
+	DG1_Remote := (Inst_SimDG1.Remote);
+	PMS1_Addr30.BitPos13 := DG1_Remote;
+	CB1_Open := PMS1_Addr80.BitPos1;
+	CB1_Close := PMS1_Addr80.BitPos0;
+	Inst_SimCB1(
+		Open := CB1_Open,
+		Close := CB1_Close,
+		mRemote := CB1_mRemote,
+		mOpen := CB1_mOpen,
+		mClose := CB1_mClose,
+		fcOpen := CB1_fcOpen,
+		fcClose := CB1_fcClose,
+		fcTransient := CB1_fcTransient,
+		fcEarthed := CB1_fcEarthed,
+		fcTrip := CB1_fcTrip,
+		pOpenTime := CB1_pOpenTime,
+		pCloseTime := CB1_pCloseTime,
+		exCBData := CB1_exCBData
+	);
+	DG1_RunIdle := (Inst_SimDG1.RunIdle);
+	DG1_RunRated := (Inst_SimDG1.RunRated);
+	PMS1_Addr30.BitPos11 := DG1_RunRated;
+	CB1_Remote := (Inst_SimCB1.Remote);
+	PMS1_Addr30.BitPos8 := CB1_Remote;
+	DG1_Power := (Inst_SimDG1.Power);
+	PMS1_Addr9 := DG1_Power;
+	CB1_Opened := (Inst_SimCB1.Opened);
+	DG1_Voltage := (Inst_SimDG1.Voltage);
+	PMS1_Addr3 := DG1_Voltage;
+	CB1_Closed := (Inst_SimCB1.Closed);
+	PMS1_Addr30.BitPos2 := CB1_Closed;
+	DG1_Current := (Inst_SimDG1.Current);
+	PMS1_Addr1 := DG1_Current;
+	CB1_Earthed := (Inst_SimCB1.Earthed);
+	PMS1_Addr30.BitPos0 := CB1_Earthed;
+	DG1_Frequency := (Inst_SimDG1.Frequency);
+	PMS1_Addr6 := DG1_Frequency;
+	CB1_Tripped := (Inst_SimCB1.Tripped);
+	PMS1_Addr30.BitPos1 := CB1_Tripped;
+	DG1_RPM := (Inst_SimDG1.RPM);
+	CB1_Available := (Inst_SimCB1.Available);
+	PMS1_Addr30.BitPos10 := CB1_Available;
+	DG1_FuelRackPos := (Inst_SimDG1.FuelRackPos);
+	CB1_Current := (Inst_SimCB1.Current);
+	DG1_ReadyToStart := (Inst_SimDG1.ReadyToStart);
+	PMS1_Addr30.BitPos12 := DG1_ReadyToStart;
+	DG1_BackupMode := (Inst_SimDG1.BackUpMode);
+	PMS1_Addr30.BitPos14 := DG1_BackupMode;
+	DG1_Shutdown := (Inst_SimDG1.Shutdown);
+	PMS1_Addr30.BitPos6 := NOT DG1_Shutdown;
+	DG2_StartReq := PMS1_Addr81.BitPos1;
+	DG2_StopReq := PMS1_Addr81.BitPos2;
+	DG2_ShutdownReq := PMS1_Addr81.BitPos3;
+	DG2_ShutdownReset := PMS1_Addr81.BitPos4;
+	DG2_IncLoad := PMS1_Addr80.BitPos15;
+	DG2_DecLoad := PMS1_Addr81.BitPos0;
+	Inst_SimDG2(
+		StartReq := DG2_StartReq,
+		StopReq := DG2_StopReq,
+		ShutdownReq := DG2_ShutdownReq,
+		ShutdownReset := DG2_ShutdownReset,
+		mRemote := DG2_mRemote,
+		IncPower := DG2_IncLoad,
+		DecPower := DG2_DecLoad,
+		BackUpModeReq := DG2_BackupModeReq,
+		pNominalVoltage := DG2_pNominalVoltage,
+		pNominalFrequency := DG2_pNominalFrequency,
+		pNominalRPM := DG2_pNominalRPM,
+		pRunIdleLimit := DG2_pRunIdleLimit,
+		pRunRatedLimit := DG2_pRunRatedLimit,
+		pRPMRiseTime := DG2_pRPMRiseTime,
+		pVoltageRiseTime := DG2_pVoltageRiseTime,
+		pStopTime := DG2_pStopTime,
+		pSyncTime := DG2_pSyncTime,
+		exCBData := CB2_exCBData,
+		exDGSwbdData := DG2_exDGSwbd1Data
+	);
+	DG2_Remote := (Inst_SimDG2.Remote);
+	PMS1_Addr31.BitPos4 := DG2_Remote;
+	CB2_Open := PMS1_Addr80.BitPos14;
+	CB2_Close := PMS1_Addr80.BitPos13;
+	Inst_SimCB2(
+		Open := CB2_Open,
+		Close := CB2_Close,
+		mRemote := CB2_mRemote,
+		mOpen := CB2_mOpen,
+		mClose := CB2_mClose,
+		fcOpen := CB2_fcOpen,
+		fcClose := CB2_fcClose,
+		fcTransient := CB2_fcTransient,
+		fcEarthed := CB2_fcEarthed,
+		fcTrip := CB2_fcTrip,
+		pOpenTime := CB2_pOpenTime,
+		pCloseTime := CB2_pCloseTime,
+		exCBData := CB2_exCBData
+	);
+	DG2_RunIdle := (Inst_SimDG2.RunIdle);
+	DG2_RunRated := (Inst_SimDG2.RunRated);
+	PMS1_Addr31.BitPos2 := DG2_RunRated;
+	CB2_Remote := (Inst_SimCB2.Remote);
+	PMS1_Addr30.BitPos15 := CB2_Remote;
+	DG2_Power := (Inst_SimDG2.Power);
+	PMS1_Addr10 := DG2_Power;
+	CB2_Opened := (Inst_SimCB2.Opened);
+	DG2_Voltage := (Inst_SimDG2.Voltage);
+	PMS1_Addr4 := DG2_Voltage;
+	CB2_Closed := (Inst_SimCB2.Closed);
+	PMS1_Addr30.BitPos5 := CB2_Closed;
+	DG2_Current := (Inst_SimDG2.Current);
+	PMS1_Addr2 := DG2_Current;
+	CB2_Earthed := (Inst_SimCB2.Earthed);
+	PMS1_Addr30.BitPos3 := CB2_Earthed;
+	DG2_Frequency := (Inst_SimDG2.Frequency);
+	PMS1_Addr7 := DG2_Frequency;
+	CB2_Tripped := (Inst_SimCB2.Tripped);
+	PMS1_Addr30.BitPos4 := CB2_Tripped;
+	DG2_RPM := (Inst_SimDG2.RPM);
+	CB2_Available := (Inst_SimCB2.Available);
+	PMS1_Addr31.BitPos1 := CB2_Available;
+	DG2_FuelRackPos := (Inst_SimDG2.FuelRackPos);
+	CB2_Current := (Inst_SimCB2.Current);
+	DG2_ReadyToStart := (Inst_SimDG2.ReadyToStart);
+	PMS1_Addr31.BitPos3 := DG2_ReadyToStart;
+	DG2_BackupMode := (Inst_SimDG2.BackUpMode);
+	PMS1_Addr31.BitPos5 := DG2_BackupMode;
+	DG2_Shutdown := (Inst_SimDG2.Shutdown);
+	PMS1_Addr30.BitPos7 := NOT DG2_Shutdown;
+END_FUNCTION_BLOCK

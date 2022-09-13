@@ -1,0 +1,15 @@
+INPUT:
+Main :: B1 |-> ??
+Main :: R1 |-> ??
+Main :: R2 |-> ??
+Main :: R3 |-> ??
+Main :: R4 |-> ??
+Main :: R5 |-> ??
+Main :: R6 |-> ??
+Main :: R7 |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main :: PIDOUT == 1) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

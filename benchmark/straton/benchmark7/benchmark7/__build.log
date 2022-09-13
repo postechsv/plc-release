@@ -1,0 +1,27 @@
+Compiler V10.0.0.239
+Loading application symbols...
+USER_CMP
+No error detected
+
+Loading application symbols...
+Warning: Possible naming conflicts found:
+EQ - multiple declaration as
+   IEC Keyword
+   Local variable of USER_CMP
+LT - multiple declaration as
+   IEC Keyword
+   Local variable of USER_CMP
+
+Demo Mode: run time execution limited in time!
+Main
+pStartup
+pShutDown
+pOnDivZero
+pOnBadIndex
+Building application data...
+< 26 BOOL/SINT; 0 INT; 10 DINT/REAL; 0 LINT/LREAL; 3 TIME; 0 STRING;  - CRC = 7dbbb0ee >
+On Line Change is disabled
+< 6 POUs - 3 programs, 2 sub-programs, 1 UDFBs >
+Relocating code...
+< Code CRC=1bcd6dc4 - File CRC=40b6b3ef - Size=2712 >
+No error detected

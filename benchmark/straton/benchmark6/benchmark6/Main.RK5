@@ -1,0 +1,97 @@
+[:__MODULE_MAIN] 
+
+{@BEGIN:Main}
+[:__LABEL1] 
+
+<IF:CCBLEND>
+526 275 1 
+21 1 1 2 
+530 1 [JA:__LABEL4] 
+285 135 2 1 1 234 
+[:__LABEL4] 
+
+{Main: (1): }
+508 0 8 7 4 6 
+45?152 4 7 
+
+{Main: (2): }
+508 0 526 
+{@BEGIN_INSTANCE:INSTALERT:ALERT}
+
+{ALERT: (1): //2}
+508 2 19 9  5  1  
+19 10  5  2  
+42 11  9  10  
+[:__LABEL7] 
+ [:__LABEL8] 
+ [:__LABEL9] 
+ [:__LABEL10] 
+ 66 11  [JR:__LABEL11]  
+
+{ALERT: (2): //3}
+508 3 [:__LABEL12] 
+ [:__LABEL13] 
+ 44?151 4  6  
+
+{ALERT: (3): //4}
+508 4 526 67 [JR:__LABEL6]  
+[:__LABEL11] 
+ 
+{ALERT: (4): //5}
+508 5 [:__LABEL14] 
+ [:__LABEL15] 
+ 44?151 4  7  
+
+{ALERT: (5): //6}
+508 6 526 [:__LABEL6] 
+ 
+{ALERT: (7): //7}
+508 7 19 9  3  5  
+[:__LABEL17] 
+ [:__LABEL18] 
+ [:__LABEL19] 
+ [:__LABEL20] 
+ 66 9  [JR:__LABEL21]  
+
+{ALERT: (8): //8}
+508 8 [:__LABEL22] 
+ [:__LABEL23] 
+ 44?151 5  6  
+
+{ALERT: (9): //9}
+508 9 526 67 [JR:__LABEL16]  
+[:__LABEL21] 
+ 
+{ALERT: (10): //10}
+508 10 [:__LABEL24] 
+ [:__LABEL25] 
+ 44?151 5  7  
+
+{ALERT: (11): //11}
+508 11 526 [:__LABEL16] 
+ 
+{ALERT: (12): //12}
+508 12 526 [:__LABEL5] 
+ 
+
+{@END_INSTANCE:INSTALERT:ALERT}
+
+{Main: (7): }
+508 0 [:__LABEL26] 
+[:__LABEL27] 
+44?151 2 4 
+
+{Main: (8): }
+508 0 [:__LABEL28] 
+[:__LABEL29] 
+44?151 3 5 
+
+{Main: (9): }
+508 0 526 [:__LABEL3] 
+
+<ENDIF>
+234 
+[:__LABEL2] 
+
+{@END:Main}
+[:__MODULE_END_MAIN] 

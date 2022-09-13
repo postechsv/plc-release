@@ -1,0 +1,172 @@
+fmod PROCESS-ID is
+  inc NAT .
+  sort ProcessId .
+  subsort Nat < ProcessId .
+  ops input output : -> ProcessId .
+endfm
+
+fmod ARRAYENV is
+  inc LOCATION .
+  sorts ArraySingleEnv ArrayEnv .
+  subsort  ArraySingleEnv < ArrayEnv .
+  op (_,_) : Nat Location -> ArraySingleEnv [ctor] .
+
+  op emptyArrayEnv : -> ArrayEnv .
+  op _,_ : ArrayEnv ArrayEnv -> ArrayEnv [assoc id: emptyArrayEnv] .
+endfm
+
+fmod ENV is                 
+  inc PROCESS-ID .
+  inc ARRAYENV .
+  pr MAP{Pid, Location} * (sort Map{Pid, Location} to Env) .
+  op array : ArrayEnv -> Location [ctor] .
+endfm
+
+view ProcessId from TRIV to PROCESS-ID is
+  sort Elt to ProcessId .
+endv
+
+fmod COMMON-SEMANTIC-VALUE is
+  inc BASIC-PEXP .
+  inc PLC-EXP-LIST .
+  inc CONVERSION .
+  inc PROCESS-ID .
+  inc K-SORTS .
+  inc ENV .
+  inc STREAM-VALUE .
+
+  sort SemanticValue .
+  sorts RatSemanticVal BoolSemanticVal StringSemanticVal TimeSemanticVal EnumSemanticVal .
+  sort LocSemVal .
+  sort NonLocSemval .
+
+  subsorts RatSemanticVal BoolSemanticVal StringSemanticVal TimeSemanticVal EnumSemanticVal < NonLocSemval .
+  subsorts LocSemVal < SemanticValue .
+  subsorts NonLocSemval < SemanticValue .
+  subsorts SemanticValue < StreamValue . 
+ 
+  subsort PExp < K .
+  subsort StreamValue < PExp .
+
+  op [_] : String -> StringSemanticVal [ctor prec 0] .
+
+ 
+  sort checkSATResult .
+  ops SAT UNSAT : -> checkSATResult [ctor format (r o)] .
+ 
+  op locVal : Location -> LocSemVal .
+
+
+ 
+  op [enumVal(_,_)] : Pid Pid -> EnumSemanticVal .
+  op UNKNOWNOUTPUTVAL : -> SemanticValue . 
+
+  op arrayLoc : ArrayEnv -> NonLocSemval .
+  op ObjLoc : ProcessId -> NonLocSemval .  
+
+
+  op syn2sem : PValue -> SemanticValue .
+  op syn2sem : PRat -> RatSemanticVal .
+  op syn2sem : PBool -> BoolSemanticVal .
+  op syn2sem : PValue PType -> SemanticValue .
+  eq syn2sem(# S:String) = [S:String] .
+  
+
+  op sem2syn : SemanticValue -> PValue .
+  eq sem2syn([S:String]) = # S:String .
+
+  op simplify : SemanticValue -> SemanticValue .
+  eq simplify(SV1:SemanticValue) = SV1:SemanticValue [owise] .
+
+
+  op notFALSE : BoolSemanticVal -> Bool .
+  
+  op checkSAT : SemanticValue -> Bool .
+  op checkSATwithAssignment : SemanticValue ~> checkSATResult .
+
+
+  op ite : PExp PExp PExp ->  PExp [ctor] .
+
+  op truncVal : PExp -> PExp [ctor] .
+  op checkBOOL : PExp -> PExp [ctor] .
+  op convertBOOL : PExp -> PExp [ctor] .
+  op removeTime : PExp -> PExp [ctor] .
+  op addTime : PExp -> PExp [ctor] .
+  op convertToREAL : PExp -> PExp [ctor] .
+
+
+  op INF : -> Nat [ctor] .
+  eq NN:Nat <= INF = true .
+  eq NN:Nat < INF = true .
+  eq NN:Nat > INF = false .
+  eq NN:Nat >= INF = false .
+
+  eq INF <= NN:Nat = false .
+  eq INF < NN:Nat = false .
+  eq INF > NN:Nat = true .
+  eq INF >= NN:Nat = true .
+
+  eq NN:Nat - INF = INF .
+  eq INF - NN:Nat = INF .
+  eq NN:Nat + INF = INF .
+  eq INF + NN:Nat = INF .
+
+
+--- for arrays
+  sort Pair{Location,SemanticValue} .
+  op {_,_} : Location SemanticValue -> Pair{Location,SemanticValue} [ctor] .
+  op arrayLookup : ArrayEnv SemanticValue SemanticValue ~> Pair{Location,SemanticValue} .
+
+  vars ET1 ET2 P1 P2 : Pid .
+  eq [enumVal(ET1, P1)] ==== [enumVal(ET1, P1)]  = syn2sem(TRUE) .
+  eq [enumVal(ET1, P1)] ==== [enumVal(ET2, P2)]  = syn2sem(FALSE) [owise]  .
+
+  eq [enumVal(ET1, P1)] <> [enumVal(ET1, P1)]  = syn2sem(FALSE) .
+  eq [enumVal(ET1, P1)] <> [enumVal(ET2, P2)]  = syn2sem(TRUE) [owise]  .
+  
+  eq syn2sem(ET1 # P1) = [enumVal(ET1, P1)] .
+
+  
+
+endfm
+
+fmod SEMANTIC-LIST is
+  inc COMMON-SEMANTIC-VALUE .
+
+  sorts NeList{StreamValue} List{StreamValue} .
+  subsort StreamValue < NeList{StreamValue} < List{StreamValue} .
+
+  sorts NeList{SemanticValue} List{SemanticValue} .
+  subsort SemanticValue < NeList{SemanticValue} < List{SemanticValue} .
+  subsort NeList{SemanticValue} < NeList{StreamValue} .
+  subsort NeList{StreamValue} < NeList{PExp} .
+  subsort List{SemanticValue} < List{StreamValue} .
+  subsort List{StreamValue} < List{PExp} .
+
+  op nilSemanticList : -> List{SemanticValue} [ctor] .
+  op _,_ : List{SemanticValue} List{SemanticValue} -> List{SemanticValue} [ctor ditto] .
+  op _,_ : NeList{SemanticValue} List{SemanticValue} -> NeList{SemanticValue} [ctor ditto] .
+  op _,_ : List{SemanticValue} NeList{SemanticValue} -> NeList{SemanticValue} [ctor ditto] .
+  eq SL:List{SemanticValue} , nilSemanticList  =  SL:List{SemanticValue} .
+  eq nilSemanticList, SL:List{SemanticValue}   =  SL:List{SemanticValue} .
+
+  op nilStreamList : -> List{StreamValue} [ctor] .
+  op _,_ : List{StreamValue} List{StreamValue} -> List{StreamValue} [ctor ditto] .
+  op _,_ : NeList{StreamValue} List{StreamValue} -> NeList{StreamValue} [ctor ditto] .
+  op _,_ : List{StreamValue} NeList{StreamValue} -> NeList{StreamValue} [ctor ditto] .
+  eq SL:List{StreamValue} , nilStreamList  =  SL:List{StreamValue} .
+  eq nilStreamList, SL:List{StreamValue}   =  SL:List{StreamValue} .
+
+endfm
+
+view SemanticValue from TRIV to COMMON-SEMANTIC-VALUE is
+  sort Elt to SemanticValue .
+endv
+
+fmod CONVERSION-SEMANTICVAL is
+  inc COMMON-SEMANTIC-VALUE .
+  var TYPE : PType .
+  var SV : SemanticValue .
+  op conversion0and1toBOOL : PType SemanticValue -> SemanticValue .
+  eq conversion0and1toBOOL(TYPE, SV) = SV [owise] .
+endfm

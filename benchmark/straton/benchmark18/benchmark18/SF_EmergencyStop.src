@@ -1,0 +1,93 @@
+IF NOT Activate THEN
+        DiagCode := 0;
+    ELSE
+        CASE DiagCode OF
+            0:
+                IF Activate THEN
+                    DiagCode := 32769;
+                END_IF;
+            32769:
+                IF NOT S_StartReset THEN
+                    DiagCode := 32770;
+                ELSIF S_StartReset AND NOT S_EStopIn THEN
+                    DiagCode := 32772;
+                ELSIF S_EStopIn AND S_StartReset THEN
+                    DiagCode := 32768;
+                END_IF;
+            32770:
+                IF S_EStopIn THEN
+                    DiagCode := 32771;
+                END_IF;
+            32771:
+                IF Reset THEN
+                    DiagCode := 49153;
+                ELSIF NOT S_EStopIn THEN
+                    DiagCode := 32770;
+                END_IF;
+            49153:
+                IF NOT Reset THEN
+                    DiagCode := 32771;
+                END_IF;
+            32772:
+                IF S_EStopIn AND NOT S_AutoReset THEN
+                    DiagCode := 32773;
+                ELSIF S_EStopIn AND S_AutoReset THEN
+                    DiagCode := 32768;
+                END_IF;
+            32773:
+                IF Reset THEN
+                    DiagCode := 49154;
+                ELSIF NOT S_EStopIn THEN
+                    DiagCode := 32772;
+                ELSIF S_AutoReset THEN
+                    DiagCode := 32768;
+                END_IF;
+            49154:
+                IF NOT Reset THEN
+                    DiagCode := 32773;
+                END_IF;
+            32768:
+                IF NOT S_EStopIn THEN
+                    DiagCode := 32772;
+                END_IF;
+        END_CASE;
+    END_IF;
+
+    CASE DiagCode OF
+        0:
+            Ready := FALSE;
+            Error := FALSE;
+            S_EStopOut := FALSE;
+        32769:
+            Ready := TRUE;
+            Error := FALSE;
+            S_EStopOut := FALSE;
+        32770:
+            Ready := TRUE;
+            Error := FALSE;
+            S_EStopOut := FALSE;
+        32771:
+            Ready := TRUE;
+            Error := FALSE;
+            S_EStopOut := FALSE;
+        49153:
+            Ready := TRUE;
+            Error := TRUE;
+            S_EStopOut := FALSE;
+        32772:
+            Ready := TRUE;
+            Error := FALSE;
+            S_EStopOut := FALSE;
+        32773:
+            Ready := TRUE;
+            Error := FALSE;
+            S_EStopOut := FALSE;
+        49154:
+            Ready := TRUE;
+            Error := TRUE;
+            S_EStopOut := FALSE;
+        32768:
+            Ready := TRUE;
+            Error := FALSE;
+            S_EStopOut := TRUE;
+    END_CASE;

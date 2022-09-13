@@ -1,0 +1,7 @@
+[SHORT]
+P-DEC=~
+P-INC=~
+[LONG]
+A-<PROJECT>=
+P-DEC=~
+P-INC=~

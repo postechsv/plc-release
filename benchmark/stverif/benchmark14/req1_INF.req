@@ -1,0 +1,64 @@
+INPUT:
+Main :: stateAfterBoot |-> ??
+Main :: stateInit |-> ??
+Main :: stateWaitForItem |-> ??
+Main :: stateWaitForCompressor1 |-> ??
+Main :: stateExtractItem1 |-> ??
+Main :: stateWaitForCompressor2 |-> ??
+Main :: stateExtractItem2 |-> ??
+Main :: stateRotateTable1 |-> ??
+Main :: statePunchItem |-> ??
+Main :: stateWaitForCompressor3 |-> ??
+Main :: stateRotateTable2 |-> ??
+Main :: stateWaitForCompressor4 |-> ??
+Main :: stateMoveToConveyer1 |-> ??
+Main :: stateWaitForCompressor5 |-> ??
+Main :: stateMoveToConveyer2 |-> ??
+Main :: stateRunConveyer |-> ??
+Main :: stateMoveToRobot |-> ??
+Main :: stateTurnToItem |-> ??
+Main :: stateTakeItem |-> ??
+Main :: stateTurnToMagazin |-> ??
+Main :: pickPosTurn |-> ??
+Main :: pickPosVert |-> ??
+Main :: pickPosArm |-> ??
+Main :: pickPosClaw |-> ??
+Main :: dropPosTurn |-> ??
+Main :: dropPosArm |-> ??
+Main :: moveThreshold |-> ??
+Main :: compressorDelay |-> ??
+Main :: extractionDelay |-> ??
+Main :: conveyerDelay |-> ??
+Main :: turnDestPos |-> ??
+Main :: turnCurrPos |-> ??
+Main :: vertDestPos |-> ??
+Main :: vertCurrPos |-> ??
+Main :: armDestPos |-> ??
+Main :: armCurrPos |-> ??
+Main :: clawDestPos |-> ??
+Main :: clawCurrPos |-> ??
+Main :: compressor |-> ??
+Main :: tableMotPow |-> ??
+Main :: tableMotDir |-> ??
+Main :: magazinLed |-> ??
+Main :: magazinPhoto |-> ??
+Main :: magazinPusherOn |-> ??
+Main :: magazinPusherOff |-> ??
+Main :: conveyerMotPow |-> ??
+Main :: conveyerMotDir |-> ??
+Main :: conveyerLed |-> ??
+Main :: conveyerPhoto |-> ??
+Main :: conveyerButton |-> ??
+Main :: conveyerPusherOn |-> ??
+Main :: conveyerPusherOff |-> ??
+Main :: puncherButton |-> ??
+Main :: puncher |-> ??
+Main :: flagDelay |-> ??
+Main :: flagState |-> ??
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main :: outError == FALSE) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

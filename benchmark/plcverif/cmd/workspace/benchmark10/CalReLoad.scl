@@ -1,0 +1,15 @@
+FUNCTION_BLOCK CalReLoad
+	VAR_INPUT
+		EffLoad : REAL;
+		PF      : REAL;
+	END_VAR
+	VAR_OUTPUT
+		ReLoad : REAL;
+	END_VAR
+BEGIN
+	IF PF <> 0 THEN
+		ReLoad := (EffLoad / PF) * (1 - PF * PF);
+	ELSE
+		ReLoad := 0;
+	END_IF;
+END_FUNCTION_BLOCK

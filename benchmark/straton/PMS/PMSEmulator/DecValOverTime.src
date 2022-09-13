@@ -1,0 +1,22 @@
+Inst_PLS(Start, t#100ms);
+if Start then
+    CurValue := Value;
+    
+    if DescendTime < 100 then
+        decVal := Value;        
+    else
+        decVal := (NomValue*100) / DescendTime;        
+    end_if;
+    
+    if Inst_PLS.Q then
+        CurValue := CurValue - decVal;                
+        if CurValue <= 0 then
+            CurValue := 0;
+            Done := true;
+        end_if;
+    end_if;
+else
+    CurValue := 0;
+    Done := false;    
+end_if;
+

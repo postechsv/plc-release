@@ -1,0 +1,45 @@
+load smt
+load smt-check 
+
+---syntax
+load ../syntax/syntax 
+load ../syntax/straton-project.maude
+
+
+---semantics
+
+load ../core/k-prelude.maude
+load ../core/abstract-value
+
+load ../core/strictness
+
+
+load ../core/plc-configuration
+load ../core/preprocessing
+load ../core/semantics
+
+load ../builtinfunctions/dataConversionFunctions
+load ../builtinfunctions/arithmeticFunctions
+
+load ../concreteANDsymbolic/symbolic-value
+load ../concreteANDsymbolic/symbolic-semantics
+
+mod PLC-CORE is
+  inc PREPROCESSING .
+  inc ALU-SEMANTICS .
+  inc ASSIGNMENT-LOOKUP-SEMANTICS .
+  inc CONDITIONAL-SEMANTICS .
+  inc CALL-SEMANTICS .
+  inc CYCLE-SEMANTICS .
+  inc WAIT-SEMANTICS .
+  inc TIMER-SEMANTICS .
+  inc STREAM-SEMANTICS .
+
+  inc PLC-SYMBOLIC-SYN2SEM-SEM2SYN .
+  inc PLC-SYMBOLIC-ARITHMETIC .
+  inc PLC-SYMBOLIC-CHECKSAT .
+  inc SYMBOLIC-SEMANTIC-CONVERSION .
+  inc SYMBOLIC-UTIL .
+  inc SYMBOLIC-DATA-CONVERSION .
+  inc SYMBOLIC-ARITHMETIC-FUNCTIONS .
+endm

@@ -1,0 +1,2025 @@
+FUNCTION_BLOCK SF_Equivalent
+	VAR_INPUT
+		Activate   : BOOL;
+		S_ChannelA : BOOL;
+		S_ChannelB : BOOL;
+	END_VAR
+
+	VAR_OUTPUT
+		Ready           : BOOL;
+		S_EquivalentOut : BOOL;
+		Error           : BOOL;
+		DiagCode        : DINT;
+	END_VAR
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32769:
+				IF S_ChannelA AND NOT S_ChannelB THEN
+					DiagCode := 32772;
+				ELSIF S_ChannelB AND NOT S_ChannelA THEN
+					DiagCode := 32788;
+				ELSIF S_ChannelA AND S_ChannelB THEN
+					DiagCode := 32768;
+				END_IF;
+			32772:
+				IF Activate THEN
+					DiagCode := 49153;
+				ELSIF NOT S_ChannelA THEN
+					DiagCode := 32769;
+				ELSIF S_ChannelB THEN
+					DiagCode := 32768;
+				END_IF;
+			49153:
+				IF NOT S_ChannelA AND NOT S_ChannelB THEN
+					DiagCode := 32769;
+				END_IF;
+			49154:
+				IF NOT S_ChannelA AND NOT S_ChannelB THEN
+					DiagCode := 32769;
+				END_IF;
+
+			32788:
+				IF Activate THEN
+					DiagCode := 49154;
+				ELSIF NOT S_ChannelB THEN
+					DiagCode := 32769;
+				ELSIF S_ChannelA THEN
+					DiagCode := 32768;
+				END_IF;
+			49155:
+				IF NOT S_ChannelA AND NOT S_ChannelB THEN
+					DiagCode := 32769;
+				END_IF;
+			32773:
+				IF Activate THEN
+					DiagCode := 49155;
+				ELSIF NOT S_ChannelA AND NOT S_ChannelB THEN
+					DiagCode := 32769;
+				END_IF;
+			32768:
+				IF S_ChannelA XOR S_ChannelB THEN
+					DiagCode := 32773;
+				ELSIF NOT S_ChannelA AND NOT S_ChannelB THEN
+					DiagCode := 32769;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			Error := FALSE;
+			S_EquivalentOut := FALSE;
+		32768:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EquivalentOut := TRUE;
+		32769:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EquivalentOut := FALSE;
+		32772:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EquivalentOut := FALSE;
+		32788:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EquivalentOut := FALSE;
+		32773:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EquivalentOut := FALSE;
+		49153:
+			Ready := TRUE;
+			Error := TRUE;
+			S_EquivalentOut := FALSE;
+		49154:
+			Ready := TRUE;
+			Error := TRUE;
+			S_EquivalentOut := FALSE;
+		49155:
+			Ready := TRUE;
+			Error := TRUE;
+			S_EquivalentOut := FALSE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_Antivalent
+	VAR_INPUT
+		Activate    : BOOL;
+		S_ChannelNC : BOOL;
+		S_ChannelNO : BOOL;
+	END_VAR
+	VAR_OUTPUT
+		Ready           : BOOL;
+		S_AntivalentOut : BOOL;
+		Error           : BOOL;
+		DiagCode        : DINT;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32769:
+				IF S_ChannelNC AND S_ChannelNO THEN
+					DiagCode := 32772;
+				ELSIF NOT S_ChannelNC AND NOT S_ChannelNO THEN
+					DiagCode := 32788;
+				ELSIF S_ChannelNC AND NOT S_ChannelNO THEN
+					DiagCode := 32768;
+				END_IF;
+			32772:
+				IF Activate THEN
+					DiagCode := 49153;
+				ELSIF NOT S_ChannelNC THEN
+					DiagCode := 32769;
+				ELSIF NOT S_ChannelNO THEN
+					DiagCode := 32768;
+				END_IF;
+			49153:
+				IF NOT S_ChannelNC AND S_ChannelNO THEN
+					DiagCode := 32769;
+				END_IF;
+			49154:
+				IF NOT S_ChannelNC AND S_ChannelNO THEN
+					DiagCode := 32769;
+				END_IF;
+			32788:
+				IF Activate THEN
+					DiagCode := 49154;
+				ELSIF S_ChannelNO THEN
+					DiagCode := 32769;
+				ELSIF S_ChannelNC THEN
+					DiagCode := 32768;
+				END_IF;
+			49155:
+				IF NOT S_ChannelNC AND S_ChannelNO THEN
+					DiagCode := 32769;
+				END_IF;
+			32773:
+				IF Activate THEN
+					DiagCode := 49155;
+				ELSIF NOT S_ChannelNC AND S_ChannelNO THEN
+					DiagCode := 32769;
+				END_IF;
+			32768:
+				IF NOT S_ChannelNC OR S_ChannelNO THEN
+					DiagCode := 32773;
+				ELSIF NOT S_ChannelNC AND S_ChannelNO THEN
+					DiagCode := 32769;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			Error := FALSE;
+			S_AntivalentOut := FALSE;
+		32768:
+			Ready := TRUE;
+			Error := FALSE;
+			S_AntivalentOut := TRUE;
+		32769:
+			Ready := TRUE;
+			Error := FALSE;
+			S_AntivalentOut := FALSE;
+		32772:
+			Ready := TRUE;
+			Error := FALSE;
+			S_AntivalentOut := FALSE;
+		32788:
+			Ready := TRUE;
+			Error := FALSE;
+			S_AntivalentOut := FALSE;
+		32773:
+			Ready := TRUE;
+			Error := FALSE;
+			S_AntivalentOut := FALSE;
+		49153:
+			Ready := TRUE;
+			Error := TRUE;
+			S_AntivalentOut := FALSE;
+		49154:
+			Ready := TRUE;
+			Error := TRUE;
+			S_AntivalentOut := FALSE;
+		49155:
+			Ready := TRUE;
+			Error := TRUE;
+			S_AntivalentOut := FALSE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_ModeSelector
+	VAR_INPUT
+		Activate : BOOL;
+		S_Mode0  : BOOL;
+		S_Mode1  : BOOL;
+		S_Mode2  : BOOL;
+		S_Mode3  : BOOL;
+		S_Mode4  : BOOL;
+		S_Mode5  : BOOL;
+		S_Mode6  : BOOL;
+		S_Mode7  : BOOL;
+		S_Unlock : BOOL;
+		Reset    : BOOL;
+	END_VAR
+	VAR_OUTPUT
+		Ready        : BOOL;
+		S_Mode0Sel   : BOOL;
+		S_Mode1Sel   : BOOL;
+		S_Mode2Sel   : BOOL;
+		S_Mode3Sel   : BOOL;
+		S_Mode4Sel   : BOOL;
+		S_Mode5Sel   : BOOL;
+		S_Mode6Sel   : BOOL;
+		S_Mode7Sel   : BOOL;
+		S_AnyModeSel : BOOL;
+		Error        : BOOL;
+		DiagCode     : DINT;
+	END_VAR
+
+
+	VAR
+		Error1 : BOOL;
+		Error2 : BOOL;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	END_IF;
+
+	IF (S_Mode0 OR S_Mode1 OR S_Mode2 OR S_Mode3 OR S_Mode4 OR S_Mode5 OR S_Mode6 OR S_Mode7 = TRUE ) THEN
+		Error1 := true;
+	ELSE
+		Error1 := false;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			IF Activate THEN
+				DiagCode := 32773;
+			END_IF;
+
+
+			IF Error1 THEN
+				DiagCode := 49153;
+			ELSIF Error2 THEN
+				DiagCode := 49154;
+			END_IF;
+		32768:
+			IF Error1 THEN
+				DiagCode := 49153;
+			ELSIF (S_Mode0 <> S_Mode0Sel OR S_Mode1 <> S_Mode1Sel OR S_Mode2 <> S_Mode2Sel OR S_Mode3 <> S_Mode3Sel OR S_Mode4 <> S_Mode4Sel OR S_Mode5 <> S_Mode5Sel OR S_Mode6 <> S_Mode6Sel OR S_Mode7 <> S_Mode7Sel) THEN
+				DiagCode := 32773;
+			ELSIF (NOT S_Unlock) THEN
+				DiagCode := 32772;
+			END_IF;
+		32772:
+			IF S_Unlock THEN
+				DiagCode := 32768;
+			END_IF;
+		49153:
+			IF Reset THEN
+				DiagCode := 49155;
+			END_IF;
+		49154:
+			IF Reset THEN
+				DiagCode := 49156;
+			END_IF;
+		49155:
+			IF (NOT Reset) THEN
+				DiagCode := 49153;
+			END_IF;
+		49156:
+			IF (NOT Reset) THEN
+				DiagCode := 49154;
+			END_IF;
+	END_CASE;
+
+	CASE DiagCode OF
+		0:
+			Ready := false;
+			S_Mode0Sel := false;
+			S_Mode1Sel := false;
+			S_Mode2Sel := false;
+			S_Mode3Sel := false;
+			S_Mode4Sel := false;
+			S_Mode5Sel := false;
+			S_Mode6Sel := false;
+			S_Mode7Sel := false;
+			S_AnyModeSel := false;
+			Error := false;
+		32773:
+			Ready := true;
+			S_Mode0Sel := false;
+			S_Mode1Sel := false;
+			S_Mode2Sel := false;
+			S_Mode3Sel := false;
+			S_Mode4Sel := false;
+			S_Mode5Sel := false;
+			S_Mode6Sel := false;
+			S_Mode7Sel := false;
+			S_AnyModeSel := false;
+			Error := false;
+		32768:
+			Ready := true;
+			S_Mode0Sel := S_Mode0;
+			S_Mode1Sel := S_Mode1;
+			S_Mode2Sel := S_Mode2;
+			S_Mode3Sel := S_Mode3;
+			S_Mode4Sel := S_Mode4;
+			S_Mode5Sel := S_Mode5;
+			S_Mode6Sel := S_Mode6;
+			S_Mode7Sel := S_Mode7;
+			S_AnyModeSel := true;
+			Error := false;
+		32772:
+			Ready := true;
+			S_AnyModeSel := true;
+			Error := false;
+		49153:
+			Ready := true;
+			S_Mode0Sel := false;
+			S_Mode1Sel := false;
+			S_Mode2Sel := false;
+			S_Mode3Sel := false;
+			S_Mode4Sel := false;
+			S_Mode5Sel := false;
+			S_Mode6Sel := false;
+			S_Mode7Sel := false;
+			S_AnyModeSel := false;
+			Error := true;
+		49154:
+			Ready := true;
+			S_Mode0Sel := false;
+			S_Mode1Sel := false;
+			S_Mode2Sel := false;
+			S_Mode3Sel := false;
+			S_Mode4Sel := false;
+			S_Mode5Sel := false;
+			S_Mode6Sel := false;
+			S_Mode7Sel := false;
+			S_AnyModeSel := false;
+			Error := true;
+		49155:
+			Ready := true;
+			S_Mode0Sel := false;
+			S_Mode1Sel := false;
+			S_Mode2Sel := false;
+			S_Mode3Sel := false;
+			S_Mode4Sel := false;
+			S_Mode5Sel := false;
+			S_Mode6Sel := false;
+			S_Mode7Sel := false;
+			S_AnyModeSel := false;
+			Error := true;
+		49156:
+			Ready := true;
+			S_Mode0Sel := false;
+			S_Mode1Sel := false;
+			S_Mode2Sel := false;
+			S_Mode3Sel := false;
+			S_Mode4Sel := false;
+			S_Mode5Sel := false;
+			S_Mode6Sel := false;
+			S_Mode7Sel := false;
+			S_AnyModeSel := false;
+			Error := true;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_EmergencyStop
+	VAR_INPUT
+		Activate     : BOOL;
+		S_EStopIn    : BOOL;
+		S_StartReset : BOOL;
+		S_AutoReset  : BOOL;
+		Reset        : BOOL;
+	END_VAR
+
+	VAR_OUTPUT
+		Ready      : BOOL;
+		S_EStopOut : BOOL;
+		Error      : BOOL;
+		DiagCode   : DINT;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32769:
+				IF NOT S_StartReset THEN
+					DiagCode := 32770;
+				ELSIF S_StartReset AND NOT S_EStopIn THEN
+					DiagCode := 32772;
+				ELSIF S_EStopIn AND S_StartReset THEN
+					DiagCode := 32768;
+				END_IF;
+			32770:
+				IF S_EStopIn THEN
+					DiagCode := 32771;
+				END_IF;
+			32771:
+				IF Reset THEN
+					DiagCode := 49153;
+				ELSIF NOT S_EStopIn THEN
+					DiagCode := 32770;
+				END_IF;
+			49153:
+				IF NOT Reset THEN
+					DiagCode := 32771;
+				END_IF;
+			32772:
+				IF S_EStopIn AND NOT S_AutoReset THEN
+					DiagCode := 32773;
+				ELSIF S_EStopIn AND S_AutoReset THEN
+					DiagCode := 32768;
+				END_IF;
+			32773:
+				IF Reset THEN
+					DiagCode := 49154;
+				ELSIF NOT S_EStopIn THEN
+					DiagCode := 32772;
+				ELSIF S_AutoReset THEN
+					DiagCode := 32768;
+				END_IF;
+			49154:
+				IF NOT Reset THEN
+					DiagCode := 32773;
+				END_IF;
+			32768:
+				IF NOT S_EStopIn THEN
+					DiagCode := 32772;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			Error := FALSE;
+			S_EStopOut := FALSE;
+		32769:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EStopOut := FALSE;
+		32770:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EStopOut := FALSE;
+		32771:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EStopOut := FALSE;
+		49153:
+			Ready := TRUE;
+			Error := TRUE;
+			S_EStopOut := FALSE;
+		32772:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EStopOut := FALSE;
+		32773:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EStopOut := FALSE;
+		49154:
+			Ready := TRUE;
+			Error := TRUE;
+			S_EStopOut := FALSE;
+		32768:
+			Ready := TRUE;
+			Error := FALSE;
+			S_EStopOut := TRUE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+
+
+FUNCTION_BLOCK SF_ESPE
+	VAR_INPUT
+		Activate     : BOOL;
+		S_ESPE_In    : BOOL;
+		S_StartReset : BOOL;
+		S_AutoReset  : BOOL;
+		Reset        : BOOL;
+	END_VAR
+
+	VAR_OUTPUT
+		Ready      : BOOL;
+		S_ESPE_Out : BOOL;
+		Error      : BOOL;
+		DiagCode   : DINT;
+	END_VAR
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32769:
+				IF NOT S_StartReset THEN
+					DiagCode := 32770;
+				ELSIF S_StartReset AND NOT S_ESPE_In THEN
+					DiagCode := 32772;
+				ELSIF S_ESPE_In AND S_StartReset THEN
+					DiagCode := 32768;
+				END_IF;
+			32770:
+				IF S_ESPE_In THEN
+					DiagCode := 32771;
+				END_IF;
+			32771:
+				IF Reset THEN
+					DiagCode := 49153;
+				ELSIF NOT S_ESPE_In THEN
+					DiagCode := 32770;
+				END_IF;
+			49153:
+				IF NOT Reset THEN
+					DiagCode := 32771;
+				END_IF;
+			32772:
+				IF S_ESPE_In AND NOT S_AutoReset THEN
+					DiagCode := 32773;
+				ELSIF S_ESPE_In AND S_AutoReset THEN
+					DiagCode := 32768;
+				END_IF;
+			32773:
+				IF Reset THEN
+					DiagCode := 49154;
+				ELSIF NOT S_ESPE_In THEN
+					DiagCode := 32772;
+				END_IF;
+			49154:
+				IF NOT Reset THEN
+					DiagCode := 32773;
+				END_IF;
+			32768:
+				IF NOT S_ESPE_In THEN
+					DiagCode := 32772;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			Error := FALSE;
+			S_ESPE_Out := FALSE;
+		32769:
+			Ready := TRUE;
+			Error := FALSE;
+			S_ESPE_Out := FALSE;
+		32770:
+			Ready := TRUE;
+			Error := FALSE;
+			S_ESPE_Out := FALSE;
+		32771:
+			Ready := TRUE;
+			Error := FALSE;
+			S_ESPE_Out := FALSE;
+		49153:
+			Ready := TRUE;
+			Error := TRUE;
+			S_ESPE_Out := FALSE;
+		32772:
+			Ready := TRUE;
+			Error := FALSE;
+			S_ESPE_Out := FALSE;
+		32773:
+			Ready := TRUE;
+			Error := FALSE;
+			S_ESPE_Out := FALSE;
+		49154:
+			Ready := TRUE;
+			Error := TRUE;
+			S_ESPE_Out := FALSE;
+		32768:
+			Ready := TRUE;
+			Error := FALSE;
+			S_ESPE_Out := TRUE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_SafetyRequest
+	VAR_INPUT
+		Activate       : BOOL;
+		S_OpMode       : BOOL;
+		S_Acknowledge  : BOOL;
+		MonitoringTime : TIME := T#0s;
+		Reset          : BOOL;
+	END_VAR
+
+	VAR_OUTPUT
+		Ready           : BOOL;
+		S_SafetyActive  : BOOL;
+		S_SafetyRequest : BOOL;
+		Error           : BOOL;
+		DiagCode        : DINT := 0;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32768:
+				IF NOT S_Acknowledge THEN
+					DiagCode := 49154;
+				ELSIF S_OpMode THEN
+					DiagCode := 32786;
+				END_IF;
+			32769:
+				IF NOT S_Acknowledge THEN
+					DiagCode := 32770;
+				ELSIF S_Acknowledge THEN
+					DiagCode := 32786;
+				END_IF;
+			32770:
+				IF NOT S_OpMode THEN
+					DiagCode := 32771;
+				ELSIF S_Acknowledge THEN
+					DiagCode := 32786;
+				END_IF;
+
+
+			32773:
+				IF S_OpMode THEN
+					DiagCode := 32786;
+				END_IF;
+			32786:
+				IF NOT S_Acknowledge THEN
+					DiagCode := 32770;
+				ELSIF NOT S_OpMode THEN
+					DiagCode := 32771;
+				END_IF;
+
+			49154:
+				IF Reset THEN
+					DiagCode := 49156;
+				END_IF;
+			49155:
+				IF Reset THEN
+					DiagCode := 49157;
+				END_IF;
+			49156:
+				IF NOT Reset THEN
+					DiagCode := 49154;
+				END_IF;
+			49157:
+				IF NOT Reset THEN
+					DiagCode := 49155;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := FALSE;
+			Error := FALSE;
+		32768:
+			Ready := TRUE;
+			S_SafetyActive := TRUE;
+			S_SafetyRequest := FALSE;
+			Error := FALSE;
+		32769:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := FALSE;
+			Error := FALSE;
+		32770:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := TRUE;
+			Error := FALSE;
+		32771:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := FALSE;
+			Error := FALSE;
+		32773:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := FALSE;
+			Error := FALSE;
+		32786:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := TRUE;
+			Error := FALSE;
+		49154:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := FALSE;
+			Error := TRUE;
+		49155:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := FALSE;
+			Error := TRUE;
+		49156:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := FALSE;
+			Error := TRUE;
+		49157:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			S_SafetyRequest := FALSE;
+			Error := TRUE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_GuardLocking
+	VAR_INPUT
+		Activate          : BOOL;
+		S_GuardMonitoring : BOOL;
+		S_SafetyActive    : BOOL;
+		S_GuardLock       : BOOL;
+		UnlockRequest     : BOOL;
+		S_StartReset      : BOOL;
+		S_AutoReset       : BOOL;
+		Reset             : BOOL;
+	END_VAR
+
+	VAR_OUTPUT
+		Ready         : BOOL;
+		S_GuardLocked : BOOL;
+		S_UnlockGuard : BOOL;
+		Error         : BOOL;
+		DiagCode      : DINT := 0;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			IF Activate THEN
+				DiagCode := 32769;
+			END_IF;
+		32768:
+			IF NOT S_GuardLock OR NOT S_GuardMonitoring THEN
+				DiagCode := 49156;
+			ELSIF S_SafetyActive THEN
+				DiagCode := 32787;
+			END_IF;
+		32769:
+			IF Reset AND  NOT S_StartReset THEN
+				DiagCode := 49153;
+			ELSIF NOT S_GuardLock OR NOT S_GuardMonitoring THEN
+				DiagCode := 32785;
+			ELSIF (S_StartReset) AND S_GuardMonitoring AND S_GuardLock THEN
+				DiagCode := 32768;
+			END_IF;
+		32771:
+			IF Reset AND NOT S_AutoReset THEN
+				DiagCode := 49155;
+			ELSIF NOT S_GuardMonitoring OR NOT S_GuardLock THEN
+				DiagCode := 32785;
+			ELSIF S_AutoReset THEN
+				DiagCode := 32768;
+			END_IF;
+		32785:
+			IF NOT S_SafetyActive AND (NOT S_GuardMonitoring OR NOT S_GuardLock) THEN
+				DiagCode := 49156;
+			ELSIF (S_SafetyActive AND UnlockRequest) OR NOT S_GuardMonitoring THEN
+				DiagCode := 32786;
+			ELSIF S_GuardMonitoring AND S_GuardLock THEN
+				DiagCode := 32771;
+			END_IF;
+		32786:
+			IF S_GuardMonitoring THEN
+				DiagCode := 32787;
+			ELSIF NOT S_SafetyActive AND NOT S_GuardMonitoring THEN
+				DiagCode := 49156;
+			END_IF;
+		32787:
+			IF NOT S_GuardMonitoring THEN
+				DiagCode := 32786;
+			ELSIF NOT UnlockRequest THEN
+				DiagCode := 32785;
+			END_IF;
+		32788:
+			IF Reset THEN
+				DiagCode := 49154;
+			ELSIF NOT S_SafetyActive THEN
+				DiagCode := 49156;
+			END_IF;
+		49153:
+			IF NOT Reset THEN
+				DiagCode := 32769;
+			END_IF;
+		49154:
+			IF NOT Reset THEN
+				DiagCode := 32788;
+			END_IF;
+		49155:
+			IF NOT Reset THEN
+				DiagCode := 32771;
+			END_IF;
+		49156:
+			IF S_SafetyActive THEN
+				DiagCode := 32788;
+			END_IF;
+	END_CASE;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			S_GuardLocked := FALSE;
+			S_UnlockGuard := FALSE;
+			Error := FALSE;
+		32768:
+			Ready := TRUE;
+			S_GuardLocked := TRUE;
+			S_UnlockGuard := FALSE;
+			Error := FALSE;
+		32769:
+			Ready := TRUE;
+			S_GuardLocked := FALSE;
+			S_UnlockGuard := FALSE;
+			Error := FALSE;
+		32771:
+			Ready := TRUE;
+			S_GuardLocked := FALSE;
+			S_UnlockGuard := FALSE;
+			Error := FALSE;
+		32785:
+			Ready := TRUE;
+			S_GuardLocked := FALSE;
+			S_UnlockGuard := FALSE;
+			Error := FALSE;
+		32788:
+			Ready := TRUE;
+			S_GuardLocked := FALSE;
+			S_UnlockGuard := FALSE;
+			Error := FALSE;
+		32786, 32787:
+			Ready := TRUE;
+			S_GuardLocked := FALSE;
+			S_UnlockGuard := TRUE;
+			Error := FALSE;
+		49153, 49154, 49155, 49156:
+			Ready := TRUE;
+			S_GuardLocked := FALSE;
+			S_UnlockGuard := FALSE;
+			Error := TRUE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_SafelyLimitSpeed
+	VAR_INPUT
+		Activate       : BOOL;
+		S_OpMode       : BOOL;
+		S_Enabled      : BOOL;
+		AxisID         : DINT;
+		MonitoringTime : TIME;
+		Reset          : BOOL;
+		Acknowledge    : BOOL; (* This is an DINTernal input *)
+	END_VAR
+
+	VAR_OUTPUT
+		Ready          : BOOL;
+		S_SafetyActive : BOOL;
+		Error          : BOOL;
+		DiagCode       : DINT := 0;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			IF Activate THEN
+				DiagCode := 32769;
+			END_IF;
+		32768:
+			IF NOT Acknowledge THEN
+				DiagCode := 49154;
+			ELSIF S_OpMode THEN
+				DiagCode := 32786;
+			ELSIF S_Enabled THEN
+				DiagCode := 32772;
+			END_IF;
+		32769:
+			IF Reset THEN
+				DiagCode := 49153;
+			ELSIF NOT Acknowledge THEN
+				DiagCode := 32770;
+			ELSIF Acknowledge THEN
+				DiagCode := 32786;
+			END_IF;
+		32770:
+			IF NOT S_OpMode THEN
+				DiagCode := 32771;
+			ELSIF Acknowledge THEN
+				DiagCode := 32786;
+			END_IF;
+		32771:
+			IF S_OpMode THEN
+				DiagCode := 32786;
+			ELSIF Acknowledge AND NOT S_Enabled THEN
+				DiagCode := 32768;
+			ELSIF Acknowledge AND S_Enabled THEN
+				DiagCode := 32772;
+			END_IF;
+		32772:
+			IF NOT Acknowledge THEN
+				DiagCode := 49154;
+			ELSIF S_OpMode THEN
+				DiagCode := 32786;
+			ELSIF NOT S_Enabled THEN
+				DiagCode := 32768;
+			END_IF;
+		32773:
+			IF S_OpMode THEN
+				DiagCode := 32786;
+			END_IF;
+		32786:
+			IF NOT Acknowledge THEN
+				DiagCode := 32770;
+			ELSIF NOT S_OpMode THEN
+				DiagCode := 32771;
+			END_IF;
+		49153:
+			IF NOT Reset THEN
+				DiagCode := 32769;
+			END_IF;
+		49154:
+			IF Reset THEN
+				DiagCode := 49156;
+			END_IF;
+		49155:
+			IF Reset THEN
+				DiagCode := 49157;
+			END_IF;
+		49156:
+			IF NOT Reset THEN
+				DiagCode := 49154;
+			END_IF;
+		49157:
+			IF NOT Reset THEN
+				DiagCode := 49155;
+			END_IF;
+	END_CASE;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			S_SafetyActive := FALSE;
+			Error := FALSE;
+		32768, 32772:
+			Ready := TRUE;
+			S_SafetyActive := TRUE;
+			Error := FALSE;
+		32769, 32770, 32771, 32773, 32786:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			Error := FALSE;
+		49153, 49154, 49155, 49156, 49157:
+			Ready := TRUE;
+			S_SafetyActive := FALSE;
+			Error := TRUE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_TwoHandControlTypeII
+	VAR_INPUT
+		Activate  : BOOL := FALSE;
+		S_Button1 : BOOL := FALSE;
+		S_Button2 : BOOL := FALSE;
+	END_VAR
+	VAR_OUTPUT
+		Ready        : BOOL := FALSE;
+		S_TwoHandOut : BOOL := FALSE;
+		Error        : BOOL := FALSE;
+		DiagCode     : DINT := 0;
+	END_VAR
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+
+			32769:
+				IF S_Button1 AND S_Button2 THEN
+					DiagCode := 49155;
+				ELSIF S_Button1 THEN
+					DiagCode := 49153;
+				ELSIF S_Button2 THEN
+					DiagCode := 49154;
+				ELSE
+					DiagCode := 32772;
+				END_IF;
+			32772:
+				IF S_Button1 AND S_Button2 THEN
+					DiagCode := 32768;
+				ELSIF S_Button1 THEN
+					DiagCode := 32773;
+				ELSIF S_Button2 THEN
+					DiagCode := 32774;
+				END_IF;
+			32773:
+				IF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				ELSIF NOT S_Button1 AND S_Button2 THEN
+					DiagCode := 32793;
+				ELSIF S_Button1 AND S_Button2 THEN
+					DiagCode := 32768;
+				END_IF;
+			32774:
+				IF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				ELSIF S_Button1 AND NOT S_Button2 THEN
+					DiagCode := 32793;
+				ELSIF S_Button1 AND S_Button2 THEN
+					DiagCode := 32768;
+				END_IF;
+			32775:
+				IF S_Button1 AND S_Button2 THEN
+					DiagCode := 32777;
+				ELSIF NOT S_Button1 AND S_Button2 THEN
+					DiagCode := 32776;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32776:
+				IF S_Button1 AND S_Button2 THEN
+					DiagCode := 32777;
+				ELSIF S_Button1 AND NOT S_Button2 THEN
+					DiagCode := 32775;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32777:
+				IF NOT S_Button1 AND S_Button2 THEN
+					DiagCode := 32776;
+				ELSIF S_Button1 AND NOT S_Button2 THEN
+					DiagCode := 32775;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32793:
+				IF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32768:
+				IF S_Button1 AND NOT S_Button2 THEN
+					DiagCode := 32775;
+				ELSIF NOT S_Button1 AND S_Button2 THEN
+					DiagCode := 32776;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			49153, 49154, 49155:
+				IF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			Error := FALSE;
+			S_TwoHandOut := FALSE;
+		32768:
+			Ready := TRUE;
+			Error := FALSE;
+			S_TwoHandOut := TRUE;
+		32769, 32772, 32773, 32774, 32775, 32776, 32777, 32793:
+			Ready := TRUE;
+			Error := FALSE;
+			S_TwoHandOut := FALSE;
+		49153, 49154, 49155:
+			Ready := TRUE;
+			Error := TRUE;
+			S_TwoHandOut := FALSE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_TwoHandControlTypeIII
+	VAR_INPUT
+		Activate  : BOOL;
+		S_Button1 : BOOL;
+		S_Button2 : BOOL;
+	END_VAR
+
+	VAR_OUTPUT
+		Ready        : BOOL;
+		S_TwoHandOut : BOOL;
+		Error        : BOOL;
+		DiagCode     : DINT := 0;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32768:
+				IF S_Button1 AND NOT S_Button2 THEN
+					DiagCode := 32775;
+				ELSIF NOT S_Button1 AND S_Button2 THEN
+					DiagCode := 32776;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32769:
+				IF S_Button1 AND S_Button2 THEN
+					DiagCode := 49155;
+				ELSIF S_Button1 THEN
+					DiagCode := 49153;
+				ELSIF S_Button2 THEN
+					DiagCode := 49154;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32772:
+				IF S_Button1 AND S_Button2 THEN
+					DiagCode := 32768;
+				ELSIF S_Button1 THEN
+					DiagCode := 32773;
+				ELSIF S_Button2 THEN
+					DiagCode := 32774;
+				END_IF;
+			32773:
+				IF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				ELSIF NOT S_Button1 AND S_Button2 THEN
+					DiagCode := 32793;
+				ELSIF S_Button1 AND S_Button2 THEN
+					DiagCode := 32768;
+				END_IF;
+			32774:
+				IF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				ELSIF S_Button1 AND NOT S_Button2 THEN
+					DiagCode := 32793;
+				ELSIF S_Button1 AND S_Button2 THEN
+					DiagCode := 32768;
+				END_IF;
+			32775:
+				IF S_Button1 AND S_Button2 THEN
+					DiagCode := 32777;
+				ELSIF NOT S_Button1 AND S_Button2 THEN
+					DiagCode := 32776;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32776:
+				IF S_Button1 AND S_Button2 THEN
+					DiagCode := 32777;
+				ELSIF S_Button1 AND NOT S_Button2 THEN
+					DiagCode := 32775;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32777:
+				IF NOT S_Button1 AND S_Button2 THEN
+					DiagCode := 32776;
+				ELSIF S_Button1 AND NOT S_Button2 THEN
+					DiagCode := 32775;
+				ELSIF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			32793:
+				IF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+			49153, 49154, 49155, 49156, 49157, 49158:
+				IF NOT (S_Button1 OR S_Button2) THEN
+					DiagCode := 32772;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		32768:
+			Ready := TRUE;
+			S_TwoHandOut := TRUE;
+			Error := FALSE;
+		32769:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		32772:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		32773:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		32774:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		32775:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		32776:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		32777:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		32793:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := FALSE;
+		49153:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := TRUE;
+		49154:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := TRUE;
+		49155:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := TRUE;
+		49156:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := TRUE;
+		49157:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := TRUE;
+		49158:
+			Ready := TRUE;
+			S_TwoHandOut := FALSE;
+			Error := TRUE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_GuardMonitoring
+	VAR_INPUT
+		Activate        : BOOL := FALSE;
+		S_GuardSwitch1  : BOOL := FALSE;
+		S_GuardSwitch2  : BOOL := FALSE;
+		DiscrepancyTime : TIME := T#0s;
+		S_StartReset    : BOOL := FALSE;
+		S_AutoReset     : BOOL := FALSE;
+		Reset           : BOOL := FALSE;
+	END_VAR
+	VAR_OUTPUT
+		Ready             : BOOL := FALSE;
+		S_GuardMonitoring : BOOL := FALSE;
+		Error             : BOOL := FALSE;
+		DiagCode          : DINT := 0;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32769:
+				IF NOT S_GuardSwitch1 OR NOT S_GuardSwitch2 THEN
+					DiagCode := 32770;
+				ELSIF S_GuardSwitch1 AND S_GuardSwitch2 AND NOT S_StartReset THEN
+					DiagCode := 32771;
+				ELSIF S_GuardSwitch1 AND S_GuardSwitch2 AND S_StartReset THEN
+					DiagCode := 32768;
+				END_IF;
+			32770:
+				IF NOT S_GuardSwitch1 AND NOT S_GuardSwitch2 THEN
+					DiagCode := 32786;
+				END_IF;
+			32771:
+				IF Reset THEN
+					DiagCode := 49153;
+				ELSIF NOT S_GuardSwitch1 OR NOT S_GuardSwitch2 THEN
+					DiagCode := 32770;
+				END_IF;
+			32786:
+				IF S_GuardSwitch1 THEN
+					DiagCode := 32772;
+				ELSIF S_GuardSwitch2 THEN
+					DiagCode := 32788;
+				END_IF;
+			32772:
+				IF NOT S_GuardSwitch1 THEN
+					DiagCode := 32770;
+				ELSIF S_GuardSwitch2 THEN
+					DiagCode := 32773;
+				END_IF;
+			32788:
+				IF NOT S_GuardSwitch2 THEN
+					DiagCode := 32770;
+				ELSIF S_GuardSwitch1 THEN
+					DiagCode := 32773;
+				END_IF;
+			32773:
+				IF NOT S_GuardSwitch1 OR NOT S_GuardSwitch2 THEN
+					DiagCode := 32770;
+				ELSIF NOT S_AutoReset THEN
+					DiagCode := 32771;
+				ELSIF S_AutoReset THEN
+					DiagCode := 32768;
+				END_IF;
+			32768:
+				IF NOT S_GuardSwitch1 OR NOT S_GuardSwitch2 THEN
+					DiagCode := 32770;
+				END_IF;
+			49153:
+				IF NOT Reset THEN
+					DiagCode := 32771;
+				END_IF;
+			49169:
+				IF NOT S_GuardSwitch1 AND NOT S_GuardSwitch2 THEN
+					DiagCode := 32786;
+				END_IF;
+			49170:
+				IF NOT S_GuardSwitch1 AND NOT S_GuardSwitch2 THEN
+					DiagCode := 32786;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			Error := FALSE;
+			S_GuardMonitoring := FALSE;
+		32768:
+			Ready := TRUE;
+			Error := FALSE;
+			S_GuardMonitoring := TRUE;
+		32769:
+			Ready := TRUE;
+			Error := FALSE;
+			S_GuardMonitoring := FALSE;
+		32770:
+			Ready := TRUE;
+			Error := FALSE;
+			S_GuardMonitoring := FALSE;
+		32771:
+			Ready := TRUE;
+			Error := FALSE;
+			S_GuardMonitoring := FALSE;
+		32786:
+			Ready := TRUE;
+			Error := FALSE;
+			S_GuardMonitoring := FALSE;
+		32773:
+			Ready := TRUE;
+			Error := FALSE;
+			S_GuardMonitoring := FALSE;
+		32772:
+			Ready := TRUE;
+			Error := FALSE;
+			S_GuardMonitoring := FALSE;
+		32788:
+			Ready := TRUE;
+			Error := FALSE;
+			S_GuardMonitoring := FALSE;
+		49153:
+			Ready := TRUE;
+			Error := TRUE;
+			S_GuardMonitoring := FALSE;
+		49169:
+			Ready := TRUE;
+			Error := TRUE;
+			S_GuardMonitoring := FALSE;
+		49170:
+			Ready := TRUE;
+			Error := TRUE;
+			S_GuardMonitoring := FALSE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_SafeStop1
+	VAR_INPUT
+		Activate       : BOOL;
+		S_StopIn       : BOOL;
+		AxisID         : DINT;
+		MonitoringTime : TIME;
+		Reset          : BOOL;
+		Acknowledge    : BOOL; (* This is an DINTernal input *)
+	END_VAR
+
+	VAR_OUTPUT
+		Ready     : BOOL;
+		S_Stopped : BOOL;
+		Error     : BOOL;
+		DiagCode  : DINT := 0;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32768:
+				IF NOT Acknowledge THEN
+					DiagCode := 49154;
+				ELSIF S_StopIn THEN
+					DiagCode := 32786;
+				END_IF;
+			32769:
+				IF NOT Acknowledge THEN
+					DiagCode := 32770;
+				ELSIF Acknowledge THEN
+					DiagCode := 32786;
+				END_IF;
+			32770:
+				IF NOT S_StopIn THEN
+					DiagCode := 32771;
+				ELSIF Acknowledge THEN
+					DiagCode := 32786;
+				END_IF;
+			32771:
+				IF S_StopIn THEN
+					DiagCode := 32786;
+				ELSIF Acknowledge THEN
+					DiagCode := 32768;
+				END_IF;
+			32773:
+				IF S_StopIn THEN
+					DiagCode := 32786;
+				END_IF;
+			32786:
+				IF NOT Acknowledge THEN
+					DiagCode := 32770;
+				ELSIF NOT S_StopIn THEN
+					DiagCode := 32771;
+				ELSIF Acknowledge THEN
+					DiagCode := 32768;
+				END_IF;
+			49154:
+				IF Reset THEN
+					DiagCode := 49156;
+				END_IF;
+			49155:
+				IF Reset THEN
+					DiagCode := 49157;
+				END_IF;
+			49156:
+				IF NOT Reset THEN
+					DiagCode := 49154;
+				END_IF;
+			49157:
+				IF NOT Reset THEN
+					DiagCode := 49155;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			S_Stopped := FALSE;
+			Error := FALSE;
+		32768:
+			Ready := TRUE;
+			S_Stopped := TRUE;
+			Error := FALSE;
+		32769:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := FALSE;
+		32770:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := FALSE;
+		32771:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := FALSE;
+		32773:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := FALSE;
+		32786:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := FALSE;
+		49154:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := TRUE;
+		49155:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := TRUE;
+		49156:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := TRUE;
+		49157:
+			Ready := TRUE;
+			S_Stopped := FALSE;
+			Error := TRUE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_EnableSwitch
+	VAR_INPUT
+		Activate          : BOOL := FALSE;
+		S_SafetyActive    : BOOL := FALSE;
+		S_EnableSwitchCh1 : BOOL := FALSE;
+		S_EnableSwitchCh2 : BOOL := FALSE;
+		S_AutoReset       : BOOL := FALSE;
+		Reset             : BOOL := FALSE;
+	END_VAR
+
+	VAR_OUTPUT
+		Ready             : BOOL := FALSE;
+		S_EnableSwitchOut : BOOL := FALSE;
+		Error             : BOOL := FALSE;
+		DiagCode          : DINT := 0;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSIF NOT S_SafetyActive THEN
+		DiagCode := 32772;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32772;
+				END_IF;
+
+			32768:
+				IF (NOT (S_EnableSwitchCh1 OR S_EnableSwitchCh2)) OR (S_EnableSwitchCh1 AND NOT S_EnableSwitchCh2) THEN
+					DiagCode := 32775;
+				ELSIF NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+					DiagCode := 32774;
+				END_IF;
+
+			32772:
+				IF S_SafetyActive THEN
+					DiagCode := 32773;
+				END_IF;
+
+			32773:
+				IF NOT (NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2) THEN
+					DiagCode := 49168;
+				ELSIF NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+					DiagCode := 32774;
+				END_IF;
+
+			32774:
+				IF S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+					DiagCode := 32768;
+				ELSIF (NOT (S_EnableSwitchCh1 OR S_EnableSwitchCh2)) OR (S_EnableSwitchCh1 AND NOT S_EnableSwitchCh2) THEN
+					DiagCode := 32775;
+				END_IF;
+
+			32775:
+				IF S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+					DiagCode := 49200;
+				ELSIF NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+					DiagCode := 32774;
+				END_IF;
+			49153:
+				IF NOT Reset THEN
+					DiagCode := 49184;
+				END_IF;
+			49154:
+				IF NOT Reset THEN
+					DiagCode := 49216;
+				END_IF;
+			49168:
+				IF NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+					DiagCode := 49184;
+				END_IF;
+
+			49184:
+				IF NOT (NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2) THEN
+					DiagCode := 49168;
+				ELSIF Reset AND NOT S_AutoReset THEN
+					DiagCode := 49153;
+				ELSIF S_AutoReset THEN
+					DiagCode := 32774;
+				END_IF;
+
+			49200:
+				IF NOT (S_EnableSwitchCh1 AND S_EnableSwitchCh2) THEN
+					DiagCode := 49216;
+				END_IF;
+
+			49216:
+				IF S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+					DiagCode := 49200;
+				ELSIF Reset AND NOT S_AutoReset THEN
+					DiagCode := 49154;
+				ELSIF S_AutoReset THEN
+					DiagCode := 32775;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+	CASE DiagCode OF
+		49153:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := TRUE;
+		49154:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := TRUE;
+		49168:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := TRUE;
+		49184:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := TRUE;
+		49200:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := TRUE;
+		49216:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := TRUE;
+		0:
+			Ready := FALSE;
+			S_EnableSwitchOut := FALSE;
+			Error := FALSE;
+		32768:
+			Ready := TRUE;
+			S_EnableSwitchOut := TRUE;
+			Error := FALSE;
+		32772:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := FALSE;
+		32773:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := FALSE;
+		32774:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := FALSE;
+		32775:
+			Ready := TRUE;
+			S_EnableSwitchOut := FALSE;
+			Error := FALSE;
+	END_CASE;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK SF_MutingSeq
+	VAR_INPUT
+		Activate       : BOOL := FALSE;
+		S_AOPD_In      : BOOL := FALSE;
+		MutingSwitch11 : BOOL := FALSE;
+		MutingSwitch12 : BOOL := FALSE;
+		MutingSwitch21 : BOOL := FALSE;
+		MutingSwitch22 : BOOL := FALSE;
+		S_MutingLamp   : BOOL := FALSE;
+		DiscTime11_12  : TIME := T#0s;
+		DiscTime21_22  : TIME := T#0s;
+		MaxMutingTime  : TIME := T#0s;
+		MutingEnable   : BOOL := FALSE;
+		S_StartReset   : BOOL := FALSE;
+		Reset          : BOOL := FALSE;
+	END_VAR
+	VAR_OUTPUT
+		Ready          : BOOL := FALSE;
+		S_AOPD_Out     : BOOL := FALSE;
+		S_MutingActive : BOOL := FALSE;
+		Error          : BOOL := FALSE;
+		DiagCode       : DINT := 0;
+	END_VAR
+
+
+	IF NOT Activate THEN
+		DiagCode := 0;
+	ELSE
+		CASE DiagCode OF
+			0:
+				IF Activate THEN
+					DiagCode := 32769;
+				END_IF;
+			32768:
+
+				IF (NOT MutingEnable) OR (NOT MutingEnable) OR (MutingSwitch12 OR MutingSwitch21) OR (MutingSwitch11 AND MutingSwitch22) THEN
+					(* Wrong muting sequence *)
+					DiagCode := 49156;
+				ELSIF NOT S_AOPD_In THEN
+					DiagCode := 32770;
+				ELSIF NOT S_MutingLamp THEN
+					DiagCode := 49155;
+				ELSIF MutingEnable AND (NOT MutingSwitch12 AND NOT MutingSwitch21 AND NOT MutingSwitch22) THEN
+					DiagCode := 32785;
+				ELSIF MutingEnable AND (NOT MutingSwitch11 AND NOT MutingSwitch12 AND NOT MutingSwitch21) THEN
+					DiagCode := 33058;
+				END_IF;
+			32769:
+				IF Reset AND NOT S_StartReset THEN
+					DiagCode := 49153;
+				ELSIF S_StartReset THEN
+					DiagCode := 32773;
+				END_IF;
+			32770:
+				IF S_AOPD_In THEN
+					DiagCode := 32771;
+				END_IF;
+			32771:
+				IF Reset THEN
+					DiagCode := 49154;
+				END_IF;
+			32773:
+				IF NOT S_AOPD_In THEN
+					DiagCode := 32770;
+				ELSIF NOT S_MutingLamp THEN
+					DiagCode := 49155;
+				ELSIF S_AOPD_In THEN
+					DiagCode := 32768;
+				END_IF;
+			49153:
+				IF NOT Reset THEN
+					DiagCode := 32769;
+				END_IF;
+			49154:
+				IF NOT Reset THEN
+					DiagCode := 32771;
+				END_IF;
+			49155:
+				IF S_MutingLamp THEN
+					DiagCode := 32771;
+				END_IF;
+			49158:
+				IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+					DiagCode := 32771;
+				END_IF;
+
+				IF DiagCode >= 49152 THEN
+					IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+						DiagCode := 32771;
+					END_IF;
+				ELSE
+					CASE DiagCode OF
+						32785:
+							IF NOT MutingEnable OR NOT MutingSwitch11 OR MutingSwitch21 OR MutingSwitch22 THEN
+								DiagCode := 49412;
+							ELSIF NOT S_AOPD_In THEN
+								DiagCode := 32770;
+							ELSIF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingEnable AND (MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22) THEN
+								DiagCode := 32786;
+							END_IF;
+						32786:
+							IF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22 THEN
+								DiagCode := 32768;
+							END_IF;
+						33058:
+							IF NOT MutingEnable OR MutingSwitch11 OR MutingSwitch12 OR NOT MutingSwitch22 THEN
+								DiagCode := 49412;
+							ELSIF NOT S_AOPD_In THEN
+								DiagCode := 32770;
+							ELSIF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingEnable AND (NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22) THEN
+								DiagCode := 33042;
+							END_IF;
+						33042:
+							IF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22 THEN
+								DiagCode := 32768;
+							END_IF;
+					END_CASE;
+				END_IF;
+			49159:
+				IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+					DiagCode := 32771;
+				END_IF;
+
+				IF DiagCode >= 49152 THEN
+					IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+						DiagCode := 32771;
+					END_IF;
+				ELSE
+					CASE DiagCode OF
+						32785:
+							IF NOT MutingEnable OR NOT MutingSwitch11 OR MutingSwitch21 OR MutingSwitch22 THEN
+								DiagCode := 49412;
+							ELSIF NOT S_AOPD_In THEN
+								DiagCode := 32770;
+							ELSIF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingEnable AND (MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22) THEN
+								DiagCode := 32786;
+							END_IF;
+						32786:
+							IF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22 THEN
+								DiagCode := 32768;
+							END_IF;
+						33058:
+							IF NOT MutingEnable OR MutingSwitch11 OR MutingSwitch12 OR NOT MutingSwitch22 THEN
+								DiagCode := 49412;
+							ELSIF NOT S_AOPD_In THEN
+								DiagCode := 32770;
+							ELSIF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingEnable AND (NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22) THEN
+								DiagCode := 33042;
+							END_IF;
+						33042:
+							IF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22 THEN
+								DiagCode := 32768;
+							END_IF;
+					END_CASE;
+				END_IF;
+			49160:
+				IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+					DiagCode := 32771;
+				END_IF;
+
+				IF DiagCode >= 49152 THEN
+					IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+						DiagCode := 32771;
+					END_IF;
+				ELSE
+					CASE DiagCode OF
+						32785:
+							IF NOT MutingEnable OR NOT MutingSwitch11 OR MutingSwitch21 OR MutingSwitch22 THEN
+								DiagCode := 49412;
+							ELSIF NOT S_AOPD_In THEN
+								DiagCode := 32770;
+							ELSIF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingEnable AND (MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22) THEN
+								DiagCode := 32786;
+							END_IF;
+						32786:
+							IF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22 THEN
+								DiagCode := 32768;
+							END_IF;
+						33058:
+							IF NOT MutingEnable OR MutingSwitch11 OR MutingSwitch12 OR NOT MutingSwitch22 THEN
+								DiagCode := 49412;
+							ELSIF NOT S_AOPD_In THEN
+								DiagCode := 32770;
+							ELSIF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingEnable AND (NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22) THEN
+								DiagCode := 33042;
+							END_IF;
+						33042:
+							IF NOT S_MutingLamp THEN
+								DiagCode := 49155;
+							ELSIF MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22 THEN
+								DiagCode := 32768;
+							END_IF;
+					END_CASE;
+				END_IF;
+		END_CASE;
+	END_IF;
+
+	CASE DiagCode OF
+		0:
+			Ready := FALSE;
+			S_AOPD_Out := FALSE;
+			S_MutingActive := FALSE;
+			Error := FALSE;
+		32768:
+			Ready := TRUE;
+			S_AOPD_Out := TRUE;
+			S_MutingActive := FALSE;
+			Error := FALSE;
+		32785:
+			Ready := TRUE;
+			S_AOPD_Out := TRUE;
+			S_MutingActive := FALSE;
+			Error := FALSE;
+		33058:
+			Ready := TRUE;
+			S_AOPD_Out := TRUE;
+			S_MutingActive := FALSE;
+			Error := FALSE;
+		32769:
+			Ready := TRUE;
+			S_AOPD_Out := FALSE;
+			S_MutingActive := FALSE;
+			Error := FALSE;
+		32770:
+			Ready := TRUE;
+			S_AOPD_Out := FALSE;
+			S_MutingActive := FALSE;
+			Error := FALSE;
+		32771:
+			Ready := TRUE;
+			S_AOPD_Out := FALSE;
+			S_MutingActive := FALSE;
+			Error := FALSE;
+		32773:
+			Ready := TRUE;
+			S_AOPD_Out := FALSE;
+			S_MutingActive := FALSE;
+			Error := FALSE;
+		32786:
+			Ready := TRUE;
+			S_AOPD_Out := TRUE;
+			S_MutingActive := TRUE;
+			Error := FALSE;
+		33042:
+			Ready := TRUE;
+			S_AOPD_Out := TRUE;
+			S_MutingActive := TRUE;
+			Error := FALSE;
+		ELSE
+			Ready := TRUE;
+			S_AOPD_Out := FALSE;
+			S_MutingActive := FALSE;
+			Error := TRUE;
+	END_CASE;
+
+END_FUNCTION_BLOCK

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<Appli Expand="YES">
+   <Folder Expand="YES" Name="Exception programs">
+      <Program Name="pOnBadIndex"/>
+      <Program Name="pOnDivZero"/>
+      <Program Name="pShutDown"/>
+      <Program Name="pStartup"/>
+   </Folder>
+   <Folder Expand="YES" Name="Programs">
+      <Folder Expand="YES" Name="FB">
+         <Program Name="SimBridge"/>
+         <Program Name="SimCB"/>
+         <Program Name="SimDG"/>
+         <Program Name="SimLoad"/>
+         <Program Name="SimSwbd"/>
+      </Folder>
+      <Folder Expand="YES" Name="Lib">
+         <Program Name="AssignSwbdGroupAndLoad"/>
+         <Program Name="CalPowerFactor"/>
+         <Program Name="CalReLoad"/>
+         <Program Name="CountDGInSwbdGroup"/>
+         <Program Name="DecValOverTime"/>
+         <Program Name="IncValOverTime"/>
+      </Folder>
+      <Folder Expand="YES" Name="Main">
+         <Program Name="DGSwbd1"/>
+      </Folder>
+   </Folder>
+   <Folder Expand="YES" Name="Watch (for debugging)">
+      <File Name="Soft Scope.SS5"/>
+   </Folder>
+   <File Name="Initial values.RCP"/>
+   <FieldBus/>
+   <Binding/>
+   <GlobalDef/>
+   <Vars/>
+   <Types Expand="YES"/>
+</Appli>

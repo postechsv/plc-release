@@ -1,0 +1,9 @@
+INPUT:
+Main :: MA_Method |-> ??
+Main :: MA_XF |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( ((NOT (Main :: MA_BB)) OR (NOT (Main :: MA_YF))) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

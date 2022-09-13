@@ -1,0 +1,8 @@
+INPUT:
+empty
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main3 :: CYCLE >= Main2 :: CYCLE) AND (Main2 :: CYCLE >= Main1 :: CYCLE) AND ( 0 <= Main3 :: CYCLE AND Main3 :: CYCLE <= 20) )

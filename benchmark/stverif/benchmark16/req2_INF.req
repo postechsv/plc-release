@@ -1,0 +1,22 @@
+INPUT:
+Main :: S1_S_EStopIn |-> ??
+Main :: S2_S_Mode0 |-> ??
+Main :: S2_S_Mode1 |-> ??
+Main :: S4_S_EnableSwitchCh1 |-> ??
+Main :: S4_S_EnableSwitchCh2 |-> ??
+Main :: S5_S_GuardSwitch1 |-> ??
+Main :: S6_S_GuardSwitch2 |-> ??
+Main :: S7_S_GuardLock |-> ??
+Main :: S0_Reset |-> ??
+Main :: S8_UnlockGuard |-> ??
+Main :: SF_SafeStop1_1ACK |-> ??
+Main :: SF_SafeStop1_2ACK |-> ??
+Main :: SF_SLS1_ACK |-> ??
+Main :: SF_SLS2_ACK |-> ??
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main :: S_SafetyActive) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

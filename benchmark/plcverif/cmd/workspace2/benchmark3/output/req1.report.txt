@@ -1,0 +1,356 @@
+
+Requirement: *((NOT (instance.INDEX > 3)) OR (instance.OUT1 &lt; instance.OUT3 AND instance.OUT2 &lt; instance.OUT3)) AND (0 &lt;= instance.CYCLE AND instance.CYCLE &lt;= 20)* is always true at the end of the PLC cycle.
+             (AG (EoC --> (((! (instance/INDEX > 3)) || ((instance/OUT1 < instance/OUT3) && (instance/OUT2 < instance/OUT3))) && ((0 <= instance/CYCLE) && (instance/CYCLE <= 20)))))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/FIB/O = 1 (instance.FIB.O = 1)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+  - instance/FIB/N = -1 (instance.FIB.N = -1)
+  - instance/FIB/F2 = 1 (instance.FIB.F2 = 1)
+  - instance/INDEX = 1 (instance.INDEX = 1)
+  - instance/OUT3 = 1 (instance.OUT3 = 1)
+  - instance/OUT2 = 1 (instance.OUT2 = 1)
+  - instance/OUT1 = 1 (instance.OUT1 = 1)
+  - instance/FIB/CNT = 2 (instance.FIB.CNT = 2)
+  - EoC = true (EoC = true)
+  - instance/FIB/F1 = 1 (instance.FIB.F1 = 1)
+Step 2
+  - instance/FIB/CNT = 2 (instance.FIB.CNT = 2)
+  - instance/OUT2 = 1 (instance.OUT2 = 1)
+  - instance/INDEX = 2 (instance.INDEX = 2)
+  - instance/OUT1 = 1 (instance.OUT1 = 1)
+  - instance/FIB/F1 = 1 (instance.FIB.F1 = 1)
+  - instance/FIB/O = 1 (instance.FIB.O = 1)
+  - instance/CYCLE = 2 (instance.CYCLE = 2)
+  - instance/OUT3 = 1 (instance.OUT3 = 1)
+  - EoC = true (EoC = true)
+  - instance/FIB/N = 0 (instance.FIB.N = 0)
+  - instance/FIB/F2 = 1 (instance.FIB.F2 = 1)
+Step 3
+  - instance/OUT1 = 1 (instance.OUT1 = 1)
+  - instance/FIB/CNT = 2 (instance.FIB.CNT = 2)
+  - EoC = true (EoC = true)
+  - instance/FIB/F2 = 1 (instance.FIB.F2 = 1)
+  - instance/INDEX = 3 (instance.INDEX = 3)
+  - instance/OUT2 = 1 (instance.OUT2 = 1)
+  - instance/FIB/O = 1 (instance.FIB.O = 1)
+  - instance/OUT3 = 2 (instance.OUT3 = 2)
+  - instance/FIB/N = 1 (instance.FIB.N = 1)
+  - instance/FIB/F1 = 1 (instance.FIB.F1 = 1)
+  - instance/CYCLE = 3 (instance.CYCLE = 3)
+Step 4
+  - instance/OUT3 = 3 (instance.OUT3 = 3)
+  - instance/CYCLE = 4 (instance.CYCLE = 4)
+  - instance/FIB/CNT = 2 (instance.FIB.CNT = 2)
+  - instance/OUT2 = 1 (instance.OUT2 = 1)
+  - instance/FIB/F2 = 1 (instance.FIB.F2 = 1)
+  - instance/FIB/F1 = 1 (instance.FIB.F1 = 1)
+  - instance/FIB/N = 2 (instance.FIB.N = 2)
+  - EoC = true (EoC = true)
+  - instance/FIB/O = 1 (instance.FIB.O = 1)
+  - instance/OUT1 = 2 (instance.OUT1 = 2)
+  - instance/INDEX = 4 (instance.INDEX = 4)
+Step 5
+  - instance/OUT1 = 3 (instance.OUT1 = 3)
+  - instance/FIB/CNT = 3 (instance.FIB.CNT = 3)
+  - instance/OUT3 = 5 (instance.OUT3 = 5)
+  - EoC = true (EoC = true)
+  - instance/CYCLE = 5 (instance.CYCLE = 5)
+  - instance/OUT2 = 2 (instance.OUT2 = 2)
+  - instance/FIB/O = 2 (instance.FIB.O = 2)
+  - instance/FIB/F1 = 1 (instance.FIB.F1 = 1)
+  - instance/INDEX = 5 (instance.INDEX = 5)
+  - instance/FIB/N = 3 (instance.FIB.N = 3)
+  - instance/FIB/F2 = 2 (instance.FIB.F2 = 2)
+Step 6
+  - instance/OUT2 = 3 (instance.OUT2 = 3)
+  - instance/FIB/F1 = 2 (instance.FIB.F1 = 2)
+  - instance/FIB/F2 = 3 (instance.FIB.F2 = 3)
+  - instance/FIB/N = 4 (instance.FIB.N = 4)
+  - EoC = true (EoC = true)
+  - instance/INDEX = 6 (instance.INDEX = 6)
+  - instance/CYCLE = 6 (instance.CYCLE = 6)
+  - instance/OUT3 = 8 (instance.OUT3 = 8)
+  - instance/FIB/O = 3 (instance.FIB.O = 3)
+  - instance/FIB/CNT = 4 (instance.FIB.CNT = 4)
+  - instance/OUT1 = 5 (instance.OUT1 = 5)
+Step 7
+  - instance/CYCLE = 7 (instance.CYCLE = 7)
+  - instance/OUT3 = 13 (instance.OUT3 = 13)
+  - instance/INDEX = 7 (instance.INDEX = 7)
+  - instance/FIB/O = 5 (instance.FIB.O = 5)
+  - instance/FIB/CNT = 5 (instance.FIB.CNT = 5)
+  - instance/OUT2 = 5 (instance.OUT2 = 5)
+  - instance/FIB/F2 = 5 (instance.FIB.F2 = 5)
+  - instance/FIB/N = 5 (instance.FIB.N = 5)
+  - instance/OUT1 = 8 (instance.OUT1 = 8)
+  - EoC = true (EoC = true)
+  - instance/FIB/F1 = 3 (instance.FIB.F1 = 3)
+Step 8
+  - instance/FIB/O = 8 (instance.FIB.O = 8)
+  - instance/OUT2 = 8 (instance.OUT2 = 8)
+  - instance/OUT1 = 13 (instance.OUT1 = 13)
+  - instance/INDEX = 8 (instance.INDEX = 8)
+  - instance/FIB/N = 6 (instance.FIB.N = 6)
+  - instance/FIB/F2 = 8 (instance.FIB.F2 = 8)
+  - EoC = true (EoC = true)
+  - instance/FIB/CNT = 6 (instance.FIB.CNT = 6)
+  - instance/FIB/F1 = 5 (instance.FIB.F1 = 5)
+  - instance/CYCLE = 8 (instance.CYCLE = 8)
+  - instance/OUT3 = 21 (instance.OUT3 = 21)
+Step 9
+  - instance/INDEX = 9 (instance.INDEX = 9)
+  - instance/FIB/F1 = 8 (instance.FIB.F1 = 8)
+  - instance/CYCLE = 9 (instance.CYCLE = 9)
+  - instance/OUT2 = 13 (instance.OUT2 = 13)
+  - instance/FIB/O = 13 (instance.FIB.O = 13)
+  - instance/FIB/CNT = 7 (instance.FIB.CNT = 7)
+  - EoC = true (EoC = true)
+  - instance/OUT3 = 34 (instance.OUT3 = 34)
+  - instance/FIB/F2 = 13 (instance.FIB.F2 = 13)
+  - instance/OUT1 = 21 (instance.OUT1 = 21)
+  - instance/FIB/N = 7 (instance.FIB.N = 7)
+Step 10
+  - instance/CYCLE = 10 (instance.CYCLE = 10)
+  - instance/FIB/F1 = 13 (instance.FIB.F1 = 13)
+  - instance/FIB/F2 = 21 (instance.FIB.F2 = 21)
+  - instance/OUT3 = 55 (instance.OUT3 = 55)
+  - instance/INDEX = 10 (instance.INDEX = 10)
+  - EoC = true (EoC = true)
+  - instance/OUT2 = 21 (instance.OUT2 = 21)
+  - instance/FIB/CNT = 8 (instance.FIB.CNT = 8)
+  - instance/FIB/N = 8 (instance.FIB.N = 8)
+  - instance/FIB/O = 21 (instance.FIB.O = 21)
+  - instance/OUT1 = 34 (instance.OUT1 = 34)
+Step 11
+  - instance/FIB/CNT = 9 (instance.FIB.CNT = 9)
+  - instance/FIB/O = 34 (instance.FIB.O = 34)
+  - instance/OUT1 = 55 (instance.OUT1 = 55)
+  - instance/OUT2 = 34 (instance.OUT2 = 34)
+  - EoC = true (EoC = true)
+  - instance/FIB/N = 9 (instance.FIB.N = 9)
+  - instance/CYCLE = 11 (instance.CYCLE = 11)
+  - instance/FIB/F2 = 34 (instance.FIB.F2 = 34)
+  - instance/OUT3 = 89 (instance.OUT3 = 89)
+  - instance/FIB/F1 = 21 (instance.FIB.F1 = 21)
+  - instance/INDEX = 11 (instance.INDEX = 11)
+Step 12
+  - EoC = true (EoC = true)
+  - instance/FIB/CNT = 10 (instance.FIB.CNT = 10)
+  - instance/FIB/O = 55 (instance.FIB.O = 55)
+  - instance/FIB/F2 = 55 (instance.FIB.F2 = 55)
+  - instance/OUT3 = 144 (instance.OUT3 = 144)
+  - instance/INDEX = 12 (instance.INDEX = 12)
+  - instance/FIB/F1 = 34 (instance.FIB.F1 = 34)
+  - instance/CYCLE = 12 (instance.CYCLE = 12)
+  - instance/OUT2 = 55 (instance.OUT2 = 55)
+  - instance/OUT1 = 89 (instance.OUT1 = 89)
+  - instance/FIB/N = 10 (instance.FIB.N = 10)
+Step 13
+  - instance/FIB/CNT = 11 (instance.FIB.CNT = 11)
+  - instance/FIB/F2 = 89 (instance.FIB.F2 = 89)
+  - instance/FIB/O = 89 (instance.FIB.O = 89)
+  - EoC = true (EoC = true)
+  - instance/OUT3 = 233 (instance.OUT3 = 233)
+  - instance/FIB/F1 = 55 (instance.FIB.F1 = 55)
+  - instance/OUT2 = 89 (instance.OUT2 = 89)
+  - instance/CYCLE = 13 (instance.CYCLE = 13)
+  - instance/FIB/N = 11 (instance.FIB.N = 11)
+  - instance/OUT1 = 144 (instance.OUT1 = 144)
+  - instance/INDEX = 13 (instance.INDEX = 13)
+Step 14
+  - instance/CYCLE = 14 (instance.CYCLE = 14)
+  - EoC = true (EoC = true)
+  - instance/FIB/O = 144 (instance.FIB.O = 144)
+  - instance/INDEX = 14 (instance.INDEX = 14)
+  - instance/OUT2 = 144 (instance.OUT2 = 144)
+  - instance/FIB/F2 = 144 (instance.FIB.F2 = 144)
+  - instance/OUT1 = 233 (instance.OUT1 = 233)
+  - instance/FIB/CNT = 12 (instance.FIB.CNT = 12)
+  - instance/OUT3 = 377 (instance.OUT3 = 377)
+  - instance/FIB/F1 = 89 (instance.FIB.F1 = 89)
+  - instance/FIB/N = 12 (instance.FIB.N = 12)
+Step 15
+  - instance/OUT3 = 610 (instance.OUT3 = 610)
+  - instance/OUT1 = 377 (instance.OUT1 = 377)
+  - instance/INDEX = 15 (instance.INDEX = 15)
+  - instance/FIB/F1 = 144 (instance.FIB.F1 = 144)
+  - instance/CYCLE = 15 (instance.CYCLE = 15)
+  - EoC = true (EoC = true)
+  - instance/FIB/N = 13 (instance.FIB.N = 13)
+  - instance/FIB/O = 233 (instance.FIB.O = 233)
+  - instance/OUT2 = 233 (instance.OUT2 = 233)
+  - instance/FIB/CNT = 13 (instance.FIB.CNT = 13)
+  - instance/FIB/F2 = 233 (instance.FIB.F2 = 233)
+Step 16
+  - instance/FIB/CNT = 14 (instance.FIB.CNT = 14)
+  - instance/CYCLE = 16 (instance.CYCLE = 16)
+  - instance/FIB/O = 377 (instance.FIB.O = 377)
+  - instance/OUT2 = 377 (instance.OUT2 = 377)
+  - instance/OUT1 = 610 (instance.OUT1 = 610)
+  - instance/INDEX = 16 (instance.INDEX = 16)
+  - instance/FIB/F1 = 233 (instance.FIB.F1 = 233)
+  - instance/FIB/F2 = 377 (instance.FIB.F2 = 377)
+  - instance/FIB/N = 14 (instance.FIB.N = 14)
+  - EoC = true (EoC = true)
+  - instance/OUT3 = 987 (instance.OUT3 = 987)
+Step 17
+  - instance/OUT1 = 987 (instance.OUT1 = 987)
+  - instance/INDEX = 17 (instance.INDEX = 17)
+  - instance/FIB/F1 = 377 (instance.FIB.F1 = 377)
+  - instance/OUT3 = 1597 (instance.OUT3 = 1597)
+  - EoC = true (EoC = true)
+  - instance/FIB/F2 = 610 (instance.FIB.F2 = 610)
+  - instance/FIB/O = 610 (instance.FIB.O = 610)
+  - instance/CYCLE = 17 (instance.CYCLE = 17)
+  - instance/OUT2 = 610 (instance.OUT2 = 610)
+  - instance/FIB/CNT = 15 (instance.FIB.CNT = 15)
+  - instance/FIB/N = 15 (instance.FIB.N = 15)
+Step 18
+  - instance/CYCLE = 18 (instance.CYCLE = 18)
+  - instance/OUT1 = 1597 (instance.OUT1 = 1597)
+  - instance/OUT3 = 2584 (instance.OUT3 = 2584)
+  - instance/FIB/N = 16 (instance.FIB.N = 16)
+  - instance/OUT2 = 987 (instance.OUT2 = 987)
+  - instance/FIB/CNT = 16 (instance.FIB.CNT = 16)
+  - EoC = true (EoC = true)
+  - instance/FIB/O = 987 (instance.FIB.O = 987)
+  - instance/INDEX = 18 (instance.INDEX = 18)
+  - instance/FIB/F2 = 987 (instance.FIB.F2 = 987)
+  - instance/FIB/F1 = 610 (instance.FIB.F1 = 610)
+Step 19
+  - instance/CYCLE = 19 (instance.CYCLE = 19)
+  - instance/FIB/CNT = 17 (instance.FIB.CNT = 17)
+  - instance/OUT1 = 2584 (instance.OUT1 = 2584)
+  - instance/OUT3 = 4181 (instance.OUT3 = 4181)
+  - instance/FIB/F1 = 987 (instance.FIB.F1 = 987)
+  - instance/FIB/N = 17 (instance.FIB.N = 17)
+  - instance/FIB/F2 = 1597 (instance.FIB.F2 = 1597)
+  - instance/FIB/O = 1597 (instance.FIB.O = 1597)
+  - EoC = true (EoC = true)
+  - instance/INDEX = 19 (instance.INDEX = 19)
+  - instance/OUT2 = 1597 (instance.OUT2 = 1597)
+Step 20
+  - EoC = true (EoC = true)
+  - instance/FIB/O = 2584 (instance.FIB.O = 2584)
+  - instance/OUT3 = 6765 (instance.OUT3 = 6765)
+  - instance/FIB/CNT = 18 (instance.FIB.CNT = 18)
+  - instance/CYCLE = 20 (instance.CYCLE = 20)
+  - instance/FIB/N = 18 (instance.FIB.N = 18)
+  - instance/INDEX = 20 (instance.INDEX = 20)
+  - instance/FIB/F1 = 1597 (instance.FIB.F1 = 1597)
+  - instance/OUT1 = 4181 (instance.OUT1 = 4181)
+  - instance/OUT2 = 2584 (instance.OUT2 = 2584)
+  - instance/FIB/F2 = 2584 (instance.FIB.F2 = 2584)
+Step 21
+  - instance/INDEX = 21 (instance.INDEX = 21)
+  - instance/FIB/F1 = 2584 (instance.FIB.F1 = 2584)
+  - instance/FIB/O = 4181 (instance.FIB.O = 4181)
+  - instance/OUT3 = 10946 (instance.OUT3 = 10946)
+  - instance/FIB/F2 = 4181 (instance.FIB.F2 = 4181)
+  - instance/OUT1 = 6765 (instance.OUT1 = 6765)
+  - instance/FIB/CNT = 19 (instance.FIB.CNT = 19)
+  - EoC = true (EoC = true)
+  - instance/FIB/N = 19 (instance.FIB.N = 19)
+  - instance/CYCLE = 21 (instance.CYCLE = 21)
+  - instance/OUT2 = 4181 (instance.OUT2 = 4181)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (740 ms): Successful
+* Requirement representation (57 ms): Successful
+* Reductions (CFD) (21 ms): Successful
+* Model preparation (36 ms): Successful
+* CBMC model building (45 ms): Successful
+* CBMC execution (1370 ms): Successful
+* CBMC output parsing (99 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (0 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req1
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 21
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "((NOT (instance.INDEX > 3)) OR (instance.OUT1 < instance.OUT3 AND instance.OUT2 < instance.OUT3)) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark3/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark3/benchmark3.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark3/output/req1.c
+Converting
+Type-checking req1
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+5468 variables, 5471 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 0.114272s
+
+** Results:
+/home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark3/output/req1.c function VerificationLoop
+[VerificationLoop.assertion.1] line 189 assertion (!(EoC) || (((! (instance.INDEX > 3)) || ((instance.OUT1 < instance.OUT3) && (instance.OUT2 < instance.OUT3))) && ((0 <= instance.CYCLE) && (instance.CYCLE <= 20)))): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc/bench[...]
+
+

@@ -1,0 +1,220 @@
+[:__MODULE_MAIN] 
+
+{@BEGIN:Main}
+[:__LABEL1] 
+
+<IF:CCBLEND>
+526 275 1 
+21 1 1 2 
+530 1 [JA:__LABEL4] 
+285 135 2 1 1 234 
+[:__LABEL4] 
+
+{Main: (1): }
+508 0 8 12 5 10 
+45?152 5 12 
+
+{Main: (3): }
+508 0 8 12 2 10 
+45?152 2 12 
+
+{Main: (5): }
+508 0 526 
+{@BEGIN_INSTANCE:FIB:fibonacci}
+
+{fibonacci: (1): //2}
+508 2 45?152 7  10  
+
+{fibonacci: (2): //3}
+508 3 45?152 8  10  
+
+{fibonacci: (3): //4}
+508 4 45?152 9  11  
+
+{fibonacci: (5): //5}
+508 5 27 3  9  2  
+[:__LABEL7] 
+ [:__LABEL8] 
+ 66 3  [JR:__LABEL9]  
+
+{fibonacci: (6): //6}
+508 6 45?152 6  10  
+
+{fibonacci: (7): //7}
+508 7 526 67 [JR:__LABEL6]  
+[:__LABEL9] 
+ 
+{fibonacci: (8): //8}
+508 8 [:__LABEL10] 
+ 19 3  2  9  
+[:__LABEL11] 
+ [:__LABEL12] 
+ 66 3  [JR:__LABEL13]  
+
+{fibonacci: (9): //9}
+508 9 8 12  7  8  
+45?152 6  12  
+
+{fibonacci: (10): //10}
+508 10 45?152 7  8  
+
+{fibonacci: (11): //11}
+508 11 45?152 8  6  
+
+{fibonacci: (12): //12}
+508 12 8 12  9  10  
+45?152 9  12  
+
+{fibonacci: (13): //13}
+508 13 526 67 [JR:__LABEL10]  
+[:__LABEL13] 
+ 
+{fibonacci: (14): //14}
+508 14 526 [:__LABEL6] 
+ 
+{fibonacci: (15): //15}
+508 15 526 [:__LABEL5] 
+ 
+
+{@END_INSTANCE:FIB:fibonacci}
+
+{Main: (6): }
+508 0 45?152 4 6 
+
+{Main: (8): }
+508 0 12 12 2 10 
+526 
+{@BEGIN_INSTANCE:FIB:fibonacci}
+
+{fibonacci: (1): //2}
+508 2 45?152 7  10  
+
+{fibonacci: (2): //3}
+508 3 45?152 8  10  
+
+{fibonacci: (3): //4}
+508 4 45?152 9  11  
+
+{fibonacci: (5): //5}
+508 5 27 3  9  12  
+[:__LABEL16] 
+ [:__LABEL17] 
+ 66 3  [JR:__LABEL18]  
+
+{fibonacci: (6): //6}
+508 6 45?152 6  10  
+
+{fibonacci: (7): //7}
+508 7 526 67 [JR:__LABEL15]  
+[:__LABEL18] 
+ 
+{fibonacci: (8): //8}
+508 8 [:__LABEL19] 
+ 19 3  12  9  
+[:__LABEL20] 
+ [:__LABEL21] 
+ 66 3  [JR:__LABEL22]  
+
+{fibonacci: (9): //9}
+508 9 8 13  7  8  
+45?152 6  13  
+
+{fibonacci: (10): //10}
+508 10 45?152 7  8  
+
+{fibonacci: (11): //11}
+508 11 45?152 8  6  
+
+{fibonacci: (12): //12}
+508 12 8 13  9  10  
+45?152 9  13  
+
+{fibonacci: (13): //13}
+508 13 526 67 [JR:__LABEL19]  
+[:__LABEL22] 
+ 
+{fibonacci: (14): //14}
+508 14 526 [:__LABEL15] 
+ 
+{fibonacci: (15): //15}
+508 15 526 [:__LABEL14] 
+ 
+
+{@END_INSTANCE:FIB:fibonacci}
+
+{Main: (9): }
+508 0 45?152 1 6 
+
+{Main: (11): }
+508 0 12 12 2 11 
+526 
+{@BEGIN_INSTANCE:FIB:fibonacci}
+
+{fibonacci: (1): //2}
+508 2 45?152 7  10  
+
+{fibonacci: (2): //3}
+508 3 45?152 8  10  
+
+{fibonacci: (3): //4}
+508 4 45?152 9  11  
+
+{fibonacci: (5): //5}
+508 5 27 3  9  12  
+[:__LABEL25] 
+ [:__LABEL26] 
+ 66 3  [JR:__LABEL27]  
+
+{fibonacci: (6): //6}
+508 6 45?152 6  10  
+
+{fibonacci: (7): //7}
+508 7 526 67 [JR:__LABEL24]  
+[:__LABEL27] 
+ 
+{fibonacci: (8): //8}
+508 8 [:__LABEL28] 
+ 19 3  12  9  
+[:__LABEL29] 
+ [:__LABEL30] 
+ 66 3  [JR:__LABEL31]  
+
+{fibonacci: (9): //9}
+508 9 8 13  7  8  
+45?152 6  13  
+
+{fibonacci: (10): //10}
+508 10 45?152 7  8  
+
+{fibonacci: (11): //11}
+508 11 45?152 8  6  
+
+{fibonacci: (12): //12}
+508 12 8 13  9  10  
+45?152 9  13  
+
+{fibonacci: (13): //13}
+508 13 526 67 [JR:__LABEL28]  
+[:__LABEL31] 
+ 
+{fibonacci: (14): //14}
+508 14 526 [:__LABEL24] 
+ 
+{fibonacci: (15): //15}
+508 15 526 [:__LABEL23] 
+ 
+
+{@END_INSTANCE:FIB:fibonacci}
+
+{Main: (12): }
+508 0 45?152 3 6 
+
+{Main: (13): }
+508 0 526 [:__LABEL3] 
+
+<ENDIF>
+234 
+[:__LABEL2] 
+
+{@END:Main}
+[:__MODULE_END_MAIN] 

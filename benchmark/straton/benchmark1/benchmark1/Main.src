@@ -1,0 +1,13 @@
+    CYCLE := CYCLE + 1 ;
+    
+    IF aaa = bbb THEN
+        aaa := aaa + 1;
+    ELSIF aaa > bbb THEN
+        bbb := bbb + 1;
+    ELSIF aaa < bbb THEN
+        aaa := aaa + 1;
+    ELSE
+        aaa := aaa + 1;
+    END_IF;
+    
+    OUT := aaa - bbb;

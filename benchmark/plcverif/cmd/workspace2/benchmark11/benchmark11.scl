@@ -1,0 +1,32 @@
+FUNCTION_BLOCK USER_CONSTANT
+	VAR_INPUT
+		Activate : BOOL;
+	END_VAR
+	VAR_OUTPUT
+		Output : DINT;
+	END_VAR
+	VAR
+		Variable : DINT := 10;
+	END_VAR
+BEGIN
+	IF Activate THEN
+		Output := Variable;
+	ELSE
+		Output := 7;
+	END_IF;
+END_FUNCTION_BLOCK
+
+PROGRAM Main
+	VAR
+		Output  : DINT;
+		NewVar1 : USER_CONSTANT;
+		NewVar  : BOOL := true;
+		CYCLE   : DINT := 0;
+	END_VAR
+BEGIN
+	CYCLE := CYCLE + 1;
+	NewVar1(Activate := NewVar);
+	Output := NewVar1.Output;
+	NewVar1(Activate := NewVar);
+	Output := NewVar1.Output;
+END_PROGRAM

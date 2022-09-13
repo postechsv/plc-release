@@ -1,0 +1,92 @@
+    CYCLE := CYCLE + 1;
+    SF_EmergencyStop_1(
+        Activate := TRUE,
+        S_EStopIn := S1_S_EStopIn,
+        S_StartReset := FALSE,
+        S_AutoReset := FALSE,
+        Reset := S0_Reset
+    );
+    SF_SafeStop1_1(
+        Activate := TRUE,
+        S_StopIn := SF_EmergencyStop_1.S_EStopOut,
+        AxisID := 1,
+        MonitoringTime := T#1s,
+        Reset := S0_Reset,
+        Acknowledge := SF_SafeStop1_1ACK
+    );
+    S_SafeStopAxis1 := SF_SafeStop1_1.S_Stopped;
+    SF_SafeStop1_2(
+        Activate := TRUE,
+        S_StopIn := SF_EmergencyStop_1.S_EStopOut,
+        AxisID := 2,
+        MonitoringTime := T#1s,
+        Reset := S0_Reset,
+        Acknowledge := SF_SafeStop1_2ACK
+    );
+    S_SafeStopAxis2 := SF_SafeStop1_2.S_Stopped;
+    SF_ModeSelector_1(
+        Activate := TRUE,
+        S_Mode0 := S2_S_Mode0,
+        S_Mode1 := S2_S_Mode1,
+        S_Mode2 := FALSE,
+        S_Mode3 := FALSE,
+        S_Mode4 := FALSE,
+        S_Mode5 := FALSE,
+        S_Mode6 := FALSE,
+        S_Mode7 := FALSE,
+        S_Unlock := TRUE,
+        Reset := S0_Reset
+    );
+    S_ModeSetSel := SF_ModeSelector_1.S_Mode1Sel;
+    S_ModeAutoActive := SF_ModeSelector_1.S_Mode0Sel AND S_GuardLocked;
+    SF_GuardMonitoring_1(
+        Activate := TRUE,
+        S_GuardSwitch1 := S5_S_GuardSwitch1,
+        S_GuardSwitch2 := S6_S_GuardSwitch2,
+        DiscrepancyTime := T#50ms,
+        S_StartReset := FALSE,
+        S_AutoReset := FALSE,
+        Reset := S0_Reset
+    );
+    S_SafetyActive := (S_SafeStopAxis1 AND S_SafeStopAxis2) OR (SF_SafelyLimitedSpeed_1.S_SafetyActive AND SF_SafelyLimitedSpeed_2.S_SafetyActive);
+    SF_GuardLocking_1(
+        Activate := TRUE,
+        S_GuardMonitoring := SF_GuardMonitoring_1.S_GuardMonitoring,
+        S_SafetyActive := S_SafetyActive,
+        S_GuardLock := S7_S_GuardLock,
+        UnlockRequest := S8_UnlockGuard,
+        S_StartReset := FALSE,
+        S_AutoReset := FALSE,
+        Reset := S0_Reset
+    );
+    S_GuardLocked := SF_GuardLocking_1.S_GuardLocked;
+    S_UnlockGuard_K1 := SF_GuardLocking_1.S_UnlockGuard;
+    SF_EnableSwitch_1(
+        Activate := TRUE,
+        S_SafetyActive := S_SafetyActive AND S_ModeSetSel,
+        S_EnableSwitchCh1 := S4_S_EnableSwitchCh1,
+        S_EnableSwitchCh2 := S4_S_EnableSwitchCh2,
+        S_AutoReset := FALSE,
+        Reset := S0_Reset
+    );
+    S_SLS_Enable := SF_EnableSwitch_1.S_EnableSwitchOut;
+    SF_SafelyLimitedSpeed_1(
+        Activate := TRUE,
+        S_OpMode := SF_ModeSelector_1.S_Mode0Sel AND S_GuardLocked,
+        S_Enabled := S_SLS_Enable,
+        AxisID := 1,
+        MonitoringTime := T#1s,
+        Reset := S0_Reset,
+        Acknowledge := SF_SLS1_ACK
+    );
+    S_SafeMoveAxis1 := SF_SafelyLimitedSpeed_1.S_SafetyActive;
+    SF_SafelyLimitedSpeed_2(
+        Activate := TRUE,
+        S_OpMode := SF_ModeSelector_1.S_Mode0Sel AND S_GuardLocked,
+        S_Enabled := S_SLS_Enable,
+        AxisID := 2,
+        MonitoringTime := T#1s,
+        Reset := S0_Reset,
+        Acknowledge := SF_SLS2_ACK
+    );
+    S_SafeMoveAxis2 := SF_SafelyLimitedSpeed_2.S_SafetyActive;

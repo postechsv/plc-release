@@ -1,0 +1,13 @@
+INPUT:
+DGSwbd1 :: DG1_StartReq |-> ??
+DGSwbd1 :: DG1_StopReq |-> ??
+LoadSwbd1 :: CB1_Close |-> ??
+DGSwbd1 :: CB1_pOpenTime |-> ??
+DGSwbd1 :: CB2_pOpenTime |-> ??
+
+STEP:
+4
+
+CONDITION:
+GLOBALLY ((DGSwbd1 :: DG1_RunRated AND (DGSwbd1 :: DG1_Power > 0)) ==> 
+((598/10 < DGSwbd1 :: DG1_Frequency AND DGSwbd1 :: DG1_Frequency < 602/10) UNTIL NOT (DGSwbd1 :: DG1_RunRated)))

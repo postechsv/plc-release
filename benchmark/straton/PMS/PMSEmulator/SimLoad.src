@@ -1,0 +1,38 @@
+exCBData.Mode := LOAD;
+
+if exCBData.Closed then
+    if Load_Inst < pLoad then
+        Load_Inst := Load_Inst + pStepSize;
+    elsif Load > pLoad then
+        Load := Load - pStepSize;
+    end_if;
+    
+    if ABS(Load_Inst - pLoad) <= pStepSize then
+        Load_Inst := pLoad;
+    end_if;
+    
+    if Load_Inst = 0 then
+        LoadPF := 0;
+    else 
+        LoadPF := pLoadPF;
+    end_if;
+    
+    current := (Load_Inst*1000) / (exLoadSwbdData.NetVoltage*LoadPF*ROOT(3, 2));
+else
+    Load_Inst := 0;
+    LoadPF := 0;
+    current := 0;    
+end_if;
+
+Load1 := ANY_TO_REAL(RAND(ANY_TO_DINT(Load_Inst/100)));
+Load2 := ANY_TO_REAL(RAND(ANY_TO_DINT(Load_Inst/100)));
+Load := Load_Inst + Load1 - Load2;
+
+exLoadSwbdData.Load := Load;
+exLoadSwbdData.LoadPF := LoadPF;
+exLoadSwbdData.Current := current;
+ReactiveLoad(Load, LoadPF);
+exLoadSwbdData.ReLoad := ReactiveLoad.ReLoad;
+
+exCBData.Current := current;
+

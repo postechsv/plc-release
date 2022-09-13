@@ -1,0 +1,14 @@
+INPUT:
+Main :: INPUT1 |-> ??
+Main :: INPUT2 |-> ??
+Main :: INPUT3 |-> ??
+Main :: INPUT4 |-> ??
+Main :: INPUT5 |-> ??
+Main :: INPUT6 |-> ??
+Main :: INPUT7 |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (NOT (Main :: OUT)) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

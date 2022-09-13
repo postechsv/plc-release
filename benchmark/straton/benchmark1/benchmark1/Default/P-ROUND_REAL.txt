@@ -1,0 +1,7 @@
+This function rounds a real value to the nearest integer value.
+Examples:
+
+round_real (1.23) => 1
+round_real (1.8) => 2
+round_real (-1.23) => -1
+round_real (-1.8) => -2

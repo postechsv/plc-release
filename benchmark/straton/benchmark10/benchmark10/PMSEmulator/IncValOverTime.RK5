@@ -1,0 +1,76 @@
+[:__MODULE_INCVALOVERTIME] 
+
+{@BEGIN:IncValOverTime}
+[:__LABEL1370] 
+
+<IF:CCBLEND>
+534 526 8 505 9 284 
+531 1 347 505 
+[:__LABEL1372] 
+[:__LABEL1373] 
+44?151 346 347 
+8 505 9 290 
+531 2 507 505 
+45?152 506 507 
+8 505 9 294 
+531 2 509 505 
+45?152 508 509 
+530 286 [JA:__LABEL1375] 
+285 135 2 286 286 234 
+[:__LABEL1375] 
+
+{IncValOverTime: (1): }
+508 0 [:__LABEL1377] 
+[:__LABEL1378] 
+530 346 [JA:__LABEL1379] 
+
+{IncValOverTime: (2): }
+508 0 20 350 511 508 
+[:__LABEL1381] 
+[:__LABEL1382] 
+530 350 [JA:__LABEL1383] 
+
+{IncValOverTime: (3): }
+508 0 8 505 9 296 
+532 2 506 505 
+{IncValOverTime: (4): }
+508 0 526 528 [JA:__LABEL1380] 
+[:__LABEL1383] 
+
+{IncValOverTime: (5): }
+508 0 8 505 9 296 
+5 512 506 511 
+37 350 508 430 
+529 350 [JA:__LABEL1384] 
+423 9 [:__LABEL1384] 
+7 513 512 508 
+532 2 513 505 
+{IncValOverTime: (6): }
+508 0 526 [:__LABEL1380] 
+
+{IncValOverTime: (7): }
+508 0 526 528 [JA:__LABEL1376] 
+[:__LABEL1379] 
+
+{IncValOverTime: (8): }
+508 0 8 505 9 295 
+532 2 430 505 
+{IncValOverTime: (9): }
+508 0 8 505 9 297 
+[:__LABEL1385] 
+[:__LABEL1386] 
+532 1 313 505 
+{IncValOverTime: (10): }
+508 0 526 [:__LABEL1376] 
+
+{IncValOverTime: (12): }
+508 0 526 [:__LABEL1374] 
+
+{IncValOverTime: (1): }
+508 0 526 
+<ENDIF>
+234 
+[:__LABEL1371] 
+
+{@END:IncValOverTime}
+[:__MODULE_END_INCVALOVERTIME] 

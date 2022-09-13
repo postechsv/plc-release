@@ -1,0 +1,9 @@
+CYCLE := CYCLE + 1 ;
+
+OUT := OUT + 3 ;
+MOUT := OUT ;
+
+
+WAIT_TIME(T#1s);
+
+

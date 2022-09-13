@@ -1,0 +1,69 @@
+fmod DATA-CONVERSION is
+  inc CODE-CONFIG .
+  inc CONVERSION .
+  inc STRING .
+  inc COMMON-SEMANTIC-VALUE  .
+
+  var V : SemanticValue .
+  var PE : PExp .
+  var BOUND : Nat .
+  var K : K .
+  var S : String .
+
+  ops UDINTTODINT DINTTOUDINT BOOLTOUDINT BOOLTODINT DINTTODINT DINTTOUDINT NUMTOSTRING  : -> FunId .
+  ops ANYTOBOOL ANYTOSINT ANYTOUSINT ANYTOINT ANYTOUINT ANYTODINT ANYTOUDINT ANYTOLINT ANYTOREAL ANYTOLREAL ANYTOTIME ANYTOSTRING : -> FunId .
+
+  op usignedConversion : Nat PExp -> PExp .
+  eq usignedConversion(BOUND, PE) = ite(PE >= syn2sem(# 0), PE % syn2sem(# BOUND), syn2sem(# BOUND) - PE % syn2sem(# BOUND)) .
+
+  op signedConversion : Nat PExp -> PExp .
+  eq signedConversion(BOUND, PE) = ite(usignedConversion(BOUND, PE) >= syn2sem(# (BOUND / 2)), usignedConversion(BOUND, PE) - syn2sem(# BOUND), usignedConversion(BOUND, PE)) .
+
+  eq k(ANYTOBOOL([S]) ~> K) = k(syn2sem(TRUE)~> K)  .
+  eq k(ANYTOBOOL([""]) ~> K) = k(syn2sem(FALSE) ~> K) .
+  ceq k(ANYTOSINT([S]) ~> K) = k(ANYTOSINT(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOSINT([S]) ~> K) = k(ANYTOSINT(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTOUSINT([S]) ~> K) = k(ANYTOUSINT(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOUSINT([S]) ~> K) = k(ANYTOUSINT(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTOINT([S]) ~> K) = k(ANYTOINT(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOINT([S]) ~> K) = k(ANYTOINT(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTOUINT([S]) ~> K) = k(ANYTOUINT(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOUINT([S]) ~> K) = k(ANYTOUINT(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTODINT([S]) ~> K) = k(ANYTODINT(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTODINT([S]) ~> K) = k(ANYTODINT(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTOUDINT([S]) ~> K) = k(ANYTOUDINT(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOUDINT([S]) ~> K) = k(ANYTOUDINT(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTOLINT([S]) ~> K) = k(ANYTOLINT(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOLINT([S]) ~> K) = k(ANYTOLINT(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTOREAL([S]) ~> K) = k(ANYTOREAL(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOREAL([S]) ~> K) = k(ANYTOREAL(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTOLREAL([S]) ~> K) = k(ANYTOLREAL(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOLREAL([S]) ~> K) = k(ANYTOLREAL(syn2sem(# 0)) ~> K) [owise] .
+  ceq k(ANYTOTIME([S]) ~> K) = k(ANYTOTIME(syn2sem(# rat(S, 10))) ~> K) if rat(S, 10) >= 0 or rat(S, 10) < 0 .
+  eq k(ANYTOTIME([S]) ~> K) = k(ANYTOTIME(syn2sem(# 0)) ~> K) [owise] .
+  eq k(ANYTOSTRING([S]) ~> K) = k([S] ~> K) .
+
+
+  eq k(ANYTOBOOL(V) ~> K) = k(ite(V ==== syn2sem(# 0), syn2sem(FALSE), 
+  ite(V ==== syn2sem(T# 0 ms), syn2sem(FALSE), syn2sem(TRUE))) ~> K) [owise] .
+
+  eq k(ANYTOSINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(256, truncVal(removeTime(V)))) ~> K) [owise] .
+  eq k(ANYTOUSINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), usignedConversion(256, truncVal(removeTime(V)))) ~> K) [owise] .
+  eq k(ANYTOINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(65536, truncVal(removeTime(V)))) ~> K) [owise] .
+  eq k(ANYTOUINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), usignedConversion(65536, truncVal(removeTime(V)))) ~> K) [owise] .
+  eq k(ANYTODINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(4294967296, truncVal(removeTime(V)))) ~> K) [owise] .
+  eq k(ANYTOUDINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), usignedConversion(4294967296, truncVal(removeTime(V)))) ~> K) [owise] .
+  eq k(ANYTOLINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(2 ^ 64, truncVal(removeTime(V)))) ~> K) [owise] .
+
+  eq k(ANYTOREAL(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), convertToREAL(removeTime(V))) ~> K) [owise] .
+  eq k(ANYTOLREAL(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), convertToREAL(removeTime(V))) ~> K) [owise] .
+
+  eq k(ANYTOTIME(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), addTime(usignedConversion(4294967296, truncVal(removeTime(V)))) ) ~> K) [owise] .
+
+  eq k(UDINTTODINT(V) ~> K) = k(ANYTODINT(V) ~> K) .
+  eq k(DINTTOUDINT(V) ~> K) = k(ANYTOUDINT(V) ~> K) .
+  eq k(BOOLTOUDINT(V) ~> K) = k(ANYTOUDINT(V) ~> K) .
+  eq k(BOOLTODINT(V) ~> K) =  k(ANYTODINT(V) ~> K) .
+  eq k(DINTTODINT(V) ~> K) = k(ANYTODINT(V) ~> K) .
+  eq k(NUMTOSTRING(V) ~> K) = k(ANYTOSTRING(V) ~> K) .
+endfm

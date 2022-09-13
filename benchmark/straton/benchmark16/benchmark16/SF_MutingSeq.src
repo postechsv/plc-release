@@ -1,0 +1,251 @@
+IF NOT Activate THEN
+        DiagCode := 0;
+    ELSE
+        CASE DiagCode OF
+            0:
+                IF Activate THEN
+                    DiagCode := 32769;
+                END_IF;
+            32768:
+
+                IF (NOT MutingEnable) OR (NOT MutingEnable) OR (MutingSwitch12 OR MutingSwitch21) OR (MutingSwitch11 AND MutingSwitch22) THEN
+                    (* Wrong muting sequence *)
+                    DiagCode := 49156;
+                ELSIF NOT S_AOPD_In THEN
+                    DiagCode := 32770;
+                ELSIF NOT S_MutingLamp THEN
+                    DiagCode := 49155;
+                ELSIF MutingEnable AND (NOT MutingSwitch12 AND NOT MutingSwitch21 AND NOT MutingSwitch22) THEN
+                    DiagCode := 32785;
+                ELSIF MutingEnable AND (NOT MutingSwitch11 AND NOT MutingSwitch12 AND NOT MutingSwitch21) THEN
+                    DiagCode := 33058;
+                END_IF;
+            32769:
+                IF Reset AND NOT S_StartReset THEN
+                    DiagCode := 49153;
+                ELSIF S_StartReset THEN
+                    DiagCode := 32773;
+                END_IF;
+            32770:
+                IF S_AOPD_In THEN
+                    DiagCode := 32771;
+                END_IF;
+            32771:
+                IF Reset THEN
+                    DiagCode := 49154;
+                END_IF;
+            32773:
+                IF NOT S_AOPD_In THEN
+                    DiagCode := 32770;
+                ELSIF NOT S_MutingLamp THEN
+                    DiagCode := 49155;
+                ELSIF S_AOPD_In THEN
+                    DiagCode := 32768;
+                END_IF;
+            49153:
+                IF NOT Reset THEN
+                    DiagCode := 32769;
+                END_IF;
+            49154:
+                IF NOT Reset THEN
+                    DiagCode := 32771;
+                END_IF;
+            49155:
+                IF S_MutingLamp THEN
+                    DiagCode := 32771;
+                END_IF;
+            49158:
+                IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+                    DiagCode := 32771;
+                END_IF;
+
+                IF DiagCode >= 49152 THEN
+                    IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+                        DiagCode := 32771;
+                    END_IF;
+                ELSE
+                    CASE DiagCode OF
+                        32785:
+                            IF NOT MutingEnable OR NOT MutingSwitch11 OR MutingSwitch21 OR MutingSwitch22 THEN
+                                DiagCode := 49412;
+                            ELSIF NOT S_AOPD_In THEN
+                                DiagCode := 32770;
+                            ELSIF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingEnable AND (MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22) THEN
+                                DiagCode := 32786;
+                            END_IF;
+                        32786:
+                            IF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22 THEN
+                                DiagCode := 32768;
+                            END_IF;
+                        33058:
+                            IF NOT MutingEnable OR MutingSwitch11 OR MutingSwitch12 OR NOT MutingSwitch22 THEN
+                                DiagCode := 49412;
+                            ELSIF NOT S_AOPD_In THEN
+                                DiagCode := 32770;
+                            ELSIF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingEnable AND (NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22) THEN
+                                DiagCode := 33042;
+                            END_IF;
+                        33042:
+                            IF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22 THEN
+                                DiagCode := 32768;
+                            END_IF;
+                    END_CASE;
+                END_IF;
+            49159:
+                IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+                    DiagCode := 32771;
+                END_IF;
+
+                IF DiagCode >= 49152 THEN
+                    IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+                        DiagCode := 32771;
+                    END_IF;
+                ELSE
+                    CASE DiagCode OF
+                        32785:
+                            IF NOT MutingEnable OR NOT MutingSwitch11 OR MutingSwitch21 OR MutingSwitch22 THEN
+                                DiagCode := 49412;
+                            ELSIF NOT S_AOPD_In THEN
+                                DiagCode := 32770;
+                            ELSIF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingEnable AND (MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22) THEN
+                                DiagCode := 32786;
+                            END_IF;
+                        32786:
+                            IF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22 THEN
+                                DiagCode := 32768;
+                            END_IF;
+                        33058:
+                            IF NOT MutingEnable OR MutingSwitch11 OR MutingSwitch12 OR NOT MutingSwitch22 THEN
+                                DiagCode := 49412;
+                            ELSIF NOT S_AOPD_In THEN
+                                DiagCode := 32770;
+                            ELSIF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingEnable AND (NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22) THEN
+                                DiagCode := 33042;
+                            END_IF;
+                        33042:
+                            IF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22 THEN
+                                DiagCode := 32768;
+                            END_IF;
+                    END_CASE;
+                END_IF;
+            49160:
+                IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+                    DiagCode := 32771;
+                END_IF;
+
+                IF DiagCode >= 49152 THEN
+                    IF NOT (MutingSwitch11 OR MutingSwitch12 OR MutingSwitch21 OR MutingSwitch22) THEN
+                        DiagCode := 32771;
+                    END_IF;
+                ELSE
+                    CASE DiagCode OF
+                        32785:
+                            IF NOT MutingEnable OR NOT MutingSwitch11 OR MutingSwitch21 OR MutingSwitch22 THEN
+                                DiagCode := 49412;
+                            ELSIF NOT S_AOPD_In THEN
+                                DiagCode := 32770;
+                            ELSIF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingEnable AND (MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22) THEN
+                                DiagCode := 32786;
+                            END_IF;
+                        32786:
+                            IF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22 THEN
+                                DiagCode := 32768;
+                            END_IF;
+                        33058:
+                            IF NOT MutingEnable OR MutingSwitch11 OR MutingSwitch12 OR NOT MutingSwitch22 THEN
+                                DiagCode := 49412;
+                            ELSIF NOT S_AOPD_In THEN
+                                DiagCode := 32770;
+                            ELSIF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingEnable AND (NOT MutingSwitch11 AND NOT MutingSwitch12 AND MutingSwitch22) THEN
+                                DiagCode := 33042;
+                            END_IF;
+                        33042:
+                            IF NOT S_MutingLamp THEN
+                                DiagCode := 49155;
+                            ELSIF MutingSwitch11 AND NOT MutingSwitch21 AND NOT MutingSwitch22 THEN
+                                DiagCode := 32768;
+                            END_IF;
+                    END_CASE;
+                END_IF;
+        END_CASE;
+    END_IF;
+
+    CASE DiagCode OF
+        0:
+            Ready := FALSE;
+            S_AOPD_Out := FALSE;
+            S_MutingActive := FALSE;
+            Error := FALSE;
+        32768:
+            Ready := TRUE;
+            S_AOPD_Out := TRUE;
+            S_MutingActive := FALSE;
+            Error := FALSE;
+        32785:
+            Ready := TRUE;
+            S_AOPD_Out := TRUE;
+            S_MutingActive := FALSE;
+            Error := FALSE;
+        33058:
+            Ready := TRUE;
+            S_AOPD_Out := TRUE;
+            S_MutingActive := FALSE;
+            Error := FALSE;
+        32769:
+            Ready := TRUE;
+            S_AOPD_Out := FALSE;
+            S_MutingActive := FALSE;
+            Error := FALSE;
+        32770:
+            Ready := TRUE;
+            S_AOPD_Out := FALSE;
+            S_MutingActive := FALSE;
+            Error := FALSE;
+        32771:
+            Ready := TRUE;
+            S_AOPD_Out := FALSE;
+            S_MutingActive := FALSE;
+            Error := FALSE;
+        32773:
+            Ready := TRUE;
+            S_AOPD_Out := FALSE;
+            S_MutingActive := FALSE;
+            Error := FALSE;
+        32786:
+            Ready := TRUE;
+            S_AOPD_Out := TRUE;
+            S_MutingActive := TRUE;
+            Error := FALSE;
+        33042:
+            Ready := TRUE;
+            S_AOPD_Out := TRUE;
+            S_MutingActive := TRUE;
+            Error := FALSE;
+        ELSE
+            Ready := TRUE;
+            S_AOPD_Out := FALSE;
+            S_MutingActive := FALSE;
+            Error := TRUE;
+    END_CASE;

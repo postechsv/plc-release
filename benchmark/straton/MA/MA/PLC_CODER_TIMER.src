@@ -1,0 +1,21 @@
+CASE timerAction OF
+    1:
+        (* RESET *)
+        plcTimer(FALSE, T#0ms);
+        plcTimerExpired := FALSE;
+        done := FALSE;
+    2:
+        (* AFTER *)
+        IF (NOT(plcTimerExpired)) THEN
+            plcTimer(TRUE, ANY_TO_TIME(maxTime));
+        END_IF;
+        plcTimerExpired := plcTimer.Q;
+        done := plcTimerExpired;
+    3:
+        (* BEFORE *)
+        IF (NOT(plcTimerExpired)) THEN
+            plcTimer(TRUE, ANY_TO_TIME(maxTime));
+        END_IF;
+        plcTimerExpired := plcTimer.Q;
+        done := NOT(plcTimerExpired);
+END_CASE;

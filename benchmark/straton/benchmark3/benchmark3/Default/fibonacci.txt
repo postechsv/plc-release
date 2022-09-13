@@ -1,0 +1,12 @@
+[SHORT]
+V-CNT=
+V-N=
+V-O=
+V-F1=
+V-F2=
+[LONG]
+V-CNT=
+V-N=
+V-O=
+V-F1=
+V-F2=

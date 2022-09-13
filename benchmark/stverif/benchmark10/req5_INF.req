@@ -1,0 +1,11 @@
+INPUT:
+DGSwbd1 :: DG1_StartReq |-> ??
+DGSwbd1 :: CB1_Close |-> ??
+DGSwbd1 :: CB1_pOpenTime |-> ??
+DGSwbd1 :: CB2_pOpenTime |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY( (NOT ( 	(DGSwbd1 :: DG1_RunRated)  	AND  (DGSwbd1 :: CB1_Remote)  	AND   (DGSwbd1 :: DG1_Voltage == DGSwbd1 :: DG1_pNominalVoltage) 	 AND   (DGSwbd1 :: CB1_Close) ) OR (DGSwbd1 :: CB1_Closed)) AND (0 <= DGSwbd1 :: CYCLE AND DGSwbd1 :: CYCLE <= 20) )

@@ -1,0 +1,15 @@
+INPUT:
+Main :: I1 |-> ??
+Main :: I2 |-> ??
+Main :: I3 |-> ??
+Main :: I4 |-> ??
+Main :: B1 |-> ??
+Main :: B2 |-> ??
+Main :: B3 |-> ??
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (NOT (Main :: STACKEMPTY AND Main :: STACKFULL ))  AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20)  )

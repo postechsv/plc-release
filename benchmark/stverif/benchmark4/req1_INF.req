@@ -1,0 +1,9 @@
+INPUT:
+empty
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (NOT (Main :: STACKEMPTY AND Main :: STACKFULL ))  AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

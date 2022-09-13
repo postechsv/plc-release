@@ -1,0 +1,117 @@
+
+Requirement: *(instance.OUT1 &lt; instance.OUT3 AND instance.OUT2 &lt;instance.OUT3) AND (0 &lt;= instance.CYCLE AND instance.CYCLE &lt;= 20) * is always true at the end of the PLC cycle.
+             (AG (EoC --> (((instance/OUT1 < instance/OUT3) && (instance/OUT2 < instance/OUT3)) && ((0 <= instance/CYCLE) && (instance/CYCLE <= 20)))))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/OUT1 = 1 (instance.OUT1 = 1)
+  - instance/FIB/O = 1 (instance.FIB.O = 1)
+  - EoC = true (EoC = true)
+  - instance/FIB/CNT = 2 (instance.FIB.CNT = 2)
+  - instance/FIB/N = -2147483647 (instance.FIB.N = -2147483647)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+  - instance/FIB/F2 = 1 (instance.FIB.F2 = 1)
+  - instance/OUT2 = 1 (instance.OUT2 = 1)
+  - instance/OUT3 = 1 (instance.OUT3 = 1)
+  - instance/FIB/F1 = 1 (instance.FIB.F1 = 1)
+  - instance/INDEX = -2147483645 (instance.INDEX = -2147483645)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (782 ms): Successful
+* Requirement representation (50 ms): Successful
+* Reductions (CFD) (43 ms): Successful
+* Model preparation (32 ms): Successful
+* CBMC model building (37 ms): Successful
+* CBMC execution (340918 ms): Successful
+* CBMC output parsing (4 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (0 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req3
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 21
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.INDEX
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.OUT1 < instance.OUT3 AND instance.OUT2 <instance.OUT3) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20) "
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark3/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark3/benchmark3.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark3/output/req3.c
+Converting
+Type-checking req3
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+249712 variables, 1019160 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 26.5313s
+
+** Results:
+/home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark3/output/req3.c function VerificationLoop
+[VerificationLoop.assertion.1] line 190 assertion (!(EoC) || (((instance.OUT1 < instance.OUT3) && (instance.OUT2 < instance.OUT3)) && ((0 <= instance.CYCLE) && (instance.CYCLE <= 20)))): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc/benchmark/plcverif/cmd/workspac[...]
+
+

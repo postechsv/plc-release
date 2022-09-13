@@ -1,0 +1,14 @@
+[:__MODULE___START] 
+[:__LABEL1] 
+526 275 1 
+21 286 1 2 
+530 286 [JA:__LABEL4] 
+285 135 2 286 286 234 
+[:__LABEL4] 
+
+{__START: (1): }
+508 0 526 [:__LABEL3] 
+234 
+[:__LABEL2] 
+[:__MODULE_END___START] 
+

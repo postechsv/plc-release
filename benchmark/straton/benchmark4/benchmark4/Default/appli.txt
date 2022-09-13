@@ -1,0 +1,9 @@
+[SHORT]
+V-NI=~
+V-STK=~
+V-PTR=~
+[LONG]
+V-NI=~
+V-STK=~
+V-PTR=~
+A-<PROJECT>=

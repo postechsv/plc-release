@@ -1,0 +1,1191 @@
+    CASE ssMethodType OF
+        0:
+            (* Start for Constant: '<S1>/Constant16' *)
+            DIFFTIME := 0.1;
+            (* InitializeConditions for UnitDelay: '<S41>/Unit Delay' *)
+            UnitDelay_DSTATE_i := FALSE;
+            (* InitializeConditions for UnitDelay: '<S40>/Unit Delay' *)
+            UnitDelay_DSTATE_id := FALSE;
+            (* InitializeConditions for UnitDelay: '<S29>/Unit Delay' *)
+            UnitDelay_DSTATE_j := FALSE;
+            (* InitializeConditions for UnitDelay: '<S19>/Unit Delay' *)
+            UnitDelay_DSTATE_k := FALSE;
+            (* InitializeConditions for Memory: '<S48>/Memory' *)
+            Memory_PreviousInput := FALSE;
+            (* InitializeConditions for UnitDelay: '<S32>/Unit Delay' *)
+            UnitDelay_DSTATE_c := FALSE;
+            (* InitializeConditions for UnitDelay: '<S42>/Unit Delay' *)
+            UnitDelay_DSTATE_l := FALSE;
+            (* InitializeConditions for UnitDelay: '<S20>/Unit Delay' *)
+            UnitDelay_DSTATE_d := FALSE;
+            (* InitializeConditions for UnitDelay: '<S21>/Unit Delay' *)
+            UnitDelay_DSTATE_h := FALSE;
+            (* InitializeConditions for Memory: '<S49>/Memory' *)
+            Memory_PreviousInput_o := FALSE;
+            (* InitializeConditions for Delay: '<S1>/Delay5' *)
+            Delay5_DSTATE := 0.0;
+            (* InitializeConditions for Delay: '<S1>/Delay4' *)
+            Delay4_DSTATE := 0.0;
+            (* InitializeConditions for UnitDelay: '<S1>/Unit Delay' *)
+            UnitDelay_DSTATE := 0.0;
+            (* InitializeConditions for UnitDelay: '<S34>/Unit Delay' *)
+            UnitDelay_DSTATE_m := FALSE;
+            (* InitializeConditions for UnitDelay: '<S33>/Unit Delay' *)
+            UnitDelay_DSTATE_a := FALSE;
+            (* InitializeConditions for UnitDelay: '<S27>/Unit Delay' *)
+            UnitDelay_DSTATE_aw := FALSE;
+            (* InitializeConditions for UnitDelay: '<S28>/Unit Delay' *)
+            UnitDelay_DSTATE_jb := FALSE;
+            (* InitializeConditions for Memory: '<S47>/Memory' *)
+            Memory_PreviousInput_k := FALSE;
+            (* InitializeConditions for Memory: '<S58>/Memory' *)
+            Memory_PreviousInput_a := FALSE;
+            (* InitializeConditions for UnitDelay: '<S37>/Unit Delay' *)
+            UnitDelay_DSTATE_p := FALSE;
+            (* InitializeConditions for UnitDelay: '<S36>/Unit Delay' *)
+            UnitDelay_DSTATE_jl := FALSE;
+            (* InitializeConditions for UnitDelay: '<S23>/Unit Delay' *)
+            UnitDelay_DSTATE_f := FALSE;
+            (* InitializeConditions for UnitDelay: '<S24>/Unit Delay' *)
+            UnitDelay_DSTATE_ft := FALSE;
+            (* InitializeConditions for Memory: '<S45>/Memory' *)
+            Memory_PreviousInput_a5 := FALSE;
+            (* InitializeConditions for Memory: '<S59>/Memory' *)
+            Memory_PreviousInput_d := FALSE;
+            (* InitializeConditions for UnitDelay: '<S39>/Unit Delay' *)
+            UnitDelay_DSTATE_o := FALSE;
+            (* InitializeConditions for UnitDelay: '<S38>/Unit Delay' *)
+            UnitDelay_DSTATE_g := FALSE;
+            (* InitializeConditions for UnitDelay: '<S25>/Unit Delay' *)
+            UnitDelay_DSTATE_c3 := FALSE;
+            (* InitializeConditions for UnitDelay: '<S26>/Unit Delay' *)
+            UnitDelay_DSTATE_ax := FALSE;
+            (* InitializeConditions for Memory: '<S46>/Memory' *)
+            Memory_PreviousInput_dl := FALSE;
+            (* InitializeConditions for Memory: '<S63>/Memory' *)
+            Memory_PreviousInput_n := FALSE;
+            (* InitializeConditions for Delay: '<S1>/Delay1' *)
+            Delay1_DSTATE := 0.0;
+            (* InitializeConditions for UnitDelay: '<S35>/Unit Delay' *)
+            UnitDelay_DSTATE_ll := FALSE;
+            (* InitializeConditions for UnitDelay: '<S31>/Unit Delay' *)
+            UnitDelay_DSTATE_mz := FALSE;
+            (* InitializeConditions for UnitDelay: '<S18>/Unit Delay' *)
+            UnitDelay_DSTATE_cs := FALSE;
+            (* InitializeConditions for UnitDelay: '<S22>/Unit Delay' *)
+            UnitDelay_DSTATE_dx := FALSE;
+            (* InitializeConditions for Memory: '<S44>/Memory' *)
+            Memory_PreviousInput_nz := FALSE;
+            (* InitializeConditions for Memory: '<S62>/Memory' *)
+            Memory_PreviousInput_g := FALSE;
+            (* InitializeConditions for Memory: '<S60>/Memory' *)
+            Memory_PreviousInput_p := FALSE;
+            (* InitializeConditions for Memory: '<S61>/Memory' *)
+            Memory_PreviousInput_j := FALSE;
+            (* InitializeConditions for Memory: '<S65>/Memory' *)
+            Memory_PreviousInput_kk := FALSE;
+            (* InitializeConditions for Memory: '<S64>/Memory' *)
+            Memory_PreviousInput_dld := FALSE;
+            (* SystemInitialize for Chart: '<S1>/OS Force' *)
+            is_Force_Mode := 0;
+            is_active_c1_MA := 0;
+            i0_AlarmwithDelay1(
+                ssMethodType := 0,
+                b_En := Logic_d[0],
+                Duration := PTDWA
+            );
+            Out_d := temp1;
+            i1_AlarmwithDelay1(
+                ssMethodType := 0,
+                b_En := Logic_k[0],
+                Duration := PTDWA
+            );
+            out := temp1;
+            i5_Block(
+                ssMethodType := 0,
+                OSB := Logic[0]
+            );
+            blk_mode := tmp;
+            b_BB := temp1;
+            (* Outport: '<Root>/BB' *)
+            i0_Block(
+                ssMethodType := 0,
+                OSB := Logic_i[0]
+            );
+            blk_mode_mz := tmp;
+            (* Outport: '<Root>/BUWH' *)
+            i3_Block(
+                ssMethodType := 0,
+                OSB := Logic_g[0]
+            );
+            blk_mode_m := tmp;
+            (* Outport: '<Root>/BUWL' *)
+            i4_Block(
+                ssMethodType := 0,
+                OSB := Logic_c[0]
+            );
+            blk_mode_l := tmp;
+            (* Outport: '<Root>/BUHH' *)
+            i1_Block(
+                ssMethodType := 0,
+                OSB := Logic_e[0]
+            );
+            blk_mode_j := tmp;
+            (* Outport: '<Root>/BULL' *)
+            i2_Block(
+                ssMethodType := 0,
+                OSB := Logic_n[0]
+            );
+            blk_mode_n := tmp;
+            (* Constant: '<S1>/Constant12' incorporates:
+             *  Constant: '<S1>/Constant3' *)
+            alarm_k := temp1;
+            (* Constant: '<S1>/Constant13' incorporates:
+             *  Constant: '<S1>/Constant4' *)
+            alarm := temp1;
+        1:
+            IF NOT BF THEN
+                HFV := Y;
+            END_IF;
+            (*HFB shall be follow FB*)
+            IF FUHHrise THEN
+                HFUHH := TRUE;
+            END_IF;
+            IF FUHHdec THEN
+                HFUHH := FALSE;
+            END_IF;
+            IF FUWHrise THEN
+                HFUWH := TRUE;
+            END_IF;
+            IF FUWHdec THEN
+                HFUWH := FALSE;
+            END_IF;
+            IF FULLrise THEN
+                HFULL := TRUE;
+            END_IF;
+            IF FULLdec THEN
+                HFULL := FALSE;
+            END_IF;
+            IF FUWLrise THEN
+                HFUWL := TRUE;
+            END_IF;
+            IF FUWLdec THEN
+                HFUWL := FALSE;
+            END_IF;
+            IF FUArise THEN
+                HFUA := TRUE;
+            END_IF;
+            IF FUAdec THEN
+                HFUA := FALSE;
+            END_IF;
+            IF FBrise THEN
+                HFB := TRUE;
+            END_IF;
+            IF FBdec THEN
+                HFB := FALSE;
+            END_IF;
+            (* UnitDelay: '<S41>/Unit Delay' *)
+            UnitDelay_n := UnitDelay_DSTATE_i;
+            i10_POSITIVEEdge(
+                IN := FUA,
+                INprevious := UnitDelay_n
+            );
+            temp1 := i10_POSITIVEEdge.OUT;
+            FUArise := temp1;
+            (* UnitDelay: '<S40>/Unit Delay' *)
+            UnitDelay_c := UnitDelay_DSTATE_id;
+            i9_POSITIVEEdge(
+                IN := HFUA,
+                INprevious := UnitDelay_c
+            );
+            temp1 := i9_POSITIVEEdge.OUT;
+            RelationalOperator1_f := temp1;
+            (* UnitDelay: '<S29>/Unit Delay' *)
+            UnitDelay_h := UnitDelay_DSTATE_j;
+            i11_NEGATIVEEdge(
+                IN := FUA,
+                INprevious := UnitDelay_h
+            );
+            temp1 := i11_NEGATIVEEdge.OUT;
+            FUAdec := temp1;
+            (* UnitDelay: '<S19>/Unit Delay' *)
+            UnitDelay_nm := UnitDelay_DSTATE_k;
+            i1_NEGATIVEEdge(
+                IN := HFUA,
+                INprevious := UnitDelay_nm
+            );
+            temp1 := i1_NEGATIVEEdge.OUT;
+            RelationalOperator1_e1 := temp1;
+            (* Memory: '<S48>/Memory' *)
+            Memory := Memory_PreviousInput;
+            (* Logic: '<S1>/Logical Operator19' *)
+            LogicalOperator19 := FUArise OR RelationalOperator1_f;
+            (* Logic: '<S1>/Logical Operator18' *)
+            LogicalOperator18 := FUAdec OR RelationalOperator1_e1;
+            (* CombinatorialLogic: '<S48>/Logic' *)
+            temp1 := LogicalOperator19;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator18;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* UnitDelay: '<S32>/Unit Delay' *)
+            UnitDelay_g := UnitDelay_DSTATE_c;
+            i1_POSITIVEEdge(
+                IN := FB,
+                INprevious := UnitDelay_g
+            );
+            temp1 := i1_POSITIVEEdge.OUT;
+            FBrise := temp1;
+            (* UnitDelay: '<S42>/Unit Delay' *)
+            UnitDelay_nz := UnitDelay_DSTATE_l;
+            i11_POSITIVEEdge(
+                IN := HFB,
+                INprevious := UnitDelay_nz
+            );
+            temp1 := i11_POSITIVEEdge.OUT;
+            RelationalOperator1_l := temp1;
+            (* UnitDelay: '<S20>/Unit Delay' *)
+            UnitDelay_o := UnitDelay_DSTATE_d;
+            i2_NEGATIVEEdge(
+                IN := FB,
+                INprevious := UnitDelay_o
+            );
+            temp1 := i2_NEGATIVEEdge.OUT;
+            FBdec := temp1;
+            (* UnitDelay: '<S21>/Unit Delay' *)
+            UnitDelay_ho := UnitDelay_DSTATE_h;
+            i3_NEGATIVEEdge(
+                IN := HFB,
+                INprevious := UnitDelay_ho
+            );
+            temp1 := i3_NEGATIVEEdge.OUT;
+            RelationalOperator1_j := temp1;
+            (* Memory: '<S49>/Memory' *)
+            Memory_l := Memory_PreviousInput_o;
+            (* Logic: '<S1>/Logical Operator21' *)
+            LogicalOperator21 := FBrise OR RelationalOperator1_l;
+            (* Logic: '<S1>/Logical Operator20' *)
+            LogicalOperator20 := FBdec OR RelationalOperator1_j;
+            (* CombinatorialLogic: '<S49>/Logic' *)
+            temp1 := LogicalOperator21;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator20;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_l;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* MATLAB Function: '<S1>/AIRangeREVERSEConvert2' *)
+            (* MATLAB Function 'MA/AIRangeREVERSEConvert2': '<S3>:1' *)
+            (* '<S3>:1:4' if(PEUR) *)
+            IF PEUR THEN
+                (* '<S3>:1:5' if(PEUH>PEUL) *)
+                IF PEUH > PEUL THEN
+                    (* '<S3>:1:6' ir = -(egu-PEUL)*(PIH-PIL)/(PEUH-PEUL) + PIH; *)
+                    ir := (((-(HFV - PEUL)) * (PIH - PIL)) / (PEUH - PEUL)) + PIH;
+                ELSE
+                    (* '<S3>:1:7' else *)
+                    (* '<S3>:1:8' ir = PIH; *)
+                    ir := PIH;
+                END_IF;
+            ELSE
+                (* '<S3>:1:10' else *)
+                (* '<S3>:1:11' if(PEUH>PEUL) *)
+                IF PEUH > PEUL THEN
+                    (* '<S3>:1:12' ir = (egu-PEUL)*(PIH-PIL)/(PEUH-PEUL) + PIL; *)
+                    ir := (((HFV - PEUL) * (PIH - PIL)) / (PEUH - PEUL)) + PIL;
+                ELSE
+                    (* '<S3>:1:13' else *)
+                    (* '<S3>:1:14' ir = PIL; *)
+                    ir := PIL;
+                END_IF;
+            END_IF;
+            (* '<S3>:1:18' if(PIH>PIL) *)
+            IF PIH > PIL THEN
+                (* '<S3>:1:19' x = (ir-PIL)*(PRH-PRL)/(PIH-PIL) + PRL; *)
+                b_x := (((ir - PIL) * (PRH - PRL)) / (PIH - PIL)) + PRL;
+            ELSE
+                (* '<S3>:1:20' else *)
+                (* '<S3>:1:21' x = PRL; *)
+                b_x := PRL;
+            END_IF;
+            b_ir := ir;
+            (* End of MATLAB Function: '<S1>/AIRangeREVERSEConvert2' *)
+            (* Delay: '<S1>/Delay5' *)
+            Delay5 := Delay5_DSTATE;
+            (* Chart: '<S1>/OS Force' incorporates:
+             *  Outport: '<Root>/BF' *)
+            (* Gateway: MA/OS Force *)
+            (* During: MA/OS Force *)
+            IF is_active_c1_MA = 0 THEN
+                (* Entry: MA/OS Force *)
+                is_active_c1_MA := 1;
+                (* Entry Internal: MA/OS Force *)
+                (* Entry Internal 'Force_Mode': '<S30>:3' *)
+                (* Transition: '<S30>:27' *)
+                is_Force_Mode := 1;
+                (* Entry 'FIELD': '<S30>:26' *)
+                (* '<S30>:26:1' blk_mode = 1; *)
+                blk_mode_p := 1;
+            ELSE
+                (* During 'Force_Mode': '<S30>:3' *)
+                CASE is_Force_Mode OF
+                    1:
+                        blk_mode_p := 1;
+                        (* During 'FIELD': '<S30>:26' *)
+                        (* '<S30>:29:1' sf_internal_predicateOutput = ... *)
+                        (* '<S30>:29:1' OSB; *)
+                        IF HFO THEN
+                            (* Transition: '<S30>:29' *)
+                            is_Force_Mode := 2;
+                            (* Entry 'LOGIC': '<S30>:28' *)
+                            (* '<S30>:28:1' blk_mode = 2; *)
+                            blk_mode_p := 2;
+                        ELSE
+                            (* '<S30>:26:1' FO = false; *)
+                            BF := FALSE;
+                        END_IF;
+                    ELSE
+                        blk_mode_p := 2;
+                        (* During 'LOGIC': '<S30>:28' *)
+                        (* '<S30>:30:1' sf_internal_predicateOutput = ... *)
+                        (* '<S30>:30:1' ~OSB; *)
+                        IF NOT HFO THEN
+                            (* Transition: '<S30>:30' *)
+                            is_Force_Mode := 1;
+                            (* Entry 'FIELD': '<S30>:26' *)
+                            (* '<S30>:26:1' blk_mode = 1; *)
+                            blk_mode_p := 1;
+                        ELSE
+                            (* '<S30>:28:1' FO = true; *)
+                            BF := TRUE;
+                        END_IF;
+                END_CASE;
+            END_IF;
+            (* End of Chart: '<S1>/OS Force' *)
+            (* Delay: '<S1>/Delay4' *)
+            Delay4 := Delay4_DSTATE;
+            (* MATLAB Function: '<S1>/Force1' incorporates:
+             *  Outport: '<Root>/BF' *)
+            (* MATLAB Function 'MA/Force1': '<S9>:1' *)
+            (* '<S9>:1:2' if fo *)
+            IF BF THEN
+                (* '<S9>:1:3' if manin ~= manin_old *)
+                IF b_x <> Delay5 THEN
+                    (* '<S9>:1:4' out = single(manin); *)
+                    b_out := b_x;
+                ELSE
+                    (* '<S9>:1:5' else *)
+                    (* '<S9>:1:6' out = single(yold); *)
+                    b_out := Delay4;
+                END_IF;
+            ELSE
+                (* '<S9>:1:8' else *)
+                (* '<S9>:1:9' out = single(x); *)
+                b_out := X;
+            END_IF;
+            (* End of MATLAB Function: '<S1>/Force1' *)
+            (* MATLAB Function: '<S1>/AIRangeConvert1' *)
+            (* MATLAB Function 'MA/AIRangeConvert1': '<S2>:1' *)
+            (* '<S2>:1:2' if(PRH>PRL) *)
+            IF PRH > PRL THEN
+                (* '<S2>:1:3' ir = (x-PRL)*(PIH-PIL)/(PRH-PRL) + PIL; *)
+                YIR := (((b_out - PRL) * (PIH - PIL)) / (PRH - PRL)) + PIL;
+            ELSE
+                (* '<S2>:1:4' else *)
+                (* '<S2>:1:5' ir = PIL; *)
+                YIR := PIL;
+            END_IF;
+            (* '<S2>:1:8' if(PEUR) *)
+            IF PEUR THEN
+                (* '<S2>:1:9' if(PIH>PIL) *)
+                IF PIH > PIL THEN
+                    (* '<S2>:1:10' egu = -(ir-PIL)*(PEUH-PEUL)/(PIH-PIL) + PEUH; *)
+                    egu := (((-(YIR - PIL)) * (PEUH - PEUL)) / (PIH - PIL)) + PEUH;
+                ELSE
+                    (* '<S2>:1:11' else *)
+                    (* '<S2>:1:12' egu = PEUH; *)
+                    egu := PEUH;
+                END_IF;
+            ELSE
+                (* '<S2>:1:14' else *)
+                (* '<S2>:1:15' if(PIH>PIL) *)
+                IF PIH > PIL THEN
+                    (* '<S2>:1:16' egu = (ir-PIL)*(PEUH-PEUL)/(PIH-PIL) + PEUL; *)
+                    egu := (((YIR - PIL) * (PEUH - PEUL)) / (PIH - PIL)) + PEUL;
+                ELSE
+                    (* '<S2>:1:17' else *)
+                    (* '<S2>:1:18' egu = PEUL; *)
+                    egu := PEUL;
+                END_IF;
+            END_IF;
+            (* End of MATLAB Function: '<S1>/AIRangeConvert1' *)
+            (* Gain: '<S1>/Gain4' *)
+            Gain4 := 0.01 * PSFH;
+            (* Product: '<S1>/Product2' *)
+            Product2 := PIH * Gain4;
+            (* Sum: '<S1>/Add' *)
+            b_Add := PIH + Product2;
+            (* Gain: '<S1>/Gain5' *)
+            Gain5 := -0.01 * PSFL;
+            (* Product: '<S1>/Product3' *)
+            Product3 := PIL * Gain5;
+            (* Sum: '<S1>/Add1' *)
+            Add1 := PIL + Product3;
+            (* Constant: '<S1>/Constant16' *)
+            DIFFTIME := 0.1;
+            (* UnitDelay: '<S1>/Unit Delay' *)
+            UnitDelay := UnitDelay_DSTATE;
+            (* MATLAB Function: '<S1>/Ramp_id1' *)
+            (* if x > x_max *)
+            (* x=x_max; *)
+            (* elseif x < x_min *)
+            (* x=x_min; *)
+            (* end *)
+            (* MATLAB Function 'MA/Ramp_id1': '<S43>:1' *)
+            (* '<S43>:1:9' A = (POI >=x_max-x_min); *)
+            (* '<S43>:1:10' J = (POD >=x_max-x_min); *)
+            (* '<S43>:1:12' B = (POI <= 0); *)
+            (* '<S43>:1:13' K = (POD <= 0); *)
+            (* '<S43>:1:15' C = ~PRAMP; *)
+            (* '<S43>:1:17' ramp_inc_off = A || B || C; *)
+            IF (PROC >= (PEUH - PEUL)) OR (PROC <= 0.0) THEN
+                ramp_inc_off := TRUE;
+            ELSE
+                ramp_inc_off := FALSE;
+            END_IF;
+            (* '<S43>:1:18' ramp_dcr_off = J || K || C; *)
+            IF (PROC >= (PEUH - PEUL)) OR (PROC <= 0.0) THEN
+                ramp_dcr_off := TRUE;
+            ELSE
+                ramp_dcr_off := FALSE;
+            END_IF;
+            (* '<S43>:1:20' if ramp_inc_off *)
+            IF ramp_inc_off THEN
+                (* '<S43>:1:21' incrate = x_max-x_min; *)
+                incrate := PEUH - PEUL;
+            ELSE
+                (* '<S43>:1:22' else *)
+                (* '<S43>:1:23' incrate = POI*DIFFTIME; *)
+                incrate := PROC * DIFFTIME;
+            END_IF;
+            (* '<S43>:1:26' if ramp_dcr_off *)
+            IF ramp_dcr_off THEN
+                (* '<S43>:1:27' decrate = x_max-x_min; *)
+                decrate := PEUH - PEUL;
+            ELSE
+                (* '<S43>:1:28' else *)
+                (* '<S43>:1:29' decrate = POD*DIFFTIME; *)
+                decrate := PROC * DIFFTIME;
+            END_IF;
+            (* '<S43>:1:32' if(x>y_prev) *)
+            IF egu > UnitDelay THEN
+                (* '<S43>:1:33' if(x>(y_prev+incrate) ) *)
+                IF egu > (UnitDelay + incrate) THEN
+                    (* '<S43>:1:34' y = y_prev+incrate; *)
+                    b_y := UnitDelay + incrate;
+                ELSE
+                    (* '<S43>:1:35' else *)
+                    (* '<S43>:1:36' y = x; *)
+                    b_y := egu;
+                END_IF;
+            ELSE
+                (* '<S43>:1:38' else *)
+                (* '<S43>:1:39' if(x<(y_prev-decrate)) *)
+                IF egu < (UnitDelay - decrate) THEN
+                    (* '<S43>:1:40' y=y_prev-decrate; *)
+                    b_y := UnitDelay - decrate;
+                ELSE
+                    (* '<S43>:1:41' else *)
+                    (* '<S43>:1:42' y=x; *)
+                    b_y := egu;
+                END_IF;
+            END_IF;
+            (* End of MATLAB Function: '<S1>/Ramp_id1' *)
+            (* MATLAB Function: '<S1>/DeadBand1' *)
+            (* MATLAB Function 'MA/DeadBand1': '<S8>:1' *)
+            (* '<S8>:1:2' if(x<(egul+((eguh-egul)*0.01*pdb))) && (x>egul) *)
+            IF (b_y < ((((PEUH - PEUL) * 0.01) * PDB) + PEUL)) AND (b_y > PEUL) THEN
+                (* '<S8>:1:3' out = egul; *)
+                out_a := PEUL;
+            ELSIF (b_y > (PEUH - (((PEUH - PEUL) * 0.01) * PDB))) AND (b_y < PEUH) THEN
+                (* '<S8>:1:4' elseif(x>(eguh-((eguh-egul)*0.01*pdb))) && ( x<eguh) *)
+                (* '<S8>:1:5' out = eguh; *)
+                out_a := PEUH;
+            ELSE
+                (* '<S8>:1:6' else *)
+                (* '<S8>:1:7' out =x; *)
+                out_a := b_y;
+            END_IF;
+            (* End of MATLAB Function: '<S1>/DeadBand1' *)
+            (* RelationalOperator: '<S50>/LowerRelop1' *)
+            LowerRelop1 := out_a > PEUH;
+            (* RelationalOperator: '<S50>/UpperRelop' *)
+            UpperRelop := out_a < PEUL;
+            (* Switch: '<S50>/Switch' *)
+            IF UpperRelop THEN
+                Switch := PEUL;
+            ELSE
+                Switch := out_a;
+            END_IF;
+            (* End of Switch: '<S50>/Switch' *)
+            (* Switch: '<S50>/Switch2' *)
+            IF LowerRelop1 THEN
+                Switch2 := PEUH;
+            ELSE
+                Switch2 := Switch;
+            END_IF;
+            (* End of Switch: '<S50>/Switch2' *)
+            (* UnitDelay: '<S34>/Unit Delay' *)
+            UnitDelay_nk := UnitDelay_DSTATE_m;
+            i3_POSITIVEEdge(
+                IN := FUHH,
+                INprevious := UnitDelay_nk
+            );
+            temp1 := i3_POSITIVEEdge.OUT;
+            FUHHrise := temp1;
+            (* UnitDelay: '<S33>/Unit Delay' *)
+            UnitDelay_f := UnitDelay_DSTATE_a;
+            i2_POSITIVEEdge(
+                IN := HFUHH,
+                INprevious := UnitDelay_f
+            );
+            temp1 := i2_POSITIVEEdge.OUT;
+            RelationalOperator1_i := temp1;
+            (* UnitDelay: '<S27>/Unit Delay' *)
+            UnitDelay_p := UnitDelay_DSTATE_aw;
+            i9_NEGATIVEEdge(
+                IN := FUHH,
+                INprevious := UnitDelay_p
+            );
+            temp1 := i9_NEGATIVEEdge.OUT;
+            FUHHdec := temp1;
+            (* UnitDelay: '<S28>/Unit Delay' *)
+            UnitDelay_l := UnitDelay_DSTATE_jb;
+            i10_NEGATIVEEdge(
+                IN := HFUHH,
+                INprevious := UnitDelay_l
+            );
+            temp1 := i10_NEGATIVEEdge.OUT;
+            RelationalOperator1_g := temp1;
+            (* Memory: '<S47>/Memory' *)
+            Memory_m := Memory_PreviousInput_k;
+            (* Logic: '<S1>/Logical Operator8' *)
+            LogicalOperator8 := FUHHrise OR RelationalOperator1_i;
+            (* Logic: '<S1>/Logical Operator6' *)
+            LogicalOperator6 := FUHHdec OR RelationalOperator1_g;
+            (* CombinatorialLogic: '<S47>/Logic' *)
+            temp1 := LogicalOperator8;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator6;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_m;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* Sum: '<S1>/Subtract' *)
+            Subtract := PEUH - PEUL;
+            (* Gain: '<S1>/Gain3' *)
+            Gain3 := 0.01 * PHYS;
+            (* Product: '<S1>/Product' *)
+            Product := Subtract * Gain3;
+            (* Sum: '<S10>/Sum3' *)
+            Sum3 := PLAHH - Product;
+            (* RelationalOperator: '<S10>/Relational Operator10' *)
+            RelationalOperator10 := b_y < Sum3;
+            (* Logic: '<S10>/Logical Operator1' *)
+            LogicalOperator1 := NOT PAHH;
+            (* Logic: '<S10>/Logical Operator' *)
+            LogicalOperator := RelationalOperator10 OR LogicalOperator1;
+            (* RelationalOperator: '<S10>/Relational Operator9' *)
+            RelationalOperator9 := b_y > PLAHH;
+            (* Memory: '<S58>/Memory' *)
+            Memory_j := Memory_PreviousInput_a;
+            (* CombinatorialLogic: '<S58>/Logic' *)
+            temp1 := RelationalOperator9;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_j;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* UnitDelay: '<S37>/Unit Delay' *)
+            UnitDelay_b := UnitDelay_DSTATE_p;
+            i6_POSITIVEEdge(
+                IN := FUWH,
+                INprevious := UnitDelay_b
+            );
+            temp1 := i6_POSITIVEEdge.OUT;
+            FUWHrise := temp1;
+            (* UnitDelay: '<S36>/Unit Delay' *)
+            UnitDelay_pj := UnitDelay_DSTATE_jl;
+            i5_POSITIVEEdge(
+                IN := HFUWH,
+                INprevious := UnitDelay_pj
+            );
+            temp1 := i5_POSITIVEEdge.OUT;
+            RelationalOperator1_e := temp1;
+            (* UnitDelay: '<S23>/Unit Delay' *)
+            UnitDelay_oq := UnitDelay_DSTATE_f;
+            i5_NEGATIVEEdge(
+                IN := FUWH,
+                INprevious := UnitDelay_oq
+            );
+            temp1 := i5_NEGATIVEEdge.OUT;
+            FUWHdec := temp1;
+            (* UnitDelay: '<S24>/Unit Delay' *)
+            UnitDelay_oc := UnitDelay_DSTATE_ft;
+            i6_NEGATIVEEdge(
+                IN := HFUWH,
+                INprevious := UnitDelay_oc
+            );
+            temp1 := i6_NEGATIVEEdge.OUT;
+            RelationalOperator1_o := temp1;
+            (* Memory: '<S45>/Memory' *)
+            Memory_i := Memory_PreviousInput_a5;
+            (* Logic: '<S1>/Logical Operator15' *)
+            LogicalOperator15 := FUWHrise OR RelationalOperator1_e;
+            (* Logic: '<S1>/Logical Operator14' *)
+            LogicalOperator14 := FUWHdec OR RelationalOperator1_o;
+            (* CombinatorialLogic: '<S45>/Logic' *)
+            temp1 := LogicalOperator15;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator14;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_i;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* RelationalOperator: '<S11>/Relational Operator9' *)
+            RelationalOperator9_c := b_y > PLAH;
+            (* Sum: '<S11>/Sum3' *)
+            Sum3_o := PLAH - Product;
+            (* RelationalOperator: '<S11>/Relational Operator10' *)
+            RelationalOperator10_g := b_y < Sum3_o;
+            (* Logic: '<S11>/Logical Operator1' *)
+            LogicalOperator1_c := NOT PAH;
+            (* Logic: '<S11>/Logical Operator' *)
+            LogicalOperator_g := RelationalOperator10_g OR LogicalOperator1_c;
+            (* Memory: '<S59>/Memory' *)
+            Memory_o := Memory_PreviousInput_d;
+            (* CombinatorialLogic: '<S59>/Logic' *)
+            temp1 := RelationalOperator9_c;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator_g;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_o;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            i0_AlarmwithDelay1(
+                ssMethodType := 3,
+                b_En := Logic_d[0],
+                Duration := PTDWA
+            );
+            temp1 := i0_AlarmwithDelay1.Out;
+            Out_d := temp1;
+            (* UnitDelay: '<S39>/Unit Delay' *)
+            UnitDelay_gx := UnitDelay_DSTATE_o;
+            i8_POSITIVEEdge(
+                IN := FUWL,
+                INprevious := UnitDelay_gx
+            );
+            temp1 := i8_POSITIVEEdge.OUT;
+            FUWLrise := temp1;
+            (* UnitDelay: '<S38>/Unit Delay' *)
+            UnitDelay_cr := UnitDelay_DSTATE_g;
+            i7_POSITIVEEdge(
+                IN := HFUWL,
+                INprevious := UnitDelay_cr
+            );
+            temp1 := i7_POSITIVEEdge.OUT;
+            RelationalOperator1_d := temp1;
+            (* UnitDelay: '<S25>/Unit Delay' *)
+            UnitDelay_h3 := UnitDelay_DSTATE_c3;
+            i7_NEGATIVEEdge(
+                IN := FUWL,
+                INprevious := UnitDelay_h3
+            );
+            temp1 := i7_NEGATIVEEdge.OUT;
+            FUWLdec := temp1;
+            (* UnitDelay: '<S26>/Unit Delay' *)
+            UnitDelay_ct := UnitDelay_DSTATE_ax;
+            i8_NEGATIVEEdge(
+                IN := HFUWL,
+                INprevious := UnitDelay_ct
+            );
+            temp1 := i8_NEGATIVEEdge.OUT;
+            RelationalOperator1_fv := temp1;
+            (* Memory: '<S46>/Memory' *)
+            Memory_b := Memory_PreviousInput_dl;
+            (* Logic: '<S1>/Logical Operator17' *)
+            LogicalOperator17 := FUWLrise OR RelationalOperator1_d;
+            (* Logic: '<S1>/Logical Operator16' *)
+            LogicalOperator16 := FUWLdec OR RelationalOperator1_fv;
+            (* CombinatorialLogic: '<S46>/Logic' *)
+            temp1 := LogicalOperator17;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator16;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_b;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* RelationalOperator: '<S15>/Relational Operator10' *)
+            RelationalOperator10_m := b_y < PLAL;
+            (* Sum: '<S15>/Sum2' *)
+            Sum2 := PLAL + Product;
+            (* RelationalOperator: '<S15>/Relational Operator9' *)
+            RelationalOperator9_m := b_y > Sum2;
+            (* Logic: '<S15>/Logical Operator1' *)
+            LogicalOperator1_o := NOT PAL;
+            (* Logic: '<S15>/Logical Operator' *)
+            LogicalOperator_f := RelationalOperator9_m OR LogicalOperator1_o;
+            (* Memory: '<S63>/Memory' *)
+            Memory_mx := Memory_PreviousInput_n;
+            (* CombinatorialLogic: '<S63>/Logic' *)
+            temp1 := RelationalOperator10_m;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator_f;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_mx;
+            rowIdx := rowIdx * 2 + BOOL_TO_DINT(temp1);
+            i1_AlarmwithDelay1(
+                ssMethodType := 3,
+                b_En := Logic_k[0],
+                Duration := PTDWA
+            );
+            temp1 := i1_AlarmwithDelay1.Out;
+            out := temp1;
+            i5_Block(
+                ssMethodType := 3,
+                OSB := Logic[0]
+            );
+            temp1 := i5_Block.BB;
+            tmp := i5_Block.blk_mode;
+            blk_mode := tmp;
+            b_BB := temp1;
+            (* Outport: '<Root>/BB' *)
+            i0_Block(
+                ssMethodType := 3,
+                OSB := Logic_i[0]
+            );
+            BB := i0_Block.BB;
+            tmp := i0_Block.blk_mode;
+            blk_mode_mz := tmp;
+            (* Logic: '<S1>/Logical Operator13' incorporates:
+             *  Outport: '<Root>/BB' *)
+            LogicalOperator13 := b_BB OR BB;
+            (* RelationalOperator: '<S1>/Relational Operator' *)
+            RelationalOperator := PIL >= PIH;
+            (* RelationalOperator: '<S1>/Relational Operator1' *)
+            RelationalOperator1 := PRL >= PRH;
+            (* RelationalOperator: '<S1>/Relational Operator2' *)
+            RelationalOperator2 := PEUL >= PEUH;
+            (* Switch: '<S1>/Switch9' incorporates:
+             *  Constant: '<S1>/Constant10'
+             *  Outport: '<Root>/YF' *)
+            IF LogicalOperator13 THEN
+                YF := FALSE;
+            ELSE
+                (* RelationalOperator: '<S1>/Relational Operator3' incorporates:
+                 *  Outport: '<Root>/YIR' *)
+                RelationalOperator3 := YIR < Add1;
+                (* RelationalOperator: '<S1>/Relational Operator4' incorporates:
+                 *  Outport: '<Root>/YIR' *)
+                RelationalOperator4 := YIR > b_Add;
+                (* Logic: '<S1>/Logical Operator7' *)
+                LogicalOperator7 := ((((RelationalOperator4 OR RelationalOperator3) OR XF) OR RelationalOperator) OR RelationalOperator1) OR RelationalOperator2;
+                YF := LogicalOperator7;
+            END_IF;
+            (* End of Switch: '<S1>/Switch9' *)
+            (* Switch: '<S1>/Switch12' *)
+            IF PCLAM THEN
+                Switch12 := Switch2;
+            ELSE
+                Switch12 := out_a;
+            END_IF;
+            (* End of Switch: '<S1>/Switch12' *)
+            (* Delay: '<S1>/Delay1' *)
+            Delay1 := Delay1_DSTATE;
+            (* MATLAB Function: '<S1>/AnalogFaultConfig' incorporates:
+             *  Outport: '<Root>/Y'
+             *  Outport: '<Root>/YF' *)
+            (* MATLAB Function 'MA/AnalogFaultConfig': '<S6>:1' *)
+            (* '<S6>:1:2' if fault *)
+            IF YF THEN
+                (* '<S6>:1:3' if mode == 1 *)
+                CASE PLV OF
+                    1:
+                        (* Last Good Value *)
+                        (* '<S6>:1:4' out = y_old; *)
+                        Y := Delay1;
+                    2:
+                        (* '<S6>:1:5' elseif mode == 2 *)
+                        (* Max Value *)
+                        (* '<S6>:1:6' out = max; *)
+                        Y := PEUH;
+                    3:
+                        (* '<S6>:1:7' elseif mode == 3 *)
+                        (* Min Value *)
+                        (* '<S6>:1:8' out = min; *)
+                        Y := PEUL;
+                    4:
+                        (* '<S6>:1:9' elseif mode == 4 *)
+                        (* Current Value *)
+                        (* '<S6>:1:10' out = in; *)
+                        Y := Switch12;
+                    5:
+                        (* '<S6>:1:11' elseif mode == 5 *)
+                        (* Predefined Value *)
+                        (* '<S6>:1:12' out = substitute; *)
+                        Y := PFBV;
+                    ELSE
+                        (* '<S6>:1:13' else *)
+                        (* substitute Value *)
+                        (* '<S6>:1:14' out = in; *)
+                        Y := Switch12;
+                END_CASE;
+            ELSE
+                (* '<S6>:1:16' else *)
+                (* '<S6>:1:17' out = in; *)
+                Y := Switch12;
+            END_IF;
+            (* End of MATLAB Function: '<S1>/AnalogFaultConfig' *)
+            (* UnitDelay: '<S35>/Unit Delay' *)
+            UnitDelay_k := UnitDelay_DSTATE_ll;
+            i4_POSITIVEEdge(
+                IN := FULL,
+                INprevious := UnitDelay_k
+            );
+            temp1 := i4_POSITIVEEdge.OUT;
+            FULLrise := temp1;
+            (* UnitDelay: '<S31>/Unit Delay' *)
+            UnitDelay_fu := UnitDelay_DSTATE_mz;
+            i0_POSITIVEEdge(
+                IN := HFULL,
+                INprevious := UnitDelay_fu
+            );
+            temp1 := i0_POSITIVEEdge.OUT;
+            RelationalOperator1_b := temp1;
+            (* UnitDelay: '<S18>/Unit Delay' *)
+            UnitDelay_m := UnitDelay_DSTATE_cs;
+            i0_NEGATIVEEdge(
+                IN := FULL,
+                INprevious := UnitDelay_m
+            );
+            temp1 := i0_NEGATIVEEdge.OUT;
+            FULLdec := temp1;
+            (* UnitDelay: '<S22>/Unit Delay' *)
+            UnitDelay_px := UnitDelay_DSTATE_dx;
+            i4_NEGATIVEEdge(
+                IN := HFULL,
+                INprevious := UnitDelay_px
+            );
+            temp1 := i4_NEGATIVEEdge.OUT;
+            RelationalOperator1_a := temp1;
+            (* Memory: '<S44>/Memory' *)
+            Memory_lu := Memory_PreviousInput_nz;
+            (* Logic: '<S1>/Logical Operator10' *)
+            LogicalOperator10 := FULLrise OR RelationalOperator1_b;
+            (* Logic: '<S1>/Logical Operator9' *)
+            LogicalOperator9 := FULLdec OR RelationalOperator1_a;
+            (* CombinatorialLogic: '<S44>/Logic' *)
+            temp1 := LogicalOperator10;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator9;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_lu;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* Sum: '<S14>/Sum2' *)
+            Sum2_d := PLALL + Product;
+            (* RelationalOperator: '<S14>/Relational Operator9' *)
+            RelationalOperator9_a := b_y > Sum2_d;
+            (* Logic: '<S14>/Logical Operator1' *)
+            LogicalOperator1_f := NOT PALL;
+            (* Logic: '<S14>/Logical Operator' *)
+            LogicalOperator_j := RelationalOperator9_a OR LogicalOperator1_f;
+            (* RelationalOperator: '<S14>/Relational Operator10' *)
+            RelationalOperator10_j := b_y < PLALL;
+            (* Memory: '<S62>/Memory' *)
+            Memory_a := Memory_PreviousInput_g;
+            (* CombinatorialLogic: '<S62>/Logic' *)
+            temp1 := RelationalOperator10_j;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator_j;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_a;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* Outport: '<Root>/BUWH' *)
+            i3_Block(
+                ssMethodType := 3,
+                OSB := Logic_g[0]
+            );
+            BUWH := i3_Block.BB;
+            tmp := i3_Block.blk_mode;
+            blk_mode_m := tmp;
+            (* Logic: '<S1>/Logical Operator11' incorporates:
+             *  Outport: '<Root>/BUWH' *)
+            LogicalOperator11 := BUWH OR b_BB;
+            (* Outport: '<Root>/BUWL' *)
+            i4_Block(
+                ssMethodType := 3,
+                OSB := Logic_c[0]
+            );
+            BUWL := i4_Block.BB;
+            tmp := i4_Block.blk_mode;
+            blk_mode_l := tmp;
+            (* Logic: '<S1>/Logical Operator12' incorporates:
+             *  Outport: '<Root>/BUWL' *)
+            LogicalOperator12 := BUWL OR b_BB;
+            (* Outport: '<Root>/BUHH' *)
+            i1_Block(
+                ssMethodType := 3,
+                OSB := Logic_e[0]
+            );
+            BUHH := i1_Block.BB;
+            tmp := i1_Block.blk_mode;
+            blk_mode_j := tmp;
+            (* Logic: '<S1>/Logical Operator3' incorporates:
+             *  Outport: '<Root>/BUHH' *)
+            LogicalOperator3 := BUHH OR b_BB;
+            (* Outport: '<Root>/BULL' *)
+            i2_Block(
+                ssMethodType := 3,
+                OSB := Logic_n[0]
+            );
+            BULL := i2_Block.BB;
+            tmp := i2_Block.blk_mode;
+            blk_mode_n := tmp;
+            (* Logic: '<S1>/Logical Operator4' incorporates:
+             *  Outport: '<Root>/BULL' *)
+            LogicalOperator4 := BULL OR b_BB;
+            (* Sum: '<S12>/Sum3' *)
+            Sum3_e := PLEHH - Product;
+            (* RelationalOperator: '<S12>/Relational Operator10' *)
+            RelationalOperator10_jk := b_y < Sum3_e;
+            (* Logic: '<S12>/Logical Operator1' *)
+            LogicalOperator1_k := NOT PEHH;
+            (* Logic: '<S12>/Logical Operator' *)
+            LogicalOperator_h := RelationalOperator10_jk OR LogicalOperator1_k;
+            (* RelationalOperator: '<S12>/Relational Operator9' *)
+            RelationalOperator9_g := b_y > PLEHH;
+            (* Memory: '<S60>/Memory' *)
+            Memory_d := Memory_PreviousInput_p;
+            (* CombinatorialLogic: '<S60>/Logic' *)
+            temp1 := RelationalOperator9_g;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator_h;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_d;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* Sum: '<S13>/Sum3' *)
+            Sum3_l := PLEH - Product;
+            (* RelationalOperator: '<S13>/Relational Operator10' *)
+            RelationalOperator10_a := b_y < Sum3_l;
+            (* Logic: '<S13>/Logical Operator1' *)
+            LogicalOperator1_l := NOT PEH;
+            (* Logic: '<S13>/Logical Operator' *)
+            LogicalOperator_c := RelationalOperator10_a OR LogicalOperator1_l;
+            (* RelationalOperator: '<S13>/Relational Operator9' *)
+            RelationalOperator9_j := b_y > PLEH;
+            (* Memory: '<S61>/Memory' *)
+            Memory_c := Memory_PreviousInput_j;
+            (* CombinatorialLogic: '<S61>/Logic' *)
+            temp1 := RelationalOperator9_j;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator_c;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_c;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* Sum: '<S17>/Sum2' *)
+            Sum2_h := PLEL + Product;
+            (* RelationalOperator: '<S17>/Relational Operator9' *)
+            RelationalOperator9_o := b_y > Sum2_h;
+            (* Logic: '<S17>/Logical Operator1' *)
+            LogicalOperator1_d := NOT PEL;
+            (* Logic: '<S17>/Logical Operator' *)
+            LogicalOperator_n := RelationalOperator9_o OR LogicalOperator1_d;
+            (* RelationalOperator: '<S17>/Relational Operator10' *)
+            RelationalOperator10_go := b_y < PLEL;
+            (* Memory: '<S65>/Memory' *)
+            Memory_jp := Memory_PreviousInput_kk;
+            (* CombinatorialLogic: '<S65>/Logic' *)
+            temp1 := RelationalOperator10_go;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator_n;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_jp;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* Sum: '<S16>/Sum2' *)
+            Sum2_n := PLELL + Product;
+            (* RelationalOperator: '<S16>/Relational Operator9' *)
+            RelationalOperator9_l := b_y > Sum2_n;
+            (* Logic: '<S16>/Logical Operator1' *)
+            LogicalOperator1_lj := NOT PELL;
+            (* Logic: '<S16>/Logical Operator' *)
+            LogicalOperator_d := RelationalOperator9_l OR LogicalOperator1_lj;
+            (* RelationalOperator: '<S16>/Relational Operator10' *)
+            RelationalOperator10_c := b_y < PLELL;
+            (* Memory: '<S64>/Memory' *)
+            Memory_la := Memory_PreviousInput_dld;
+            (* CombinatorialLogic: '<S64>/Logic' *)
+            temp1 := RelationalOperator10_c;
+            rowIdx := BOOL_TO_DINT(temp1);
+            temp1 := LogicalOperator_d;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            temp1 := Memory_la;
+            rowIdx := (((rowIdx) * 2) + BOOL_TO_DINT(temp1));
+            (* Logic: '<S1>/Logical Operator5' incorporates:
+             *  Outport: '<Root>/BU'
+             *  Outport: '<Root>/BUHH'
+             *  Outport: '<Root>/BULL'
+             *  Outport: '<Root>/BUWH'
+             *  Outport: '<Root>/BUWL' *)
+            BU := (((BUHH OR BUWH) OR BUWL) OR BULL) OR b_BB;
+            (* Constant: '<S1>/Constant12' incorporates:
+             *  Constant: '<S1>/Constant3' *)
+            alarm_k := temp1;
+            (* Switch: '<S1>/Switch' incorporates:
+             *  Constant: '<S1>/Constant1'
+             *  Outport: '<Root>/AHH' *)
+            IF LogicalOperator3 THEN
+                AHH := FALSE;
+            ELSE
+                AHH := alarm_k;
+            END_IF;
+            (* End of Switch: '<S1>/Switch' *)
+            (* Constant: '<S1>/Constant13' incorporates:
+             *  Constant: '<S1>/Constant4' *)
+            alarm := temp1;
+            (* Switch: '<S1>/Switch1' incorporates:
+             *  Constant: '<S1>/Constant2'
+             *  Outport: '<Root>/ALL' *)
+            IF LogicalOperator4 THEN
+                ALL := FALSE;
+            ELSE
+                ALL := alarm;
+            END_IF;
+            (* End of Switch: '<S1>/Switch1' *)
+            (* Switch: '<S1>/Switch4' incorporates:
+             *  Constant: '<S1>/Constant5'
+             *  Constant: '<S1>/Constant7'
+             *  Outport: '<Root>/AHH'
+             *  Outport: '<Root>/ALL'
+             *  Outport: '<Root>/BB'
+             *  Outport: '<Root>/BHH'
+             *  Outport: '<Root>/BLL'
+             *  Switch: '<S1>/Switch6' *)
+            IF BB THEN
+                BHH := FALSE;
+                BLL := FALSE;
+            ELSE
+                BHH := AHH;
+                BLL := ALL;
+            END_IF;
+            (* End of Switch: '<S1>/Switch4' *)
+            (* Switch: '<S1>/Switch5' incorporates:
+             *  Constant: '<S1>/Constant6'
+             *  Outport: '<Root>/WH' *)
+            IF LogicalOperator11 THEN
+                WH := FALSE;
+            ELSE
+                WH := Out_d;
+            END_IF;
+            (* End of Switch: '<S1>/Switch5' *)
+            (* Switch: '<S1>/Switch7' incorporates:
+             *  Constant: '<S1>/Constant8'
+             *  Outport: '<Root>/WL' *)
+            IF LogicalOperator12 THEN
+                WL := FALSE;
+            ELSE
+                WL := out;
+            END_IF;
+            (* End of Switch: '<S1>/Switch7' *)
+            (* Outport: '<Root>/EHH' *)
+            EHH := Logic_iq[0];
+            (* Outport: '<Root>/EH' *)
+            EH := Logic_ap[0];
+            (* Outport: '<Root>/EL' *)
+            EL := Logic_m4[0];
+            (* Outport: '<Root>/ELL' *)
+            ELL := Logic_p[0];
+            (* Outport: '<Root>/VER' incorporates:
+             *  Constant: '<S1>/Constant14' *)
+            VER := 1001.0;
+            (* Update for UnitDelay: '<S41>/Unit Delay' *)
+            UnitDelay_DSTATE_i := FUA;
+            (* Update for UnitDelay: '<S40>/Unit Delay' *)
+            UnitDelay_DSTATE_id := HFUA;
+            (* Update for UnitDelay: '<S29>/Unit Delay' *)
+            UnitDelay_DSTATE_j := FUA;
+            (* Update for UnitDelay: '<S19>/Unit Delay' *)
+            UnitDelay_DSTATE_k := HFUA;
+            (* Update for Memory: '<S48>/Memory' *)
+            Memory_PreviousInput := Logic[0];
+            (* Update for UnitDelay: '<S32>/Unit Delay' *)
+            UnitDelay_DSTATE_c := FB;
+            (* Update for UnitDelay: '<S42>/Unit Delay' *)
+            UnitDelay_DSTATE_l := HFB;
+            (* Update for UnitDelay: '<S20>/Unit Delay' *)
+            UnitDelay_DSTATE_d := FB;
+            (* Update for UnitDelay: '<S21>/Unit Delay' *)
+            UnitDelay_DSTATE_h := HFB;
+            (* Update for Memory: '<S49>/Memory' *)
+            Memory_PreviousInput_o := Logic_i[0];
+            (* Update for Delay: '<S1>/Delay5' *)
+            Delay5_DSTATE := b_x;
+            (* Update for Delay: '<S1>/Delay4' *)
+            Delay4_DSTATE := b_out;
+            (* Update for UnitDelay: '<S1>/Unit Delay' *)
+            UnitDelay_DSTATE := b_y;
+            (* Update for UnitDelay: '<S34>/Unit Delay' *)
+            UnitDelay_DSTATE_m := FUHH;
+            (* Update for UnitDelay: '<S33>/Unit Delay' *)
+            UnitDelay_DSTATE_a := HFUHH;
+            (* Update for UnitDelay: '<S27>/Unit Delay' *)
+            UnitDelay_DSTATE_aw := FUHH;
+            (* Update for UnitDelay: '<S28>/Unit Delay' *)
+            UnitDelay_DSTATE_jb := HFUHH;
+            (* Update for Memory: '<S47>/Memory' *)
+            Memory_PreviousInput_k := Logic_e[0];
+            (* Update for Memory: '<S58>/Memory' *)
+            Memory_PreviousInput_a := Logic_a[0];
+            (* Update for UnitDelay: '<S37>/Unit Delay' *)
+            UnitDelay_DSTATE_p := FUWH;
+            (* Update for UnitDelay: '<S36>/Unit Delay' *)
+            UnitDelay_DSTATE_jl := HFUWH;
+            (* Update for UnitDelay: '<S23>/Unit Delay' *)
+            UnitDelay_DSTATE_f := FUWH;
+            (* Update for UnitDelay: '<S24>/Unit Delay' *)
+            UnitDelay_DSTATE_ft := HFUWH;
+            (* Update for Memory: '<S45>/Memory' *)
+            Memory_PreviousInput_a5 := Logic_g[0];
+            (* Update for Memory: '<S59>/Memory' *)
+            Memory_PreviousInput_d := Logic_d[0];
+            (* Update for UnitDelay: '<S39>/Unit Delay' *)
+            UnitDelay_DSTATE_o := FUWL;
+            (* Update for UnitDelay: '<S38>/Unit Delay' *)
+            UnitDelay_DSTATE_g := HFUWL;
+            (* Update for UnitDelay: '<S25>/Unit Delay' *)
+            UnitDelay_DSTATE_c3 := FUWL;
+            (* Update for UnitDelay: '<S26>/Unit Delay' *)
+            UnitDelay_DSTATE_ax := HFUWL;
+            (* Update for Memory: '<S46>/Memory' *)
+            Memory_PreviousInput_dl := Logic_c[0];
+            (* Update for Memory: '<S63>/Memory' *)
+            Memory_PreviousInput_n := Logic_k[0];
+            (* Update for Delay: '<S1>/Delay1' incorporates:
+             *  Outport: '<Root>/Y' *)
+            Delay1_DSTATE := Y;
+            (* Update for UnitDelay: '<S35>/Unit Delay' *)
+            UnitDelay_DSTATE_ll := FULL;
+            (* Update for UnitDelay: '<S31>/Unit Delay' *)
+            UnitDelay_DSTATE_mz := HFULL;
+            (* Update for UnitDelay: '<S18>/Unit Delay' *)
+            UnitDelay_DSTATE_cs := FULL;
+            (* Update for UnitDelay: '<S22>/Unit Delay' *)
+            UnitDelay_DSTATE_dx := HFULL;
+            (* Update for Memory: '<S44>/Memory' *)
+            Memory_PreviousInput_nz := Logic_n[0];
+            (* Update for Memory: '<S62>/Memory' *)
+            Memory_PreviousInput_g := Logic_m[0];
+            (* Update for Memory: '<S60>/Memory' *)
+            Memory_PreviousInput_p := Logic_iq[0];
+            (* Update for Memory: '<S61>/Memory' *)
+            Memory_PreviousInput_j := Logic_ap[0];
+            (* Update for Memory: '<S65>/Memory' *)
+            Memory_PreviousInput_kk := Logic_m4[0];
+            (* Update for Memory: '<S64>/Memory' *)
+            Memory_PreviousInput_dld := Logic_p[0];
+    END_CASE;

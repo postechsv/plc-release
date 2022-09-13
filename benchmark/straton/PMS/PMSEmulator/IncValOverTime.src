@@ -1,0 +1,20 @@
+Inst_PLS(Start, t#100ms);
+if Start then
+    if RiseTime < 100 then
+        incVal := Value;        
+    else
+        incVal := (Value*100) / RiseTime;        
+    end_if;    
+    
+    if Inst_PLS.Q then
+        CurValue := CurValue + incVal;                
+        if CurValue >= Value then
+            CurValue := Value;
+            Done := true;
+        end_if;
+    end_if;
+else
+    CurValue := 0;
+    Done := false;    
+end_if;
+

@@ -1,0 +1,70 @@
+    IF R1 THEN
+        OFLO := 0;
+        EMPTY := 1;
+        PTR := -1;
+        NI := LIMIT(1, N, 128);
+        OUT := 0;
+    ELSIF POP & NOT EMPTY THEN
+        OFLO := 0;
+        PTR := PTR - 1;
+        EMPTY := PTR < 0;
+
+        IF EMPTY THEN
+            OUT := 0;
+        ELSE
+            CASE PTR OF
+                0:
+                    OUT := STK[0];
+                1:
+                    OUT := STK[1];
+                2:
+                    OUT := STK[2];
+                3:
+                    OUT := STK[3];
+                4:
+                    OUT := STK[4];
+                5:
+                    OUT := STK[5];
+                6:
+                    OUT := STK[6];
+                7:
+                    OUT := STK[7];
+                8:
+                    OUT := STK[8];
+                9:
+                    OUT := STK[9];
+            END_CASE;
+        END_IF;
+    ELSIF PUSH & NOT OFLO THEN
+        EMPTY := 0;
+        PTR := PTR + 1;
+        OFLO := (PTR = NI);
+
+        IF NOT OFLO THEN
+            OUT := IN;
+            CASE PTR OF
+                0:
+                    STK[0] := IN;
+                1:
+                    STK[1] := IN;
+                2:
+                    STK[2] := IN;
+                3:
+                    STK[3] := IN;
+                4:
+                    STK[4] := IN;
+                5:
+                    STK[5] := IN;
+                6:
+                    STK[6] := IN;
+                7:
+                    STK[7] := IN;
+                8:
+                    STK[8] := IN;
+                9:
+                    STK[9] := IN;
+            END_CASE;
+        ELSE
+            OUT := 0;
+        END_IF;
+    END_IF;

@@ -1,0 +1,13 @@
+$K5LMEXPORT
+$DIR
+F=ARFILL,Fill an array with a value
+$END
+$DEF(F=ARFILL)
+VAR_INPUT
+   Arr[] : ANY;
+   Value : ANY;
+END_VAR
+VAR_OUTPUT
+   OK : BOOL;
+END_VAR
+$END

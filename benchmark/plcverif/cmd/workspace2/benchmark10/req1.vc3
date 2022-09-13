@@ -1,0 +1,23 @@
+-description = ""
+-id = req1
+-job = verif
+-job.backend = cbmc
+-job.req = pattern
+-job.reporters.0 = summary
+-job.reporters.1 = html
+-job.reporters.2 = plaintext
+-job.req.inputs.0 = instance.CB1_pOpenTime
+-job.req.inputs.1 = instance.CB2_pOpenTime
+-job.req.inputs.2 = instance.DG1_StartReq
+-job.req.pattern_id = pattern-invariant
+-job.req.pattern_params.1 = "(NOT ((instance.DG1_ReadyToStart) AND (instance.DG1_Remote) AND (instance.DG1_StartReq)) OR  (instance.DG1_RunRated)) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+-lf = step7
+-lf.entry = DGSwbd1
+-name = ""
+-job.backend.timeout = 7200
+-job.backend.unwind = 21
+-job.backend.timeout_executor_path = ""
+-job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+-output = benchmark/plcverif/cmd/workspace2/benchmark10/output
+-sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark10/*.scl
+

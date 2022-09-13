@@ -1,0 +1,21 @@
+[Options]
+Simul=ON
+Lock=NONE
+MapUINT=ON
+DEBUG=ON
+CHECKSYBCONFLICTS=ON
+
+
+[SimulCode]
+Target=T5SIMUL
+Suffix=.XWS
+MotorolaEndian=FALSE
+T5Style=ON
+
+[TargetCode]
+Target=T5RTI
+Suffix=.XTI
+MotorolaEndian=FALSE
+T5Style=ON
+Comment=Straton T5 runtime (Intel like byte ordering)
+ConfigName=T5RTI

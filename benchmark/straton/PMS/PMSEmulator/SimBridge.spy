@@ -1,0 +1,14 @@
+@SIZECOL1=183
+@SIZECOL2=100
+@SIZECOL3=100
+@SIZECOL4=100
+@SIZECOL5=100
+exSwbdBridgeData1.DGLoadBalance
+totalDGNumOfSwbdGroup
+loadBalanceSum
+totalLoadOfSwbdGroup
+SwbdGroupAndLoad.LoadGroup
+@EXPANDED=SwbdGroupAndLoad.LoadGroup
+@EXPANDED=totalDGNumOfSwbdGroup
+@EXPANDED=totalLoadOfSwbdGroup
+@EXPANDED=exSwbdBridgeData1.DGLoadBalance

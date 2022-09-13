@@ -1,0 +1,15 @@
+    DGCounter[0] := 0;
+    DGCounter[1] := 0;
+    group := SwbdData1.SwbdGroup;
+    FOR i := 0 TO 1 DO
+        IF SwbdData1.DGConnFlag[i] THEN
+            DGCounter[group] := DGCounter[group] + 1;
+        END_IF;
+    END_FOR;
+
+    group := SwbdData2.SwbdGroup;
+    FOR i := 0 TO 1 DO
+        IF SwbdData2.DGConnFlag[i] THEN
+            DGCounter[group] := DGCounter[group] + 1;
+        END_IF;
+    END_FOR;

@@ -1,0 +1,44 @@
+Compiler V10.0.0.239
+>> Complex variables stored in a separate segment
+Loading application symbols...
+Demo Mode: run time execution limited in time!
+pStartup
+pShutDown
+pOnDivZero
+pOnBadIndex
+DGSwbd1
+DGSwbd2
+LoadSwbd1
+LoadSwbd2
+Swbd12
+SimCB
+SimDG
+SimLoad
+SimSwbd
+SimBridge
+SimBridge: (7): Warning: loop instructions may block the target cycle
+SimBridge: (32): Warning: loop instructions may block the target cycle
+SimBridge: (42): Warning: loop instructions may block the target cycle
+SimBridge: (44): Warning: loop instructions may block the target cycle
+SimBridge: (59): Warning: loop instructions may block the target cycle
+SimBridge: (86): Warning: loop instructions may block the target cycle
+SimBridge: (102): Warning: loop instructions may block the target cycle
+SimBridge: (130): Warning: loop instructions may block the target cycle
+CalReLoad
+IncValOverTime
+DecValOverTime
+CountDGInSwbdGroup
+CountDGInSwbdGroup: (4): Warning: loop instructions may block the target cycle
+CountDGInSwbdGroup: (11): Warning: loop instructions may block the target cycle
+AssignSwbdGroupAndLoad
+CalPowerFactor
+Building application data...
+Complex data types definition = 4030 bytes
+< Call stack depth = 2 >
+< 364 BOOL/SINT; 59 INT; 545 DINT/REAL; 0 LINT/LREAL; 4 TIME; 1 STRING;  - CRC = b4e758f8 >
+On Line Change is disabled
+< CT Segment = 3828 byte(s) >
+Relocating code...
+< Code CRC=408c3ca5 - File CRC=f88b270c - Size=41680 >
+< 20 POUs - 7 programs, 2 sub-programs, 11 UDFBs >
+No error detected - 10 warning(s)

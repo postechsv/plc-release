@@ -1,0 +1,16 @@
+Compiler V10.0.0.239
+Loading application symbols...
+Demo Mode: run time execution limited in time!
+Main
+pStartup
+pShutDown
+pOnDivZero
+pOnBadIndex
+Main2
+Building application data...
+< 4 BOOL/SINT; 0 INT; 4 DINT/REAL; 0 LINT/LREAL; 2 TIME; 0 STRING;  - CRC = 990f52b4 >
+On Line Change is disabled
+< 6 POUs - 4 programs, 2 sub-programs, 0 UDFBs >
+Relocating code...
+< Code CRC=4d2ac013 - File CRC=f8b20b32 - Size=1864 >
+No error detected

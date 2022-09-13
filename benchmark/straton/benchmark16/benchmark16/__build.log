@@ -1,0 +1,32 @@
+Compiler V10.0.0.239
+Loading application symbols...
+SF_Equivalent
+SF_Antivalent
+SF_ModeSelector
+SF_EmergencyStop
+SF_ESPE
+SF_SafetyRequest
+SF_GuardLocking
+SF_SafelyLimitSpeed
+SF_TwoHandControlTypeII
+SF_TwoHandControlTypeIII
+SF_GuardMonitoring
+SF_SafeStop1
+SF_EnableSwitch
+SF_MutingSeq
+No error detected
+
+Loading application symbols...
+Demo Mode: run time execution limited in time!
+Main
+pStartup
+pShutDown
+pOnDivZero
+pOnBadIndex
+Building application data...
+< 71 BOOL/SINT; 0 INT; 37 DINT/REAL; 0 LINT/LREAL; 4 TIME; 0 STRING;  - CRC = 02fb8dcb >
+On Line Change is disabled
+< 19 POUs - 3 programs, 2 sub-programs, 14 UDFBs >
+Relocating code...
+< Code CRC=50df2a2e - File CRC=fc5e8cd6 - Size=16392 >
+No error detected

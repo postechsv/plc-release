@@ -1,0 +1,295 @@
+-------------------------------2021-05-03 17:11:46.585 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.scl'...
+
+2021-05-03 17:11:46.590 [main] ERROR cern.plcverif.base.common.logging.PlatformLogger - Unable to load the given configuration file. The following value is not preceded by an argument name: FUNCTION (missing '-' or missing file?). Already parsed keys: .
+2021-05-03 17:13:23.808 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.scl'...
+
+2021-05-03 17:13:23.813 [main] ERROR cern.plcverif.base.common.logging.PlatformLogger - Unable to load the given configuration file. The following value is not preceded by an argument name: FUNCTION (missing '-' or missing file?). Already parsed keys: .
+2021-05-03 17:17:45.659 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/case1.vc3'...
+
+2021-05-03 17:17:45.666 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/case1.vc3' not found, parsing arguments as parameters...
+
+2021-05-03 17:17:45.767 [main] WARN  cern.plcverif.base.common.logging.PlatformLogger - No output directory was found in the job definition. Using generated folder in working directory: /mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/output/2021-05-03_17-17-45
+2021-05-03 17:17:45.769 [main] ERROR cern.plcverif.base.common.logging.PlatformLogger - Unable to parse the given settings. The following file does not exist: /mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/source.scl
+cern.plcverif.base.common.settings.exceptions.SettingsParserException: The following file does not exist: /mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/source.scl
+	at cern.plcverif.base.platform.Platform.loadSourceFiles(Platform.java:367) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.base.platform.Platform.parsePlcCfaJob(Platform.java:306) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.base.platform.Platform.parseJob(Platform.java:298) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.cli.cmdline.CmdlineAppMain.cmdlineMain(CmdlineAppMain.java:124) [cern.plcverif.cli.cmdline_1.0.0.202012152221.jar:?]
+	at cern.plcverif.cli.cmdline.app.Application.start(Application.java:61) [cern.plcverif.cli.cmdline.app_1.0.0.202012152221.jar:?]
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:203) [org.eclipse.equinox.app_1.5.0.v20200717-0620.jar:?]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:401) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:255) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?]
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:653) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:590) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1461) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1434) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+2021-05-03 17:18:59.199 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/case1.vc3'...
+
+2021-05-03 17:18:59.206 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/case1.vc3' not found, parsing arguments as parameters...
+
+2021-05-03 17:18:59.308 [main] WARN  cern.plcverif.base.common.logging.PlatformLogger - No output directory was found in the job definition. Using generated folder in working directory: /mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/output/2021-05-03_17-18-59
+2021-05-03 17:18:59.783 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-03 17:22:28.717 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/case1.vc3'...
+
+2021-05-03 17:22:28.723 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/case1.vc3' not found, parsing arguments as parameters...
+
+2021-05-03 17:22:28.825 [main] WARN  cern.plcverif.base.common.logging.PlatformLogger - No output directory was found in the job definition. Using generated folder in working directory: /mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/output/2021-05-03_17-22-28
+2021-05-03 17:22:29.307 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-03 17:22:29.736 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-03 17:24:23.125 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/case1.vc3'...
+
+2021-05-03 17:24:23.132 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/case1.vc3' not found, parsing arguments as parameters...
+
+2021-05-03 17:24:23.703 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-03 17:24:24.132 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-03 17:24:59.741 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/case1.vc3'...
+
+2021-05-03 17:24:59.747 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/case1.vc3' not found, parsing arguments as parameters...
+
+2021-05-03 17:25:00.316 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-03 17:25:00.746 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-03 17:27:47.665 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/case1.vc3' not found, parsing arguments as parameters...
+
+2021-05-03 17:27:47.669 [main] ERROR cern.plcverif.base.common.logging.PlatformLogger - Unable to parse the given parameters. The following value is not preceded by an argument name: workspace/case1.vc3 (missing '-' or missing file?). Already parsed keys: .
+2021-05-03 17:27:58.587 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.vc3'...
+
+2021-05-03 17:27:58.593 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/source.vc3' not found, parsing arguments as parameters...
+
+2021-05-03 17:27:58.691 [main] ERROR cern.plcverif.base.common.logging.PlatformLogger - Unable to parse the given settings. The following file does not exist: /mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.scl
+cern.plcverif.base.common.settings.exceptions.SettingsParserException: The following file does not exist: /mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.scl
+	at cern.plcverif.base.platform.Platform.loadSourceFiles(Platform.java:367) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.base.platform.Platform.parsePlcCfaJob(Platform.java:306) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.base.platform.Platform.parseJob(Platform.java:298) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.cli.cmdline.CmdlineAppMain.cmdlineMain(CmdlineAppMain.java:124) [cern.plcverif.cli.cmdline_1.0.0.202012152221.jar:?]
+	at cern.plcverif.cli.cmdline.app.Application.start(Application.java:61) [cern.plcverif.cli.cmdline.app_1.0.0.202012152221.jar:?]
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:203) [org.eclipse.equinox.app_1.5.0.v20200717-0620.jar:?]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:401) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:255) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?]
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:653) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:590) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1461) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1434) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+2021-05-03 17:28:24.367 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.vc3'...
+
+2021-05-03 17:28:24.374 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/source.vc3' not found, parsing arguments as parameters...
+
+2021-05-03 17:28:24.945 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-03 17:28:25.373 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:19:03.954 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.vc3'...
+
+2021-05-04 16:19:03.961 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/source.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:19:05.084 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:19:05.635 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:19:14.046 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/BasicCode.vc3'...
+
+2021-05-04 16:19:14.053 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/BasicCode.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:19:14.614 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:19:29.819 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SubstituteDirectBitAccessRefs1.vc3'...
+
+2021-05-04 16:19:29.825 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SubstituteDirectBitAccessRefs1.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:19:30.402 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:19:48.608 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/VerificationAssertion.vc3'...
+
+2021-05-04 16:19:48.615 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/VerificationAssertion.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:19:49.189 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:19:57.452 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:19:57.458 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:19:58.031 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:20:06.720 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/VariableView2.vc3'...
+
+2021-05-04 16:20:06.726 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/VariableView2.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:20:07.302 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:20:53.634 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.vc3'...
+
+2021-05-04 16:20:53.641 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/source.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:20:54.198 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:20:54.655 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:21:37.593 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.vc3'...
+
+2021-05-04 16:21:37.599 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/source.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:21:38.171 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:21:38.594 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:22:59.459 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:22:59.465 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:23:00.022 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:23:31.843 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:23:31.850 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:23:32.403 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:23:51.531 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:23:51.537 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:23:52.102 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:24:33.028 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:24:33.033 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:24:33.594 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:25:21.824 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:25:21.831 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:25:28.934 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/BasicCode.vc3'...
+
+2021-05-04 16:25:28.941 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/BasicCode.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:25:29.509 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:25:29.971 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:28:31.364 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:28:31.370 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:28:31.926 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:28:32.375 [main] ERROR cern.plcverif.base.common.logging.PlatformLogger - Unexpected exception (NotSimpleExpressionException). "cern.plcverif.plc.step7.step7Language.impl.DirectNamedRefImpl@62ade015" is not a simple expression.
+cern.plcverif.plc.step7.util.SimpleExpressionUtil$NotSimpleExpressionException: "cern.plcverif.plc.step7.step7Language.impl.DirectNamedRefImpl@62ade015" is not a simple expression.
+	at cern.plcverif.plc.step7.util.SimpleExpressionUtil._evaluateSimpleExpression(SimpleExpressionUtil.java:332) ~[?:?]
+	at cern.plcverif.plc.step7.util.SimpleExpressionUtil.evaluateSimpleExpression(SimpleExpressionUtil.java:370) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.impl.SclBlockToCfa._convertStatement(SclBlockToCfa.java:391) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.impl.SclBlockToCfa.convertStatement(SclBlockToCfa.java:852) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.impl.SclBlockToCfa._convertList(SclBlockToCfa.java:141) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.impl.SclBlockToCfa.convertList(SclBlockToCfa.java:831) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.impl.BlockToCfa.convert(BlockToCfa.java:192) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.impl.ProgramConverter.convertBlock(ProgramConverter.java:41) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.Step7CodeToCfa.representFilesInScope(Step7CodeToCfa.java:364) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.Step7CodeToCfa.representFilesInScope(Step7CodeToCfa.java:342) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.Step7CodeToCfa.convert(Step7CodeToCfa.java:300) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.Step7CodeToCfa.convert(Step7CodeToCfa.java:262) ~[?:?]
+	at cern.plcverif.plc.step7.cfa.Step7CodeToCfa.convert(Step7CodeToCfa.java:273) ~[?:?]
+	at cern.plcverif.plc.step7.extension.Step7ParserResult.generateCfa(Step7ParserResult.java:130) ~[?:?]
+	at cern.plcverif.verif.job.VerificationJob.generateCfa(VerificationJob.java:457) ~[?:?]
+	at cern.plcverif.verif.job.VerificationJob.stepGenerateCfa(VerificationJob.java:451) ~[?:?]
+	at cern.plcverif.verif.job.VerificationJob.execute(VerificationJob.java:212) ~[?:?]
+	at cern.plcverif.verif.job.VerificationJob.execute(VerificationJob.java:1) ~[?:?]
+	at cern.plcverif.cli.cmdline.CmdlineAppMain.cmdlineMain(CmdlineAppMain.java:125) [cern.plcverif.cli.cmdline_1.0.0.202012152221.jar:?]
+	at cern.plcverif.cli.cmdline.app.Application.start(Application.java:61) [cern.plcverif.cli.cmdline.app_1.0.0.202012152221.jar:?]
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:203) [org.eclipse.equinox.app_1.5.0.v20200717-0620.jar:?]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:401) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:255) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?]
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:653) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:590) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1461) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1434) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+2021-05-04 16:29:22.194 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:29:22.200 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:29:22.772 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:32:21.171 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SubstituteDirectBitAccessRefs1.vc3'...
+
+2021-05-04 16:32:21.177 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SubstituteDirectBitAccessRefs1.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:32:21.730 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:32:22.380 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:44:47.254 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/VariableView2.vc3'...
+
+2021-05-04 16:44:47.260 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/VariableView2.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:44:47.819 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:44:48.771 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:45:45.724 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/VariableView2.vc3'...
+
+2021-05-04 16:45:45.730 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/VariableView2.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:45:46.296 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:45:47.238 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:46:36.091 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/BasicCode.vc3'...
+
+2021-05-04 16:46:36.097 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/BasicCode.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:46:36.653 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:46:37.116 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:46:52.066 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:46:52.073 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:46:52.638 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:47:00.766 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/source.vc3'...
+
+2021-05-04 16:47:00.772 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/source.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:47:01.332 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:47:01.796 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:47:08.762 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SubstituteDirectBitAccessRefs1.vc3'...
+
+2021-05-04 16:47:08.768 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SubstituteDirectBitAccessRefs1.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:47:09.344 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:47:09.940 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:47:18.693 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/VariableView2.vc3'...
+
+2021-05-04 16:47:18.700 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/VariableView2.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:47:19.252 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:47:20.211 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:47:26.498 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/VerificationAssertion.vc3'...
+
+2021-05-04 16:47:26.504 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/VerificationAssertion.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:47:27.056 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2021-05-04 16:47:27.514 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 5 sec)
+2021-05-04 16:47:49.862 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/mnt/d/plc_case_collection/PLCverif/cern.plcverif.cli.cmdline.app.product-linux.gtk.x86_64.tar/workspace/SclStatements.vc3'...
+
+2021-05-04 16:47:49.868 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/SclStatements.vc3' not found, parsing arguments as parameters...
+
+2021-05-04 16:47:50.423 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2022-09-02 18:10:58.456 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/home/jlee/plc/benchmark/plcverif/cmd/workspace/benchmark1/req1.vc3'...
+
+2022-09-02 18:10:58.464 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/benchmark1/req1.vc3' not found, parsing arguments as parameters...
+
+2022-09-02 18:10:59.232 [main] ERROR cern.plcverif.base.common.logging.PlatformLogger - Unable to parse the given settings. The following file does not exist: /home/jlee/plc/benchmark/plcverif/cmd/benchmark/plcverif/cmd/workspace/benchmark1/benchmark1.scl
+cern.plcverif.base.common.settings.exceptions.SettingsParserException: The following file does not exist: /home/jlee/plc/benchmark/plcverif/cmd/benchmark/plcverif/cmd/workspace/benchmark1/benchmark1.scl
+	at cern.plcverif.base.platform.Platform.loadSourceFiles(Platform.java:367) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.base.platform.Platform.parsePlcCfaJob(Platform.java:306) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.base.platform.Platform.parseJob(Platform.java:298) ~[cern.plcverif.base.platform_1.0.0.202012140900.jar:?]
+	at cern.plcverif.cli.cmdline.CmdlineAppMain.cmdlineMain(CmdlineAppMain.java:124) [cern.plcverif.cli.cmdline_1.0.0.202012152221.jar:?]
+	at cern.plcverif.cli.cmdline.app.Application.start(Application.java:61) [cern.plcverif.cli.cmdline.app_1.0.0.202012152221.jar:?]
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:203) [org.eclipse.equinox.app_1.5.0.v20200717-0620.jar:?]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:401) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:255) [org.eclipse.osgi_3.16.100.v20201030-1916.jar:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?]
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:653) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:590) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1461) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1434) [org.eclipse.equinox.launcher_1.6.0.v20200915-1508.jar:?]
+2022-09-02 18:12:22.966 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Parsing config file '/home/jlee/plc/benchmark/plcverif/cmd/workspace/benchmark1/req1.vc3'...
+
+2022-09-02 18:12:22.974 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Config file 'workspace/benchmark1/req1.vc3' not found, parsing arguments as parameters...
+
+2022-09-02 18:12:24.011 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - No reductions specified. Using all defined reductions: basic_reductions
+2022-09-02 18:12:24.474 [main] INFO  cern.plcverif.base.common.logging.PlatformLogger - Executing the verification backend... (timeout: 7200 sec)

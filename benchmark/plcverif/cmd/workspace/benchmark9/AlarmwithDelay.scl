@@ -1,0 +1,99 @@
+FUNCTION_BLOCK AlarmwithDelay
+	VAR_INPUT
+		ssMethodType : DINT;
+		b_En         : BOOL;
+		Duration     : REAL;
+	END_VAR
+	VAR_OUTPUT
+		Out : BOOL;
+	END_VAR
+	VAR
+		is_active_c10_mylib : DINT;
+		is_c10_mylib        : DINT;
+		temporalCounter_i1  : PLC_CODER_TIMER;
+	END_VAR
+BEGIN
+	CASE ssMethodType OF
+		0:
+			temporalCounter_i1(timerAction := 1);
+			is_active_c10_mylib := 0;
+			is_c10_mylib := 0;
+		3:
+			(* Chart: '<S1>/Alarm with Delay1' *)
+			(* Gateway: Alarm with Delay *)
+			(* During: Alarm with Delay *)
+			IF is_active_c10_mylib = 0 THEN
+				(* Entry: Alarm with Delay *)
+				is_active_c10_mylib := 1;
+				(* Entry Internal: Alarm with Delay *)
+				(* Transition: '<S2>:36' *)
+				is_c10_mylib := 1;
+				(* Entry 'INIT': '<S2>:40' *)
+				(* '<S2>:40:1' Out = false; *)
+				Out := FALSE;
+			ELSE
+				CASE is_c10_mylib OF
+					1:
+						Out := FALSE;
+						(* During 'INIT': '<S2>:40' *)
+						(* '<S2>:65:1' sf_internal_predicateOutput = ... *)
+						(* '<S2>:65:1' En==true; *)
+						IF b_En THEN
+							(* Transition: '<S2>:65' *)
+							is_c10_mylib := 3;
+							temporalCounter_i1(timerAction := 1);
+						(* Entry 'OFF': '<S2>:67' *)
+						(* '<S2>:67:1' Out = false; *)
+						END_IF;
+					2:
+						Out := FALSE;
+						(* During 'NEXT': '<S2>:69' *)
+						(* '<S2>:70:1' sf_internal_predicateOutput = ... *)
+						(* '<S2>:70:1' En==true; *)
+						IF b_En THEN
+							(* Transition: '<S2>:70' *)
+							is_c10_mylib := 3;
+							temporalCounter_i1(timerAction := 1);
+						(* Entry 'OFF': '<S2>:67' *)
+						(* '<S2>:67:1' Out = false; *)
+						END_IF;
+					3:
+						Out := FALSE;
+						(* During 'OFF': '<S2>:67' *)
+						(* '<S2>:72:1' sf_internal_predicateOutput = ... *)
+						(* '<S2>:72:1' En==false; *)
+						IF NOT b_En THEN
+							(* Transition: '<S2>:72' *)
+							is_c10_mylib := 2;
+						(* Entry 'NEXT': '<S2>:69' *)
+						(* '<S2>:69:1' Out = false; *)
+						ELSE
+							(* '<S2>:62:1' sf_internal_predicateOutput = ... *)
+							(* '<S2>:62:1' after(Duration, sec); *)
+							temporalCounter_i1(timerAction := 2);
+							IF temporalCounter_i1.done THEN
+								(* Transition: '<S2>:62' *)
+								is_c10_mylib := 4;
+								(* Entry 'ON': '<S2>:24' *)
+								(* '<S2>:24:1' Out = true; *)
+								Out := TRUE;
+							END_IF;
+						END_IF;
+					ELSE
+						Out := TRUE;
+						(* During 'ON': '<S2>:24' *)
+						(* '<S2>:59:1' sf_internal_predicateOutput = ... *)
+						(* '<S2>:59:1' En==false; *)
+						IF NOT b_En THEN
+							(* Transition: '<S2>:59' *)
+							is_c10_mylib := 2;
+							(* Entry 'NEXT': '<S2>:69' *)
+							(* '<S2>:69:1' Out = false; *)
+							Out := FALSE;
+						END_IF;
+				END_CASE;
+			END_IF;
+	(* End of Chart: '<S1>/Alarm with Delay1' *)
+	END_CASE;
+
+END_FUNCTION_BLOCK

@@ -1,0 +1,100 @@
+    CYCLE := CYCLE + 1;
+    IF NOT Activate THEN
+        DiagCode := 0;
+    ELSE
+        CASE DiagCode OF
+            0:
+                IF Activate THEN
+                    DiagCode := 32769;
+                END_IF;
+            32769:
+                IF S_ChannelNC AND S_ChannelNO THEN
+                    DiagCode := 32772;
+                ELSIF NOT S_ChannelNC AND NOT S_ChannelNO THEN
+                    DiagCode := 32788;
+                ELSIF S_ChannelNC AND NOT S_ChannelNO THEN
+                    DiagCode := 32768;
+                END_IF;
+            32772:
+                IF Activate THEN
+                    DiagCode := 49153;
+                ELSIF NOT S_ChannelNC THEN
+                    DiagCode := 32769;
+                ELSIF NOT S_ChannelNO THEN
+                    DiagCode := 32768;
+                END_IF;
+            49153:
+                IF NOT S_ChannelNC AND S_ChannelNO THEN
+                    DiagCode := 32769;
+                END_IF;
+            49154:
+                IF NOT S_ChannelNC AND S_ChannelNO THEN
+                    DiagCode := 32769;
+                END_IF;
+            32788:
+                IF Activate THEN
+                    DiagCode := 49154;
+                ELSIF S_ChannelNO THEN
+                    DiagCode := 32769;
+                ELSIF S_ChannelNC THEN
+                    DiagCode := 32768;
+                END_IF;
+            49155:
+                IF NOT S_ChannelNC AND S_ChannelNO THEN
+                    DiagCode := 32769;
+                END_IF;
+            32773:
+                IF Activate THEN
+                    DiagCode := 49155;
+                ELSIF NOT S_ChannelNC AND S_ChannelNO THEN
+                    DiagCode := 32773;
+                END_IF;
+            32768:
+                IF NOT S_ChannelNC OR S_ChannelNO THEN
+                    DiagCode := 32773;
+                ELSIF NOT S_ChannelNC AND S_ChannelNO THEN
+                    (* This code is not reachable, since the conditions
+                     of IF and ELSIF are accidentally swapped *)
+                    DiagCode := 32769;
+                END_IF;
+        END_CASE;
+    END_IF;
+
+    CASE DiagCode OF
+        0:
+            Ready := FALSE;
+            Error := FALSE;
+            S_AntivalentOut := FALSE;
+        32768:
+            Ready := TRUE;
+            Error := FALSE;
+            S_AntivalentOut := TRUE;
+        32769:
+            Ready := TRUE;
+            Error := FALSE;
+            S_AntivalentOut := FALSE;
+        32772:
+            Ready := TRUE;
+            Error := FALSE;
+            S_AntivalentOut := FALSE;
+        32788:
+            Ready := TRUE;
+            Error := FALSE;
+            S_AntivalentOut := FALSE;
+        32773:
+            Ready := TRUE;
+            Error := FALSE;
+            S_AntivalentOut := FALSE;
+        49153:
+            Ready := TRUE;
+            Error := TRUE;
+            S_AntivalentOut := FALSE;
+        49154:
+            Ready := TRUE;
+            Error := TRUE;
+            S_AntivalentOut := FALSE;
+        49155:
+            Ready := TRUE;
+            Error := TRUE;
+            S_AntivalentOut := FALSE;
+    END_CASE;

@@ -1,0 +1,101 @@
+forcedCB := fcOpen or fcClose or fcEarthed  or fcTrip; 
+if not forcedCB then
+    if mRemote then
+        openTrigger := Open;
+        closeTrigger := Close;    
+    else
+        openTrigger := mOpen;
+        closeTrigger := mClose;    
+    end_if;
+    
+    OpenCBRemote(openTrigger);
+    if OpenCBRemote.Q and (not openedPos) then        
+        Timer(false, t#0ms);
+        delayTime := ANY_TO_TIME(pOpenTime);
+        cmdType := true;  
+        closedPos := false;
+        
+        if exCBData.Mode = INCOMER then
+            exCBData.SyncReq := false;
+        end_if;
+    end_if;
+    
+    CloseCBRemote(closeTrigger);
+    if CloseCBRemote.Q and (not closedPos) then
+        Timer(false, t#0ms);
+        delayTime := ANY_TO_TIME(pCloseTime);
+        cmdType := false;
+        
+        if exCBData.Mode = INCOMER then
+           exCBData.SyncReq := true;
+        else
+           openedPos := false;
+        end_if;
+    end_if;
+    
+    if not exCBData.SyncReq or exCBData.SyncDone then       
+        if ANY_TO_DINT(delayTime) <> 0 then
+            if exCBData.SyncDone then
+                openedPos := false;
+            end_if;            
+            
+            Timer(true, delayTime);
+            if Timer.ET >= delayTime then
+                if cmdType then
+                    openedPos := true;
+                else
+                    closedPos := true;
+            
+                    if exCBData.SyncDone then
+                        exCBData.SyncReq := false;
+                    end_if;
+                end_if;     
+            
+            delayTime := t#0ms;
+            end_if;
+        end_if;
+    end_if;
+    
+    Available := true;
+else
+    Timer(false, t#0ms);
+    delayTime := t#0ms;
+    
+    if fcEarthed or fcTrip then
+        openedPos := true;
+        closedPos := false;    
+        Available := false;
+    else
+        Available := true;
+        
+        if fcOpen or fcClose then
+            if fcOpen and fcClose then
+                openedPos := true;
+                closedPos := true;
+            elsif fcOpen then
+                openedPos := true;
+                closedPos := false;    
+            elsif fcClose then
+                openedPos := false;
+                closedPos := true;
+            end_if;
+        end_if;
+    end_if;
+
+end_if;
+
+if not forcedCB and fcTransient then
+    Opened := false;
+    Closed := false;
+else
+    Opened := openedPos;
+    Closed := closedPos;
+end_if;
+
+Remote := mRemote;
+Earthed := fcEarthed;
+Tripped := fcTrip;
+Current := exCBData.Current;
+
+exCBData.Opened := Opened;
+exCBData.Closed := Closed;

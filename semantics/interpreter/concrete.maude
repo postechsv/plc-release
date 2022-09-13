@@ -1,0 +1,40 @@
+---syntax
+load ../syntax/syntax 
+load ../syntax/straton-project.maude
+
+---semantics
+load ../core/k-prelude.maude
+load ../core/abstract-value
+
+load ../core/strictness
+
+load ../core/plc-configuration
+
+load ../core/preprocessing
+
+load ../core/semantics
+
+load ../builtinfunctions/dataConversionFunctions
+load ../builtinfunctions/arithmeticFunctions
+
+load ../concreteANDsymbolic/concrete-value
+load ../concreteANDsymbolic/concrete-semantics
+
+mod PLC-CORE is
+  inc PREPROCESSING .
+  inc ALU-SEMANTICS .
+  inc ASSIGNMENT-LOOKUP-SEMANTICS .
+  inc CONDITIONAL-SEMANTICS .
+  inc CALL-SEMANTICS .
+  inc CYCLE-SEMANTICS .
+  inc WAIT-SEMANTICS .
+  inc TIMER-SEMANTICS .
+  inc STREAM-SEMANTICS .
+
+  inc PLC-CONCRETE-SYN2SEM-SEM2SYN .
+  inc PLC-CONCRETE-CHECKSAT .
+  inc PLC-CONCRETE-ARITHMETIC .
+  inc CONCRETE-SEMANTIC-CONVERSION .
+  inc CONCRETE-DATA-CONVERSION .
+  inc CONCRETE-ARITHMETIC-FUNCTIONS .
+endm

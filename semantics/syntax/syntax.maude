@@ -1,0 +1,337 @@
+--- syntax.maude converts code sections (see CODE-SECTION) of each programs into structured data. 
+fmod PID is
+  inc QID .
+  sort Pid .
+  subsort Qid < Pid .
+endfm
+
+fmod FUNID is
+  sort FunId .
+endfm
+
+view Pid from TRIV to PID is
+  sort Elt to Pid .
+endv
+
+view FunId from TRIV to FUNID is
+  sort Elt to FunId .
+endv
+
+fmod PLC-VALUE is
+  sort PValue .
+endfm
+
+view PValue from TRIV to PLC-VALUE is
+  sort Elt to PValue .
+endv
+
+fmod PTYPE is
+  sort PType .
+endfm
+
+view PType from TRIV to PTYPE is
+  sort Elt to PType .
+endv
+
+--- Below handles PLC data types such as INT, REAL, TIME, BOOL into Maude variable types. ex) # 1 for INT, # 1.0 for REAL, FALSE for BOOL, T# 10 ms for time.
+fmod PLC-PRIMITIVES is
+  including PID .
+  including PLC-VALUE .
+  including RAT .
+  including FLOAT .
+  including STRING .
+  inc CONVERSION .
+  sorts PString PBool PRat PFloat PTime PEnum  .
+
+  op _#_ : Pid Pid -> PEnum [prec 0] .
+
+  op #_ : String -> PString [prec 0] .
+  op #_ : Rat -> PRat [prec 0] .
+  op #_ : Float -> PFloat [prec 0] .
+  op T#_ms : Nat -> PTime [prec 0] .
+  op T#_s : Nat -> PTime [prec 0] .
+  ops TRUE FALSE : -> PBool .
+  subsorts PEnum PString PRat PFloat PBool PTime < PValue .
+
+  eq T# N:Nat s = T# (N:Nat * 1000) ms .
+  eq # F:Float = # (rat(F:Float)) .
+endfm
+
+fmod PLC-TYPES is
+  inc PID .
+  including PLC-PRIMITIVES .
+  inc SET{PType} .
+  sort Primitive .
+  sort FBName .
+
+  subsort Primitive < PType .
+  subsort FBName < PType .
+
+
+  ops BOOL REAL UINT DINT SINT USINT UDINT TIME INT : -> Primitive .
+  ops NUMERIC INTTYPES : -> Set{PType} .
+  eq NUMERIC = DINT , SINT , USINT , UINT , UDINT , INT , REAL .
+  eq INTTYPES = DINT , SINT , USINT , UINT , UDINT , INT .
+
+
+--- Built-in function blocks such as TON, Counter, Blink are have are defined seperately.
+  ops TON Counter Blink : -> FBName .
+
+--- Below handles variables whom indicates function blocks. ex) Inst_FB1 : FB1 ; -> Inst_FB1 : fbtype[FB1] ; in our form.
+  op program[_] : Pid -> PType .
+  op fbtype[_] : Pid -> PType .
+  op structype[_] : Pid -> PType .
+  op enumtype[_] : Pid -> PType .
+  op array[_] : PType -> PType .
+endfm
+
+fmod BASIC-PEXP is
+  including PLC-TYPES .
+  including PID .
+  sort PExp .
+  --- Below handles arithmatic operations of STRATON into Maude syntax.
+  ops _+_ _-_ : PExp PExp -> PExp [ctor prec 20 gather(E e)] .
+  
+  ops _*_ _/_ _%_ : PExp PExp -> PExp [ctor prec 21 gather(E e)] .
+  ops _**_ : PExp PExp -> PExp [ctor prec 23 gather(E e)] .
+  op -_ : PExp -> PExp [ctor prec 19] .
+
+  --- Below handles relational operations of STRATON into Maude syntax.
+  ops _<_ _<=_ _>_ _>=_ _====_ _<>_ : PExp PExp -> PExp [ctor prec 22 gather(E e)] .
+
+  --- Below handles logical operationes of STRATON into Maude syntax.
+  ops _AND_ _&_ _OR_ _XOR_ : PExp PExp -> PExp [ctor prec 24 gather(E e)] .
+  eq P1:PExp & P2:PExp = P1:PExp AND P2:PExp .
+
+  op NOT_ : PExp -> PExp [ctor prec 23] .
+  
+  eq P1:PExp XOR P2:PExp = (P1:PExp AND (NOT P2:PExp)) OR ((NOT P1:PExp) AND P2:PExp) .
+
+  --- Below handles variables of array. ex) A[1] 
+  op _[_] : PExp PExp -> PExp [ctor prec 18] .
+
+  --- Below handles variables of functionblock into Maude syntax. ex) Inst_FB1.x
+  op emptyPExp : -> PExp .
+  op _._ : PExp PExp -> PExp [ctor assoc prec 17 gather (E e)] .
+
+
+  sort FArgElement .
+  op _<:=_ : PExp PExp -> FArgElement [ctor] .
+  subsort PExp < FArgElement .
+endfm
+
+view FArgElement from TRIV to BASIC-PEXP is
+  sort Elt to FArgElement .
+endv
+
+fmod STREAM-VALUE is
+  sort StreamValue .
+  op ** : -> StreamValue .
+endfm
+
+view StreamValue from TRIV to STREAM-VALUE is
+  sort Elt to StreamValue .
+endv
+
+--- Below builds list of functions.
+fmod PLC-EXP-LIST is
+  including LIST{FArgElement} * (op __ to _`,_, op nil to nilPExpList,
+op append to appendy,
+op head to heady,
+op tail to taily,
+op last to lasty,
+op front to fronty,
+op occurs to occursy,
+op reverse to reversey,
+op $reverse to $reversey,
+op size to sizey,
+op $size to $sizey
+) .
+  inc FUNID .
+
+  sorts NeList{PValue} List{PValue} NeList{PExp} List{PExp} .
+  subsort PValue < NeList{PValue} < List{PValue} .
+  subsort PExp < NeList{PExp} < List{PExp} .
+  subsort NeList{PValue} < NeList{PExp} < NeList{FArgElement} .
+  subsort List{PValue} < List{PExp} < List{FArgElement} .
+
+  op nilPExpList : -> List{PValue} [ctor ditto] .
+  op nilPExpList : -> List{PExp} [ctor ditto] .
+  op _,_ : List{PValue} List{PValue} -> List{PValue} [ctor ditto] .
+  op _,_ : NeList{PValue} List{PValue} -> NeList{PValue} [ctor ditto] .
+  op _,_ : List{PValue} NeList{PValue} -> NeList{PValue} [ctor ditto] .
+  op _,_ : List{PExp} List{PExp} -> List{PExp} [ctor ditto] .
+  op _,_ : NeList{PExp} List{PExp} -> NeList{PExp} [ctor ditto] .
+  op _,_ : List{PExp} NeList{PExp} -> NeList{PExp} [ctor ditto] .
+endfm
+
+ --- Below handles variables in variable declaration section.
+fmod VAR-DECLARATION-SYNTAX is
+  inc PLC-TYPES .
+  inc PID .
+  inc PLC-EXP-LIST .
+  sort VarDecl .
+  sort VarDeclSet . 
+
+  sort VarSectionType .
+  ops ##IN ##OUT ##INOUT ##PRIV ##GLOBAL ##ENUM : -> VarSectionType [ctor] .
+
+  subsort VarDecl < VarDeclSet .
+
+  op emptyVarDecl : -> VarDecl [ctor] .
+  op _;_ : VarDeclSet VarDeclSet -> VarDeclSet [ctor prec 61  assoc id: emptyVarDecl] .
+  op _; : VarDeclSet -> VarDeclSet [ctor prec 60] . 
+  eq VDS:VarDeclSet ; = VDS:VarDeclSet .
+
+
+  --- ex) x : INT ;
+  op _:_:_ : Pid PType VarSectionType -> VarDecl [ctor prec 1] . 
+  op _:_:_ : Pid Pid VarSectionType -> VarDecl [ctor prec 1] . 
+
+  --- ex) x : INT := 1 ;
+  op _:_:=_:_ : Pid PType PValue VarSectionType -> VarDecl [ctor prec 1] .
+  op _:_:=_:_ : Pid Pid PValue VarSectionType -> VarDecl [ctor prec 1] .
+
+  --- For declaration of arrays. ex) A1 : ARRAY [0 .. 2] OF BOOL := TRUE,FALSE ;
+  op _: ARRAY [# 0 .. #_] OF_ := _:_ : Pid Nat PType List{PValue} VarSectionType -> VarDecl [ctor prec 1] .
+  op _: ARRAY [# 0 .. #_] OF _:_ : Pid Nat PType VarSectionType -> VarDecl [prec 1] .
+
+  --- Below fetchs variable declaration section where variables are declared.
+  sort VarSection .
+  op emptyVarSection : -> VarSection [ctor] .
+  op BEGINVAR_ENDVAR : VarDeclSet -> VarSection [ctor prec 1] .  
+  op __ : VarSection VarSection -> VarSection [ctor assoc prec 2 id: emptyVarSection] .
+endfm
+
+fmod SPECIALTYPE-DECLARATION-SYNTAX is
+  inc PLC-TYPES .
+  inc PID .
+  inc PLC-EXP-LIST .
+
+  sort TypeDecl .
+  sort TypeDeclSet .
+
+  subsort TypeDecl < TypeDeclSet .
+  op _##_ : Pid List{PExp} -> TypeDecl [ctor prec 1] . 
+
+  op emptyTypeDecl : -> TypeDecl [ctor] .
+  op _;_ : TypeDeclSet TypeDeclSet -> TypeDeclSet [ctor prec 61  assoc id: emptyTypeDecl] .
+  op _; : TypeDeclSet -> TypeDeclSet [ctor prec 60] . 
+  eq TDS:TypeDeclSet ; = TDS:TypeDeclSet .
+
+  sort TypeSection .
+  op emptyTypeSection : -> TypeSection [ctor] .
+  op TYPE_ENDTYPE : TypeDeclSet -> TypeSection [ctor prec 1] .  
+endfm
+
+view VarSectionType from TRIV to VAR-DECLARATION-SYNTAX is
+  sort Elt to VarSectionType .
+endv
+
+
+fmod VARSECTION-TYPE-SET is
+  inc VAR-DECLARATION-SYNTAX .
+  inc SET{VarSectionType} .
+
+  op VARSECTIONTYPE : -> Set{VarSectionType} .
+  eq VARSECTIONTYPE = ##IN , ##OUT , ##INOUT , ##PRIV , ##GLOBAL .
+endfm
+
+
+--- Below handles statements of programs such as x := 3;, FB1(x) ;
+fmod STATEMENT is
+  including PLC-EXP-LIST .
+
+  sort Stmt .
+  op _(_) : FunId List{PExp} -> PExp [ctor prec 18] . 
+  op _(_) : Pid List{FArgElement} -> Stmt .
+  op _:=_ : PExp PExp -> Stmt [ctor prec 59] .
+
+  ops _+=_ _-=_ : PExp PExp -> Stmt [ctor prec 59] .
+
+  eq E1:PExp += E2:PExp = E1:PExp := E1:PExp + E2:PExp .
+  eq E1:PExp -= E2:PExp = E1:PExp := E1:PExp - E2:PExp .
+
+  vars F I : Pid .
+  var E : PExp .
+  vars EL1 EL2 : List{PExp} .
+
+ --- eq F(EL1, (I := E), EL2) = F(EL1, E, EL2) . 
+
+  --- For empty statement. We will use skip ;
+  op skip : -> Stmt [ctor] .
+
+  op EXIT : -> Stmt [ctor] .
+
+  --- return statement 
+  op return : -> Stmt[ctor] .
+
+  op _;_ : Stmt Stmt -> Stmt [ctor prec 65 gather (e E)] .
+  op _; : Stmt -> Stmt [ctor prec 64] .
+  eq S:Stmt ; = S:Stmt .
+
+
+  --- IF THEN ELSIF ELSE END_IF into Muade syntax. See page 241 of the 'IEC61131-3-Handbook' for details.
+  sort BBranch .
+  op emptyBBranch : -> BBranch [ctor] .
+  op ELSIF_THEN_; : PExp Stmt -> BBranch [ctor prec 61] .
+  op ELSE_; : Stmt -> BBranch [ctor prec 61] .
+  op __ : BBranch BBranch -> BBranch [ctor prec 62 gather(e E) id: emptyBBranch] . ---right associative
+
+
+  op IF_THEN_;_ENDIF : PExp Stmt BBranch -> Stmt [prec 63] .
+  op IF_THEN_ENDIF : PExp Stmt -> Stmt [prec 63] .
+
+  eq IF P1:PExp THEN S1:Stmt ENDIF = IF P1:PExp THEN S1:Stmt ; emptyBBranch ENDIF .
+ 
+  --- CASE OF ELSE END_CASE into Maude syntax. See page 235 of the 'IEC61131-3-Handbook' for details.
+  sort CBranchCase .
+  op _.._ : PValue PValue -> CBranchCase .
+
+  sort CBranch .
+  op emptyCBranch : -> CBranch [ctor] .
+  op @_:_ : List{PValue} Stmt -> CBranch [ctor prec 66] .
+  op @_:_ : CBranchCase Stmt -> CBranch [ctor prec 66] .
+
+  eq @ PV1:PValue , PV2:PValue , PVLIST:List{PValue} : S1:Stmt = @ PV1:PValue : S1:Stmt @ PV2:PValue , PVLIST:List{PValue} : S1:Stmt .
+  eq @ PV1:PValue , PV2:PValue : S1:Stmt = @ PV1:PValue : S1:Stmt @ PV2:PValue : S1:Stmt .
+
+
+  op __ : CBranch CBranch -> CBranch [ctor prec 67 assoc id: emptyCBranch] .
+  op CASE_OF_ELSE_ENDCASE : PExp CBranch Stmt -> Stmt [ctor prec 63] .
+  op CASE_OF_ENDCASE : PExp CBranch -> Stmt [prec 63] .
+
+  eq CASE CV:PExp OF CB:CBranch ENDCASE = CASE CV:PExp OF CB:CBranch ELSE skip ENDCASE .
+
+  --- WHILE DO END_WHILE into Muade syntax. See page 254 of the 'IEC61131-3-Handbook' for details.
+  op WHILE_DO_ENDWHILE : PExp Stmt -> Stmt .
+
+  --- REPEAT UNTILE ENDREPEAT into Muade syntax. See page 251 of the 'IEC61131-3-Handbook' for details.
+  op REPEAT_UNTIL_ENDREPEAT : Stmt PExp -> Stmt .
+
+
+  --- FOR TO BY DO ENDFOR into Muade syntax. See page 240 of the 'IEC61131-3-Handbook' for details.
+  op FOR_TO_BY_DO_ENDFOR : Stmt PValue PValue Stmt -> Stmt  .
+  op FOR_TO_DO_ENDFOR : Stmt PValue Stmt -> Stmt  .
+  eq FOR S:Stmt TO V1:PValue DO S':Stmt ENDFOR =  FOR S:Stmt TO V1:PValue BY # 1 DO S':Stmt ENDFOR  . 
+
+  --- WAIT, WAIT_TIME function block into Maude syntax. ex) WAIT(TRUE) ; , WAIT_TIME(T#10ms) ;
+  op WAIT(_) : PExp -> Stmt [ctor] .
+  op WAITTIME(_) : PExp -> Stmt [ctor] .
+  op @#timerSetValue(_) : PExp -> Stmt [ctor] .
+  op @release : -> Stmt [ctor] .
+endfm
+
+
+fmod CODE-SECTION is
+  including STATEMENT .
+  sort CodeSection .
+  op CODE_ENDCODE : Stmt -> CodeSection [ctor prec 2] .
+endfm
+
+fmod PLC-SYNTAX is
+  including CODE-SECTION .
+  including VAR-DECLARATION-SYNTAX .
+  including VARSECTION-TYPE-SET .
+  including SPECIALTYPE-DECLARATION-SYNTAX .
+endfm

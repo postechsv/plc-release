@@ -1,0 +1,35 @@
+-description = ""
+-id = req3
+-job = verif
+-job.backend = cbmc
+-job.reporters.0 = summary
+-job.reporters.1 = html
+-job.reporters.2 = plaintext
+-job.req = pattern
+-job.req.inputs.0 = instance.S1_S_EStopIn
+-job.req.inputs.1 = instance.S2_S_Mode0
+-job.req.inputs.2 = instance.S2_S_Mode1
+-job.req.inputs.3 = instance.S4_S_EnableSwitchCh1
+-job.req.inputs.4 = instance.S4_S_EnableSwitchCh2
+-job.req.inputs.5 = instance.S5_S_GuardSwitch1
+-job.req.inputs.6 = instance.S6_S_GuardSwitch2
+-job.req.inputs.7 = instance.S7_S_GuardLock
+-job.req.inputs.8 = instance.S0_Reset
+-job.req.inputs.9 = instance.S8_UnlockGuard
+-job.req.inputs.10 = instance.SF_SafeStop1_1ACK
+-job.req.inputs.11 = instance.SF_SafeStop1_2ACK
+-job.req.inputs.12 = instance.SF_SLS1_ACK
+-job.req.inputs.13 = instance.SF_SLS2_ACK
+-job.req.pattern_id = pattern-invariant
+-job.req.pattern_params.1 = "(instance.S_SafeMoveAxis1 AND instance.S_SafeMoveAxis2) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+-lf = step7
+-lf.entry = Main
+-name = ""
+-job.backend.timeout = 7200
+-job.backend.unwind = 21
+-job.backend.timeout_executor_path = ""
+-job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+-output = benchmark/plcverif/cmd/workspace2/benchmark16/output
+-sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark16/benchmark16.scl
+-sourcefiles.1 = benchmark/plcverif/cmd/workspace2/benchmark16/plcopen.scl
+

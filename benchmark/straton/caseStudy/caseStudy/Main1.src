@@ -1,0 +1,6 @@
+CYCLE := CYCLE + 1 ;
+
+OUT := OUT + 2 ;
+
+
+WAIT_TIME(T#4s);

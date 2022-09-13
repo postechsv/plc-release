@@ -1,0 +1,8 @@
+/V,L,BOOL(0)[0],8,RUN
+/V,L,REAL(0)[0],8,XIN
+/V,L,REAL(0)[0],8,CYCLE
+/V,L,REAL(0)[0],16,XOUT
+/V,L,REAL(0)[0],0,X1
+/V,L,REAL(0)[0],0,X2
+/V,L,REAL(0)[0],0,X3
+

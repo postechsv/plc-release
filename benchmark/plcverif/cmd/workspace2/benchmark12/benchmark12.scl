@@ -1,0 +1,32 @@
+PROGRAM Main
+	VAR
+		Activate : BOOL;
+		Index    : DINT;
+		Output   : DINT;
+		CYCLE    : DINT := 0;
+	END_VAR
+	CYCLE := CYCLE + 1;
+	IF Activate THEN
+		Index := 1;
+	ELSE
+		Index := 10;
+	END_IF;
+
+	Output := 100 / Index;
+
+	IF Activate THEN
+		Index := -1;
+	ELSE
+		Index := 10;
+	END_IF;
+
+	Output := 100 / Index;
+
+	IF Activate THEN
+		Index := 0;
+	ELSE
+		Index := 10;
+	END_IF;
+
+	Output := 100 / Index;
+END_PROGRAM

@@ -1,0 +1,6 @@
+// pStartup: this program is called only once before the first cycle
+
+// initialize variables from recipe: 'Initial values'
+ApplyRecipeColumn ('Initial values', 0);
+
+// add your code here

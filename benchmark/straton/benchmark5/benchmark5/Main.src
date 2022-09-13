@@ -1,0 +1,14 @@
+    CYCLE := CYCLE + 1;
+    PIDHANDLER(
+        AUTO := B1,
+        PV := R1,
+        SP := R2,
+        X0 := R3,
+        KP := R4,
+        TR := R5,
+        TD := R6,
+        CYCLE := R7
+    );
+    PIDOUT := PIDHANDLER.XOUT;
+    //#ASSERT (PIDOUT = 1) AND (0 <= CYCLE AND CYCLE <= 20) : POUSTISONE
+    //#ASSERT (PIDOUT <> 1) AND (0 <= CYCLE AND CYCLE <= 20) : POUSTISNOTONE

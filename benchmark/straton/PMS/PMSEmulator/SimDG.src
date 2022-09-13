@@ -1,0 +1,156 @@
+exCBData.Mode := INCOMER;
+
+StartDGRemote(StartReq);
+if StartDGRemote.Q and state = STOPPED and not Shutdown then
+    state := STARTING;
+end_if;
+
+StopDGRemote(StopReq);
+if StopDGRemote.Q and state = RUNNING then
+    state := STOPPING;
+end_if;
+
+ActiveBackUpMode(BackUpModeReq);
+if ActiveBackUpMode.Q and state = STOPPED then
+    BackUpMode := true;
+end_if;
+
+ShutdownDGRemote(ShutdownReq);
+if ShutdownDGRemote.Q and not (state = STOPPED) then
+    state := STOPPING;
+    Shutdown := true;
+end_if;
+
+ShutdownResetDGRemote(ShutdownReset);
+if ShutdownResetDGRemote.Q and state = STOPPED then
+    Shutdown := false;
+end_if;
+
+case state of
+    STOPPED:
+        exDGSwbdData.IncPower := false;
+        exDGSwbdData.DecPower := false;
+        exDGSwbdData.Connected := false;
+                                
+        Frequency := 0;
+        Voltage := 0;            
+        RPM := 0;
+        Current := 0;
+        Power := 0;
+        
+        if not Shutdown then
+            ReadyToStart := true;
+        end_if;
+        
+        IncreaseVoltage(false, 0, 0);
+        IncreaseRPM(false, 0, 0);
+        IncreaseFrequency(false, 0, 0);
+                    
+        DecreaseFrequency(false, 0, 0, 0);   
+        DecreaseVoltage(false, 0, 0, 0);
+        DecreaseRPM(false, 0, 0, 0);        
+    
+    STARTING:
+        if BackUpMode then
+            rpmRiseTime := pRPMRiseTime / 5;
+            voltageRiseTime := pVoltageRiseTime / 5;
+        else
+            rpmRiseTime := pRPMRiseTime;
+            voltageRiseTime := pVoltageRiseTime;
+        end_if; 
+                 
+        IncreaseFrequency(true, pNominalFrequency, rpmRiseTime);            
+        Frequency := IncreaseFrequency.CurValue;
+        
+        IncreaseVoltage(true, pNominalVoltage, voltageRiseTime);
+        Voltage := IncreaseVoltage.CurValue;
+        
+        IncreaseRPM(true, pNominalRPM, rpmRiseTime);        
+        RPM := IncreaseRPM.CurValue;      
+        
+        Current:= 0;            
+        Power := 0;
+        
+        if RPM >= pNominalRPM * (pRunIdleLimit/100) then
+            RunIdle := true;        
+        end_if;
+        
+        if RPM >= pNominalRPM * (pRunRatedLimit/100) then
+            RunRated := true;            
+        end_if;
+        
+        if IncreaseVoltage.Done and IncreaseRPM.Done then                        
+            state := RUNNING;
+        end_if;
+        
+    RUNNING:
+        
+        if exCBData.SyncReq then
+            syncTime := ANY_TO_TIME(pSyncTime);
+            Timer(true, syncTime);
+            if Timer.ET >= syncTime then
+                Timer(false, t#0ms);
+                exCBData.SyncDone := true;
+            end_if;
+        else
+            exCBData.SyncDone := false;
+        end_if;
+        
+        if exCBData.Closed then            
+            Frequency := exDGSwbdData.SwbdFrequency;
+            Voltage := Frequency * (pNominalVoltage / 60);                                    
+            Power := exDGSwbdData.AdjustedPower;
+            PF := exDGSwbdData.DGPF;            
+            Current := (Power*1000) / (Voltage*PF*ROOT(3, 2));
+            RPM := Frequency * 12;      
+            
+            exDGSwbdData.Connected := true;
+            exDGSwbdData.IncPower := IncPower;
+            exDGSwbdData.DecPower := DecPower;             
+        else                           
+            Frequency := pNominalFrequency;
+            Voltage := pNominalVoltage;            
+            RPM := pNominalRPM;
+            Current := 0;
+            Power := 0;
+            
+            exDGSwbdData.Connected := false;
+            exDGSwbdData.IncPower := false;
+            exDGSwbdData.DecPower := false;
+        end_if;
+        
+    STOPPING:
+        if Shutdown then
+            ReadyToStart := false;
+        end_if;
+        
+        DecreaseFrequency(true, Frequency, pNominalFrequency, pStopTime);        
+        Frequency := DecreaseFrequency.CurValue;  
+           
+        DecreaseVoltage(true, Voltage, pNominalVoltage, pStopTime);
+        Voltage := DecreaseVoltage.CurValue;
+        
+        DecreaseRPM(true, RPM, pNominalRPM, pStopTime);        
+        RPM := DecreaseRPM.CurValue;     
+        
+        if RPM <= pNominalRPM * (pRunRatedLimit/100) then
+            RunRated := false;
+        end_if;
+        
+        if RPM <= pNominalRPM * (pRunIdleLimit/100) then
+            RunIdle := false;        
+        end_if;
+                
+        if DecreaseVoltage.Done then                    
+            state := STOPPED;
+            BackUpMode := false;
+        end_if;
+        
+        exDGSwbdData.IncPower := false;
+        exDGSwbdData.DecPower := false;
+end_case;
+    
+Remote := mRemote;
+exDGSwbdData.NominalVoltage := pNominalVoltage;
+exCBData.Current := Current;
+exDGSwbdData.DGCurrent := Current;

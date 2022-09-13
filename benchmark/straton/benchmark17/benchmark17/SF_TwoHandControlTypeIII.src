@@ -1,0 +1,152 @@
+IF NOT Activate THEN
+        DiagCode := 0;
+    ELSE
+        CASE DiagCode OF
+            0:
+                IF Activate THEN
+                    DiagCode := 32769;
+                END_IF;
+            32768:
+                IF S_Button1 AND NOT S_Button2 THEN
+                    DiagCode := 32775;
+                ELSIF NOT S_Button1 AND S_Button2 THEN
+                    DiagCode := 32776;
+                ELSIF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                END_IF;
+            32769:
+                IF S_Button1 AND S_Button2 THEN
+                    DiagCode := 49155;
+                ELSIF S_Button1 THEN
+                    DiagCode := 49153;
+                ELSIF S_Button2 THEN
+                    DiagCode := 49154;
+                ELSIF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                END_IF;
+            32772:
+                IF S_Button1 AND S_Button2 THEN
+                    DiagCode := 32768;
+                ELSIF S_Button1 THEN
+                    DiagCode := 32773;
+                ELSIF S_Button2 THEN
+                    DiagCode := 32774;
+                END_IF;
+            32773:
+                IF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                ELSIF NOT S_Button1 AND S_Button2 THEN
+                    DiagCode := 32793;
+                ELSIF S_Button1 AND S_Button2 THEN
+                    DiagCode := 32768;
+                END_IF;
+            32774:
+                IF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                ELSIF S_Button1 AND NOT S_Button2 THEN
+                    DiagCode := 32793;
+                ELSIF S_Button1 AND S_Button2 THEN
+                    DiagCode := 32768;
+                END_IF;
+            32775:
+                IF S_Button1 AND S_Button2 THEN
+                    DiagCode := 32777;
+                ELSIF NOT S_Button1 AND S_Button2 THEN
+                    DiagCode := 32776;
+                ELSIF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                END_IF;
+            32776:
+                IF S_Button1 AND S_Button2 THEN
+                    DiagCode := 32777;
+                ELSIF S_Button1 AND NOT S_Button2 THEN
+                    DiagCode := 32775;
+                ELSIF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                END_IF;
+            32777:
+                IF NOT S_Button1 AND S_Button2 THEN
+                    DiagCode := 32776;
+                ELSIF S_Button1 AND NOT S_Button2 THEN
+                    DiagCode := 32775;
+                ELSIF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                END_IF;
+            32793:
+                IF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                END_IF;
+            49153, 49154, 49155, 49156, 49157, 49158:
+                IF NOT (S_Button1 OR S_Button2) THEN
+                    DiagCode := 32772;
+                END_IF;
+        END_CASE;
+    END_IF;
+
+
+    CASE DiagCode OF
+        0:
+            Ready := FALSE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        32768:
+            Ready := TRUE;
+            S_TwoHandOut := TRUE;
+            Error := FALSE;
+        32769:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        32772:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        32773:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        32774:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        32775:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        32776:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        32777:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        32793:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := FALSE;
+        49153:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := TRUE;
+        49154:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := TRUE;
+        49155:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := TRUE;
+        49156:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := TRUE;
+        49157:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := TRUE;
+        49158:
+            Ready := TRUE;
+            S_TwoHandOut := FALSE;
+            Error := TRUE;
+    END_CASE;

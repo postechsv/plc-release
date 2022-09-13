@@ -1,0 +1,28 @@
+!SESSION 2022-09-13 13:36:26.608 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=11.0.16
+java.vendor=Ubuntu
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+
+!ENTRY org.eclipse.osgi 4 0 2022-09-13 13:36:32.102
+!MESSAGE Error reading configuration: Unable to create lock manager.
+!STACK 0
+java.io.IOException: Unable to create lock manager.
+	at org.eclipse.osgi.storagemanager.StorageManager.open(StorageManager.java:718)
+	at org.eclipse.osgi.storage.Storage.getChildStorageManager(Storage.java:2262)
+	at org.eclipse.osgi.storage.Storage.getInfoInputStream(Storage.java:2279)
+	at org.eclipse.osgi.storage.Storage.<init>(Storage.java:252)
+	at org.eclipse.osgi.storage.Storage.createStorage(Storage.java:180)
+	at org.eclipse.osgi.internal.framework.EquinoxContainer.<init>(EquinoxContainer.java:113)
+	at org.eclipse.osgi.launch.Equinox.<init>(Equinox.java:53)
+	at org.eclipse.osgi.launch.Equinox.<init>(Equinox.java:46)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.startup(EclipseStarter.java:315)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:251)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:653)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:590)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1461)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1434)

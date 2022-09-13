@@ -1,0 +1,116 @@
+FUNCTION_BLOCK SimCB
+	VAR_INPUT
+		Open        : BOOL;
+		Close       : BOOL;
+		mRemote     : BOOL;
+		mOpen       : BOOL;
+		mClose      : BOOL;
+		fcOpen      : BOOL;
+		fcClose     : BOOL;
+		fcTransient : BOOL;
+		fcEarthed   : BOOL;
+		fcTrip      : BOOL;
+		pOpenTime   : REAL;
+		pCloseTime  : REAL;
+	END_VAR
+	VAR_IN_OUT
+		exCBData : ExCBSt;
+	END_VAR
+	VAR_OUTPUT
+		Remote    : BOOL;
+		Opened    : BOOL;
+		Closed    : BOOL;
+		Earthed   : BOOL;
+		Tripped   : BOOL;
+		Available : BOOL;
+		Current   : REAL;
+	END_VAR
+	VAR
+		movingTime    : REAL;
+		openedPos     : BOOL := TRUE;
+		closedPos     : BOOL;
+		closeAvail    : BOOL;
+		OpenCBRemote  : R_TRIG;
+		CloseCBRemote : R_TRIG;
+		Timer1        : TP;
+		delayTime     : TIME;
+		cmdType       : BOOL;
+		openTrigger   : BOOL;
+		closeTrigger  : BOOL;
+		forcedCB      : BOOL;
+	END_VAR
+BEGIN
+	forcedCB := fcOpen OR fcClose OR fcEarthed OR fcTrip;
+	IF NOT forcedCB THEN
+		IF mRemote THEN
+			openTrigger := Open;
+			closeTrigger := Close;
+		ELSE
+			openTrigger := mOpen;
+			closeTrigger := mClose;
+		END_IF;
+
+		OpenCBRemote(CLK := openTrigger);
+		IF OpenCBRemote.Q AND (NOT openedPos) THEN
+			Timer1(
+				IN := false,
+				PT := t#0ms
+			);
+			cmdType := true;
+			closedPos := false;
+		END_IF;
+
+		CloseCBRemote(CLK := closeTrigger);
+		IF CloseCBRemote.Q AND (NOT closedPos) THEN
+			Timer1(
+				IN := false,
+				PT := t#0ms
+			);
+			cmdType := false;
+		END_IF;
+
+		Available := true;
+	ELSE
+		Timer1(
+			IN := false,
+			PT := t#0ms
+		);
+		delayTime := t#0ms;
+
+		IF fcEarthed OR fcTrip THEN
+			openedPos := true;
+			closedPos := false;
+			Available := false;
+		ELSE
+			Available := true;
+
+			IF fcOpen OR fcClose THEN
+				IF fcOpen AND fcClose THEN
+					openedPos := true;
+					closedPos := true;
+				ELSIF fcOpen THEN
+					openedPos := true;
+					closedPos := false;
+				ELSIF fcClose THEN
+					openedPos := false;
+					closedPos := true;
+				END_IF;
+			END_IF;
+		END_IF;
+	END_IF;
+
+	IF NOT forcedCB AND fcTransient THEN
+		Opened := false;
+		Closed := false;
+	ELSE
+		Opened := openedPos;
+		Closed := closedPos;
+	END_IF;
+
+	Remote := mRemote;
+	Earthed := fcEarthed;
+	Tripped := fcTrip;
+	Current := exCBData.Current;
+	exCBData.Opened := Opened;
+	exCBData.Closed := Closed;
+END_FUNCTION_BLOCK

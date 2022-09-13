@@ -1,0 +1,8 @@
+// Exception programs
+
+#OnStartup pStartup
+#OnShutdown pShutdown
+#OnDivZero pOnDivZero
+#OnBadArrayIndex pOnBadIndex
+
+// add your definitions here

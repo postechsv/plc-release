@@ -1,0 +1,82 @@
+[:__MODULE_DECVALOVERTIME] 
+
+{@BEGIN:DecValOverTime}
+[:__LABEL1387] 
+
+<IF:CCBLEND>
+534 526 8 514 10 284 
+531 1 352 514 
+[:__LABEL1389] 
+[:__LABEL1390] 
+44?151 351 352 
+8 514 10 290 
+531 2 516 514 
+45?152 515 516 
+8 514 10 294 
+531 2 518 514 
+45?152 517 518 
+8 514 10 295 
+531 2 520 514 
+45?152 519 520 
+530 286 [JA:__LABEL1392] 
+285 135 2 286 286 234 
+[:__LABEL1392] 
+
+{DecValOverTime: (1): }
+508 0 [:__LABEL1394] 
+[:__LABEL1395] 
+530 351 [JA:__LABEL1396] 
+
+{DecValOverTime: (2): }
+508 0 8 514 10 296 
+532 2 515 514 
+{DecValOverTime: (4): }
+508 0 20 355 511 519 
+[:__LABEL1398] 
+[:__LABEL1399] 
+530 355 [JA:__LABEL1400] 
+
+{DecValOverTime: (5): }
+508 0 8 514 10 297 
+532 2 515 514 
+{DecValOverTime: (6): }
+508 0 526 528 [JA:__LABEL1397] 
+[:__LABEL1400] 
+
+{DecValOverTime: (7): }
+508 0 8 514 10 297 
+5 521 517 511 
+37 355 519 430 
+529 355 [JA:__LABEL1401] 
+423 9 [:__LABEL1401] 
+7 522 521 519 
+532 2 522 514 
+{DecValOverTime: (8): }
+508 0 526 [:__LABEL1397] 
+
+{DecValOverTime: (9): }
+508 0 526 528 [JA:__LABEL1393] 
+[:__LABEL1396] 
+
+{DecValOverTime: (10): }
+508 0 8 514 10 296 
+532 2 430 514 
+{DecValOverTime: (11): }
+508 0 8 514 10 298 
+[:__LABEL1402] 
+[:__LABEL1403] 
+532 1 313 514 
+{DecValOverTime: (12): }
+508 0 526 [:__LABEL1393] 
+
+{DecValOverTime: (13): }
+508 0 526 [:__LABEL1391] 
+
+{DecValOverTime: (1): }
+508 0 526 
+<ENDIF>
+234 
+[:__LABEL1388] 
+
+{@END:DecValOverTime}
+[:__MODULE_END_DECVALOVERTIME] 

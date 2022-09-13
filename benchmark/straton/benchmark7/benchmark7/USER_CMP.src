@@ -1,0 +1,10 @@
+    IF ( IN1 < IN2 ) THEN
+        LT := TRUE;
+    END_IF;
+    IF ( IN1 = IN2 ) THEN
+        EQ := TRUE;
+    END_IF;
+    IF ( IN1 > IN2 ) THEN
+        QT := TRUE;
+    END_IF;
+

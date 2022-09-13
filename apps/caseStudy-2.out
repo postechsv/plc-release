@@ -1,0 +1,27 @@
+INPUT:
+Main :: nsIncoming |-> ??
+Main :: ewIncoming |-> ??
+Main :: nspIncoming |-> repeat(FALSE)
+Main :: ewpIncoming |-> repeat(FALSE)
+Main :: yellow1 |-> repeat(T#500ms)
+Main :: yellow2 |-> ??
+
+STEP:
+8
+
+CONDITION:
+GLOBALLY(Main :: isGreen ==> WNEXT(NOT (Main :: isRed)))
+
+
+jlee@svlab-master:~/plc$ ./stverif.sh apps/trafficLight apps/eee.req
+Compiling trafficLight.st ...
+Compile Succeeded
+analyzing trafficLight using eee
+Advisory: redefining module BOOLEAN.
+Advisory: redefining module INTEGER.
+Advisory: redefining module REAL.
+Advisory: redefining module REAL-INTEGER.
+test succeeded
+Result will be located in  /home/jlee/plc/apps
+running time :  1202.459896326065 sec
+

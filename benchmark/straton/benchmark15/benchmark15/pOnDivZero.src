@@ -1,0 +1,10 @@
+// pOnDivZero: this sub program is called in case of a division by zero
+
+// add your code here
+
+
+// to turn the Service in 'cycle to cycle' pause mode, use:
+//  CycleStop (TRUE);
+
+// to turn the Service in 'fatal error' mode, use:
+//  FatalStop (TRUE);

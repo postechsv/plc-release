@@ -1,0 +1,58 @@
+FUNCTION_BLOCK SimLoad
+	VAR_INPUT
+		pLoad     : REAL;
+		pLoadPF   : REAL;
+		pStepSize : REAL;
+	END_VAR
+	VAR_IN_OUT
+		exCBData       : ExCBSt;
+		exLoadSwbdData : ExLoadSwbdSt;
+	END_VAR
+	VAR_OUTPUT
+		Load   : REAL;
+		LoadPF : REAL;
+	END_VAR
+	VAR
+		CBClosed     : BOOL;
+		ReactiveLoad : CalReLoad;
+		current      : REAL;
+		Load_Inst    : REAL;
+		Load1        : REAL;
+		Load2        : REAL;
+	END_VAR
+BEGIN
+	IF exCBData.Closed THEN
+		IF Load_Inst < pLoad THEN
+			Load_Inst := Load_Inst + pStepSize;
+		ELSIF Load > pLoad THEN
+			Load := Load - pStepSize;
+		END_IF;
+
+		IF ABS(Load_Inst - pLoad) <= pStepSize THEN
+			Load_Inst := pLoad;
+		END_IF;
+
+		IF Load_Inst = 0 THEN
+			LoadPF := 0;
+		ELSE
+			LoadPF := pLoadPF;
+		END_IF;
+
+		current := (Load_Inst * 1000) / (exLoadSwbdData.NetVoltage * LoadPF * (3));
+	ELSE
+		Load_Inst := 0;
+		LoadPF := 0;
+		current := 0;
+	END_IF;
+
+	Load := Load_Inst + Load1 - Load2;
+	exLoadSwbdData.Load := Load;
+	exLoadSwbdData.LoadPF := LoadPF;
+	exLoadSwbdData.Current := current;
+	ReactiveLoad(
+		EffLoad := Load,
+		PF := LoadPF
+	);
+	exLoadSwbdData.ReLoad := ReactiveLoad.ReLoad;
+	exCBData.Current := current;
+END_FUNCTION_BLOCK

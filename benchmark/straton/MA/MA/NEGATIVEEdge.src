@@ -1,0 +1,2 @@
+(* RelationalOperator: '<S7>/Relational Operator1' *)
+OUT := ANY_TO_DINT(IN) < ANY_TO_DINT(INprevious);

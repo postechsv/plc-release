@@ -1,0 +1,94 @@
+fmod ARRAY-FUNCTIONS is
+  inc ALU-SEMANTICS .
+  inc FLOAT .
+  inc CONVERSION .
+  
+  var V ARRV V' V'' : PValue .
+  var K : K .
+  vars ARR : Pid .
+  vars P1 P2 : PProperExp .
+  var N StartLoc : Nat .
+
+  vars MPR CPR : ProcessId .
+  vars REST_STACK : List{ProcessId} .
+  vars GENV REST_ENV : Env .
+  var STR : Map{Location, PValue} .
+  vars CName : Pid .
+  var L : Location .
+
+  vars A B : Rat .
+
+  op changeStoreValue : Location Map{Location, PValue} PValue -> Map{Location, PValue} .
+  eq changeStoreValue(loc(N), empty, V) = empty .
+  eq changeStoreValue(loc(N), (loc(N) |-> # "STRINGEND" , STR), V) = (loc(N) |-> # "STRINGEND" , STR) .
+  eq changeStoreValue(loc(N), (loc(N) |-> V' , STR), V) = (loc(N) |-> V) , changeStoreValue(loc(N + 1), (STR), V) [owise] .
+
+  op countStoreValue : Location Map{Location, PValue} PValue -> Nat .
+  eq countStoreValue(loc(N), empty, V) = 0 .
+  eq countStoreValue(loc(N), (loc(N) |-> # "STRINGEND" , STR), V) = 0 .
+  eq countStoreValue(loc(N), (loc(N) |-> V , STR), V) = 1  +  countStoreValue(loc(N + 1), (STR), V) .
+  eq countStoreValue(loc(N), (loc(N) |-> V' , STR), V) = 0  +  countStoreValue(loc(N + 1), (STR), V) [owise] .
+
+  op findValue : Nat Location Map{Location, PValue} PValue -> Nat .
+  eq findValue(StartLoc, loc(N), empty, V) = -1 .
+  eq findValue(StartLoc, loc(N), (loc(N) |-> # "STRINGEND" , STR), V) = -1 .
+  eq findValue(StartLoc, loc(N), (loc(N) |-> V , STR), V) = N - StartLoc .
+  eq findValue(StartLoc, loc(N), (loc(N) |-> V' , STR), V) = findValue(StartLoc, loc(N + 1), (STR), V) [owise] .
+
+  op findMaxVar : Location Map{Location, PValue} PValue -> PValue .
+  eq findMaxVar(loc(N), empty, V) = V .
+  eq findMaxVar(loc(N), (loc(N) |-> # "STRINGEND" , STR), V) = V .
+  eq findMaxVar(loc(N), (loc(N) |-> # A , STR), # B) = if A >= B then findMaxVar(loc(N + 1), STR, # A) else findMaxVar(loc(N + 1), STR, # B) fi [owise] .
+
+  op findMinVar : Location Map{Location, PValue} PValue -> PValue .
+  eq findMinVar(loc(N), empty, V) = V .
+  eq findMinVar(loc(N), (loc(N) |-> # "STRINGEND" , STR), V) = V .
+  eq findMinVar(loc(N), (loc(N) |-> # A , STR), # B) = if A < B then findMinVar(loc(N + 1), STR, # A) else findMinVar(loc(N + 1), STR, # B) fi [owise] .
+
+
+  op countLength : Location Map{Location, PValue} -> Nat .
+  eq countLength(loc(N), empty) = 0 .
+  eq countLength(loc(N), (loc(N) |-> # "STRINGEND" , STR)) = 0 .
+  eq countLength(loc(N), (loc(N) |-> # A , STR)) = 1 + countLength(loc(N + 1), (loc(N) |-> # A , STR)) [owise] .
+
+
+  eq k(ARFILL(ARR , V) ~> K) = k(@ARFILL(ARR) ~> V ~> K) .
+  eq proc(MPR, k(@ARFILL(ARR) ~> V ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) 
+  = proc(MPR, k(K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((changeStoreValue(loc(N), STR, V))) .
+  eq proc(MPR, k(@ARFILL(ARR) ~> V ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> L , REST_ENV)) store((STR)) 
+  = proc(MPR, k(K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> L , REST_ENV)) store((changeStoreValue(L, STR, V))) .
+
+
+  eq k(ARCOUNT(ARR , V, V' ) ~> K) = k(@ARCOUNT(ARR) ~> V ~> V' ~> K) .
+  eq proc(MPR, k(@ARCOUNT(ARR) ~> V ~> # StartLoc ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) 
+  = proc(MPR, k(# countStoreValue(loc(N + StartLoc), STR, V) ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) .
+  eq proc(MPR, k(@ARCOUNT(ARR) ~> V ~> # StartLoc ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((STR)) 
+  = proc(MPR, k(# countStoreValue(loc(N + StartLoc), STR, V) ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((STR)) .
+
+
+  eq k(ARFIND(ARR , V, V' ) ~> K) = k(@ARFIND(ARR) ~> V ~> V' ~> K) .
+  eq proc(MPR, k(@ARFIND(ARR) ~> V ~> # StartLoc ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) 
+  = proc(MPR, k(# findValue(N, loc(N + StartLoc), STR, V) ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) .
+  eq proc(MPR, k(@ARFIND(ARR) ~> V ~> # StartLoc ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((STR)) 
+  = proc(MPR, k(# findValue(N, loc(N + StartLoc), STR, V) ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((STR)) .
+
+  eq k(ARMAX(ARR) ~> K) = k(@ARMAX(ARR) ~> K) .
+  eq proc(MPR, k(@ARMAX(ARR) ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((loc(N) |-> V'' ,STR)) 
+  = proc(MPR, k(findMaxVar(loc(N), (loc(N) |-> V'' ,STR), V'') ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) .
+  eq proc(MPR, k(@ARMAX(ARR) ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((loc(N) |-> V'' ,STR))
+  = proc(MPR, k(findMaxVar(loc(N), (loc(N) |-> V'' ,STR), V'') ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((STR)) .
+
+  eq k(ARMIN(ARR) ~> K) = k(@ARMIN(ARR) ~> K) .
+  eq proc(MPR, k(@ARMIN(ARR) ~>  K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((loc(N) |-> V'' ,STR)) 
+  = proc(MPR, k(findMinVar(loc(N), (loc(N) |-> V'' ,STR), V'') ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) .
+  eq proc(MPR, k(@ARMIN(ARR) ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((loc(N) |-> V'' ,STR)) 
+  = proc(MPR, k(findMinVar(loc(N), (loc(N) |-> V'' ,STR), V'') ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((STR)) .
+
+
+  eq k(COUNTOF(ARR) ~> K) = k(@COUNTOF(ARR) ~> K) .
+  eq proc(MPR, k(@COUNTOF(ARR) ~>  K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) 
+  = proc(MPR, k(# countLength(loc(N), (STR)) ~> K), CPR :: REST_STACK) genv((GENV, ARR |-> loc(N))) store((STR)) .
+  eq proc(MPR, k(@COUNTOF(ARR) ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((STR)) 
+  = proc(MPR, k(# countLength(loc(N), (STR)) ~> K), CPR :: REST_STACK) obj(CPR, CName, (ARR |-> loc(N) , REST_ENV)) store((STR)) .
+
+endfm

@@ -1,0 +1,19 @@
+#debug
+
+{ExSwbdBridgeSt: (2): //5}
+508 5 526 :\15 
+#L:15
+#V(R)[0,0]{}:10=TotalNetReLoad
+#V(B)[0,0]{}:14=DeadBus
+#V(R)[0,0]{}:2=TotalNetLoad
+#V(R)[0,0]{}:13=NetCurrent
+#V(R)[0,0]{}:8=NetFrequency
+#V(B)[0,1]{2}:6=DGConnFlag
+#V(R)[0,0]{}:12=SuppliedCurrent
+#V(R)[0,0]{}:1=SwbdLoad
+#V(R)[0,0]{}:7=TotalNetDGNum
+#V(R)[0,0]{}:11=RequiredCurrent
+#V(R)[0,1]{2}:3=DGLoadBalance
+#V(R)[0,0]{}:9=SwbdReLoad
+#V(I)[0,0]{}:4=SwbdGroup
+#V(B)[0,3]{4}:5=DGPowerIncDecFlag

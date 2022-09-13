@@ -1,0 +1,9 @@
+INPUT:
+empty
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( ((NOT (Main :: STACKSIZE > 0)) OR (Main :: STACKSIZE >= 1 AND Main :: STACKSIZE <= 10))  AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20)  )

@@ -1,0 +1,22 @@
+PROGRAM Main
+	VAR
+		aaa : DINT := 1;
+		bbb : DINT := 0;
+		OUT : DINT;
+		CYCLE : DINT := 0 ;
+	END_VAR
+BEGIN
+    CYCLE := CYCLE + 1 ;
+    
+    IF aaa = bbb THEN
+        aaa := aaa + 1;
+    ELSIF aaa > bbb THEN
+        bbb := bbb + 1;
+    ELSIF aaa < bbb THEN
+        aaa := aaa + 1;
+    ELSE
+        aaa := aaa + 1;
+    END_IF;
+    
+    OUT := aaa - bbb;
+END_PROGRAM

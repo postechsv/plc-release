@@ -1,0 +1,8 @@
+INPUT:
+Main :: NewVar |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ((Main :: Output == 10) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

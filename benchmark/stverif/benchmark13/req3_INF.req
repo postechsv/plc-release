@@ -1,0 +1,10 @@
+INPUT:
+Main :: Activate |-> ??
+Main :: S_ChannelNC |-> ??
+Main :: S_ChannelNO |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main :: Error == FALSE) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

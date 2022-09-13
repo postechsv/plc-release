@@ -1,0 +1,21 @@
+Compiler V10.0.0.239
+어플리케이션 기호들 로딩중...
+USER_INTEGRAL
+USER_DERIVATIVE
+USER_PID
+어떤 에러도 발견 않았습니다.
+
+어플리케이션 기호들 로딩중...
+Demo Mode: run time execution limited in time!
+Main
+pStartup
+pShutDown
+pOnDivZero
+pOnBadIndex
+어플리케이션 데이터 빌드 중...
+< 5 BOOL/SINT; 0 INT; 24 DINT/REAL; 0 LINT/LREAL; 2 TIME; 0 STRING;  - CRC = 056dc9bd >
+On Line Change is disabled
+< 8 POUs - 3 programs, 2 sub-programs, 3 UDFBs >
+코드 재배치중...
+< Code CRC=9f1714d8 - File CRC=316d2d3d - Size=2208 >
+어떤 에러도 발견 않았습니다.

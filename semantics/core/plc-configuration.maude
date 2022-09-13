@@ -1,0 +1,157 @@
+fmod MAINLIST is
+  inc PROCESS-ID .
+  inc PID .
+
+  sort MainList .
+  sort MainEntry .              
+
+  subsort MainEntry < MainList .
+  op emptyML : -> MainList .
+  op @m : ProcessId Nat Nat -> MainEntry [ctor] . 
+  op __ : MainList MainList -> MainList [ctor assoc id: emptyML] .            
+endfm
+
+fmod STREAM is
+  inc BASIC-PEXP .
+  inc PLC-EXP-LIST .
+  inc SEMANTIC-LIST .
+
+  sort StreamKey .
+  op _::_ : Pid PExp -> StreamKey [ctor prec 0] .   
+  op I[_::_] : Pid PExp -> StreamKey [ctor prec 0] .              
+  subsort StreamKey < PExp .
+
+  sorts StreamMapEntry StreamMap .
+  subsort StreamMapEntry < StreamMap .
+  op empty : -> StreamMap [ctor] .
+  op _,_ : StreamMap StreamMap -> StreamMap [ctor assoc comm id: empty] .   
+  op _|->_ : StreamKey List{StreamValue} -> StreamMapEntry [ctor] . 
+endfm
+
+fmod FRESHVARMATCHING is
+  inc BASIC-PEXP .
+  inc PLC-EXP-LIST .
+  inc SEMANTIC-LIST .
+
+  sort LTLFormula .
+  op emptyLTLFormula : -> LTLFormula [ctor] .
+
+  sorts FreshVarMapEntry FreshVarMap .
+  subsort FreshVarMapEntry < FreshVarMap .
+  op emptyFreshVarMap : -> FreshVarMap [ctor] .
+  op _,_ : FreshVarMap FreshVarMap -> FreshVarMap [ctor assoc comm id: emptyFreshVarMap] .   
+  op _<-|_ : SemanticValue LTLFormula -> FreshVarMapEntry [ctor] . 
+endfm
+
+fmod PROGRAMSTACK is
+  inc ENV .
+  inc PROCESS-ID .
+  sort ProgramStack .
+
+  subsort Env < ProgramStack .
+  op nilProgramStack : -> ProgramStack [ctor] .
+  op _::_ : ProgramStack ProgramStack -> ProgramStack [assoc id: nilProgramStack] .
+endfm
+
+fmod VARPARMETERTYPE is
+  inc VAR-DECLARATION-SYNTAX .
+  sort VarSecTypePair .
+  sort VarSecTypePairList .
+  subsort VarSecTypePair < VarSecTypePairList .
+
+  op (_,_) : Pid VarSectionType ->  VarSecTypePair [ctor] .
+
+  op emptyVarSecTypePairList : -> VarSecTypePairList [ctor] .
+  op __ : VarSecTypePairList VarSecTypePairList -> VarSecTypePairList [assoc id: emptyVarSecTypePairList] .
+endfm
+
+fmod TIMER is
+  inc COMMON-SEMANTIC-VALUE .
+  inc PLC-STRICTNESS-RULES .
+
+  sort Timer .
+  op @timer : SemanticValue -> Timer [ctor] .
+endfm
+
+fmod COMPONENT is
+  inc TIMER .
+  inc PROCESS-ID .
+  inc K-CONFIG .
+  inc PROGRAMSTACK .
+  inc ENV .
+  inc LIST{ProcessId} * (op __ to _::_, 
+op nil to nilProcIds,
+op append to appendx,
+op head to headx,
+op tail to tailx,
+op last to lastx,
+op front to frontx,
+op occurs to occursx,
+op reverse to reversex,
+op $reverse to $reversex,
+op size to sizex,
+op $size to $sizex
+) .
+  inc VARPARMETERTYPE .
+
+  op procSwitch : Bool -> KConfig [ctor] .
+  op id : ProcessId -> KConfig [ctor] .
+  op fbtype : Pid -> KConfig [ctor] .
+  op timer : Timer -> KConfig [ctor] .
+  op mem : Env -> KConfig [ctor] .
+  op callStack : ProgramStack -> KConfig [ctor] .
+endfm
+
+--- CODE-CONFIG defines K Configuration (cell structure)  
+fmod CODE-CONFIG is
+  inc TIMER .
+  pr MAP{Location, SemanticValue} .
+  inc POU-DEF .
+  inc MAINLIST .
+  inc STREAM .
+  inc COMPONENT .
+  inc FRESHVARMATCHING .
+
+  op randomSeed : Nat -> KConfig [ctor] .
+  op genv : Env -> KConfig [ctor] .
+  op env : Env -> KConfig [ctor] .
+  op store : Map{Location, SemanticValue} -> KConfig [ctor] .  
+  op POUDef : POUDefinition -> KConfig [ctor] .
+  op PARDef : Pid VarSecTypePairList Stmt -> KConfig [ctor] .
+  op obj : KConfig -> KConfig [ctor] . --- ProcessId Pid Timer Env
+  op objs : KConfig -> KConfig [ctor] . 
+  op proc : KConfig -> KConfig [ctor] . --- Bool ProcessId KConfig ProgramStack
+  op procs : KConfig -> KConfig [ctor] .
+  op task : List{ProcessId} -> KConfig [ctor] .
+  op mainList : MainList -> KConfig [ctor] . 
+  op cycleTime : Nat -> KConfig [ctor] .
+  op constraints : BoolSemanticVal -> KConfig [ctor] .
+  op cycleCounter : Nat -> KConfig [ctor] .
+
+
+  ops inStream outStream : StreamMap -> KConfig [ctor] .
+  op inputCollector : StreamMap -> KConfig [ctor] .
+  op inputStreamSpec : StreamMap -> KConfig [ctor] .
+
+
+  op enumTypes : TypeDeclSet -> KConfig [ctor] .
+
+  op cycleCounterBound : Nat -> KConfig [ctor] .
+  op newVarIndex : Nat -> KConfig [ctor] .
+
+  
+  op LTLContainer : LTLFormula -> KConfig [ctor] .
+  op LTLResult : checkSATResult -> KConfig [ctor] .
+  op LTLSubGoal : FreshVarMap Nat -> KConfig [ctor] .
+
+  var LOC : ProcessId .
+  var ENV : Env .
+  var FBNAME : Pid .
+  var REST OBJS : KConfig .  
+---
+  op getObjEnv : ProcessId KConfig ~> Env .
+  eq getObjEnv(LOC, obj(id(LOC) mem(ENV) REST) OBJS) = ENV .
+
+  op getObjType : ProcessId KConfig ~> Pid .
+  eq getObjType(LOC, obj(id(LOC) fbtype(FBNAME) REST) OBJS) = FBNAME .
+endfm

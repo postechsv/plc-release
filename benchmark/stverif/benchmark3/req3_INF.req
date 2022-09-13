@@ -1,0 +1,9 @@
+INPUT:
+Main :: INDEX |-> ??
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main :: OUT1 < Main :: OUT3 AND Main :: OUT2 <Main :: OUT3) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

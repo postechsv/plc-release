@@ -1,0 +1,294 @@
+
+Requirement: *(instance.A = 2) AND (0 &lt;= instance.CYCLE AND instance.CYCLE &lt;= 20)* is always true at the end of the PLC cycle.
+             (AG (EoC --> ((instance/A = 2) && ((0 <= instance/CYCLE) && (instance/CYCLE <= 20)))))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/A = 2 (instance.A = 2)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - EoC = true (EoC = true)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+Step 2
+  - EoC = true (EoC = true)
+  - instance/CYCLE = 2 (instance.CYCLE = 2)
+  - instance/Counter1 = -1073800646 (instance.Counter1 = -1073800646)
+  - instance/DECFUN/In = -1073800646 (instance.DECFUN.In = -1073800646)
+  - instance/A = 2 (instance.A = 2)
+  - instance/INCFUN/In = -1073800646 (instance.INCFUN.In = -1073800646)
+  - instance/DECFUN/Out = -1073800647 (instance.DECFUN.Out = -1073800647)
+  - instance/INCFUN/Out = -1073800645 (instance.INCFUN.Out = -1073800645)
+Step 3
+  - instance/A = 2 (instance.A = 2)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - EoC = true (EoC = true)
+  - instance/CYCLE = 3 (instance.CYCLE = 3)
+Step 4
+  - instance/CYCLE = 4 (instance.CYCLE = 4)
+  - EoC = true (EoC = true)
+  - instance/DECFUN/In = -1073741825 (instance.DECFUN.In = -1073741825)
+  - instance/A = 2 (instance.A = 2)
+  - instance/INCFUN/In = -1073741825 (instance.INCFUN.In = -1073741825)
+  - instance/Counter1 = -1073741825 (instance.Counter1 = -1073741825)
+  - instance/DECFUN/Out = -1073741826 (instance.DECFUN.Out = -1073741826)
+  - instance/INCFUN/Out = -1073741824 (instance.INCFUN.Out = -1073741824)
+Step 5
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/CYCLE = 5 (instance.CYCLE = 5)
+  - EoC = true (EoC = true)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/A = 2 (instance.A = 2)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+Step 6
+  - EoC = true (EoC = true)
+  - instance/CYCLE = 6 (instance.CYCLE = 6)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/A = 2 (instance.A = 2)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+Step 7
+  - instance/INCFUN/In = -1610612737 (instance.INCFUN.In = -1610612737)
+  - instance/CYCLE = 7 (instance.CYCLE = 7)
+  - instance/A = 2 (instance.A = 2)
+  - EoC = true (EoC = true)
+  - instance/DECFUN/In = -1610612737 (instance.DECFUN.In = -1610612737)
+  - instance/INCFUN/Out = -1610612736 (instance.INCFUN.Out = -1610612736)
+  - instance/DECFUN/Out = -1610612738 (instance.DECFUN.Out = -1610612738)
+  - instance/Counter1 = -1610612737 (instance.Counter1 = -1610612737)
+Step 8
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/CYCLE = 8 (instance.CYCLE = 8)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/A = 2 (instance.A = 2)
+  - EoC = true (EoC = true)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+Step 9
+  - EoC = true (EoC = true)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/CYCLE = 9 (instance.CYCLE = 9)
+  - instance/A = 2 (instance.A = 2)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+Step 10
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - EoC = true (EoC = true)
+  - instance/CYCLE = 10 (instance.CYCLE = 10)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/A = 2 (instance.A = 2)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+Step 11
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - EoC = true (EoC = true)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/A = 2 (instance.A = 2)
+  - instance/CYCLE = 11 (instance.CYCLE = 11)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+Step 12
+  - instance/INCFUN/Out = -228528021 (instance.INCFUN.Out = -228528021)
+  - instance/INCFUN/In = -228528022 (instance.INCFUN.In = -228528022)
+  - instance/A = 2 (instance.A = 2)
+  - instance/Counter1 = -228528022 (instance.Counter1 = -228528022)
+  - EoC = true (EoC = true)
+  - instance/CYCLE = 12 (instance.CYCLE = 12)
+  - instance/DECFUN/Out = -228528023 (instance.DECFUN.Out = -228528023)
+  - instance/DECFUN/In = -228528022 (instance.DECFUN.In = -228528022)
+Step 13
+  - EoC = true (EoC = true)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/A = 2 (instance.A = 2)
+  - instance/CYCLE = 13 (instance.CYCLE = 13)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+Step 14
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/CYCLE = 14 (instance.CYCLE = 14)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - EoC = true (EoC = true)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/A = 2 (instance.A = 2)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+Step 15
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/A = 2 (instance.A = 2)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/CYCLE = 15 (instance.CYCLE = 15)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - EoC = true (EoC = true)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+Step 16
+  - instance/A = 2 (instance.A = 2)
+  - EoC = true (EoC = true)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/CYCLE = 16 (instance.CYCLE = 16)
+Step 17
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/A = 2 (instance.A = 2)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/CYCLE = 17 (instance.CYCLE = 17)
+  - EoC = true (EoC = true)
+Step 18
+  - EoC = true (EoC = true)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/A = 2 (instance.A = 2)
+  - instance/CYCLE = 18 (instance.CYCLE = 18)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+Step 19
+  - instance/Counter1 = -8402998 (instance.Counter1 = -8402998)
+  - instance/INCFUN/In = -8402998 (instance.INCFUN.In = -8402998)
+  - instance/DECFUN/Out = -8402999 (instance.DECFUN.Out = -8402999)
+  - instance/CYCLE = 19 (instance.CYCLE = 19)
+  - EoC = true (EoC = true)
+  - instance/DECFUN/In = -8402998 (instance.DECFUN.In = -8402998)
+  - instance/INCFUN/Out = -8402997 (instance.INCFUN.Out = -8402997)
+  - instance/A = 2 (instance.A = 2)
+Step 20
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - EoC = true (EoC = true)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/CYCLE = 20 (instance.CYCLE = 20)
+  - instance/A = 2 (instance.A = 2)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+Step 21
+  - instance/A = 2 (instance.A = 2)
+  - instance/INCFUN/In = 0 (instance.INCFUN.In = 0)
+  - instance/Counter1 = 0 (instance.Counter1 = 0)
+  - instance/CYCLE = 21 (instance.CYCLE = 21)
+  - instance/DECFUN/In = 0 (instance.DECFUN.In = 0)
+  - instance/INCFUN/Out = 1 (instance.INCFUN.Out = 1)
+  - EoC = true (EoC = true)
+  - instance/DECFUN/Out = -1 (instance.DECFUN.Out = -1)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (683 ms): Successful
+* Requirement representation (64 ms): Successful
+* Reductions (CFD) (4 ms): Successful
+* Model preparation (27 ms): Successful
+* CBMC model building (45 ms): Successful
+* CBMC execution (518 ms): Successful
+* CBMC output parsing (48 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (2 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req2
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 21
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.Counter1
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.A = 2) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark8/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark8/benchmark8.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark8/output/req2.c
+Converting
+Type-checking req2
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+10024 variables, 27603 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 0.0696749s
+
+** Results:
+/home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark8/output/req2.c function VerificationLoop
+[VerificationLoop.assertion.1] line 157 assertion (!(EoC) || ((instance.A == 2) && ((0 <= instance.CYCLE) && (instance.CYCLE <= 20)))): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark8/output/req2.c function main line 172 t[...]
+
+

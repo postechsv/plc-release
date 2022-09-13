@@ -1,0 +1,191 @@
+FUNCTION_BLOCK SimBridge
+	VAR_IN_OUT
+		exSwbdBridgeData1 : ExSwbdBridgeSt;
+		exCBData1M        : ExCBSt;
+		exCBData2S        : ExCBSt;
+		exSwbdBridgeData2 : ExSwbdBridgeSt;
+	END_VAR
+	VAR
+		i                         : DINT;
+		j                         : DINT;
+		group                     : DINT;
+		incPower                  : BOOL;
+		decPower                  : BOOL;
+		closedCB                  : BOOL;
+		prevGroupState            : DINT;
+		DGInSwbdGroup             : CountDGInSwbdGroup;
+		SwbdGroupAndLoad          : AssignSwbdGroupAndLoad;
+		totalLoadOfSwbdGroup      : ARRAY [0 .. 1] OF REAL;
+		totalDGNumOfSwbdGroup     : ARRAY [0 .. 1] OF REAL;
+		prevTotalDGNumOfSwbdGroup : ARRAY [0 .. 1] OF REAL;
+		netFrequencyOfSwbdGroup   : ARRAY [0 .. 1] OF REAL;
+		prevTotalLoadOfSwbdGroup  : ARRAY [0 .. 1] OF REAL;
+		loadBalance               : REAL;
+		firstDGEvent              : BOOL;
+		FirstDGEventSwbdGroup1    : R_TRIG;
+		FirstDGEventSwbdGroup2    : R_TRIG;
+		totalReLoadOfSwbdGroup    : ARRAY [0 .. 1] OF REAL;
+		netCurrentOfSwbdGroup     : ARRAY [0 .. 1] OF REAL;
+		deadBusOfSwbdGroup        : ARRAY [0 .. 1] OF BOOL;
+		loadBalanceSum            : REAL;
+		stepSize                  : REAL;
+		steps                     : REAL;
+	END_VAR
+BEGIN
+	closedCB := exCBData1M.Closed AND exCBData2S.Closed;
+	exSwbdBridgeData1.SwbdGroup := SwbdGroupAndLoad.GroupSwbd1;
+	exSwbdBridgeData2.SwbdGroup := SwbdGroupAndLoad.GroupSwbd2;
+	exCBData1M.Current := exSwbdBridgeData1.RequiredCurrent - exSwbdBridgeData1.SuppliedCurrent;
+	exCBData2S.Current := exSwbdBridgeData2.RequiredCurrent - exSwbdBridgeData2.SuppliedCurrent;
+	FOR i := 0 TO 1 DO
+		totalLoadOfSwbdGroup[i] := SwbdGroupAndLoad.LoadGroup[i];
+		totalReLoadOfSwbdGroup[i] := SwbdGroupAndLoad.ReLoadGroup[i];
+		netCurrentOfSwbdGroup[i] := SwbdGroupAndLoad.CurrentGroup[i];
+		totalDGNumOfSwbdGroup[i] := DGInSwbdGroup.DGCounter[i];
+		IF totalDGNumOfSwbdGroup[i] = 0 THEN
+			netFrequencyOfSwbdGroup[i] := 0;
+			deadBusOfSwbdGroup[i] := true;
+		ELSE
+			deadBusOfSwbdGroup[i] := false;
+		END_IF;
+	END_FOR;
+
+	firstDGEvent := (prevTotalDGNumOfSwbdGroup[0] = 0) AND (totalDGNumOfSwbdGroup[0] = 1);
+	FirstDGEventSwbdGroup1(CLK := firstDGEvent);
+	IF FirstDGEventSwbdGroup1.Q THEN
+		netFrequencyOfSwbdGroup[0] := 60;
+	END_IF;
+
+	firstDGEvent := (prevTotalDGNumOfSwbdGroup[1] = 0) AND (totalDGNumOfSwbdGroup[1] = 1);
+	FirstDGEventSwbdGroup2(CLK := firstDGEvent);
+	IF FirstDGEventSwbdGroup2.Q THEN
+		netFrequencyOfSwbdGroup[1] := 60;
+	END_IF;
+
+	FOR i := 0 TO 1 DO
+		IF NOT exSwbdBridgeData1.DGConnFlag[i] THEN
+			exSwbdBridgeData1.DGLoadBalance[i] := 0;
+		END_IF;
+
+		IF NOT exSwbdBridgeData2.DGConnFlag[i] THEN
+			exSwbdBridgeData2.DGLoadBalance[i] := 0;
+		END_IF;
+	END_FOR;
+
+	FOR i := 0 TO 1 DO
+		loadBalanceSum := 0;
+		FOR j := 0 TO 1 DO
+			IF exSwbdBridgeData1.SwbdGroup = i THEN
+				IF exSwbdBridgeData1.DGConnFlag[j] THEN
+					loadBalanceSum := loadBalanceSum + exSwbdBridgeData1.DGLoadBalance[j];
+				END_IF;
+			END_IF;
+
+			IF exSwbdBridgeData2.SwbdGroup = i THEN
+				IF exSwbdBridgeData2.DGConnFlag[j] THEN
+					loadBalanceSum := loadBalanceSum + exSwbdBridgeData2.DGLoadBalance[j];
+				END_IF;
+			END_IF;
+		END_FOR;
+
+		loadBalance := (totalLoadOfSwbdGroup[i] - loadBalanceSum) / totalDGNumOfSwbdGroup[i];
+		FOR j := 0 TO 1 DO
+			IF exSwbdBridgeData1.SwbdGroup = i THEN
+				IF exSwbdBridgeData1.DGConnFlag[j] THEN
+					exSwbdBridgeData1.DGLoadBalance[j] := exSwbdBridgeData1.DGLoadBalance[j] + loadBalance;
+				END_IF;
+			END_IF;
+
+			IF exSwbdBridgeData2.SwbdGroup = i THEN
+				IF exSwbdBridgeData2.DGConnFlag[j] THEN
+					exSwbdBridgeData2.DGLoadBalance[j] := exSwbdBridgeData2.DGLoadBalance[j] + loadBalance;
+				END_IF;
+			END_IF;
+		END_FOR;
+
+		IF loadBalance <> 0 THEN
+			netFrequencyOfSwbdGroup[i] := netFrequencyOfSwbdGroup[i] - (loadBalance * 0.0005);
+
+			IF netFrequencyOfSwbdGroup[i] > 60.2 THEN
+				netFrequencyOfSwbdGroup[i] := 60.2;
+			ELSIF netFrequencyOfSwbdGroup[i] < 59.8 THEN
+				netFrequencyOfSwbdGroup[i] := 59.8;
+			END_IF;
+		END_IF;
+
+		netFrequencyOfSwbdGroup[i] := netFrequencyOfSwbdGroup[i] + (60.0 - netFrequencyOfSwbdGroup[i]) * 0.005;
+	END_FOR;
+
+	FOR i := 0 TO 1 DO
+		group := exSwbdBridgeData1.SwbdGroup;
+		stepSize := totalDGNumOfSwbdGroup[group];
+		incPower := exSwbdBridgeData1.DGPowerIncDecFlag[i];
+		decPower := exSwbdBridgeData1.DGPowerIncDecFlag[i + 2];
+		steps := 0;
+		IF incPower THEN
+			steps := steps + (stepSize * 2);
+		END_IF;
+
+		IF decPower THEN
+			steps := steps - (stepSize * 2);
+		END_IF;
+
+		IF incPower OR decPower THEN
+			exSwbdBridgeData1.DGLoadBalance[i] := exSwbdBridgeData1.DGLoadBalance[i] + steps;
+			FOR j := 0 TO 1 DO
+				IF exSwbdBridgeData1.SwbdGroup = group AND exSwbdBridgeData1.DGConnFlag[j] THEN
+					IF NOT i = j THEN
+						exSwbdBridgeData1.DGLoadBalance[j] := exSwbdBridgeData1.DGLoadBalance[j] - 2;
+					END_IF;
+				END_IF;
+
+				IF exSwbdBridgeData2.SwbdGroup = group AND exSwbdBridgeData2.DGConnFlag[j] THEN
+					exSwbdBridgeData2.DGLoadBalance[j] := exSwbdBridgeData2.DGLoadBalance[j] - 2;
+				END_IF;
+			END_FOR;
+		END_IF;
+
+
+		group := exSwbdBridgeData2.SwbdGroup;
+		incPower := exSwbdBridgeData2.DGPowerIncDecFlag[i];
+		decPower := exSwbdBridgeData2.DGPowerIncDecFlag[i + 2];
+		steps := 0;
+		IF incPower THEN
+			steps := steps + stepSize;
+		END_IF;
+
+		IF decPower THEN
+			steps := steps - stepSize;
+		END_IF;
+
+		IF incPower OR decPower THEN
+			exSwbdBridgeData2.DGLoadBalance[i] := exSwbdBridgeData2.DGLoadBalance[i] + steps;
+			FOR j := 0 TO 1 DO
+				IF exSwbdBridgeData1.SwbdGroup = group AND exSwbdBridgeData1.DGConnFlag[j] THEN
+					exSwbdBridgeData1.DGLoadBalance[j] := exSwbdBridgeData1.DGLoadBalance[j] - 2;
+				END_IF;
+
+				IF exSwbdBridgeData2.SwbdGroup = group AND exSwbdBridgeData2.DGConnFlag[j] THEN
+					IF NOT i = j THEN
+						exSwbdBridgeData2.DGLoadBalance[j] := exSwbdBridgeData2.DGLoadBalance[j] - 2;
+					END_IF;
+				END_IF;
+			END_FOR;
+		END_IF;
+	END_FOR;
+
+	group := exSwbdBridgeData1.SwbdGroup;
+	exSwbdBridgeData1.TotalNetLoad := totalLoadOfSwbdGroup[group];
+	exSwbdBridgeData1.TotalNetReLoad := totalReLoadOfSwbdGroup[group];
+	exSwbdBridgeData1.TotalNetDGNum := totalDGNumOfSwbdGroup[group];
+	exSwbdBridgeData1.NetFrequency := netFrequencyOfSwbdGroup[group];
+	exSwbdBridgeData1.NetCurrent := netCurrentOfSwbdGroup[group];
+	exSwbdBridgeData1.DeadBus := deadBusOfSwbdGroup[group];
+	group := exSwbdBridgeData2.SwbdGroup;
+	exSwbdBridgeData2.TotalNetLoad := totalLoadOfSwbdGroup[group];
+	exSwbdBridgeData2.TotalNetReLoad := totalReLoadOfSwbdGroup[group];
+	exSwbdBridgeData2.TotalNetDGNum := totalDGNumOfSwbdGroup[group];
+	exSwbdBridgeData2.NetFrequency := netFrequencyOfSwbdGroup[group];
+	exSwbdBridgeData2.NetCurrent := netCurrentOfSwbdGroup[group];
+	exSwbdBridgeData2.DeadBus := deadBusOfSwbdGroup[group];
+END_FUNCTION_BLOCK

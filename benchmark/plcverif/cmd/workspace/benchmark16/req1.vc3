@@ -1,0 +1,33 @@
+-description = ""
+-id = req1
+-job = verif
+-job.backend = nusmv
+-job.reporters.0 = summary
+-job.reporters.1 = html
+-job.reporters.2 = plaintext
+-job.req = pattern
+-job.req.inputs.0 = instance.S1_S_EStopIn
+-job.req.inputs.1 = instance.S2_S_Mode0
+-job.req.inputs.2 = instance.S2_S_Mode1
+-job.req.inputs.3 = instance.S4_S_EnableSwitchCh1
+-job.req.inputs.4 = instance.S4_S_EnableSwitchCh2
+-job.req.inputs.5 = instance.S5_S_GuardSwitch1
+-job.req.inputs.6 = instance.S6_S_GuardSwitch2
+-job.req.inputs.7 = instance.S7_S_GuardLock
+-job.req.inputs.8 = instance.S0_Reset
+-job.req.inputs.9 = instance.S8_UnlockGuard
+-job.req.inputs.10 = instance.SF_SafeStop1_1ACK
+-job.req.inputs.11 = instance.SF_SafeStop1_2ACK
+-job.req.inputs.12 = instance.SF_SLS1_ACK
+-job.req.inputs.13 = instance.SF_SLS2_ACK
+-job.req.pattern_id = pattern-invariant
+-job.req.pattern_params.1 = "(instance.S_SafeStopAxis1 AND instance.S_SafeStopAxis2) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+-lf = step7
+-lf.entry = Main
+-name = ""
+-job.backend.timeout = 7200
+-job.backend.binary_path = tools/nuXmv-2.0.0-linux64.tar/nuXmv-2.0.0-Linux/bin/nuXmv
+-output = benchmark/plcverif/cmd/workspace/benchmark16/output
+-sourcefiles.0 = benchmark/plcverif/cmd/workspace/benchmark16/benchmark16.scl
+-sourcefiles.1 = benchmark/plcverif/cmd/workspace/benchmark16/plcopen.scl
+

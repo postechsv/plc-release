@@ -1,0 +1,71 @@
+FUNCTION_BLOCK Block
+	VAR_INPUT
+		ssMethodType : DINT;
+		OSB          : BOOL;
+	END_VAR
+	VAR_OUTPUT
+		BB       : BOOL;
+		blk_mode : DINT;
+	END_VAR
+	VAR
+		is_active_c8_mylib : DINT;
+		is_Block_Mode      : DINT;
+	END_VAR
+BEGIN
+	CASE ssMethodType OF
+		0:
+			is_Block_Mode := 0;
+			is_active_c8_mylib := 0;
+		3:
+			(* Chart: '<S1>/Block' *)
+			(* Gateway: Blocked HH *)
+			(* During: Blocked HH *)
+			IF is_active_c8_mylib = 0 THEN
+				(* Entry: Blocked HH *)
+				is_active_c8_mylib := 1;
+				(* Entry Internal: Blocked HH *)
+				(* Entry Internal 'Block_Mode': '<S4>:3' *)
+				(* Transition: '<S4>:27' *)
+				is_Block_Mode := 2;
+				(* Entry 'NO_BLOCKED': '<S4>:26' *)
+				(* '<S4>:26:1' blk_mode = 1; *)
+				blk_mode := 1;
+			ELSE
+				(* During 'Block_Mode': '<S4>:3' *)
+				CASE is_Block_Mode OF
+					1:
+						blk_mode := 2;
+						(* During 'BLOCKED': '<S4>:28' *)
+						(* '<S4>:30:1' sf_internal_predicateOutput = ... *)
+						(* '<S4>:30:1' ~OSB; *)
+						IF NOT OSB THEN
+							(* Transition: '<S4>:30' *)
+							is_Block_Mode := 2;
+							(* Entry 'NO_BLOCKED': '<S4>:26' *)
+							(* '<S4>:26:1' blk_mode = 1; *)
+							blk_mode := 1;
+						ELSE
+							(* '<S4>:28:1' BB = true; *)
+							BB := TRUE;
+						END_IF;
+					ELSE
+						blk_mode := 1;
+						(* During 'NO_BLOCKED': '<S4>:26' *)
+						(* '<S4>:29:1' sf_internal_predicateOutput = ... *)
+						(* '<S4>:29:1' OSB; *)
+						IF OSB THEN
+							(* Transition: '<S4>:29' *)
+							is_Block_Mode := 1;
+							(* Entry 'BLOCKED': '<S4>:28' *)
+							(* '<S4>:28:1' blk_mode = 2; *)
+							blk_mode := 2;
+						ELSE
+							(* '<S4>:26:1' BB = false; *)
+							BB := FALSE;
+						END_IF;
+				END_CASE;
+			END_IF;
+	(* End of Chart: '<S1>/Block' *)
+	END_CASE;
+
+END_FUNCTION_BLOCK

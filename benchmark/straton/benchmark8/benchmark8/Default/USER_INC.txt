@@ -1,0 +1,6 @@
+[SHORT]
+V-OUT=
+V-IN=
+[LONG]
+V-OUT=
+V-IN=

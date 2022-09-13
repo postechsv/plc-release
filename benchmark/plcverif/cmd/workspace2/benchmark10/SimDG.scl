@@ -1,0 +1,67 @@
+FUNCTION_BLOCK SimDG
+	VAR_INPUT
+		StartReq          : BOOL;
+		StopReq           : BOOL;
+		ShutdownReq       : BOOL;
+		ShutdownReset     : BOOL;
+		mRemote           : BOOL;
+		IncPower          : BOOL;
+		DecPower          : BOOL;
+		BackUpModeReq     : BOOL;
+		pNominalVoltage   : REAL;
+		pNominalFrequency : REAL;
+		pNominalRPM       : REAL;
+		pRunIdleLimit     : REAL;
+		pRunRatedLimit    : REAL;
+		pRPMRiseTime      : REAL;
+		pVoltageRiseTime  : REAL;
+		pStopTime         : REAL;
+		pSyncTime         : REAL;
+	END_VAR
+	VAR_IN_OUT
+		exCBData     : ExCBSt;
+		exDGSwbdData : ExDGSwbdSt;
+	END_VAR
+	VAR_OUTPUT
+		Remote       : BOOL;
+		RunIdle      : BOOL;
+		RunRated     : BOOL;
+		Power        : REAL;
+		Voltage      : REAL;
+		Current      : REAL;
+		Frequency    : REAL;
+		RPM          : REAL;
+		FuelRackPos  : REAL;
+		ReadyToStart : BOOL;
+		BackUpMode   : BOOL;
+		Shutdown     : BOOL;
+	END_VAR
+	VAR
+		StartDGRemote         : R_TRIG;
+		StopDGRemote          : R_TRIG;
+		IncreaseVoltage       : IncValOverTime;
+		IncreaseRPM           : IncValOverTime;
+		IncreaseFrequency     : IncValOverTime;
+		DecreaseVoltage       : DecValOverTime;
+		DecreaseRPM           : DecValOverTime;
+		DecreaseFrequency     : DecValOverTime;
+		Timer1                : TP;
+		syncTime              : TIME;
+		PF                    : REAL;
+		ActiveBackUpMode      : R_TRIG;
+		rpmRiseTime           : REAL;
+		voltageRiseTime       : REAL;
+		ShutdownDGRemote      : R_TRIG;
+		ShutdownResetDGRemote : R_TRIG;
+	END_VAR
+BEGIN
+	StartDGRemote(CLK := StartReq);
+	StopDGRemote(CLK := StopReq);
+	ActiveBackUpMode(CLK := BackUpModeReq);
+	ShutdownDGRemote(CLK := ShutdownReq);
+	ShutdownResetDGRemote(CLK := ShutdownReset);
+	Remote := mRemote;
+	exDGSwbdData.NominalVoltage := pNominalVoltage;
+	exCBData.Current := Current;
+	exDGSwbdData.DGCurrent := Current;
+END_FUNCTION_BLOCK

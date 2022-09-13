@@ -1,0 +1,19 @@
+[:__MODULE_PONDIVZERO] 
+
+{@BEGIN:pOnDivZero}
+[:__LABEL170] 
+
+<IF:CCBLEND>
+526 530 1 [JA:__LABEL173] 
+285 135 2 1 1 234 
+[:__LABEL173] 
+
+{pOnDivZero: (11): }
+508 0 526 [:__LABEL172] 
+
+<ENDIF>
+234 
+[:__LABEL171] 
+
+{@END:pOnDivZero}
+[:__MODULE_END_PONDIVZERO] 

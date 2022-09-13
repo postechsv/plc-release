@@ -1,0 +1,160 @@
+[:__MODULE_MAIN] 
+
+{@BEGIN:Main}
+[:__LABEL1] 
+
+<IF:CCBLEND>
+526 275 1 
+21 1 1 2 
+530 1 [JA:__LABEL4] 
+285 135 2 1 1 234 
+[:__LABEL4] 
+
+{Main: (1): }
+508 0 8 21 9 20 
+45?152 9 21 
+
+{Main: (2): }
+508 0 [:__LABEL5] 
+[:__LABEL6] 
+526 
+{@BEGIN_INSTANCE:PIDHANDLER:USER_PID}
+
+{USER_PID: (1): //21}
+508 21 13 22  1  2  
+45?152 11  22  
+
+{USER_PID: (2): //22}
+508 22 [:__LABEL8] 
+ [:__LABEL9] 
+ 3 4  2  
+[:__LABEL10] 
+ [:__LABEL11] 
+ 13 22  3  11  
+5 23  5  22  
+526 
+{@BEGIN_INSTANCE:ITERM:USER_INTEGRAL}
+
+{USER_INTEGRAL: (1): //2}
+508 2 3 5   4   
+[:__LABEL13] 
+  [:__LABEL14] 
+  44?151 3   5   
+
+{USER_INTEGRAL: (2): //3}
+508 3 [:__LABEL16] 
+  [:__LABEL17] 
+  66 4   [JR:__LABEL18]   
+
+{USER_INTEGRAL: (3): //4}
+508 4 45?152 12   23   
+
+{USER_INTEGRAL: (4): //5}
+508 5 526 67 [JR:__LABEL15]   
+[:__LABEL18] 
+  [:__LABEL19] 
+  [:__LABEL20] 
+  66 2   [JR:__LABEL21]   
+
+{USER_INTEGRAL: (5): //6}
+508 6 5 22   11   7   
+9 24   12   22   
+45?152 12   24   
+
+{USER_INTEGRAL: (6): //7}
+508 7 526 67 [JR:__LABEL15]   
+[:__LABEL21] 
+  [:__LABEL15] 
+  
+{USER_INTEGRAL: (7): //8}
+508 8 526 [:__LABEL12] 
+  
+
+{@END_INSTANCE:ITERM:USER_INTEGRAL}
+
+{USER_PID: (9): //23}
+508 23 [:__LABEL22] 
+ [:__LABEL23] 
+ 526 
+{@BEGIN_INSTANCE:DTERM:USER_DERIVATIVE}
+
+{USER_DERIVATIVE: (1): //9}
+508 9 [:__LABEL26] 
+  [:__LABEL27] 
+  66 2   [JR:__LABEL28]   
+
+{USER_DERIVATIVE: (2): //10}
+508 10 13 22   11   16   
+5 23   17   22   
+9 22   23   14   
+13 22   22   15   
+5 23   18   7   
+37 5   23   19   
+65 5   [JR:__LABEL29]   
+423 4   [:__LABEL29] 
+  7 24   22   23   
+45?152 13   24   
+
+{USER_DERIVATIVE: (3): //11}
+508 11 45?152 16   15   
+
+{USER_DERIVATIVE: (4): //12}
+508 12 45?152 15   14   
+
+{USER_DERIVATIVE: (5): //13}
+508 13 45?152 14   11   
+
+{USER_DERIVATIVE: (6): //14}
+508 14 526 67 [JR:__LABEL25]   
+[:__LABEL28] 
+  
+{USER_DERIVATIVE: (7): //15}
+508 15 45?152 13   19   
+
+{USER_DERIVATIVE: (8): //16}
+508 16 45?152 14   11   
+
+{USER_DERIVATIVE: (9): //17}
+508 17 45?152 15   11   
+
+{USER_DERIVATIVE: (10): //18}
+508 18 45?152 16   11   
+
+{USER_DERIVATIVE: (11): //19}
+508 19 526 [:__LABEL25] 
+  
+{USER_DERIVATIVE: (12): //20}
+508 20 526 [:__LABEL24] 
+  
+
+{@END_INSTANCE:DTERM:USER_DERIVATIVE}
+
+{USER_PID: (14): //24}
+508 24 37 4  5  19  
+65 4  [JR:__LABEL30]  
+423 4  [:__LABEL30] 
+ 7 22  12  5  
+5 23  13  6  
+9 24  11  22  
+9 24  24  23  
+5 22  4  24  
+45?152 10  22  
+
+{USER_PID: (15): //25}
+508 25 526 [:__LABEL7] 
+ 
+
+{@END_INSTANCE:PIDHANDLER:USER_PID}
+
+{Main: (12): }
+508 0 45?152 8 10 
+
+{Main: (15): }
+508 0 526 [:__LABEL3] 
+
+<ENDIF>
+234 
+[:__LABEL2] 
+
+{@END:Main}
+[:__MODULE_END_MAIN] 

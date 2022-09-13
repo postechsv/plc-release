@@ -1,0 +1,21 @@
+-description = ""
+-id = req2
+-job = verif
+-job.backend = cbmc
+-job.reporters.0 = summary
+-job.reporters.1 = html
+-job.reporters.2 = plaintext
+-job.req = pattern
+-job.req.inputs.0 = instance.Counter1
+-job.req.pattern_id = pattern-invariant
+-job.req.pattern_params.1 = "(instance.A = 2) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+-lf = step7
+-lf.entry = Main
+-name = ""
+-job.backend.timeout = 7200
+-job.backend.unwind = 21
+-job.backend.timeout_executor_path = ""
+-job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+-output = benchmark/plcverif/cmd/workspace2/benchmark8/output
+-sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark8/benchmark8.scl
+

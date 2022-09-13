@@ -1,0 +1,326 @@
+fmod CMP is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op CMP : -> [POUDefinition] . 
+  eq CMP = 
+(
+FUNCTIONBLOCK 'CMP 
+BEGINVAR
+'IN1 : DINT := ( # 0 ) : ##IN ; 
+'IN2 : DINT := ( # 0 ) : ##IN ; 
+'LT : BOOL := ( FALSE ) : ##OUT ; 
+'EQ : BOOL := ( FALSE ) : ##OUT ; 
+'QT : BOOL := ( FALSE ) : ##OUT ; 
+ENDVAR
+
+CODE
+IF  ( 'IN1 < 'IN2 )  THEN 
+'LT := TRUE ; 
+ENDIF ; 
+IF  ( 'IN1 ==== 'IN2 )  THEN 
+'EQ := TRUE ; 
+ENDIF ; 
+IF  ( 'IN1 > 'IN2 )  THEN 
+'QT := TRUE ; 
+ENDIF ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod CTD is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op CTD : -> [POUDefinition] . 
+  eq CTD = 
+(
+FUNCTIONBLOCK 'CTD 
+BEGINVAR
+'CD : BOOL := ( FALSE ) : ##IN ; 
+'LD : BOOL := ( FALSE ) : ##IN ; 
+'PV : DINT := ( # 0 ) : ##IN ; 
+'Q : BOOL := ( FALSE ) : ##OUT ; 
+'CV : DINT := ( # 0 ) : ##OUT ; 
+ENDVAR
+
+CODE
+IF 'LD THEN 
+'CV := 'PV ; 
+ELSIF 'CD AND  ( 'CV > 'PV )  THEN 
+'CV := 'CV - (ANYTODINT(# 1)) ; 
+ENDIF ; 
+'Q :=  ( 'CV <= (ANYTODINT(# 0)) )  ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod CTU is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op CTU : -> [POUDefinition] . 
+  eq CTU = 
+(
+FUNCTIONBLOCK 'CTU 
+BEGINVAR
+'CU : BOOL := ( FALSE ) : ##IN ; 
+'R : BOOL := ( FALSE ) : ##IN ; 
+'PV : DINT := ( # 0 ) : ##IN ; 
+'Q : BOOL := ( FALSE ) : ##OUT ; 
+'CV : DINT := ( # 0 ) : ##OUT ; 
+ENDVAR
+
+CODE
+IF 'R THEN 
+'CV := (ANYTODINT(# 0)) ; 
+ELSIF 'CU AND  ( 'CV < 'PV )  THEN 
+'CV := 'CV + (ANYTODINT(# 1)) ; 
+ENDIF ; 
+'Q :=  ( 'CV >= 'PV )  ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod CTUD is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op CTUD : -> [POUDefinition] . 
+  eq CTUD = 
+(
+FUNCTIONBLOCK 'CTUD 
+BEGINVAR
+'CU : BOOL := ( FALSE ) : ##IN ; 
+'CD : BOOL := ( FALSE ) : ##IN ; 
+'R : BOOL := ( FALSE ) : ##IN ; 
+'LD : BOOL := ( FALSE ) : ##IN ; 
+'PV : DINT := ( # 0 ) : ##IN ; 
+'QU : BOOL := ( FALSE ) : ##OUT ; 
+'QD : BOOL := ( FALSE ) : ##OUT ; 
+'CV : DINT := ( # 0 ) : ##OUT ; 
+ENDVAR
+
+CODE
+IF 'R THEN 
+'CV := (ANYTODINT(# 0)) ; 
+ELSIF 'LD THEN 
+'CV := 'PV ; 
+ELSE 
+IF  NOT  ( 'CU AND 'CD )  THEN 
+IF 'CU AND  ( 'CV < 'PV )  THEN 
+'CV := 'CV + (ANYTODINT(# 1)) ; 
+ELSIF 'CD AND  ( 'CV > 'PV )  THEN 
+'CV := 'CV - (ANYTODINT(# 1)) ; 
+ENDIF ; 
+ENDIF ; 
+ENDIF ; 
+'QU :=  ( 'CV >= 'PV )  ; 
+'QD :=  ( 'CV <= (ANYTODINT(# 0)) )  ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod F_TRIG is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op FTRIG : -> [POUDefinition] . 
+  eq FTRIG = 
+(
+FUNCTIONBLOCK 'F_TRIG 
+BEGINVAR
+'M : BOOL := ( FALSE ) : ##PRIV ; 
+'CLK : BOOL := ( FALSE ) : ##IN ; 
+'Q : BOOL := ( FALSE ) : ##OUT ; 
+ENDVAR
+
+CODE
+'Q :=  NOT 'CLK AND  NOT 'M ; 
+'M :=  NOT 'CLK ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod R_TRIG is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op RTRIG : -> [POUDefinition] . 
+  eq RTRIG = 
+(
+FUNCTIONBLOCK 'R_TRIG 
+BEGINVAR
+'M : BOOL := ( FALSE ) : ##PRIV ; 
+'CLK : BOOL := ( FALSE ) : ##IN ; 
+'Q : BOOL := ( FALSE ) : ##OUT ; 
+ENDVAR
+
+CODE
+'Q := 'CLK AND  NOT 'M ; 
+'M := 'CLK ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod PLS is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op PLS : -> [POUDefinition] . 
+  eq PLS = 
+(
+FUNCTIONBLOCK 'PLS 
+BEGINVAR
+'PEROID_CHECKER : TIME := ( # 0 ) : ##PRIV ; 
+'FIRST_CHECKER : BOOL := ( TRUE ) : ##PRIV ; 
+'RUN : BOOL := ( FALSE ) : ##IN ; 
+'CYCLE : TIME := ( # 0 ) : ##IN ; 
+'Q : BOOL := ( FALSE ) : ##OUT ; 
+ENDVAR
+
+CODE
+IF  ( 'FIRST_CHECKER )  THEN 
+'FIRST_CHECKER := FALSE ; 
+'PEROID_CHECKER := @#timerValue ; 
+ENDIF ; 
+IF  ( 'RUN AND  ( @#timerValue - 'PEROID_CHECKER )  >= 'CYCLE )  THEN 
+'PEROID_CHECKER := @#timerValue ; 
+ENDIF ; 
+IF  ( 'RUN AND  ( @#timerValue - 'PEROID_CHECKER )  >=  ( 'CYCLE - @#cycleValue )  )  THEN 
+'Q := TRUE ; 
+ENDIF ; 
+IF  (  NOT 'RUN )  THEN 
+'Q := FALSE ; 
+ENDIF ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod TON is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op TON : -> [POUDefinition] . 
+  eq TON = 
+(
+FUNCTIONBLOCK 'TON 
+BEGINVAR
+'H : BOOL := ( FALSE ) : ##PRIV ; 
+'IN : BOOL := ( FALSE ) : ##IN ; 
+'PT : TIME := ( # 0 ) : ##IN ; 
+'Q : BOOL := ( FALSE ) : ##OUT ; 
+'ET : TIME := ( # 0 ) : ##OUT ; 
+ENDVAR
+
+CODE
+IF  NOT 'IN OR  NOT 'H THEN 
+'Q := FALSE ; 
+'ET := T# 0 ms ; 
+@#timerSetValue ( T# 0 ms ) ; 
+ELSE 
+IF @#timerValue >= 'PT THEN 
+'ET := 'PT ; 
+'Q := TRUE ; 
+ELSE 
+'ET := @#timerValue ; 
+ENDIF ; 
+ENDIF ; 
+'H := 'IN ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod TP is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op TP : -> [POUDefinition] . 
+  eq TP = 
+(
+FUNCTIONBLOCK 'TP 
+BEGINVAR
+'IN : BOOL := ( FALSE ) : ##IN ; 
+'PT : TIME := ( # 0 ) : ##IN ; 
+'Q : BOOL := ( FALSE ) : ##OUT ; 
+'ET : TIME := ( # 0 ) : ##OUT ; 
+ENDVAR
+
+CODE
+IF  (  NOT 'IN AND  NOT 'Q )  THEN 
+'Q := FALSE ; 
+'ET := T# 0 ms ; 
+@#timerSetValue ( T# 0 ms ) ; 
+ENDIF ; 
+IF 'IN THEN 
+'Q := TRUE ; 
+'ET := @#timerValue ; 
+ENDIF ; 
+IF  ( @#timerValue >= 'PT )  THEN 
+'ET := 'PT ; 
+'Q := FALSE ; 
+ENDIF ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod PLC-LIB is
+  inc LIST{POUDefinition} .
+  op LIB : -> List{POUDefinition} .
+  inc CMP .
+  inc CTD .
+  inc CTU .
+  inc CTUD .
+  inc F_TRIG .
+  inc R_TRIG .
+  inc PLS .
+  inc TON .
+  inc TP .
+  eq LIB = CMP CTD CTU CTUD FTRIG RTRIG PLS TON TP .
+endfm
+

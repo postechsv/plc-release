@@ -1,0 +1,20 @@
+FUNCTION_BLOCK CTD
+VAR_INPUT
+  CD : BOOL := FALSE  ; 
+  LD : BOOL := FALSE ;
+  PV : DINT :=  0 ; 
+END_VAR
+
+VAR_OUTPUT
+Q : BOOL := FALSE ;
+CV : DINT :=  0 ;
+END_VAR
+
+IF LD THEN CV := PV ;
+ELSIF CD AND (CV > PV)
+THEN CV := CV - 1 ;
+END_IF ;
+
+Q := (CV <= 0) ;
+
+END_FUNCTION_BLOCK

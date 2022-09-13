@@ -1,0 +1,902 @@
+--- basic arithmetic and logical semantics
+fmod ALU-SEMANTICS is
+  inc CODE-CONFIG .
+ 
+  var SV1 : String .
+  var K : K .
+  vars T1 T2 : Rat .
+  vars ENUMTYPE ENUMVAL : Pid .
+  vars V1 V2 : SemanticValue .
+  var BITFIELD : Pid .
+  var BITINDEX : Nat .
+
+  eq k(# T1  ~> K) = k(syn2sem(# T1) ~> K) .
+  eq k(# SV1  ~> K) = k(syn2sem(# SV1) ~> K) .
+  eq k(TRUE  ~> K) = k(syn2sem(TRUE) ~> K) .
+  eq k(FALSE   ~> K) = k(syn2sem(FALSE) ~> K) .
+  eq k(T# T1 ms  ~> K) = k(syn2sem(T# T1 ms) ~> K) .
+  eq k(ENUMTYPE # ENUMVAL  ~> K) = k( [enumVal(ENUMTYPE, ENUMVAL)] ~> K) .
+
+  ---div0
+  ceq k(V1 / V2 ~> K) = k(syn2sem(# 2147483647) ~> K) if checkSAT(V2 ==== syn2sem(# 0)) .
+  ceq k(V1 / V2 ~> K) = k(syn2sem(# 2147483647, REAL) ~> K) if checkSAT(V2 ==== syn2sem(# 0, REAL)) .
+
+
+  ---bitfield
+  eq k(V1 . # T1  ~> K) = k(V1 . syn2sem(# T1) ~> K) .
+
+endfm
+
+
+mod ASSIGNMENT-LOOKUP-SEMANTICS is
+  inc CODE-CONFIG .
+  inc CONVERSION .
+  inc QID .
+  inc COMMON-SEMANTIC-VALUE .
+  inc CONVERSION-SEMANTICVAL .
+
+  var OBJLOC : ProcessId .
+  var I : Pid .
+  vars V VV : SemanticValue .
+  var K : K .
+  vars ENV OBJENV  : Env .
+  var ENVSTACK : ProgramStack .
+  vars ARRAYENV ARRAYENV1 ARRAYENV2  : ArrayEnv .
+  var STORE : Map{Location, SemanticValue} .
+  vars CONST CONST' : SemanticValue .
+  var ARRAYINDEX  LOCINDEX : Nat .
+  vars RESTPROCS RESTOBJS OBJS : KConfig .
+  var LOCATION  : Location .
+  vars RESTCOMPONENTPROC RESTCOMPONENTOBJ : KConfig .  
+  var TYPE : PType .
+
+--- assignment
+
+  op @store : Location SemanticValue -> KLabel [ctor] .
+ ceq procs(proc(procSwitch(true) k(@store(LOCATION,V) ~> K) RESTCOMPONENTPROC) RESTPROCS) store(STORE) 
+   = procs(proc(procSwitch(true) k(K) RESTCOMPONENTPROC) RESTPROCS) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
+  if loc(LOCINDEX, TYPE) := LOCATION /\ $hasMapping(STORE,LOCATION) .
+
+  eq procs(proc(procSwitch(true) k(I := V ~> K) callStack(ENV :: ENVSTACK) RESTCOMPONENTPROC) RESTPROCS)  
+   = procs(proc(procSwitch(true) k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) RESTCOMPONENTPROC) RESTPROCS) .
+
+  eq procs(proc(procSwitch(true) k(ObjLoc(OBJLOC) . I := V ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) 
+   = procs(proc(procSwitch(true) k(@store(getObjEnv(OBJLOC,OBJS)[I],V) ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) .
+
+  crl [arrayAssignment] : procs(proc(procSwitch(true) k(arrayLoc(ARRAYENV)[VV] := V ~> K) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
+   => procs(proc(procSwitch(true) k(@store(LOCATION,V) ~> K) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND CONST'))
+   if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
+
+
+--- lookup --- get location
+  op @lookup : Location -> KLabel [ctor] .
+  eq procs(proc(procSwitch(true) k(@lookup(LOCATION) ~> K) RESTCOMPONENTPROC) RESTPROCS) store(STORE) 
+   = procs(proc(procSwitch(true) k(STORE[LOCATION] ~> K) RESTCOMPONENTPROC) RESTPROCS) store(STORE) .
+
+  --- Pid
+  eq procs(proc(procSwitch(true) k(I ~> K) callStack(ENV :: ENVSTACK) RESTCOMPONENTPROC) RESTPROCS) 
+   = procs(proc(procSwitch(true) k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) RESTCOMPONENTPROC) RESTPROCS) .
+  
+  --- _._._._
+  eq procs(proc(procSwitch(true) k(ObjLoc(OBJLOC) . I ~> K)                 RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) 
+   = procs(proc(procSwitch(true) k(@lookup(getObjEnv(OBJLOC,OBJS)[I]) ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) .
+
+  --- array[V]
+  crl [arrayLookup] : procs(proc(procSwitch(true) k(arrayLoc(ARRAYENV)[VV] ~> K) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
+   => procs(proc(procSwitch(true) k(@lookup(LOCATION) ~> K) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND CONST'))
+   if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
+
+  crl [array]: arrayLookup((ARRAYENV1, (ARRAYINDEX, LOCATION), ARRAYENV2), V, CONST) 
+            => {LOCATION, (V ==== syn2sem(# ARRAYINDEX))}
+   if checkSAT(CONST AND (V ==== syn2sem(# ARRAYINDEX))) .
+endm
+
+
+--- conditional statement semantics
+mod CONDITIONAL-SEMANTICS is 
+  inc CODE-CONFIG .
+  inc COMMON-SEMANTIC-VALUE .
+
+  vars I : Pid .
+  vars V IFSTATEMENT ITECONDITION : SemanticValue .
+  vars PV PV1 PV2 : PValue .
+  var K : K .
+  var BB : BBranch .
+  vars S1 S2 : Stmt .
+  var CB : CBranch .
+  var CONST : SemanticValue .
+  vars IFSTATEMENT2 WHILESTATEMENT REPEATSTATEMENT PE1 PE2 : PExp .
+  var RESTPROCS : KConfig .
+  var RESTCOMPONENTPROC : KConfig .  
+
+  --- ite
+  crl [iteTrue] : procs(proc(procSwitch(true) (k(ite(ITECONDITION, PE1, PE2) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST)
+  => procs(proc(procSwitch(true) (k(PE1 ~> K)) RESTCOMPONENTPROC ) RESTPROCS) 
+     constraints(CONST AND (ITECONDITION))
+     if checkSAT(CONST AND (ITECONDITION)) .
+  
+  crl [iteFalse] : procs(proc(procSwitch(true) (k(ite(ITECONDITION, PE1, PE2) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST)
+  => procs(proc(procSwitch(true) (k(PE2 ~> K)) RESTCOMPONENTPROC ) RESTPROCS) 
+     constraints(CONST AND (NOT ITECONDITION))
+     if checkSAT(CONST AND (NOT ITECONDITION)) .
+
+  --- if statement
+  crl [IFTRUE] :  
+      procs(proc(procSwitch(true) k(IF IFSTATEMENT THEN S1 ; BB ENDIF ~> K) RESTCOMPONENTPROC ) RESTPROCS) 
+      constraints(CONST)
+   => procs(proc(procSwitch(true) k(S1 ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(simplify(CONST AND IFSTATEMENT))
+   if checkSAT(CONST AND IFSTATEMENT) .
+
+  crl [IFFALSE] : 
+      procs(proc(procSwitch(true) k(IF IFSTATEMENT THEN S1 ; emptyBBranch ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(CONST)
+   => procs(proc(procSwitch(true) k(K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
+   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
+
+  crl [IFFALSE-ELSIF] : 
+      procs(proc(procSwitch(true) k(IF IFSTATEMENT THEN S1 ; ELSIF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(CONST)
+   => procs(proc(procSwitch(true) k(IF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
+   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
+
+  crl [IFFALSE-ELSE] :  
+      procs(proc(procSwitch(true) k(IF IFSTATEMENT THEN S1 ; ELSE S2 ; ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(CONST)
+   => procs(proc(procSwitch(true) k(S2 ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
+   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
+
+
+  --- case statement
+  eq  procs(proc(procSwitch(true) k(CASE V OF emptyCBranch ELSE S1 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS)
+   =  procs(proc(procSwitch(true) k(S1 ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+
+  crl [caseMatch] :  
+      procs(proc(procSwitch(true) k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(CONST)
+   => procs(proc(procSwitch(true) k(S1 ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(simplify(CONST AND V ==== syn2sem(PV2)))
+   if checkSAT(CONST AND V ==== syn2sem(PV2)) .
+  
+
+  crl [caseMatchRangeVersion] :  
+      procs(proc(procSwitch(true) k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(CONST)
+   => procs(proc(procSwitch(true) k(S1 ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(simplify(CONST AND syn2sem(PV1) <= V  AND V <= syn2sem(PV2)))
+   if checkSAT(CONST AND syn2sem(PV1) <= V  AND V <= syn2sem(PV2)) .
+
+  crl [caseNotMatch] :  
+      procs(proc(procSwitch(true) k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(CONST)
+   => procs(proc(procSwitch(true) k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(simplify(CONST AND V <> syn2sem(PV2)))
+   if checkSAT(CONST AND V <> syn2sem(PV2)) .
+  
+
+  crl [caseNotMatchRangeVersion] :  
+      procs(proc(procSwitch(true) k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(CONST)
+   => procs(proc(procSwitch(true) k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      constraints(simplify(CONST AND (syn2sem(PV1) > V  OR V > syn2sem(PV2))))
+   if checkSAT(CONST AND (syn2sem(PV1) > V  OR V > syn2sem(PV2))) .
+
+  --- while statement
+  eq procs(proc(procSwitch(true) k(WHILE WHILESTATEMENT DO S1 ENDWHILE ~> K) RESTCOMPONENTPROC) RESTPROCS)
+   = procs(proc(procSwitch(true) k(IF WHILESTATEMENT THEN S1 ; WHILE WHILESTATEMENT DO S1 ENDWHILE ; ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+  
+
+  --- repeat statement
+  eq procs(proc(procSwitch(true) k(REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ~> K) RESTCOMPONENTPROC) RESTPROCS)
+   = procs(proc(procSwitch(true) k(IF NOT REPEATSTATEMENT THEN S1 ; REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ; ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+
+  --- for statement
+  eq procs(proc(procSwitch(true) k(FOR I := V TO PV1 BY PV2 DO S1 ENDFOR ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+   = procs(proc(procSwitch(true) k(I := V ~> WHILE I <= PV1 DO S1 ; I := I + PV2 ; ENDWHILE ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+endm
+
+
+--- calling of function block, and subprogram
+mod CALL-SEMANTICS is
+  inc CODE-CONFIG .
+  inc COMMON-SEMANTIC-VALUE .
+
+  var CPR : ProcessId .
+  vars ENV ENV' OBJENV  : Env .
+  vars RESTCOMPONENTPROC RESTCOMPONENTOBJ RESTPROCS RESTOBJS OBJS : KConfig .  
+  var K : K .
+  var S : Stmt .
+  var ARGS : List{FArgElement} .
+  vars STORE STORE' : Map{Location, SemanticValue} .
+  var LOCATION : Location .
+  vars FBI FBNAME I1 I2 : Pid .
+  vars OBJLOC ARRAYINDEX : Nat .
+  vars V1 V2 CONST CONST' : SemanticValue .
+  var RESTENV : ProgramStack .
+  var RESTID : List{ProcessId} .
+  var PARMETERDATA : VarSecTypePairList .
+  vars PARMETERDATA1 PARMETERDATA2 : VarSecTypePairList .
+  vars ONEARG PE1 : PExp .
+  var P1 : PProperExp  .
+  vars ARRAYENV : ArrayEnv .
+
+  
+--- udfb call
+  op @call : ProcessId List{FArgElement} -> KLabel [ctor] .
+  op @call : ProcessId List{FArgElement} Env Pid -> KLabel [ctor] .
+  op @args : List{FArgElement} -> KLabel [ctor] .
+  op @bind : Env ProcessId -> KLabel [ctor] .
+  op @pop : -> KLabel [ctor] .
+
+  ceq procs(proc(procSwitch(true) k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS) store(STORE)
+    = procs(proc(procSwitch(true) k(@call(OBJLOC,ARGS) ~> K) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS) store(STORE)
+   if ObjLoc(OBJLOC) := STORE[ENV[FBI]] .
+
+  ceq procs(proc(procSwitch(true) k(@call(OBJLOC,ARGS) ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS)  
+    = procs(proc(procSwitch(true) k(@call(OBJLOC,ARGS,OBJENV,FBNAME) ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) 
+   if OBJENV := getObjEnv(OBJLOC,OBJS)
+   /\ FBNAME := getObjType(OBJLOC,OBJS) .
+
+  eq procs(proc(procSwitch(true) k(@call(OBJLOC,ARGS,OBJENV,FBNAME) ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+     PARDef(FBNAME, PARMETERDATA, S) 
+   = procs(proc(procSwitch(true) k(@args(norm(ARGS,PARMETERDATA)) ~> @bind(OBJENV,OBJLOC) ~> S ~> @pop ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+     PARDef(FBNAME, PARMETERDATA, S) .
+
+  op @ALTERNATIVE : -> PExp [ctor] .
+  op INPAR(_) : Pid -> Pid [ctor] .
+  op INOUTPAR(_) : Pid -> Pid [ctor] .
+
+  op norm : List{FArgElement} VarSecTypePairList -> List{FArgElement} .
+  eq norm((ONEARG, ARGS) , ((I1, ##IN)    PARMETERDATA)) = (INPAR(I1)    <:= ONEARG), norm(ARGS, PARMETERDATA) .
+  eq norm((ONEARG, ARGS) , ((I1, ##INOUT) PARMETERDATA)) = (INOUTPAR(I1) <:= ONEARG), norm(ARGS, PARMETERDATA) .
+  eq norm(nilPExpList, emptyVarSecTypePairList) = nilPExpList .
+
+  eq norm(((I1 <:= ONEARG) , ARGS) , (PARMETERDATA1 (I1, ##IN)    PARMETERDATA2)) = (INPAR(I1)    <:= ONEARG), norm(ARGS, (PARMETERDATA1 PARMETERDATA2)) .
+  eq norm(((I1 <:= ONEARG) , ARGS) , (PARMETERDATA1 (I1, ##INOUT) PARMETERDATA2)) = (INOUTPAR(I1) <:= ONEARG), norm(ARGS, (PARMETERDATA1 PARMETERDATA2)) .
+  eq norm(nilPExpList, emptyVarSecTypePairList) = nilPExpList .
+
+  --- parameter computation
+  ---in parameter
+  eq k(@args(((INPAR(I1) <:= P1) , ARGS))  ~> K) = k(P1 ~> @args(((INPAR(I1) <:= @ALTERNATIVE) , ARGS))  ~> K) .
+  eq k(V1 ~> @args(((INPAR(I1) <:= @ALTERNATIVE) , ARGS))  ~> K) = k(@args(((INPAR(I1) <:= V1) , ARGS))  ~> K) .
+
+  --- inout parameter
+  eq k(@args(((INOUTPAR(I1) <:= P1 . I2) , ARGS))  ~> K) = k(@args(P1 ~> ((INOUTPAR(I1) <:= @ALTERNATIVE . I2) , ARGS))  ~> K) .
+  eq k(@args(V1 ~> ((INOUTPAR(I1) <:= @ALTERNATIVE . I2) , ARGS))  ~> K) = k(@args(((INOUTPAR(I1) <:= V1 . I2) , ARGS))  ~> K) .
+
+  eq k(@args(((INOUTPAR(I1) <:= P1[PE1]) , ARGS))  ~> K) = k(@args(P1 ~> ((INOUTPAR(I1) <:= @ALTERNATIVE[PE1]) , ARGS))  ~> K) .
+  eq k(@args(V1 ~> ((INOUTPAR(I1) <:= @ALTERNATIVE[PE1]) , ARGS))  ~> K) = k(@args(V1 ~> ((INOUTPAR(I1) <:= V1[PE1]) , ARGS))  ~> K) .
+
+  eq k(@args(((INOUTPAR(I1) <:= V1[P1]) , ARGS))  ~> K) = k(@args(P1 ~> ((INOUTPAR(I1) <:= V1[@ALTERNATIVE]) , ARGS))  ~> K) .
+  eq k(@args(V2 ~> ((INOUTPAR(I1) <:= V1[@ALTERNATIVE]) , ARGS))  ~> K) = k(@args(((INOUTPAR(I1) <:= V1[V2]) , ARGS))  ~> K) .
+
+
+--- parameter binding
+
+  ---in parameter
+  eq procs(proc(procSwitch(true) k(@args((INPAR(I1) <:= V1) , ARGS) ~> @bind(ENV,CPR)  ~> K) RESTCOMPONENTPROC) RESTPROCS)
+   = procs(proc(procSwitch(true) k(@args(ARGS) ~> @bind(ENV,CPR) ~> I1 := V1  ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+
+  --- inout parameter
+  eq procs(proc(procSwitch(true) (k(@args((INOUTPAR(I1) <:= I2) , ARGS) ~> @bind(ENV',CPR)  ~> K)) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS)
+   = procs(proc(procSwitch(true) (k(@args(ARGS) ~> @bind(insert(I1, ENV[I2], ENV'),CPR)  ~> K)) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS) .
+
+  eq procs(proc(procSwitch(true) (k(@args((INOUTPAR(I1) <:= ObjLoc(OBJLOC) . I2) , ARGS) ~> @bind(ENV,CPR)  ~> K)) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS)
+   = procs(proc(procSwitch(true) (k(@args(ARGS) ~> @bind(insert(I1, getObjEnv(OBJLOC,OBJS)[I2], ENV),CPR)  ~> K)) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) .
+
+  crl [argBinding] : procs(proc(procSwitch(true) (k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
+  =>  procs(proc(procSwitch(true) (k(@args(ARGS) ~> @bind(insert(I1, LOCATION, ENV),CPR)  ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND CONST'))
+  if arrayLookup(ARRAYENV, V2, CONST) => {LOCATION, CONST'} .
+
+
+--- context switching
+  eq procs(proc(procSwitch(true) k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV) RESTCOMPONENTPROC) RESTPROCS)
+   = procs(proc(procSwitch(true) k(K) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS) .
+
+  eq  procs(proc(procSwitch(true) (k(@pop ~> K)) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS)
+   =  procs(proc(procSwitch(true) (k(K)) callStack(RESTENV) RESTCOMPONENTPROC) RESTPROCS) .
+
+  eq  procs(proc(procSwitch(true) (k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS)
+   =  procs(proc(procSwitch(true) (k(K)) callStack(RESTENV) RESTCOMPONENTPROC) RESTPROCS) . 
+
+  eq  procs(proc(procSwitch(true) (k(return ~> S ~> K)) RESTCOMPONENTPROC) RESTPROCS)
+   =  procs(proc(procSwitch(true) (k(return ~> K)) RESTCOMPONENTPROC) RESTPROCS) . 
+endm
+
+
+fmod STREAM-UPDATE-STREAM-DATA is
+  inc CODE-CONFIG .
+
+  vars PNAME I MAIN : Pid .
+
+  var ENV : Env .
+  var PE1 : PExp .
+  var OBJLOC OBJLOC2 : ProcessId .
+  vars RESTCOMPONENTOBJ RESTOBJS : KConfig .  
+  var STORE : Map{Location, SemanticValue} .
+  var LOCATION : Location .
+  vars STREAM STREAM2 : StreamMap .
+  vars SEQ  : List{SemanticValue} .
+  var VAL : SemanticValue .
+  var CYCLENAT : Nat .
+  var SV1 : SemanticValue .
+  var READYMAINLIST : List{PExp} .
+  
+  vars NOTMAIN1 NOTMAIN2 : List{PExp} .
+
+
+  op simplifyStore : Map{Location, SemanticValue} -> Map{Location, SemanticValue} .
+  eq simplifyStore(((LOCATION |-> SV1), STORE)) = ((LOCATION |-> simplify(SV1)) , simplifyStore(STORE)) .
+  eq simplifyStore(empty) = empty .
+
+
+  op readInstream : List{PExp} StreamMap KConfig KConfig StreamMap -> KConfig .
+  eq readInstream(READYMAINLIST, empty, RESTOBJS, store(STORE), STREAM2) =  store(simplifyStore(STORE)) inStream(STREAM2) .
+
+  eq readInstream(READYMAINLIST, ((MAIN :: PE1 |-> nilSemanticList) , STREAM), RESTOBJS, store(STORE), STREAM2) 
+  = readInstream(READYMAINLIST, STREAM, RESTOBJS, store(STORE), (STREAM2 , (MAIN :: PE1 |-> nilSemanticList))) .
+  
+  ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL, SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
+  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(insert(LOCATION, (VAL), STORE)), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) 
+  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
+
+  eq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (**, SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
+  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) 
+ .
+
+  ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
+  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(insert(LOCATION, (VAL), STORE)), (STREAM2, (MAIN :: PE1 |-> nilSemanticList)) ) 
+  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
+
+  eq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> **) , STREAM), RESTOBJS, store(STORE), STREAM2) 
+  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> nilSemanticList)) ) .
+
+  eq readInstream(READYMAINLIST, ((MAIN :: PE1 |-> (SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
+  =  readInstream(READYMAINLIST, STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) [owise] .
+
+
+  op writeOutstreamAux : StreamMap KConfig KConfig StreamMap ~> StreamMap . 
+  op writeOutstream : Nat StreamMap KConfig KConfig StreamMap ~> StreamMap . 
+
+  ceq writeOutstream(CYCLENAT, STREAM, RESTOBJS, store(STORE), STREAM2) = writeOutstreamAux(STREAM, RESTOBJS, store(STORE), STREAM2) if CYCLENAT >= 1 .
+  ceq writeOutstream(CYCLENAT, STREAM, RESTOBJS, store(STORE), STREAM2) = STREAM if CYCLENAT == 0 .
+
+  eq writeOutstreamAux(empty, RESTOBJS, store(STORE), STREAM2) = STREAM2 .
+  
+  ceq [AAA] : writeOutstreamAux(((MAIN :: PE1 |-> (SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
+  =  writeOutstreamAux(STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ, ( simplify(STORE[LOCATION]) )))) ) 
+  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
+
+  op findLocVal : PExp KConfig KConfig ~> SemanticValue .
+  
+  ceq findLocVal(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) RESTCOMPONENTOBJ) RESTOBJS), store(STORE)) = ObjLoc(OBJLOC2)
+  if LOCATION := ENV[I] /\ $hasMapping(STORE, LOCATION) /\ ObjLoc(OBJLOC2) := STORE[LOCATION] .
+
+  ceq findLocVal(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) RESTCOMPONENTOBJ) RESTOBJS), store(STORE)) = locVal(LOCATION)
+  if LOCATION := ENV[I] /\ $hasMapping(STORE, LOCATION) [owise] .
+
+  eq findLocVal(I, (obj(fbtype(I) id(OBJLOC) RESTCOMPONENTOBJ) RESTOBJS), store(STORE)) = ObjLoc(OBJLOC) .
+
+  eq findLocVal(PE1 . I, RESTOBJS, store(STORE)) = findLocVal(findLocVal(PE1 , RESTOBJS, store(STORE)) . I, RESTOBJS, store(STORE)) [owise] .
+
+
+
+---***&&&^^^%%%
+  var LOCN : Nat .
+  var LOCTYPE : PType .
+
+  op findLocType : PExp KConfig KConfig ~> PType .
+  
+  ceq findLocType(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) RESTCOMPONENTOBJ) RESTOBJS), store(STORE)) = LOCTYPE 
+  if loc(LOCN, LOCTYPE) := ENV[I] .
+
+  eq findLocType(PE1 . I, RESTOBJS, store(STORE)) = findLocType(findLocVal(PE1 , RESTOBJS, store(STORE)) . I, RESTOBJS, store(STORE)) .
+
+
+endfm
+
+mod STREAM-SEMANTICS is
+  inc STREAM-UPDATE-STREAM-DATA .
+  inc CODE-CONFIG .
+
+  var VAL : SemanticValue .
+  var SVAL : SemanticValue .
+  vars STREAM STREAM2 STREAM' INPUTSPECSTREAM INPUTSPECSTREAM' INPUTCOLLECTOR INPUTCOLLECTOR' : StreamMap .
+  vars SEQ SEQ' : List{SemanticValue} .
+  var KEY : StreamKey .
+  var K : K .
+  var EXP : PExp .
+  var CONST1 CONST2 : SemanticValue .
+  vars BOUND BOUND' : Nat .
+  vars LTLFORMULA LTLFORMULA' : LTLFormula .
+
+  op _{_} : StreamKey Nat -> PProperExp [prec 1] .
+  op _|=_ : StreamMap PExp -> [SemanticValue] .
+  op @_|=_ : StreamMap KConfig -> [SemanticValue] .
+  op @_|=_ : StreamMap PValue -> [SemanticValue] .
+
+
+  op refer : List{SemanticValue} Nat -> [SemanticValue] .
+  eq refer((VAL, SEQ'), 0) = VAL .
+  eq refer((VAL), 0) = VAL .
+  eq refer((VAL, SEQ'), (NN:Nat)) = refer(SEQ', (NN:Nat - 1)) .
+  ceq refer(VAL, (NN:Nat)) = UNKNOWNOUTPUTVAL if NN:Nat > 0 .
+  eq refer(nilSemanticList, NN:Nat) = UNKNOWNOUTPUTVAL .
+
+
+  eq STREAM |= EXP = @ STREAM |= k(EXP) .
+
+  eq (@ STREAM |= k(UNKNOWNOUTPUTVAL)) = syn2sem(FALSE) .  
+  eq (@ STREAM |= k(SVAL)) = SVAL [owise] .  
+
+  eq @ ((KEY |-> SEQ) , STREAM') |= k(KEY{NN:Nat} ~> K)
+   = @ ((KEY |-> SEQ) , STREAM') |= k(refer(SEQ, NN:Nat) ~> K) .
+
+  op replaceStreams(_,_) : KConfig KConfig ~> KConfig .
+  eq replaceStreams(KC:KConfig cycleCounterBound(BOUND) inputCollector(INPUTCOLLECTOR) inputStreamSpec(INPUTSPECSTREAM) LTLContainer(LTLFORMULA)  inStream(OS1:StreamMap) outStream(OS2:StreamMap) , 
+  cycleCounterBound(BOUND') inputCollector(INPUTCOLLECTOR') inputStreamSpec(INPUTSPECSTREAM') LTLContainer(LTLFORMULA') inStream(STREAM) outStream(STREAM2))
+   = KC:KConfig cycleCounterBound(BOUND') inputCollector(INPUTCOLLECTOR') inputStreamSpec(INPUTSPECSTREAM') LTLContainer(LTLFORMULA') inStream(STREAM) outStream(STREAM2) .
+
+endm
+
+mod STREAM-EXTENSION is
+  inc STREAM-SEMANTICS .
+
+  subsort PExp < LTLFormula .
+  op NOT_ : LTLFormula -> LTLFormula [ditto] .
+  ops _AND_ _OR_ : LTLFormula LTLFormula -> LTLFormula [ditto] .
+  ops _====_ _<>_ _<>_ _>_ _<_ _>=_ _<=_ : LTLFormula LTLFormula -> LTLFormula [ditto] .
+
+  var SVAL : SemanticValue .
+
+  sort TripleTuple .
+  op {_,_,_} : LTLFormula FreshVarMap Nat -> TripleTuple [ctor] .
+
+
+  --- main operators - streams
+  op genIS : StreamMap ~> StreamMap .
+  op repeat : NeList{StreamValue} -> NeList{StreamValue} .
+  op symbolic : -> StreamValue .
+  op genOS : LTLFormula StreamMap ~> StreamMap .
+  op tail : StreamMap -> [StreamMap] .
+  op streamLength : StreamMap -> [Nat] .
+
+  --- main operators - condition
+  ops FINALLY GLOBALLY NEXT WNEXT : LTLFormula -> LTLFormula [ctor] .
+  ops _UNTIL_ _==>_ : LTLFormula LTLFormula -> LTLFormula [ctor] .
+
+
+--- key type pair
+  sorts KeyTypePair KeyTypePairSet .
+  subsort KeyTypePair < KeyTypePairSet .
+
+  op emptyKTPS : -> KeyTypePairSet [ctor] .
+  op _is_ : StreamKey PType -> KeyTypePair [ctor] .
+  op __ : KeyTypePairSet KeyTypePairSet -> KeyTypePairSet [ctor assoc comm id: emptyKTPS format (d n d)] .
+  eq KTP:KeyTypePair KTP:KeyTypePair = KTP:KeyTypePair .
+  op genKeyTypePair : StreamMap KConfig ~> KeyTypePair .
+
+  ---(
+  =========================================
+  ============IMPLEMENTATION===============
+  =========================================
+  ---)
+  vars KEY KEY2 KEY3 : StreamKey .
+  vars SEQ SEQ2 SEQ3 : List{StreamValue} .
+  vars REALINPUT INPUTSPEC INPUTCOLLECT : List{StreamValue} .
+  vars STRMAP STRMAP2 STRMAP3 : StreamMap .
+  vars RESTMAP RESTMAP2 : [StreamMap] .
+  vars KCF OBJS : KConfig .
+  vars STORE : Map{Location, SemanticValue} .
+  vars N CURR BOUND NEWVARNUM NEWVARNUM1 NEWVARNUM2 : Nat .
+  vars E E1 E2 E3: StreamValue .
+  var FVAR : SemanticValue .
+  var FN : Pid .
+  var ID : PExp .
+  vars COND COND2 OP1 OP2 LEFTFORMULA RIGHTFORMULA : LTLFormula .
+  var C : SemanticValue .
+  vars FVARMAP1 FVARMAP2 : FreshVarMap .
+
+  op updateIS : StreamMap KConfig ~> StreamMap .
+  op updateISSpec : StreamMap ~> StreamMap .
+  op updateISCollector : StreamMap StreamMap ~> StreamMap .
+  op transformISKey : StreamMap ~> StreamMap .
+
+  eq transformISKey(((FN :: ID  |-> SEQ), RESTMAP)) = ((I[ FN :: ID ] |-> SEQ), transformISKey(RESTMAP)) .
+  eq transformISKey(empty) = empty .
+
+  eq genIS(((KEY |-> SEQ), RESTMAP)) = ((KEY |-> nilStreamList), genIS(RESTMAP)) [owise] .
+  eq genIS(((KEY |-> repeat(SEQ)), RESTMAP)) = ((KEY |-> nilStreamList), genIS(RESTMAP)) .
+  eq genIS(((KEY |-> symbolic), RESTMAP)) = ((KEY |-> nilStreamList), genIS(RESTMAP)) .
+  eq genIS(empty) = empty .
+
+  eq updateISSpec((KEY |-> (E)), RESTMAP) = updateISSpec(RESTMAP) [owise] .
+  eq updateISSpec((KEY |-> (E, SEQ)), RESTMAP) = ((KEY |-> SEQ), updateISSpec(RESTMAP)) [owise] .
+  eq updateISSpec((KEY |-> repeat(E, SEQ)), RESTMAP) = ((KEY |-> repeat(SEQ, E)), updateISSpec(RESTMAP)) .
+  eq updateISSpec((KEY |-> repeat(E)), RESTMAP) = ((KEY |-> repeat(E)), updateISSpec(RESTMAP)) .
+  eq updateISSpec((KEY |-> symbolic), RESTMAP) = ((KEY |-> symbolic), updateISSpec(RESTMAP)) .
+  eq updateISSpec(empty) = empty .
+
+  eq updateISCollector(((KEY |-> (E)), RESTMAP), ((KEY |-> SEQ), RESTMAP2)) = updateISCollector(RESTMAP, ((KEY |-> (SEQ, E)), RESTMAP2)) .
+  eq updateISCollector(empty, RESTMAP) = RESTMAP .
+
+  eq updateIS(empty, KCF) = empty .
+  eq updateIS(((KEY |-> (E1 , SEQ)), RESTMAP), KCF) = ((KEY |-> E1), updateIS(RESTMAP, KCF)) [owise] .
+  eq updateIS(((KEY |-> (E1)), RESTMAP), KCF) = ((KEY |-> E1), updateIS(RESTMAP, KCF)) [owise] .
+  eq updateIS(((KEY |-> repeat(E, SEQ)), RESTMAP), KCF ) = ((KEY |-> E), updateIS(RESTMAP, KCF)) .
+  eq updateIS(((KEY |-> repeat(E)), RESTMAP), KCF ) = ((KEY |-> E), updateIS(RESTMAP, KCF)) .
+
+  --- sym variable generation
+  op @genSym : StreamKey PType Nat ~> List{StreamValue} .
+  eq updateIS(((KEY |-> symbolic), RESTMAP), KCF cycleCounter(N))
+   = ((KEY |-> @genSym(KEY, @getType(KEY, KCF), N)), updateIS(RESTMAP, KCF cycleCounter(N))) .
+
+  op @getType : StreamKey KConfig ~> PType .
+  eq @getType(FN :: ID, objs(OBJS) store(STORE) KCF)
+   = findLocType(FN . ID, OBJS, store(STORE)) .
+
+  eq [gen1] : genKeyTypePair(empty, KCF) = emptyKTPS .
+  eq [gen2] : genKeyTypePair(((KEY |-> SEQ), RESTMAP), KCF) = genKeyTypePair(RESTMAP, KCF) [owise] .
+  eq [gen3] : genKeyTypePair(((KEY |-> repeat(SEQ)), RESTMAP), KCF) = genKeyTypePair(RESTMAP, KCF) .
+  
+  eq [gen4] : genKeyTypePair(((KEY |-> symbolic), RESTMAP), KCF) = (KEY is @getType(KEY, KCF)) genKeyTypePair(RESTMAP, KCF) .
+
+
+
+  --- out variables collection
+  sort SKSet .
+  subsort StreamKey < SKSet . 
+  op emptySKSet : -> SKSet [ctor] .
+  op _nnn_ : SKSet SKSet -> SKSet [ctor assoc comm id: emptySKSet] .
+  op @genKeySet : LTLFormula ~> SKSet .
+  op @streamKeySet : StreamMap ~> SKSet .
+  op @setMerge : SKSet SKSet ~> SKSet .
+  op @genEmptyStream : SKSet ~> StreamMap .
+
+  vars SKS1 SKS2 : SKSet .
+
+  eq KEY nnn KEY = KEY .
+
+
+  eq @genKeySet(GLOBALLY(COND)) = @genKeySet(COND) .
+  eq @genKeySet(FINALLY(COND)) = @genKeySet(COND) .
+  eq @genKeySet(NEXT(COND)) = @genKeySet(COND) .
+  eq @genKeySet(WNEXT(COND)) = @genKeySet(COND) .
+
+  eq @genKeySet(NOT COND) = @genKeySet(COND) .
+  eq @genKeySet(COND AND COND2) = ((@genKeySet(COND) nnn @genKeySet(COND2))) .
+  eq @genKeySet(COND OR COND2) = ((@genKeySet(COND) nnn @genKeySet(COND2))) .
+  eq @genKeySet(COND ==> COND2) = ((@genKeySet(COND) nnn @genKeySet(COND2))) .
+  eq @genKeySet(COND UNTIL COND2) = ((@genKeySet(COND) nnn @genKeySet(COND2))) .
+  eq @genKeySet(OP1 > OP2) = @genKeySet(OP1) nnn @genKeySet(OP2) . 
+  eq @genKeySet(OP1 >= OP2) = @genKeySet(OP1) nnn @genKeySet(OP2) . 
+  eq @genKeySet(OP1 < OP2) = @genKeySet(OP1) nnn @genKeySet(OP2) . 
+  eq @genKeySet(OP1 <= OP2) = @genKeySet(OP1) nnn @genKeySet(OP2) . 
+  eq @genKeySet(OP1 ==== OP2) = @genKeySet(OP1) nnn @genKeySet(OP2) . 
+  eq @genKeySet(OP1 <> OP2) = @genKeySet(OP1) nnn @genKeySet(OP2) . 
+  eq @genKeySet(OP1 <> OP2) = @genKeySet(OP1) nnn @genKeySet(OP2) . 
+  eq @genKeySet(KEY{N}) = KEY . --- concrete base case
+  eq @genKeySet(KEY) = KEY . --- symbolic base case
+  eq @genKeySet(OP1) = emptySKSet [owise] .
+
+  eq @streamKeySet(empty) = emptySKSet .
+  eq @streamKeySet((KEY |-> SEQ), RESTMAP) = (KEY nnn @streamKeySet(RESTMAP)) . 
+
+  eq @setMerge(SKS1, emptySKSet) = SKS1 .
+  eq @setMerge((KEY nnn SKS1), (KEY nnn SKS2)) = @setMerge(SKS1, SKS2) .
+  eq @setMerge(SKS1, (KEY nnn SKS2)) = @setMerge(SKS1, SKS2) [owise] .
+
+  eq @genEmptyStream(emptySKSet) = empty .
+  eq @genEmptyStream((KEY nnn SKS1)) = ((KEY |-> nilSemanticList), @genEmptyStream(SKS1)) .
+
+  eq genOS(COND, STRMAP) = @genEmptyStream(@setMerge(@genKeySet(COND), @streamKeySet(transformISKey(STRMAP)))) .
+
+  --- streamMap tail
+  op @tail : List{StreamValue} ~> List{StreamValue} . 
+  eq @tail((SV:StreamValue , SEQ)) = SEQ .
+  eq @tail(SV:StreamValue) = nilSemanticList .
+
+  op @size : List{StreamValue} ~> Nat .
+  eq @size(nilSemanticList) = 0 .
+  eq @size(SV:StreamValue) = 1 .
+  eq @size((SV:StreamValue, SEQ)) = 1 + @size(SEQ) .
+
+  eq tail(empty) = empty .
+  eq tail((KEY |-> SEQ), RESTMAP) = ((KEY |-> @tail(SEQ)), tail(RESTMAP)) .
+
+  eq streamLength(((KEY |-> SEQ), RESTMAP)) = @size(SEQ) .
+
+  op genFormula : LTLFormula Nat Nat ~> PExp .
+  --- base
+  eq genFormula(emptyLTLFormula, CURR, BOUND) = emptyLTLFormula .
+  eq genFormula(FVAR, CURR, BOUND) = FVAR .
+  eq genFormula(KEY{s N}, CURR, BOUND) = NEXT(KEY{N}) .
+  eq genFormula(KEY{0}, CURR, BOUND) = genFormula(KEY, CURR, BOUND) .
+  eq genFormula(PV:PValue, CURR, BOUND) = PV:PValue .
+  eq genFormula(KEY, CURR, BOUND) = KEY{CURR} .
+
+  eq genFormula(OP1 ==== OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) ==== genFormula(OP2, CURR, BOUND) .
+  eq genFormula(OP1 <> OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) <> genFormula(OP2, CURR, BOUND) .
+  eq genFormula(OP1 <> OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) <> genFormula(OP2, CURR, BOUND) .
+  eq genFormula(OP1 < OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) < genFormula(OP2, CURR, BOUND) .
+  eq genFormula(OP1 > OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) > genFormula(OP2, CURR, BOUND) .
+  eq genFormula(OP1 <= OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) <= genFormula(OP2, CURR, BOUND) .
+  eq genFormula(OP1 >= OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) >= genFormula(OP2, CURR, BOUND) .
+
+  eq genFormula(NOT COND, CURR, BOUND) = (NOT genFormula(COND, CURR, BOUND)) .
+  eq genFormula(COND AND COND2, CURR, BOUND) = genFormula(COND, CURR, BOUND) AND genFormula(COND2, CURR, BOUND) .
+  eq genFormula(COND OR COND2, CURR, BOUND) = genFormula(COND, CURR, BOUND) OR genFormula(COND2, CURR, BOUND) .
+
+  --- IMPLICATION
+  eq genFormula(COND ==> COND2, CURR, BOUND) 
+   = (NOT genFormula(COND, CURR, BOUND)) OR genFormula(COND2, CURR, BOUND) .
+  --- NEXT
+ ceq genFormula(NEXT(COND), CURR, BOUND) = NEXT(COND) if BOUND > CURR .
+ ceq genFormula(NEXT(COND), CURR, BOUND) = FALSE if CURR >= BOUND .
+ ceq genFormula(WNEXT(COND), CURR, BOUND) = WNEXT(COND) if BOUND > CURR .
+ ceq genFormula(WNEXT(COND), CURR, BOUND) = TRUE if CURR >= BOUND .
+ --- FINALLY
+  eq genFormula(FINALLY(COND), CURR, BOUND) = genFormula(COND, CURR, BOUND) OR genFormula(NEXT(FINALLY(COND)), CURR, BOUND) .
+  --- GLOBALLY
+  eq genFormula(GLOBALLY(COND), CURR, BOUND) = genFormula(COND, CURR, BOUND) AND genFormula(WNEXT(GLOBALLY(COND)), CURR, BOUND) .
+  --- UNTIL
+  eq genFormula(COND UNTIL COND2, CURR, BOUND) = genFormula(COND2, CURR, BOUND) OR (genFormula(COND, CURR, BOUND) AND NEXT(COND UNTIL COND2)) .
+
+
+  op toNNF : PExp ~> PExp .
+
+  eq toNNF(emptyLTLFormula) = emptyLTLFormula .
+  eq toNNF(KEY{N}) = KEY{N} .
+  eq toNNF(PV:PValue) = PV:PValue .
+  eq toNNF(FVAR) = FVAR .
+
+
+  eq toNNF(NOT (OP1 AND OP2)) = toNNF(NOT OP1) OR toNNF(NOT OP2) .
+  eq toNNF(NOT (OP1 OR OP2)) = toNNF(NOT OP1) AND toNNF(NOT OP2) .
+  eq toNNF(NOT (NOT(COND))) = toNNF(COND) .
+  eq toNNF(NOT (COND)) = (NOT (toNNF(COND))) [owise] .
+
+  eq toNNF(OP1 ==== OP2) = toNNF(OP1) ==== toNNF(OP2) .
+  eq toNNF(OP1 <> OP2) = toNNF(OP1) <> toNNF(OP2) .
+  eq toNNF(OP1 < OP2) = toNNF(OP1) < toNNF(OP2) .
+  eq toNNF(OP1 > OP2) = toNNF(OP1) > toNNF(OP2) .
+  eq toNNF(OP1 <= OP2) = toNNF(OP1) <= toNNF(OP2) .
+  eq toNNF(OP1 >= OP2) = toNNF(OP1) >= toNNF(OP2) .
+  eq toNNF(OP1 AND OP2) = toNNF(OP1) AND toNNF(OP2) .
+  eq toNNF(OP1 OR OP2) = toNNF(OP1) OR toNNF(OP2) .
+
+  eq toNNF(NEXT(COND)) = NEXT(COND) .
+  eq toNNF(WNEXT(COND)) = WNEXT(COND) .
+
+
+  op addFreshVar : LTLFormula Nat ~> TripleTuple .
+  --- base
+  eq addFreshVar(emptyLTLFormula, NEWVARNUM) = {emptyLTLFormula, emptyFreshVarMap, NEWVARNUM} .
+  eq addFreshVar(FVAR, NEWVARNUM) = {FVAR, emptyFreshVarMap, NEWVARNUM} .
+  eq addFreshVar(PV:PValue, NEWVARNUM) = {PV:PValue , emptyFreshVarMap, NEWVARNUM} .
+  eq addFreshVar(KEY{N}, NEWVARNUM) = {KEY{N}, emptyFreshVarMap, NEWVARNUM} .
+
+  ceq addFreshVar(OP1 ==== OP2, NEWVARNUM) = {LEFTFORMULA ==== RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
+
+  ceq addFreshVar(OP1 <> OP2, NEWVARNUM) = {LEFTFORMULA <> RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
+
+  ceq addFreshVar(OP1 < OP2, NEWVARNUM) = {LEFTFORMULA < RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
+
+  ceq addFreshVar(OP1 > OP2, NEWVARNUM) = {LEFTFORMULA > RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
+
+  ceq addFreshVar(OP1 <= OP2, NEWVARNUM) = {LEFTFORMULA <= RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
+
+  ceq addFreshVar(OP1 >= OP2, NEWVARNUM) = {LEFTFORMULA >= RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
+
+  ceq addFreshVar(OP1 AND OP2, NEWVARNUM) = {LEFTFORMULA AND RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
+
+  ceq addFreshVar(OP1 OR OP2, NEWVARNUM) = {LEFTFORMULA OR RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
+
+  op @genFVAR : Nat ~> SemanticValue .
+
+  ceq addFreshVar(NEXT(COND), NEWVARNUM) = {FVAR, (FVAR <-| COND), NEWVARNUM + 1} 
+  if FVAR := @genFVAR(NEWVARNUM) .
+
+  ceq addFreshVar(WNEXT(COND), NEWVARNUM) = {FVAR, (FVAR <-| COND), NEWVARNUM + 1} 
+  if FVAR := @genFVAR(NEWVARNUM) .
+
+  ceq addFreshVar(NOT NEXT(COND), NEWVARNUM) = {FVAR, (FVAR <-| NOT (COND)), NEWVARNUM + 1}
+  if FVAR := @genFVAR(NEWVARNUM) .
+
+  ceq addFreshVar(NOT WNEXT(COND), NEWVARNUM) = {FVAR, (FVAR <-| NOT (COND)), NEWVARNUM + 1}
+  if FVAR := @genFVAR(NEWVARNUM) .
+
+  ceq addFreshVar(NOT COND, NEWVARNUM) = {NOT ( LEFTFORMULA ), FVARMAP1, NEWVARNUM1}
+  if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(COND, NEWVARNUM) [owise] .
+
+  op combineLTLFormulaAndMap : LTLFormula FreshVarMap ~> LTLFormula .
+  eq combineLTLFormulaAndMap(COND , ((FVAR <-| OP1), FVARMAP1)) 
+  = combineLTLFormulaAndMap((COND AND (FVAR ==== syn2sem(FALSE))) , FVARMAP1) .
+  eq combineLTLFormulaAndMap(COND, emptyFreshVarMap) = COND .
+endm
+
+--- starting new cycle
+mod CYCLE-SEMANTICS is
+  inc CODE-CONFIG .
+  inc STREAM-EXTENSION .
+
+  vars ML ML1 : MainList .
+  var TKS : List{ProcessId} .
+  var PRID : ProcessId .
+  vars PERIOD DUE CYCLECOUNT BOUND NEWVARNUM NEWVARNUM' : Nat .
+  var PNAME : Pid .
+  var S : Stmt .
+  vars CT  : Rat .
+  vars STREAM STREAM' : StreamMap .
+  vars KCF PROCS OBJS : KConfig .
+  var K : K .
+  vars RESTCOMPONENTPROC RESTCOMPONENTOBJ : KConfig . 
+  var NEXTOBJS : KConfig .
+  var PARMETERDATA : VarSecTypePairList .
+  var RESTOBJS : KConfig .
+  vars TNAT CONST FVAR : SemanticValue .
+  var STORE : Map{Location, SemanticValue} .
+  vars OUTSTREAM OUTSTREAM' INSTREAM : StreamMap .
+  vars REALINPUTSTREAM INPUTSPECSTREAM INPUTCOLLECTSTREAM : StreamMap . 
+  vars REALINPUTSTREAM' INPUTSPECSTREAM' INPUTCOLLECTSTREAM' : StreamMap . 
+  vars LTLFORMULA LTLFORMULA' : LTLFormula .
+  var LTLRESULT LTLRESULT' : checkSATResult .
+  vars FVARMAP FVARMAP' FVARMAP'' : FreshVarMap .
+  var FVARMAPFORMULA : LTLFormula .
+
+  op collectReadyProcList : List{ProcessId} KConfig ~> List{PExp} .
+  eq collectReadyProcList(nilProcIds, PROCS) = nilPExpList .
+  eq collectReadyProcList(PRID :: TKS, (obj(id(PRID) fbtype(PNAME)  RESTCOMPONENTOBJ) RESTOBJS))
+  = PNAME , collectReadyProcList(TKS, (obj(id(PRID) fbtype(PNAME)  RESTCOMPONENTOBJ) RESTOBJS)) .
+
+  op collectTaskFromMainList : MainList List{ProcessId} ~> List{ProcessId} .
+  eq collectTaskFromMainList((@m(PRID, 1, PERIOD) ML1 ) , TKS) = collectTaskFromMainList(ML1, (TKS :: PRID)) .
+  ceq collectTaskFromMainList((@m(PRID, DUE, PERIOD) ML1 ) , TKS) = collectTaskFromMainList(ML1 , (TKS)) if DUE =/= 1 .
+  eq collectTaskFromMainList(emptyML, TKS) = TKS .
+
+  op decideWhatProcToRun : KConfig KConfig ~> KConfig .
+  eq decideWhatProcToRun(task(nilProcIds), procs(PROCS)) = task(nilProcIds) procs(PROCS) .
+
+  eq decideWhatProcToRun(task((PRID :: TKS)), procs(proc(procSwitch(false) id(PRID) RESTCOMPONENTPROC) PROCS))
+  = task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) RESTCOMPONENTPROC) PROCS) .
+  
+  op updateMainList : MainList ~> MainList .
+  eq updateMainList(emptyML) = emptyML .
+  ceq updateMainList(@m(PRID, DUE, PERIOD) ML1) = @m(PRID, DUE - 1, PERIOD) updateMainList(ML1) if DUE > 1 .
+  eq updateMainList(@m(PRID, 1, PERIOD) ML1) = @m(PRID, PERIOD, PERIOD) updateMainList(ML1) .
+
+  op plusCycleTimeFromOBJTIMER : Rat KConfig ~> KConfig .
+  eq plusCycleTimeFromOBJTIMER(CT, empty) = empty .
+  eq plusCycleTimeFromOBJTIMER(CT, (obj(timer(@timer(TNAT)) RESTCOMPONENTOBJ) KCF)) 
+  = obj(timer(@timer(simplify(TNAT + syn2sem(T# CT ms)))) RESTCOMPONENTOBJ) plusCycleTimeFromOBJTIMER(CT,  KCF) .
+
+  op updateLTLResult : SemanticValue LTLFormula StreamMap Nat ~> checkSATResult .
+  ceq updateLTLResult(CONST, LTLFORMULA, OUTSTREAM, CYCLECOUNT) = UNSAT if CYCLECOUNT < 1 .
+  ceq updateLTLResult(CONST, emptyLTLFormula, OUTSTREAM, CYCLECOUNT) = UNSAT if CYCLECOUNT >= 1 .
+  ceq updateLTLResult(CONST, LTLFORMULA, OUTSTREAM, CYCLECOUNT) = checkSATwithAssignment(CONST AND (OUTSTREAM |= LTLFORMULA)) if CYCLECOUNT >= 1 [owise]  .
+
+  op updateLTLFormula : LTLFormula FreshVarMap Nat Nat Nat FreshVarMap ~> TripleTuple .
+
+  ceq updateLTLFormula(LTLFORMULA, FVARMAP, NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP') = { LTLFORMULA, FVARMAP, NEWVARNUM } if CYCLECOUNT == 0 .
+
+  ceq updateLTLFormula(LTLFORMULA, FVARMAP, NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP') 
+  = addFreshVar(toNNF(genFormula(LTLFORMULA, CYCLECOUNT - 1, BOUND)), NEWVARNUM) if CYCLECOUNT == 1 .
+
+  ceq updateLTLFormula(LTLFORMULA, ((FVAR <-| FVARMAPFORMULA), FVARMAP), NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP') 
+  = updateLTLFormula((LTLFORMULA AND (FVAR ==== (LTLFORMULA'))), FVARMAP, NEWVARNUM', CYCLECOUNT, BOUND, (FVARMAP', FVARMAP'')) 
+  if 
+  CYCLECOUNT > 1 /\
+  {LTLFORMULA', FVARMAP'', NEWVARNUM'} := addFreshVar(toNNF(genFormula(FVARMAPFORMULA, CYCLECOUNT - 1, BOUND)), NEWVARNUM)  .
+
+  ceq updateLTLFormula(LTLFORMULA, emptyFreshVarMap, NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP) = {LTLFORMULA, FVARMAP, NEWVARNUM} if CYCLECOUNT > 1 .
+
+  
+
+ crl [cycle] : cycleCounter(CYCLECOUNT) cycleCounterBound(BOUND) task( nilProcIds ) mainList( ML ) 
+               outStream(OUTSTREAM) inStream(INSTREAM) cycleTime(CT) procs(PROCS) objs(OBJS) store(STORE) 
+               constraints(CONST) LTLContainer(LTLFORMULA) LTLResult(LTLRESULT)
+               inputCollector(INPUTCOLLECTSTREAM) inputStreamSpec(INPUTSPECSTREAM) LTLSubGoal(FVARMAP , NEWVARNUM)
+   => cycleCounter(CYCLECOUNT + 1) cycleCounterBound(BOUND) cycleTime(CT)
+      decideWhatProcToRun(task(TKS), procs(PROCS))
+      objs(plusCycleTimeFromOBJTIMER(CT, OBJS))
+      mainList( updateMainList(ML) ) 
+      readInstream(collectReadyProcList(TKS, OBJS), REALINPUTSTREAM', OBJS, store(STORE), empty)
+      outStream(OUTSTREAM')
+      constraints(simplify(CONST)) LTLContainer(LTLFORMULA') LTLResult(  LTLRESULT' )
+      inputCollector(INPUTCOLLECTSTREAM') inputStreamSpec(INPUTSPECSTREAM') LTLSubGoal(FVARMAP' , NEWVARNUM')
+    if 
+    CYCLECOUNT <= BOUND /\
+    checkSAT(CONST) /\ 
+    REALINPUTSTREAM' := updateIS(INPUTSPECSTREAM, (objs(OBJS) store(STORE) cycleCounter(CYCLECOUNT))) /\
+    INPUTSPECSTREAM' := updateISSpec(INPUTSPECSTREAM) /\
+    INPUTCOLLECTSTREAM' := updateISCollector(REALINPUTSTREAM', INPUTCOLLECTSTREAM) /\
+    TKS := collectTaskFromMainList(ML,  nilProcIds ) /\ 
+    OUTSTREAM' := writeOutstream(CYCLECOUNT, OUTSTREAM, OBJS, store(STORE), empty) /\
+    {LTLFORMULA', FVARMAP', NEWVARNUM'} := updateLTLFormula(LTLFORMULA, FVARMAP, NEWVARNUM, CYCLECOUNT, BOUND - 1, emptyFreshVarMap) /\
+    LTLRESULT' := updateLTLResult(CONST, combineLTLFormulaAndMap(LTLFORMULA', FVARMAP'), (transformISKey(INPUTCOLLECTSTREAM'), OUTSTREAM'), CYCLECOUNT) /\
+    LTLRESULT == UNSAT 
+      .
+      
+
+  eq [programTaskDone] : task( PRID :: TKS ) procs(proc(procSwitch(true) id(PRID) k(.K) RESTCOMPONENTPROC) PROCS)
+                         objs(obj(id(PRID) fbtype(PNAME) RESTCOMPONENTOBJ) RESTOBJS)
+                         PARDef(PNAME, PARMETERDATA, S) 
+   = decideWhatProcToRun(task( TKS ), procs(proc(procSwitch(false) id(PRID) k(S) RESTCOMPONENTPROC) PROCS))
+     objs(obj(id(PRID) fbtype(PNAME) RESTCOMPONENTOBJ) RESTOBJS)
+     PARDef(PNAME, PARMETERDATA, S)
+      .
+endm
+
+--- wait semantics
+mod WAIT-SEMANTICS is
+  inc CODE-CONFIG .
+  inc CYCLE-SEMANTICS .
+  
+  var PRID : ProcessId .
+  vars TKS : List{ProcessId} .
+  var E : PExp .
+  var K : K .
+  vars CT : Rat .
+  vars ML1 ML2 : MainList .
+  vars V1 CONST : SemanticValue .
+  vars D P : Nat .
+  var RESTPROCS : KConfig .
+  var RESTCOMPONENTPROC : KConfig .
+
+  eq k(WAIT(E) ~> K) = k(IF E THEN skip ; ELSE @release ; WAIT(E) ; ENDIF   ~> K) .
+
+  eq task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) (k(@release ~> K)) RESTCOMPONENTPROC) RESTPROCS)
+  = decideWhatProcToRun( task(TKS), procs(proc(procSwitch(false) id(PRID) (k(K)) RESTCOMPONENTPROC) RESTPROCS) ) .
+
+  crl [WAITTIMEDECREASE] : task(PRID :: TKS) mainList(ML1 @m(PRID, D, P) ML2) 
+                           procs(proc(procSwitch(true) id(PRID) (k(WAITTIME(V1) ~> K)) RESTCOMPONENTPROC) RESTPROCS) cycleTime(CT) constraints(CONST)
+     => decideWhatProcToRun(task( TKS ), procs(proc(procSwitch(false) id(PRID) (k(WAITTIME(V1 - syn2sem(T# CT ms)) ~> K)) RESTCOMPONENTPROC) RESTPROCS) )
+        mainList(ML1 @m(PRID, 1, P) ML2) 
+        cycleTime(CT)  constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
+        if checkSAT(V1 > syn2sem(T# 0 ms)) .
+
+  crl [WAITTIMEND] : task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(WAITTIME(V1) ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
+   => task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(K)) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND V1 <= syn2sem(T# 0 ms)))
+   if checkSAT(V1 <= syn2sem(T# 0 ms)) .
+endm
+
+--- semantics for time-related FBs (TON, ...)
+fmod TIMER-SEMANTICS is 
+  inc CODE-CONFIG .
+
+  vars CPR : ProcessId .
+  var IDSTACK : List{ProcessId} .
+  var K : K .  
+  vars CT PTIME : Rat .
+  var PV1 : PValue .
+  vars RESTPROCS RESTOBJS : KConfig .
+  vars RESTCOMPONENTPROC RESTCOMPONENTOBJ : KConfig .
+  var TVAL : SemanticValue .
+
+  eq procs(proc(procSwitch(true) (k(@#cycleValue ~> K)) RESTCOMPONENTPROC) RESTPROCS) cycleTime(CT) 
+   =
+     procs(proc(procSwitch(true) (k(syn2sem(T# CT ms) ~> K)) RESTCOMPONENTPROC) RESTPROCS) cycleTime(CT) .
+
+  eq procs(proc(procSwitch(true)  (k(@#timerValue ~> K)) RESTCOMPONENTPROC) RESTPROCS)
+     objs(obj(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTOBJ) RESTOBJS)
+   =
+     procs(proc(procSwitch(true) (k(TVAL ~> K)) RESTCOMPONENTPROC) RESTPROCS)
+     objs(obj(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTOBJ) RESTOBJS) .
+
+  eq procs(proc(procSwitch(true) (k(@#timerSetValue(T# PTIME ms) ~> K)) RESTCOMPONENTPROC) RESTPROCS)
+     objs(obj(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTOBJ) RESTOBJS)
+   =
+     procs(proc(procSwitch(true) (k(K)) RESTCOMPONENTPROC) RESTPROCS)
+     objs(obj(id(CPR) timer(@timer(syn2sem(T# PTIME ms))) RESTCOMPONENTOBJ) RESTOBJS) .
+endfm

@@ -1,0 +1,14 @@
+INPUT:
+Main :: nsIncoming |-> ??
+Main :: ewIncoming |-> ??
+Main :: nspIncoming |-> repeat(FALSE)
+Main :: ewpIncoming |-> repeat(FALSE)
+Main :: yellow1 |-> ??
+Main :: yellow2 |-> repeat(T#500ms)
+
+STEP:
+8
+
+CONDITION:
+GLOBALLY (NOT (Main::bothGreen))
+

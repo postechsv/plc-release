@@ -1,0 +1,20 @@
+Compiler V10.0.0.239
+Loading application symbols...
+fibonacci
+fibonacci: (8): Warning: loop instructions may block the target cycle
+No error detected
+
+Loading application symbols...
+Demo Mode: run time execution limited in time!
+Main
+pStartup
+pShutDown
+pOnDivZero
+pOnBadIndex
+Building application data...
+< 3 BOOL/SINT; 0 INT; 13 DINT/REAL; 0 LINT/LREAL; 2 TIME; 0 STRING;  - CRC = 62b8ba67 >
+On Line Change is disabled
+< 6 POUs - 3 programs, 2 sub-programs, 1 UDFBs >
+Relocating code...
+< Code CRC=347a3438 - File CRC=aa06cc0d - Size=2336 >
+No error detected

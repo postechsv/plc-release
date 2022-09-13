@@ -1,0 +1,5 @@
+    IF EffLoad <> 0 THEN
+        PF := EffLoad / (EffLoad * EffLoad + ReLoad * ReLoad);
+    ELSE
+        PF := -1;
+    END_IF;

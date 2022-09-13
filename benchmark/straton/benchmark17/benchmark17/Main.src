@@ -1,0 +1,61 @@
+    CYCLE := CYCLE + 1;
+    SF_EmergencyStop_1(
+        Activate := TRUE,
+        S_EStopIn := S1_S_EStopIn,
+        S_StartReset := FALSE,
+        S_AutoReset := FALSE,
+        Reset := S0_Reset
+    );
+    SF_SafetyRequest_1(
+        Activate := TRUE,
+        S_OpMode := SF_EmergencyStop_1.S_EStopOut,
+        S_Acknowledge := M1_S_AcknowledgeSS1,
+        MonitoringTime := T#100ms,
+        Reset := S0_Reset
+    );
+    SF_SafetyRequest_2(
+        Activate := TRUE,
+        S_OpMode := S_AutoMode,
+        S_Acknowledge := M1_S_AcknowledgeSafeMotion,
+        MonitoringTime := T#100ms,
+        Reset := S0_Reset
+    );
+    SF_ModeSelector_1(
+        Activate := TRUE,
+        S_Mode0 := S2_S_AutoMode,
+        S_Mode1 := S2_S_SetupMode,
+        S_Mode2 := FALSE,
+        S_Mode3 := FALSE,
+        S_Mode4 := FALSE,
+        S_Mode5 := FALSE,
+        S_Mode6 := FALSE,
+        S_Mode7 := FALSE,
+        S_Unlock := TRUE,
+        Reset := S0_Reset
+    );
+    SF_GuardLocking_1(
+        Activate := TRUE,
+        S_GuardMonitoring := S5_S_GuardSwitch,
+        S_SafetyActive := S_SafeStandstill OR S_SafeMotionActive,
+        S_GuardLock := S7_S_GuardLock,
+        UnlockRequest := S8_UnlockGuard,
+        S_StartReset := FALSE,
+        S_AutoReset := FALSE,
+        Reset := S0_Reset
+    );
+    SF_EnableSwitch_1(
+        Activate := TRUE,
+        S_SafetyActive := S_SafeMotionActive AND S_SetupMode,
+        S_EnableSwitchCh1 := S4_S_EnableSwitchCh1,
+        S_EnableSwitchCh2 := S4_S_EnableSwitchCh2,
+        S_AutoReset := FALSE,
+        Reset := S0_Reset
+    );
+    S_SafeStandstill := SF_SafetyRequest_1.S_SafetyActive;
+    S_SafeStop_M1 := SF_SafetyRequest_1.S_SafetyRequest;
+    S_SafeMotionActive := SF_SafetyRequest_2.S_SafetyActive;
+    S_SafeMotion_M1 := SF_SafetyRequest_2.S_SafetyRequest;
+    S_SetupMode := SF_ModeSelector_1.S_Mode1Sel;
+    S_AutoMode := SF_ModeSelector_1.S_Mode0Sel AND SF_GuardLocking_1.S_GuardLocked;
+    S_UnlockGuard_K1 := SF_GuardLocking_1.S_UnlockGuard;
+    S_Enable_M1 := SF_EnableSwitch_1.S_EnableSwitchOut;

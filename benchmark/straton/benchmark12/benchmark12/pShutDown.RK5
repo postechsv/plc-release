@@ -1,0 +1,19 @@
+[:__MODULE_PSHUTDOWN] 
+
+{@BEGIN:pShutDown}
+[:__LABEL24] 
+
+<IF:CCBLEND>
+526 530 1 [JA:__LABEL27] 
+285 135 2 1 1 234 
+[:__LABEL27] 
+
+{pShutDown: (4): }
+508 0 526 [:__LABEL26] 
+
+<ENDIF>
+234 
+[:__LABEL25] 
+
+{@END:pShutDown}
+[:__MODULE_END_PSHUTDOWN] 

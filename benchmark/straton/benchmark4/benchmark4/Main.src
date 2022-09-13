@@ -1,0 +1,12 @@
+    CYCLE := CYCLE + 1;
+    STACK_INT_FB(
+        PUSH := B1,
+        POP := B2,
+        R1 := B3,
+        IN := I1,
+        N := I2
+    );
+    STACKOUT := STACK_INT_FB.OUT;
+    STACKEMPTY := STACK_INT_FB.EMPTY;
+    STACKFULL := STACK_INT_FB.OFLO;
+    STACKSIZE := STACK_INT_FB.SIZE;

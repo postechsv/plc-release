@@ -1,0 +1,15 @@
+FUNCTION_BLOCK CalPowerFactor
+	VAR_INPUT
+		EffLoad : REAL;
+		ReLoad  : REAL;
+	END_VAR
+	VAR_OUTPUT
+		PF : REAL;
+	END_VAR
+BEGIN
+	IF EffLoad <> 0 THEN
+		PF := EffLoad / (EffLoad * EffLoad + ReLoad * ReLoad);
+	ELSE
+		PF := -1;
+	END_IF;
+END_FUNCTION_BLOCK

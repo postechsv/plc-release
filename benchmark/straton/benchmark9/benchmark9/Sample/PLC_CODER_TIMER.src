@@ -1,0 +1,9 @@
+    CASE timerAction OF
+        1:
+            plcTimerExpired := FALSE;
+            done := FALSE;
+        2:
+            done := plcTimerExpired;
+        3:
+            done := NOT (plcTimerExpired);
+    END_CASE;

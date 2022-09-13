@@ -1,0 +1,10 @@
+INPUT:
+Main :: x |-> ??
+Main :: y |-> ??
+Main :: tank |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (NOT (Main :: collision AND Main :: sinking)) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

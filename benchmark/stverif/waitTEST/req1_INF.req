@@ -1,0 +1,9 @@
+INPUT:
+empty
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( TRUE )

@@ -1,0 +1,6 @@
+    Q := NOT R1;
+    IF R1 THEN
+        XOUT := X0;
+    ELSIF RUN THEN
+        XOUT := XOUT + XIN * CYCLE;
+    END_IF;

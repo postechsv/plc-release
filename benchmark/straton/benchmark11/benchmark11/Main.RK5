@@ -1,0 +1,91 @@
+[:__MODULE_MAIN] 
+
+{@BEGIN:Main}
+[:__LABEL1] 
+
+<IF:CCBLEND>
+526 275 1 
+21 1 1 2 
+530 1 [JA:__LABEL4] 
+285 135 2 1 1 234 
+[:__LABEL4] 
+
+{Main: (1): }
+508 0 8 7 2 6 
+45?152 2 7 
+
+{Main: (2): }
+508 0 [:__LABEL5] 
+[:__LABEL6] 
+526 
+{@BEGIN_INSTANCE:NewVar1:USER_CONSTANT}
+
+{USER_CONSTANT: (1): //2}
+508 2 [:__LABEL9] 
+ [:__LABEL10] 
+ 66 2  [JR:__LABEL11]  
+
+{USER_CONSTANT: (2): //3}
+508 3 45?152 3  4  
+
+{USER_CONSTANT: (3): //4}
+508 4 526 67 [JR:__LABEL8]  
+[:__LABEL11] 
+ 
+{USER_CONSTANT: (4): //5}
+508 5 45?152 3  5  
+
+{USER_CONSTANT: (5): //6}
+508 6 526 [:__LABEL8] 
+ 
+{USER_CONSTANT: (6): //7}
+508 7 526 [:__LABEL7] 
+ 
+
+{@END_INSTANCE:NewVar1:USER_CONSTANT}
+
+{Main: (3): }
+508 0 45?152 1 3 
+
+{Main: (4): }
+508 0 [:__LABEL12] 
+[:__LABEL13] 
+526 
+{@BEGIN_INSTANCE:NewVar1:USER_CONSTANT}
+
+{USER_CONSTANT: (1): //2}
+508 2 [:__LABEL16] 
+ [:__LABEL17] 
+ 66 2  [JR:__LABEL18]  
+
+{USER_CONSTANT: (2): //3}
+508 3 45?152 3  4  
+
+{USER_CONSTANT: (3): //4}
+508 4 526 67 [JR:__LABEL15]  
+[:__LABEL18] 
+ 
+{USER_CONSTANT: (4): //5}
+508 5 45?152 3  5  
+
+{USER_CONSTANT: (5): //6}
+508 6 526 [:__LABEL15] 
+ 
+{USER_CONSTANT: (6): //7}
+508 7 526 [:__LABEL14] 
+ 
+
+{@END_INSTANCE:NewVar1:USER_CONSTANT}
+
+{Main: (5): }
+508 0 45?152 1 3 
+
+{Main: (6): }
+508 0 526 [:__LABEL3] 
+
+<ENDIF>
+234 
+[:__LABEL2] 
+
+{@END:Main}
+[:__MODULE_END_MAIN] 

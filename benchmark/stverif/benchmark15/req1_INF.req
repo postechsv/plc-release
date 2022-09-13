@@ -1,0 +1,26 @@
+INPUT:
+Main :: S1_S_EStopIn_1 |-> ??
+Main :: S1_S_EStopIn_2 |-> ??
+Main :: S2_S_ESPE_In |-> ??
+Main :: S0_Reset |-> ??
+Main :: S3_Drive_Reset |-> ??
+Main :: AxisD_1 |-> ??
+Main :: InputDevice1_active |-> ??
+Main :: InputDevice2_active |-> ??
+Main :: Internal_Acknowledge |-> ??
+Main :: Error_Equiv1 |-> ??
+Main :: Diag_Equiv1 |-> ??
+Main :: Error_EStop1 |-> ??
+Main :: Diag_EStop1 |-> ??
+Main :: Error_ESPE1 |-> ??
+Main :: Diag_ESPE1 |-> ??
+Main :: Error_SafeStop1 |-> ??
+Main :: Diag_SafeStop1 |-> ??
+Main :: S_Stopped |-> ??
+
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( ( NOT (Main :: Error_Equiv1)	AND NOT (Main :: Error_EStop1) AND NOT (Main :: Error_ESPE1) AND NOT (Main :: Error_SafeStop1) ) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

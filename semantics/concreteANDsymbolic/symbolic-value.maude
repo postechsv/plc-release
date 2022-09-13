@@ -1,0 +1,84 @@
+mod PLC-SYMBOLIC-PRIMITIVES is
+  inc PLC-PRIMITIVES .
+  inc REAL-INTEGER-EXPR .
+  inc COMMON-SEMANTIC-VALUE .
+  inc META-LEVEL * 
+      (op _`[_`] to _`[`[`[_`]`]`], 
+       op _`,_ to _`,`,`,_, 
+       op _:=_ to _:::===_, 
+       op _+_ : ModuleExpression ModuleExpression -> ModuleExpression to _+++_,
+       op _::_ to _::::::_,
+       op _;_ to _;;;_,
+       op __ to _qqq_
+) .
+  inc QID .
+  inc CONVERSION .
+  inc FLOAT .
+  inc BOOLEAN-EXPR .
+  inc REAL-EXPR .
+  inc INTEGER-EXPR .
+  inc CODE-CONFIG .
+
+  op [_] : RealExpr -> RatSemanticVal [ctor prec 0] .
+  op [_] : IntegerExpr -> RatSemanticVal [ctor prec 0] .
+  op [_] : BooleanExpr -> BoolSemanticVal [ctor prec 0] .
+  op T[_] : IntegerExpr -> TimeSemanticVal [ctor prec 0] .
+ 
+
+endm
+
+mod PLC-SYMBOLIC-SYN2SEM-SEM2SYN is
+  inc PLC-SYMBOLIC-PRIMITIVES .
+
+  var R1 : Rat .
+  var I1 : Int .
+  var B1 : Bool .
+
+  var RE1 RE2 : RealExpr .
+  var IE1 IE2 : IntegerExpr .
+  var BE1 : BooleanExpr .
+
+  var TYPE : PType .
+
+  op convertRatToReal : Rat -> Real .
+  eq convertRatToReal(I1) = downTerm(qid(string(I1, 10) + "/1.Real"), (0/1).Real) .
+  eq convertRatToReal(R1) = downTerm(qid(string(R1, 10) + ".Real"), (0/1).Real) .
+
+  op convertIntToInteger : Int -> Integer .
+  eq convertIntToInteger(I1) = downTerm(qid(string(I1, 10) + ".Integer"), ((0).Integer)) .
+
+  op convertBoolToBoolean : Bool  -> Boolean .
+  eq convertBoolToBoolean(B1) = downTerm(qid(string(getName(upTerm(B1))) + ".Boolean"), (false).Boolean ) .
+
+  op convertRealToRat : RealExpr -> Rat .
+  eq convertRealToRat(RE1) = rat(string(getName(upTerm(RE1))), 10) .
+
+  op convertIntegerToInt : IntegerExpr -> Int .
+  eq convertIntegerToInt(IE1) = rat(string(getName(upTerm(IE1))), 10) .
+
+  op convertBooleanToBool : BooleanExpr  -> Bool .
+  eq convertBooleanToBool(BE1) = downTerm(qid(string(getName(upTerm(BE1))) + ".Bool"), (false).Bool ) .
+
+  op convertBoolToPBool : Bool -> PBool .
+  eq convertBoolToPBool(true) = TRUE .
+  eq convertBoolToPBool(false) = FALSE .
+
+  eq syn2sem( # I1 ) = [ convertIntToInteger(I1) ] .
+  eq syn2sem( # R1 ) = [ convertRatToReal(R1) ] [owise] .
+  eq syn2sem(T# I1 ms) = T[convertIntToInteger(I1)] .
+
+  ceq syn2sem( # I1 , TYPE ) = [ convertIntToInteger(I1) ] if TYPE in INTTYPES .
+  eq syn2sem( # I1 , REAL ) = [ toReal(convertIntToInteger(I1)) ] .
+  eq syn2sem( # R1 , REAL ) = [ convertRatToReal(R1) ] [owise] .
+  eq syn2sem( T# I1 ms , TIME ) = T[convertIntToInteger(I1)] .
+
+  eq sem2syn([RE1]) = # convertRealToRat(RE1) .
+  eq sem2syn([IE1]) = # convertIntegerToInt(IE1) .
+  eq sem2syn([BE1]) = convertBoolToPBool(convertBooleanToBool(BE1)) .
+  eq sem2syn(T[IE1]) = T# convertIntegerToInt(IE1) ms .
+
+  eq syn2sem( TRUE ) = [(true).Boolean] [owise] .
+  eq syn2sem( FALSE ) = [(false).Boolean] [owise] .
+  eq syn2sem( TRUE , BOOL ) = [(true).Boolean] [owise] .
+  eq syn2sem( FALSE , BOOL ) = [(false).Boolean] [owise] .
+endm

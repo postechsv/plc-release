@@ -1,0 +1,8 @@
+[SHORT]
+V-IN1=
+V-OUT=
+V-IN2=
+[LONG]
+V-IN1=
+V-OUT=
+V-IN2=

@@ -1,0 +1,15 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar 15 2020 23:55:47
+	     Copyright 1997-2019 SRI International
+		   Tue Apr  5 13:30:43 2022
+==========================================
+search [1] in MC : APPEXT =>* REST:KConfig constraints(CONST:SemanticValue)
+    outStream(STRMAP:StreamMap) LTLResult(RESULT:checkSATResult) such that
+    RESULT:checkSATResult =/= UNSAT = (true).Bool /\ KTPS:KeyTypePairSet :=
+    genKeyTypePair(RAWIS, APP) .
+
+No solution.
+states: 3  rewrites: 421 in 0ms cpu (1ms real) (~ rewrites/second)
+Bye.

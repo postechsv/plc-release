@@ -1,0 +1,19 @@
+[:__MODULE_PONBADINDEX] 
+
+{@BEGIN:pOnBadIndex}
+[:__LABEL25] 
+
+<IF:CCBLEND>
+526 530 1 [JA:__LABEL28] 
+285 135 2 1 1 234 
+[:__LABEL28] 
+
+{pOnBadIndex: (3): }
+508 0 526 [:__LABEL27] 
+
+<ENDIF>
+234 
+[:__LABEL26] 
+
+{@END:pOnBadIndex}
+[:__MODULE_END_PONBADINDEX] 

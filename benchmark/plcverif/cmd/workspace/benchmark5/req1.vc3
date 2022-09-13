@@ -1,0 +1,25 @@
+-description = ""
+-id = req1
+-job = verif
+-job.backend = nusmv
+-job.reporters.0 = summary
+-job.reporters.1 = html
+-job.reporters.2 = plaintext
+-job.req = assertion
+-job.req.assertion_to_check.0 = POUSTISONE
+-job.req.inputs.0 = instance.B1
+-job.req.inputs.1 = instance.R1
+-job.req.inputs.2 = instance.R2
+-job.req.inputs.3 = instance.R3
+-job.req.inputs.4 = instance.R4
+-job.req.inputs.5 = instance.R5
+-job.req.inputs.6 = instance.R6
+-job.req.inputs.7 = instance.R7
+-lf = step7
+-lf.entry = Main
+-name = ""
+-job.backend.timeout = 7200
+-job.backend.binary_path = tools/nuXmv-2.0.0-linux64.tar/nuXmv-2.0.0-Linux/bin/nuXmv
+-output = benchmark/plcverif/cmd/workspace/benchmark5/output
+-sourcefiles.0 = benchmark/plcverif/cmd/workspace/benchmark5/benchmark5.scl
+

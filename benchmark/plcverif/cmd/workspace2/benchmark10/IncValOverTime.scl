@@ -1,0 +1,39 @@
+FUNCTION_BLOCK IncValOverTime
+	VAR_INPUT
+		Start    : BOOL;
+		Value    : REAL;
+		RiseTime : REAL;
+	END_VAR
+	VAR_OUTPUT
+		CurValue : REAL;
+	END_VAR
+	VAR
+		Inst_PLS : PLS;
+		incVal   : REAL;
+		Done     : BOOL;
+	END_VAR
+BEGIN
+	Inst_PLS(
+		RUN := Start,
+		CYCLE := t#100ms
+	);
+	IF Start THEN
+		IF RiseTime < 100 THEN
+			incVal := Value;
+		ELSE
+			incVal := (Value * 100) / RiseTime;
+		END_IF;
+
+		IF Inst_PLS.Q THEN
+			CurValue := CurValue + incVal;
+			IF CurValue >= Value THEN
+				CurValue := Value;
+				Done := true;
+			END_IF;
+		END_IF;
+	ELSE
+		CurValue := 0;
+		Done := false;
+	END_IF;
+
+END_FUNCTION_BLOCK

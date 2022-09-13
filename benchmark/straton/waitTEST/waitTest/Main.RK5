@@ -1,0 +1,43 @@
+[:__MODULE_MAIN] 
+
+{@BEGIN:Main}
+[:__LABEL1] 
+
+<IF:CCBLEND>
+526 275 1 
+21 1 1 2 
+530 1 [JA:__LABEL4] 
+285 135 2 1 1 234 
+[:__LABEL4] 
+
+{Main: (1): }
+508 0 3 3 2 
+[:__LABEL5] 
+[:__LABEL6] 
+44?151 2 3 
+
+{Main: (3): }
+508 0 506 [:__LABEL7] 
+[:__LABEL8] 
+[:__LABEL9] 
+[:__LABEL10] 
+507 4 
+{Main: (5): }
+508 0 3 3 2 
+[:__LABEL11] 
+[:__LABEL12] 
+44?151 2 3 
+
+{Main: (7): }
+508 0 8 4 1 3 
+45?152 1 4 
+
+{Main: (9): }
+508 0 526 [:__LABEL3] 
+
+<ENDIF>
+234 
+[:__LABEL2] 
+
+{@END:Main}
+[:__MODULE_END_MAIN] 

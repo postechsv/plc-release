@@ -1,0 +1,13 @@
+#debug
+
+{ExDGSwbdSt: (2): //2}
+508 2 526 :\9 
+#L:9
+#V(B)[0,0]{}:2=Connected
+#V(R)[0,0]{}:6=DGPF
+#V(B)[0,0]{}:5=DecPower
+#V(R)[0,0]{}:7=NominalVoltage
+#V(R)[0,0]{}:3=AdjustedPower
+#V(R)[0,0]{}:1=SwbdFrequency
+#V(B)[0,0]{}:4=IncPower
+#V(R)[0,0]{}:8=DGCurrent

@@ -1,0 +1,11 @@
+IF (x < 5 AND y < 5) THEN
+   collision := TRUE ;
+ ELSE
+   collision := FALSE ;
+END_IF ;
+
+IF (tank > 5) THEN
+   sinking := TRUE ;
+ ELSE
+   sinking := FALSE ;
+END_IF ;

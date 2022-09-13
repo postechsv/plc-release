@@ -1,0 +1,4 @@
+    CYCLE := CYCLE + 1;
+    INCFUN(In := Counter1);
+    DECFUN(In := Counter1);
+    A := INCFUN.Out - DECFUN.Out;

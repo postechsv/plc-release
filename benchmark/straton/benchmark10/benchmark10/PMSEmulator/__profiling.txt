@@ -1,0 +1,24 @@
+From 2021/11/16-15:14:26
+To 2021/11/16-15:14:27
+
+PRG1                             : 1.76 %
+pStartup                         : 0.19 %
+pShutDown                        : 0.00 %
+DGSwbd1                          : 6.50 %
+DGSwbd2                          : 3.94 %
+LoadSwbd1                        : 4.38 %
+LoadSwbd2                        : 4.12 %
+Swbd12                           : 4.05 %
+pOnDivZero                       : 0.43 %
+pOnBadIndex                      : 0.00 %
+SimCB                            : 27.04 %
+SimDG                            : 6.43 %
+SimLoad                          : 10.27 %
+SimSwbd                          : 8.60 %
+SimBridge                        : 18.44 %
+CalReLoad                        : 3.78 %
+IncValOverTime                   : 0.00 %
+DecValOverTime                   : 0.00 %
+CountDGInSwbdGroup               : 0.00 %
+AssignSwbdGroupAndLoad           : 0.00 %
+CalPowerFactor                   : 0.00 %

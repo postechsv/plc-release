@@ -1,0 +1,23 @@
+-description = ""
+-id = req1
+-job = verif
+-job.backend = nusmv
+-job.backend.algorithm = Classic
+-job.reporters.0 = summary
+-job.reporters.1 = html
+-job.reporters.2 = plaintext
+-job.req = pattern
+-job.req.inputs.0 = instance.input1
+-job.req.inputs.1 = instance.input2
+-job.req.inputs.2 = instance.input3
+-job.req.inputs.3 = instance.input4
+-job.req.inputs.4 = instance.input5
+-job.req.pattern_id = pattern-invariant
+-job.req.pattern_params.1 = "(instance.M = 3 AND instance.N = 1) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+-lf = step7
+-lf.entry = Main
+-name = ""
+-job.backend.timeout = 7200
+-job.backend.binary_path = tools/nuXmv-2.0.0-linux64.tar/nuXmv-2.0.0-Linux/bin/nuXmv
+-output = benchmark/plcverif/cmd/workspace/benchmark2/output
+-sourcefiles.0 = benchmark/plcverif/cmd/workspace/benchmark2/benchmark2.scl

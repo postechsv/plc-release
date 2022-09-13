@@ -1,0 +1,111 @@
+load /mnt/d/plc/scripts/../semantics/interpreter/merge 
+load /mnt/d/plc/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+op PROJECTFILE : -> StratonProject .
+eq PROJECTFILE =
+(
+BEGINCONFIG
+PROGRAMS
+'Main([  # 1 ,  # 1 ]) ;; 
+'Main2([  # 1 ,  # 1 ]) ;; 
+PROGRAMSEND
+SUBPROGRAMS
+'pOnDivZero ;;
+'pOnBadIndex ;;
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+CycleTime: # 0
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'Main 
+BEGINVAR
+'NewVar : BOOL : ##PRIV ; 
+'CYCLE : DINT : ##PRIV ; 
+ENDVAR
+
+CODE
+'NewVar :=  NOT 'NewVar ; 
+WAIT ( FALSE ) ; 
+'NewVar :=  NOT 'NewVar ; 
+'CYCLE := 'CYCLE + (ANYTODINT(# 1)) ; 
+
+ENDCODE
+ENDPROGRAM
+
+PROGRAM 'Main2 
+BEGINVAR
+'CYCLE2 : DINT : ##PRIV ; 
+ENDVAR
+
+CODE
+'CYCLE2 := 'CYCLE2 + (ANYTODINT(# 1)) ; 
+
+ENDCODE
+ENDPROGRAM
+
+FUNCTIONBLOCK 'pOnDivZero 
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+CODE
+skip ;
+ENDCODE
+ENDFUNCTIONBLOCK
+
+FUNCTIONBLOCK 'pOnBadIndex 
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+CODE
+skip ;
+ENDCODE
+ENDFUNCTIONBLOCK
+
+ENDPOUS
+
+) .
+  op LINKEDFILE : -> StratonProject .
+  eq LINKEDFILE = PROJECTFILE <-load- LIB .
+  op APP : -> KConfig .
+  eq APP = [[[ LINKEDFILE ]]] .
+endm
+mod MC is 
+  inc APP . 
+  op COND : ~> PExp . 
+  op APPEXT : ~> KConfig . 
+  ops RAWIS IS OS : ~> StreamMap .  
+  op BOUND : -> Nat . 
+  eq BOUND = 3 . 
+  eq COND = 
+  NOT ( GLOBALLY ( TRUE )        ) .
+  eq RAWIS = ( 
+( empty )              ) . 
+  eq IS = genIS(RAWIS) .  
+  eq OS = genOS(COND, IS) .
+  eq APPEXT = replaceStreams(APP , cycleCounterBound(BOUND) inputCollector(IS) inputStreamSpec(RAWIS) LTLContainer(COND) inStream(IS) outStream(OS)) .
+endm
+---(
+search [1] 
+APPEXT =>* LTLResult(RESULT:checkSATResult) constraints(CONST:SemanticValue) REST:KConfig    
+outStream(STRMAP:StreamMap) such that 
+RESULT:checkSATResult =/= UNSAT /\ 
+KTPS:KeyTypePairSet := genKeyTypePair(RAWIS, APP) .
+---)
+rew APPEXT .

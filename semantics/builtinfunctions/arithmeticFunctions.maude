@@ -1,0 +1,39 @@
+fmod ARITHMETIC-FUNCTIONS is
+  inc ALU-SEMANTICS .
+  inc FLOAT .
+  inc CONVERSION .
+  inc RANDOM .
+
+  ops LIMIT MAX MIN MOD ODD MUX4 MUX8 SEL RAND : -> FunId .
+  ops ABS EXP EXPT LOG LN POW ROOT SQRT ScaleLIn TRUNC : -> FunId .
+
+  ops SIN COS TAN ASIN ACOS ATAN : -> FunId .
+
+
+  vars A B C D E : SemanticValue .
+  var K : K .
+
+
+  eq k(LIMIT(A, B, C) ~> K) = k(ite(B < A, B, ite(C < B , C , B)) ~> K)  .
+  eq k(MAX(A, B) ~> K) = k(ite(A > B, A, B) ~> K) .
+  eq k(MIN(A, B) ~> K) = k(ite(A < B, A, B) ~> K) .
+  eq k(MOD(A, B) ~> K) = k((A % B) ~> K) .
+  eq k(ODD(A) ~> K) = k(ite((A % syn2sem(# 2)) ==== syn2sem(# 0), syn2sem(FALSE), syn2sem(TRUE)) ~> K) .
+  eq k(SEL(A , B , C) ~> K) = k(ite(A , B, C) ~> K) .
+  eq k(ABS(A) ~> K) =  k(ite(A < syn2sem(# 0), (- A) , A)~> K) .
+  eq k(ScaleLIn(A ,B ,C, D, E) ~> K) =  k((D + A * (E - D)) / (C - B) ~> K) .
+  eq k(SQRT(A) ~> K) =  k(ROOT(A, A)~> K) .
+
+  vars BOUND POSITION : Nat .
+  var PARAMETERS : List{PExp} .
+  vars V WANT : SemanticValue .
+
+  op @MUX : SemanticValue Nat Nat List{PExp} -> SemanticValue .
+  ceq @MUX(WANT, POSITION, BOUND, (V, PARAMETERS)) = ite(WANT ==== syn2sem(# POSITION), V, @MUX(WANT, POSITION + 1, BOUND, PARAMETERS)) if POSITION < BOUND .
+  ceq @MUX(WANT, POSITION, BOUND, (V, PARAMETERS)) = ite(WANT ==== syn2sem(# POSITION),  V, syn2sem(# 0)) if POSITION >= BOUND .
+
+  eq k(MUX4(V, PARAMETERS) ~> K) = k(@MUX(V, 0, 3,PARAMETERS) ~> K) .
+  eq k(MUX8(V, PARAMETERS) ~> K) = k(@MUX(V, 0, 7,PARAMETERS) ~> K) .
+endfm
+
+

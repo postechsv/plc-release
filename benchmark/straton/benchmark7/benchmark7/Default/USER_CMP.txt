@@ -1,0 +1,12 @@
+[SHORT]
+V-LT=
+V-IN1=
+V-QT=
+V-EQ=
+V-IN2=
+[LONG]
+V-LT=
+V-IN1=
+V-QT=
+V-EQ=
+V-IN2=

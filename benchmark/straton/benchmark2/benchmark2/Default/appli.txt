@@ -1,0 +1,5 @@
+[SHORT]
+P-USER_MIN=~
+[LONG]
+P-USER_MIN=~
+A-<PROJECT>=

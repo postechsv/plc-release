@@ -1,0 +1,58 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar 15 2020 23:55:47
+	     Copyright 1997-2019 SRI International
+		   Tue Apr  5 13:32:06 2022
+==========================================
+rewrite in MC : APPEXT .
+rewrites: 418 in 0ms cpu (2ms real) (~ rewrites/second)
+result KConfig: randomSeed(0) store((loc(4, BOOL) |-> [(true).Bool], loc(5,
+    DINT) |-> [(0).Zero], loc(6, DINT) |-> [(0).Zero])) objs(obj(id(0) fbtype(
+    'Main) timer(@timer(T[(0).Zero])) mem(('CYCLE |-> loc(5, DINT), 'NewVar |->
+    loc(4, BOOL)))) obj(id(1) fbtype('Main2) timer(@timer(T[(0).Zero])) mem(
+    'CYCLE2 |-> loc(6, DINT))) obj(id(2) fbtype('pOnDivZero) timer(@timer(T[(
+    0).Zero])) mem(empty)) obj(id(3) fbtype('pOnBadIndex) timer(@timer(T[(
+    0).Zero])) mem(empty))) procs(proc(k(IF [(false).Bool] THEN skip ; ELSE
+    @release ; WAIT(FALSE) ; ENDIF ~> 'NewVar := NOT 'NewVar ; 'CYCLE := 'CYCLE
+    + ANYTODINT(# (1).NzNat)) procSwitch(false) id(0) callStack(('CYCLE |->
+    loc(5, DINT), 'NewVar |-> loc(4, BOOL)))) proc(k('CYCLE2 ~> []+ (ANYTODINT(
+    # (1).NzNat)) ~> 'CYCLE2 :=[]) procSwitch(false) id(1) callStack('CYCLE2
+    |-> loc(6, DINT)))) task(1) mainList(@m(0, 1, 1) @m(1, 1, 1)) cycleTime(0)
+    constraints([(true).Bool]) cycleCounter(1) inStream(empty) outStream(empty)
+    inputCollector(empty) inputStreamSpec(empty) enumTypes(emptyTypeDecl)
+    cycleCounterBound(INF) newVarIndex(0) LTLContainer(NOT GLOBALLY(TRUE))
+    LTLResult(UNSAT) LTLSubGoal(emptyFreshVarMap, 0) PARDef('CMP, ('IN1,##IN)
+    'IN2,##IN, IF 'IN1 < 'IN2 THEN 'LT := TRUE ; emptyBBranch ENDIF ; IF 'IN1
+    ==== 'IN2 THEN 'EQ := TRUE ; emptyBBranch ENDIF ; IF 'IN1 > 'IN2 THEN 'QT
+    := TRUE ; emptyBBranch ENDIF) PARDef('CTD, ('CD,##IN) ('LD,##IN) 'PV,##IN,
+    IF 'LD THEN 'CV := 'PV ; ELSIF 'CD AND 'CV > 'PV THEN 'CV := 'CV -
+    ANYTODINT(# (1).NzNat) ; ENDIF ; 'Q := 'CV <= ANYTODINT(# (0).Zero))
+    PARDef('CTU, ('CU,##IN) ('R,##IN) 'PV,##IN, IF 'R THEN 'CV := ANYTODINT(# (
+    0).Zero) ; ELSIF 'CU AND 'CV < 'PV THEN 'CV := 'CV + ANYTODINT(# (1).NzNat)
+    ; ENDIF ; 'Q := 'CV >= 'PV) PARDef('CTUD, ('CU,##IN) ('CD,##IN) ('R,##IN) (
+    'LD,##IN) 'PV,##IN, IF 'R THEN 'CV := ANYTODINT(# (0).Zero) ; ELSIF 'LD
+    THEN 'CV := 'PV ; ELSE IF NOT ('CU AND 'CD) THEN IF 'CU AND 'CV < 'PV THEN
+    'CV := 'CV + ANYTODINT(# (1).NzNat) ; ELSIF 'CD AND 'CV > 'PV THEN 'CV :=
+    'CV - ANYTODINT(# (1).NzNat) ; ENDIF ; emptyBBranch ENDIF ; ENDIF ; 'QU :=
+    'CV >= 'PV ; 'QD := 'CV <= ANYTODINT(# (0).Zero)) PARDef('F_TRIG, 'CLK,
+    ##IN, 'Q := NOT 'CLK AND NOT 'M ; 'M := NOT 'CLK) PARDef('Main,
+    emptyVarSecTypePairList, 'NewVar := NOT 'NewVar ; WAIT(FALSE) ; 'NewVar :=
+    NOT 'NewVar ; 'CYCLE := 'CYCLE + ANYTODINT(# (1).NzNat)) PARDef('Main2,
+    emptyVarSecTypePairList, 'CYCLE2 := 'CYCLE2 + ANYTODINT(# (1).NzNat))
+    PARDef('PLS, ('RUN,##IN) 'CYCLE,##IN, IF 'FIRST_CHECKER THEN 'FIRST_CHECKER
+    := FALSE ; 'PEROID_CHECKER := @#timerValue ; emptyBBranch ENDIF ; IF 'RUN
+    AND @#timerValue - 'PEROID_CHECKER >= 'CYCLE THEN 'PEROID_CHECKER :=
+    @#timerValue ; emptyBBranch ENDIF ; IF 'RUN AND @#timerValue -
+    'PEROID_CHECKER >= 'CYCLE - @#cycleValue THEN 'Q := TRUE ; emptyBBranch
+    ENDIF ; IF NOT 'RUN THEN 'Q := FALSE ; emptyBBranch ENDIF) PARDef('R_TRIG,
+    'CLK,##IN, 'Q := 'CLK AND NOT 'M ; 'M := 'CLK) PARDef('TON, ('IN,##IN) 'PT,
+    ##IN, IF NOT 'IN THEN 'Q := FALSE ; 'ET := T# 0 ms ; @#timerSetValue(T# 0
+    ms) ; ELSE IF @#timerValue >= 'PT THEN 'ET := 'PT ; 'Q := TRUE ; ELSE 'ET
+    := @#timerValue ; ENDIF ; ENDIF) PARDef('TP, ('IN,##IN) 'PT,##IN, IF NOT
+    'IN AND NOT 'Q THEN 'Q := FALSE ; 'ET := T# 0 ms ; @#timerSetValue(T# 0 ms)
+    ; emptyBBranch ENDIF ; IF 'IN THEN 'Q := TRUE ; 'ET := @#timerValue ;
+    emptyBBranch ENDIF ; IF @#timerValue >= 'PT THEN 'ET := 'PT ; 'Q := FALSE ;
+    emptyBBranch ENDIF) PARDef('pOnBadIndex, emptyVarSecTypePairList, skip)
+    PARDef('pOnDivZero, emptyVarSecTypePairList, skip)
+Bye.

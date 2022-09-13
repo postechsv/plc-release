@@ -1,0 +1,52 @@
+-- specification AG (EoC -> (instance_OUT > 0sd32_0 & (0sd32_0 <= instance_CYCLE & instance_CYCLE <= 0sd32_20)))  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 1.1 <-
+    loc = init_pv
+    instance_aaa = 0sd32_1
+    instance_bbb = 0sd32_0
+    instance_OUT = 0sd32_0
+    instance_CYCLE = 0sd32_0
+    EoC = FALSE
+    __random_instance_aaa = 0sd32_0
+  -> State: 1.2 <-
+    loc = loop_start
+    instance_aaa = 0sd32_1
+    instance_bbb = 0sd32_0
+    instance_OUT = 0sd32_0
+    instance_CYCLE = 0sd32_0
+    EoC = FALSE
+    __random_instance_aaa = -0sd32_2
+  -> State: 1.3 <-
+    loc = verificationLoop_VerificationLoop_l1
+    instance_aaa = -0sd32_2
+    instance_bbb = 0sd32_0
+    instance_OUT = 0sd32_0
+    instance_CYCLE = 0sd32_1
+    EoC = FALSE
+    __random_instance_aaa = 0sd32_0
+  -> State: 1.4 <-
+    loc = verificationLoop_VerificationLoop_l10
+    instance_aaa = -0sd32_1
+    instance_bbb = 0sd32_0
+    instance_OUT = 0sd32_0
+    instance_CYCLE = 0sd32_1
+    EoC = FALSE
+    __random_instance_aaa = 0sd32_0
+  -> State: 1.5 <-
+    loc = callEnd
+    instance_aaa = -0sd32_1
+    instance_bbb = 0sd32_0
+    instance_OUT = -0sd32_1
+    instance_CYCLE = 0sd32_1
+    EoC = FALSE
+    __random_instance_aaa = 0sd32_0
+  -> State: 1.6 <-
+    loc = prepare_EoC
+    instance_aaa = -0sd32_1
+    instance_bbb = 0sd32_0
+    instance_OUT = -0sd32_1
+    instance_CYCLE = 0sd32_1
+    EoC = TRUE
+    __random_instance_aaa = 0sd32_0

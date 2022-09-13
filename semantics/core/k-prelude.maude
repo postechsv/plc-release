@@ -1,0 +1,57 @@
+fmod K-SORTS is
+  sorts K KResult KProper KLabel .
+  subsorts KResult KProper < K .
+  subsort KLabel < KProper .
+endfm
+
+fmod K-COMPUTATION is
+  inc K-SORTS .
+
+  op .K : -> K [ctor] .
+  op ENUMTYPECHECKING : -> K [ctor] .
+  op _~>_ : K K -> K [ctor prec 70 assoc id: .K] .
+endfm
+
+fmod LOCATION is 
+  including INT .
+  inc PLC-TYPES .
+
+  sort Location .
+  op loc : Nat PType -> Location [ctor] .
+
+  vars N M : Nat .
+  var TYPE : PType .
+
+  op _+loc_ : Location Nat -> Location .
+  op next : Location -> Location .
+  eq next(loc(N, TYPE)) = loc(s N, TYPE) .
+  eq loc(N, TYPE) +loc M = loc(N + M, TYPE) . 
+endfm
+
+fmod K-CONFIG is
+  inc K-COMPUTATION .
+  inc LOCATION .
+  inc PID .
+  sort KConfig .
+  op empty : -> KConfig [ctor] .
+  op __ : KConfig KConfig -> KConfig [ctor assoc comm id: empty] .
+
+  op k : K -> KConfig [ctor] .
+  op nextLoc : Location -> KConfig [ctor] .
+
+  sort FrozenKConfig .
+  op freeze : KConfig -> KConfig [ctor frozen] .
+endfm
+
+view KConfig from TRIV to K-CONFIG is
+  sort Elt to KConfig .
+endv
+
+view Location from TRIV to LOCATION is
+  sort Elt to Location .
+endv
+
+view K from TRIV to K-COMPUTATION is
+  sort Elt to K .
+endv
+

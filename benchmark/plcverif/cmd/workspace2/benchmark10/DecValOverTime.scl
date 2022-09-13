@@ -1,0 +1,43 @@
+FUNCTION_BLOCK DecValOverTime
+	VAR_INPUT
+		Start       : BOOL;
+		Value       : REAL;
+		NomValue    : REAL;
+		DescendTime : REAL;
+	END_VAR
+	VAR_OUTPUT
+		CurValue : REAL;
+	END_VAR
+	VAR
+		Inst_PLS : PLS;
+		decVal   : REAL;
+		Done     : BOOL;
+	END_VAR
+BEGIN
+	Inst_PLS(
+		RUN := Start,
+		CYCLE := t#100ms
+	);
+	IF Start THEN
+		CurValue := Value;
+
+		IF DescendTime < 100 THEN
+			decVal := Value;
+		ELSE
+			decVal := (NomValue * 100) / DescendTime;
+		END_IF;
+
+		IF Inst_PLS.Q THEN
+			CurValue := CurValue - decVal;
+			IF CurValue <= 0 THEN
+				CurValue := 0;
+				Done := true;
+			END_IF;
+		END_IF;
+	ELSE
+		CurValue := 0;
+		Done := false;
+	END_IF;
+
+
+END_FUNCTION_BLOCK

@@ -1,0 +1,8 @@
+INPUT:
+empty
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main :: outState <> 1) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20) )

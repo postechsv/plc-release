@@ -1,0 +1,11 @@
+INPUT:
+DGSwbd1 :: DG1_StartReq |-> ??
+DGSwbd1 :: DG1_StopReq |-> ??
+DGSwbd1 :: CB1_pOpenTime |-> ??
+DGSwbd1 :: CB2_pOpenTime |-> ??
+
+STEP:
+3
+
+CONDITION:
+GLOBALLY ((NOT (Swbd12 :: Swbd1_DeadBus)) ==> WNEXT (((598/10 <  (Swbd12 :: Swbd1_NetFrequency)) AND ((Swbd12 :: Swbd1_NetFrequency) < 602/10)) UNTIL (Swbd12 :: Swbd1_DeadBus)))

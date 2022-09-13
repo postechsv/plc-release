@@ -1,0 +1,131 @@
+IF NOT Activate THEN
+        DiagCode := 0;
+    ELSIF NOT S_SafetyActive THEN
+        DiagCode := 32772;
+    ELSE
+        CASE DiagCode OF
+            0:
+                IF Activate THEN
+                    DiagCode := 32772;
+                END_IF;
+
+            32768:
+                IF (NOT (S_EnableSwitchCh1 OR S_EnableSwitchCh2)) OR (S_EnableSwitchCh1 AND NOT S_EnableSwitchCh2) THEN
+                    DiagCode := 32775;
+                ELSIF NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+                    DiagCode := 32774;
+                END_IF;
+
+            32772:
+                IF S_SafetyActive THEN
+                    DiagCode := 32773;
+                END_IF;
+
+            32773:
+                IF NOT (NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2) THEN
+                    DiagCode := 49168;
+                ELSIF NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+                    DiagCode := 32774;
+                END_IF;
+
+            32774:
+                IF S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+                    DiagCode := 32768;
+                ELSIF (NOT (S_EnableSwitchCh1 OR S_EnableSwitchCh2)) OR (S_EnableSwitchCh1 AND NOT S_EnableSwitchCh2) THEN
+                    DiagCode := 32775;
+                END_IF;
+
+            32775:
+                IF S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+                    DiagCode := 49200;
+                ELSIF NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+                    DiagCode := 32774;
+                END_IF;
+            49153:
+                IF NOT Reset THEN
+                    DiagCode := 49184;
+                END_IF;
+            49154:
+                IF NOT Reset THEN
+                    DiagCode := 49216;
+                END_IF;
+            49168:
+                IF NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+                    DiagCode := 49184;
+                END_IF;
+
+            49184:
+                IF NOT (NOT S_EnableSwitchCh1 AND S_EnableSwitchCh2) THEN
+                    DiagCode := 49168;
+                ELSIF Reset AND NOT S_AutoReset THEN
+                    DiagCode := 49153;
+                ELSIF S_AutoReset THEN
+                    DiagCode := 32774;
+                END_IF;
+
+            49200:
+                IF NOT (S_EnableSwitchCh1 AND S_EnableSwitchCh2) THEN
+                    DiagCode := 49216;
+                END_IF;
+
+            49216:
+                IF S_EnableSwitchCh1 AND S_EnableSwitchCh2 THEN
+                    DiagCode := 49200;
+                ELSIF Reset AND NOT S_AutoReset THEN
+                    DiagCode := 49154;
+                ELSIF S_AutoReset THEN
+                    DiagCode := 32775;
+                END_IF;
+        END_CASE;
+    END_IF;
+
+    CASE DiagCode OF
+        49153:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := TRUE;
+        49154:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := TRUE;
+        49168:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := TRUE;
+        49184:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := TRUE;
+        49200:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := TRUE;
+        49216:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := TRUE;
+        0:
+            Ready := FALSE;
+            S_EnableSwitchOut := FALSE;
+            Error := FALSE;
+        32768:
+            Ready := TRUE;
+            S_EnableSwitchOut := TRUE;
+            Error := FALSE;
+        32772:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := FALSE;
+        32773:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := FALSE;
+        32774:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := FALSE;
+        32775:
+            Ready := TRUE;
+            S_EnableSwitchOut := FALSE;
+            Error := FALSE;
+    END_CASE;

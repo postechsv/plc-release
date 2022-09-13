@@ -1,0 +1,204 @@
+#2299948273 
+[JL:__MODULE_@DEFPROD] 
+[JL:__MODULE_@DEFAPPLI] 
+[JL:__MODULE_@DEFUSF] 
+[JL:__MODULE_@DEFFBL] 
+[JL:__MODULE_@TASKS] 
+[JL:__MODULE_@DEFPTRS] 
+[JL:__MODULE_@DEFFBI] 
+[JL:__MODULE_@DEFVAR] 
+[JL:__MODULE_@CODEVAR] 
+[JL:__MODULE_@DEFOEM] 
+[JL:__MODULE_@CODEOEM] 
+[JL:__MODULE_@DEFHIE] 
+[JL:__MODULE_@DEFPROG] 
+[JL:__MODULE_@CODEPROG] 
+#167772399 
+[JL:__MODULE_@RESOURCES] 
+
+[:__MODULE_@DEFPROD] 
+[#target]
+.49 .46 .48 .48 .0 .0 .0 .0 
+
+[:__MODULE_@DEFAPPLI] 
+.98 .101 .110 .99 .104 .109 .97 .114 .107 .53 .0 .0 .0 .0 .0 .0 [#date]
+#91081149 #0 [#filesize]
+0 [#version]
+[#unstable]
+#1628332084 [#stable]
+#4294967295 
+[:__MODULE_@DEFPTRS] 
+#0 
+[:__MODULE_@DEFFBL] 
+21 21 
+1 0 .83 .73 .71 .95 .71 .69 .78 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+2 0 .82 .83 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+3 0 .83 .82 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+4 0 .82 .95 .84 .82 .73 .71 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+5 0 .70 .95 .84 .82 .73 .71 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+6 0 .67 .84 .85 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+7 0 .67 .84 .68 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+8 0 .67 .84 .85 .68 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+9 0 .84 .79 .78 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+10 0 .84 .79 .70 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+11 0 .84 .80 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+12 0 .83 .69 .77 .65 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+13 0 .67 .77 .80 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+14 0 .83 .84 .65 .67 .75 .73 .78 .84 .0 .0 .0 .0 .0 .0 .0 .0 
+15 0 .68 .69 .82 .73 .86 .65 .84 .69 .0 .0 .0 .0 .0 .0 .0 .0 
+16 0 .72 .89 .83 .84 .69 .82 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+17 0 .65 .86 .69 .82 .65 .71 .69 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+18 0 .76 .73 .77 .95 .65 .76 .82 .77 .0 .0 .0 .0 .0 .0 .0 .0 
+19 0 .66 .76 .73 .78 .75 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+20 0 .73 .78 .84 .69 .71 .82 .65 .76 .0 .0 .0 .0 .0 .0 .0 .0 
+21 0 .83 .69 .82 .73 .79 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 
+#0 
+[:__MODULE_@DEFFBI] 
+1 0 0 0 #4294967295 #0 #0 
+[:__MODULE_@FBINAME] 
+.0 
+[:__MODULE_@DEFUSF] 
+0 0 
+#0 
+[:__MODULE_@TASKS] 
+16 12 .60 .67 .89 .67 .76 .69 .62 .0 1 0 12 8 .64 .64 .66 .0 2 0 12 8 .64 .64 .69 .0 3 0 #0 
+[:__MODULE_@DEFVAR] 
+6 5 3 0 0 0 1 0 0 0 0 0 25 24 16 0 0 0 1 0 0 0 0 0 3 2 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 #0 
+
+[:__MODULE_@CODEVAR] 
+[JL:__MODULE_@INIT_BOO] 
+[JL:__MODULE_@INIT_WORD] 
+[JL:__MODULE_@INIT_ANA] 
+[JL:__MODULE_@INIT_64] 
+[JL:__MODULE_@INIT_TMR] 
+[JL:__MODULE_@INIT_MSG] 
+[JL:__MODULE_@MSGLEN] 
+[JL:__MODULE_@VARTYPES] 
+#0 
+[JL:__MODULE_@BACKUP] 
+#0 
+
+
+[:__MODULE_@INIT_BOO] 
+0 0 
+
+[:__MODULE_@INIT_WORD] 
+0 0 
+
+[:__MODULE_@INIT_ANA] 
+17 0 #1077936128 
+18 0 #1092616192 
+19 0 #0 
+20 0 #1 
+0 0 0 #0 
+
+[:__MODULE_@INIT_64] 
+0 0 #0 #0 
+
+[:__MODULE_@INIT_TMR] 
+2 0 #7200000 
+0 
+
+[:__MODULE_@INIT_MSG] 
+0 
+
+[:__MODULE_@MSGLEN] 
+.0 
+
+[:__MODULE_@BACKUP] 
+.0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 .0 0 1 0 1 0 1 0 1 0 1 0 1 #860727158 #0 #0 
+
+[:__MODULE_@VARTYPES] 
+.0 .4 .4 .4 .4 .4 .4 .4 .4 .0 .4 .4 .4 .4 .4 .4 .4 .4 .4 .4 .0 .0 .4 .4 .4 .0 
+[:__MODULE_@DEFHIE] 
+5 2 #0 
+[:__MODULE_@DEFPROG] 
+1 0 
+2 0 
+2 0 
+2 0 
+2 0 
+#0 
+[:__MODULE_@SFCCRCS] 
+#0 
+[:__MODULE_@CODEPROG] 
+[JL:__MODULE_MAIN] [SL:__MODULE_END_MAIN-__MODULE_MAIN] 0 0 
+[JL:__MODULE_PSTARTUP] [SL:__MODULE_END_PSTARTUP-__MODULE_PSTARTUP] 0 0 
+[JL:__MODULE_PSHUTDOWN] [SL:__MODULE_END_PSHUTDOWN-__MODULE_PSHUTDOWN] 0 0 
+[JL:__MODULE_PONDIVZERO] [SL:__MODULE_END_PONDIVZERO-__MODULE_PONDIVZERO] 3 0 
+[JL:__MODULE_PONBADINDEX] [SL:__MODULE_END_PONBADINDEX-__MODULE_PONBADINDEX] 3 0 
+#0 
+[#include:Main]
+[#include:pStartup]
+[#include:pShutDown]
+[#include:pOnDivZero]
+[#include:pOnBadIndex]
+
+[:__MODULE_@IT] 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 [:__MODULE_@RESOURCES] 
+16 0 0 0 #4294967295 0 32768 #0 
+[:__MODULE_@MBCLIENT] 
+#0 1 0 0 0 
+[:__MODULE_@ASI] 
+0 0 0 0 0 0 
+
+[:__MODULE_@EVENTS] 
+#0 
+[:__MODULE_@EVTCNX] 
+#0 
+[:__MODULE_@EVTEXT] 
+#0 
+[:__MODULE_@EVTVERS] 
+#0 
+[:__MODULE_@BUSDRV] 
+#0 
+
+[:__MODULE_@BUSIOLIST] 
+#0 #0 #0 
+#0 
+
+[:__MODULE_@CANBUS] 
+1 0 0 0 0 0 
+[JL:__MODULE_@CANPORT] [JL:__MODULE_@CANMSGIN] [JL:__MODULE_@CANMSGOUT] [JL:__MODULE_@CANVAR] 
+[:__MODULE_@CANPORT] 
+
+[:__MODULE_@CANMSGIN] 
+
+[:__MODULE_@CANMSGOUT] 
+
+[:__MODULE_@CANVAR] 
+
+
+[:__MODULE_@RECIPES] 
+1 0 
+#0 
+
+[:__MODULE_@VLST] 
+1 0 
+#0 
+
+[:__MODULE_@STRINGTABLES] 
+1 0 
+
+[:__MODULE_@SIGNALS] 
+1 0 
+
+[:__MODULE_@DEFOEM] 
+#26 #0 
+[JL:__MODULE_@MBCLIENT] 
+[JL:__MODULE_@ASI] [JL:__MODULE_@EVENTS] [JL:__MODULE_@EVTCNX] [JL:__MODULE_@EVTEXT] 
+[JL:__MODULE_@BUSDRV] #0 #0 #0 [JL:__MODULE_@BUSIOLIST] 
+<IF:CCBLEND>
+#0 
+<ENDIF>
+
+<IF:CCPURE>
+#1 
+<ENDIF>
+[JL:__MODULE_@RECIPES] [JL:__MODULE_@VLST] [JL:__MODULE_@STRINGTABLES] [JL:__MODULE_@SIGNALS] [JL:__MODULE_@CANBUS] #0 #0 [JL:__MODULE_@IT] #2 [JL:__MODULE_@FBINAME] [JL:__MODULE_@XRETAIN] [JL:__MODULE_@EVTVERS] [JL:__MODULE_@SFCCRCS] #0 
+
+[:__MODULE_@XRETAIN] 
+.0 
+
+[:__MODULE_@CODEOEM] 
+#0 #0 

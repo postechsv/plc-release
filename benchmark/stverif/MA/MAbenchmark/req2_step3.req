@@ -1,0 +1,9 @@
+INPUT:
+Main :: MA_Method |-> ??
+Main :: MA_XF |-> ??
+
+STEP:
+3
+
+CONDITION:
+GLOBALLY ( Main :: MA_BULL ==> Main :: MA_BU )

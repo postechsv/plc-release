@@ -1,0 +1,142 @@
+IF NOT Activate THEN
+        DiagCode := 0;
+    END_IF;
+
+    IF (S_Mode0 OR S_Mode1 OR S_Mode2 OR S_Mode3 OR S_Mode4 OR S_Mode5 OR S_Mode6 OR S_Mode7 = TRUE ) THEN
+        Error1 := true;
+    ELSE
+        Error1 := false;
+    END_IF;
+
+    CASE DiagCode OF
+        0:
+            IF Activate THEN
+                DiagCode := 32773;
+            END_IF;
+
+
+            IF Error1 THEN
+                DiagCode := 49153;
+            ELSIF Error2 THEN
+                DiagCode := 49154;
+            END_IF;
+        32768:
+            IF Error1 THEN
+                DiagCode := 49153;
+            ELSIF (S_Mode0 <> S_Mode0Sel OR S_Mode1 <> S_Mode1Sel OR S_Mode2 <> S_Mode2Sel OR S_Mode3 <> S_Mode3Sel OR S_Mode4 <> S_Mode4Sel OR S_Mode5 <> S_Mode5Sel OR S_Mode6 <> S_Mode6Sel OR S_Mode7 <> S_Mode7Sel) THEN
+                DiagCode := 32773;
+            ELSIF (NOT S_Unlock) THEN
+                DiagCode := 32772;
+            END_IF;
+        32772:
+            IF S_Unlock THEN
+                DiagCode := 32768;
+            END_IF;
+        49153:
+            IF Reset THEN
+                DiagCode := 49155;
+            END_IF;
+        49154:
+            IF Reset THEN
+                DiagCode := 49156;
+            END_IF;
+        49155:
+            IF (NOT Reset) THEN
+                DiagCode := 49153;
+            END_IF;
+        49156:
+            IF (NOT Reset) THEN
+                DiagCode := 49154;
+            END_IF;
+    END_CASE;
+
+    CASE DiagCode OF
+        0:
+            Ready := false;
+            S_Mode0Sel := false;
+            S_Mode1Sel := false;
+            S_Mode2Sel := false;
+            S_Mode3Sel := false;
+            S_Mode4Sel := false;
+            S_Mode5Sel := false;
+            S_Mode6Sel := false;
+            S_Mode7Sel := false;
+            S_AnyModeSel := false;
+            Error := false;
+        32773:
+            Ready := true;
+            S_Mode0Sel := false;
+            S_Mode1Sel := false;
+            S_Mode2Sel := false;
+            S_Mode3Sel := false;
+            S_Mode4Sel := false;
+            S_Mode5Sel := false;
+            S_Mode6Sel := false;
+            S_Mode7Sel := false;
+            S_AnyModeSel := false;
+            Error := false;
+        32768:
+            Ready := true;
+            S_Mode0Sel := S_Mode0;
+            S_Mode1Sel := S_Mode1;
+            S_Mode2Sel := S_Mode2;
+            S_Mode3Sel := S_Mode3;
+            S_Mode4Sel := S_Mode4;
+            S_Mode5Sel := S_Mode5;
+            S_Mode6Sel := S_Mode6;
+            S_Mode7Sel := S_Mode7;
+            S_AnyModeSel := true;
+            Error := false;
+        32772:
+            Ready := true;
+            S_AnyModeSel := true;
+            Error := false;
+        49153:
+            Ready := true;
+            S_Mode0Sel := false;
+            S_Mode1Sel := false;
+            S_Mode2Sel := false;
+            S_Mode3Sel := false;
+            S_Mode4Sel := false;
+            S_Mode5Sel := false;
+            S_Mode6Sel := false;
+            S_Mode7Sel := false;
+            S_AnyModeSel := false;
+            Error := true;
+        49154:
+            Ready := true;
+            S_Mode0Sel := false;
+            S_Mode1Sel := false;
+            S_Mode2Sel := false;
+            S_Mode3Sel := false;
+            S_Mode4Sel := false;
+            S_Mode5Sel := false;
+            S_Mode6Sel := false;
+            S_Mode7Sel := false;
+            S_AnyModeSel := false;
+            Error := true;
+        49155:
+            Ready := true;
+            S_Mode0Sel := false;
+            S_Mode1Sel := false;
+            S_Mode2Sel := false;
+            S_Mode3Sel := false;
+            S_Mode4Sel := false;
+            S_Mode5Sel := false;
+            S_Mode6Sel := false;
+            S_Mode7Sel := false;
+            S_AnyModeSel := false;
+            Error := true;
+        49156:
+            Ready := true;
+            S_Mode0Sel := false;
+            S_Mode1Sel := false;
+            S_Mode2Sel := false;
+            S_Mode3Sel := false;
+            S_Mode4Sel := false;
+            S_Mode5Sel := false;
+            S_Mode6Sel := false;
+            S_Mode7Sel := false;
+            S_AnyModeSel := false;
+            Error := true;
+    END_CASE;

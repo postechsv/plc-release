@@ -1,0 +1,217 @@
+
+fmod CHECKSAT-RESULT is
+  inc SMT-CHECK .
+  inc STREAM .
+
+  op _--_ : StreamKey Nat -> SMTVarId . 
+
+  op emptyAssignment : -> checkSATResult [ctor] .
+  op _||-->_ : SMTVarId Integer -> checkSATResult [ctor prec 40 format (cn o g o)] .  
+  op _||-->_ : SMTVarId Real -> checkSATResult [ctor prec 40 format (cn o g o)] .  
+  op _||-->_ : SMTVarId Boolean -> checkSATResult [ctor prec 40 format (cn o g o)] .  
+
+  op _///_ : checkSATResult checkSATResult -> checkSATResult [ctor assoc comm prec 50 id: emptyAssignment] .
+
+  var KEY : StreamKey .
+  var N : Nat .
+  var SA : SatAssignment .
+  var SAS SAS2 : SatAssignmentSet .
+  var II : Integer .
+  var RI : Real .
+  var BI : Boolean .
+  vars RESULT REST : checkSATResult .
+  var SVAR : SMTVarId .
+
+  --- translator
+  op interpret : SmtCheckResult ~> checkSATResult .
+
+  eq interpret(false) = UNSAT .
+  eq interpret(unknown) = UNSAT .
+
+  eq interpret({empty}) = emptyAssignment .
+  eq interpret({(i(SVAR) |-> II), SAS}) = (SVAR ||--> II) /// interpret({SAS}) . 
+  eq interpret({(r(SVAR) |-> RI), SAS}) = (SVAR ||--> RI) /// interpret({SAS}) . 
+  eq interpret({(b(SVAR) |-> BI), SAS}) = (SVAR ||--> BI) /// interpret({SAS}) . 
+endfm
+
+mod PLC-SYMBOLIC-CHECKSAT is
+  inc SMT-CHECK . 
+  inc PLC-SYMBOLIC-PRIMITIVES .
+  inc CHECKSAT-RESULT .
+
+  subsort Nat < SMTVarId .
+
+  var P1 : PExp .
+  var BE1 : BooleanExpr .
+  var IE1 : IntegerExpr .
+  var RE1 : RealExpr .
+
+  var SV1 : SemanticValue .
+
+  eq simplify([BE1]) = [simplifyFormula(BE1)] .
+  eq simplify([IE1]) = [simplifyFormula(IE1)] .
+  eq simplify([RE1]) = [simplifyFormula(RE1)] .
+  eq simplify(T[IE1]) = T[simplifyFormula(IE1)] .
+
+  eq notFALSE(P1) = not (simplify(P1) == [false]) [owise] .
+
+  eq checkSAT([BE1]) = if smtCheck(BE1) == true then true else false fi .
+
+  op checkSATInterpret : SemanticValue ~> checkSATResult .
+
+  eq checkSATInterpret([BE1]) = interpret(smtCheck(BE1, (true).Bool)) .
+  eq checkSATwithAssignment([BE1]) = checkSATInterpret([BE1]) .
+endm
+
+mod PLC-SYMBOLIC-ARITHMETIC is
+  inc PLC-SYMBOLIC-PRIMITIVES .
+  inc PLC-SYMBOLIC-CHECKSAT .
+
+  vars A B : IntegerExpr .
+  vars C D : RealExpr .
+  vars BE1 BE2 : BooleanExpr .
+
+  eq [A] + [B] = [(A + B)]  .
+  eq [A] - [B] = [(A - B)]  .
+  eq [A] * [B] = [(A * B)]  .
+  ceq [A] / [B] = [(A div B)] if simplify([B]) =/= [0] .
+  eq [A] % [B] = [(A mod B)]  .
+  eq - [B]  = [(- B)]  .
+
+  eq [A] < [B] =  [(A < B)] .
+  eq [A] > [B] =  [(A > B)]  .
+  eq [A] <= [B] = [(A <= B)]  .
+  eq [A] >= [B] = [(A >= B)]  .
+  eq [A] ==== [B] = [(A === B)] .
+  eq [A] <> [B] = [(A =/== B)] .
+
+  eq [C] + [D] = [(C + D)] .
+  eq [C] - [D] = [(C - D)] .
+  eq [C] * [D] = [(C * D)] .
+  ceq [C] / [D] = [(C / D)] if simplify([D]) =/= [0/1] .
+  eq - [D]  = [(- D)]  .
+
+  eq [C] < [D] = [(C < D)]   .
+  eq [C] > [D] = [(C > D)] .
+  eq [C] <= [D] = [(C <= D)] .
+  eq [C] >= [D] = [(C >= D)] .
+  eq [C] ==== [D] = [(C === D)] .
+  eq [C] <> [D] = [(C =/== D)] .
+
+  eq T[A] + T[B]  = T[A + B]  .
+  eq T[A] - T[B]  = T[A - B]  .
+  eq T[A] / T[B]  = [A] / [B] .
+  eq T[A] * T[B]  = T[A * B]  .
+  eq T[A] % T[B]  = T[A mod B]  .
+
+  eq T[A] < T[B] =  [(A < B)] .
+  eq T[A] > T[B] =  [(A > B)]  .
+  eq T[A] <= T[B] = [(A <= B)]  .
+  eq T[A] >= T[B] = [(A >= B)]  .
+  eq T[A] ==== T[B] = [(A === B)] .
+  eq T[A] <> T[B] = [(A =/== B)] .
+
+  eq [BE1] ==== [BE2] = [BE1 === BE2] .
+  eq [BE1] <> [BE2] = [BE1 =/== BE2] .
+
+  eq [BE1] AND [BE2] = [(BE1 and BE2)] .
+  eq [BE1] OR [BE2] = [(BE1 or BE2)] .
+  eq NOT [BE1] = [(not BE1)] .
+
+endm
+
+mod SYMBOLIC-DATA-CONVERSION is
+  inc DATA-CONVERSION .
+  inc PLC-SYMBOLIC-PRIMITIVES .
+  inc REAL-INTEGER .
+
+  var PBV : BooleanExpr .
+  var V : IntegerExpr .
+  var V' : RealExpr .
+  var K : K .
+
+  eq truncVal([V]) = [V] .
+  eq truncVal([V']) = [ toInteger(V') ] .
+  
+  eq checkBOOL([PBV]) = [true] .
+  eq checkBOOL([V]) = [false] .
+  eq checkBOOL([V']) = [false] .
+  eq checkBOOL(T[V]) = [false] .
+
+  eq convertBOOL([PBV]) = [PBV ? (1).Integer : (0).Integer] .
+
+  eq removeTime(T[V]) = [V] .
+  eq removeTime([V]) = [V] .
+  eq removeTime([V']) = [V'] .
+
+  eq addTime([V]) = T[V] .
+  eq addTime(T[V]) = T[V] .
+
+  eq convertToREAL([V']) = [V'] .
+  eq convertToREAL([V]) = [ toReal(V) ] .
+endm
+
+
+mod SYMBOLIC-ARITHMETIC-FUNCTIONS is
+  inc PLC-SYMBOLIC-PRIMITIVES .
+  inc ARITHMETIC-FUNCTIONS .
+  inc PLC-SYMBOLIC-CHECKSAT .
+
+  var I1 : IntegerExpr .
+  var K : K .
+  var CONST : SemanticValue .
+  var RESTPROCS : KConfig .
+  var RESTCOMPONENTPROC : KConfig .
+  var NVI  : Nat .  
+
+  ---RANDOM 
+
+  op RANDOM--_ : Nat -> SMTVarId [ctor] .
+
+ crl [randomNotZero] : procs(proc(procSwitch(true) (k(RAND([I1]) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST) newVarIndex(NVI)
+  => procs(proc(procSwitch(true) (k([i(RANDOM-- NVI)] ~> K)) RESTCOMPONENTPROC) RESTPROCS) 
+    constraints(CONST AND ([I1] > syn2sem(# 0)) AND ([i(RANDOM-- NVI)] >= syn2sem(# 0)) AND ([i(RANDOM-- NVI)] < [I1]) ) newVarIndex(s NVI)
+    if checkSAT(CONST AND ([I1] > syn2sem(# 0))) .
+
+ crl [randomZero] : procs(proc(procSwitch(true) (k(RAND([I1]) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST)
+  => procs(proc(procSwitch(true) (k(syn2sem(# 0) ~> K)) RESTCOMPONENTPROC) RESTPROCS) 
+    constraints(CONST AND ([I1] ==== syn2sem(# 0)))
+    if checkSAT(CONST AND ([I1] ==== syn2sem(# 0))) .
+    
+endm
+
+mod SYMBOLIC-UTIL is
+  inc STREAM-EXTENSION .
+  inc PLC-SYMBOLIC-PRIMITIVES .
+  inc PLC-SYMBOLIC-CHECKSAT .
+
+  var N : Nat .
+  var K : StreamKey .
+  var T : PType .
+
+
+  eq @genSym(K, BOOL, N) = [b(K -- N)] . 
+  eq @genSym(K, INT, N) = [i(K -- N)] . 
+  eq @genSym(K, DINT, N) = [i(K -- N)] . 
+  eq @genSym(K, SINT, N) = [i(K -- N)] . 
+  eq @genSym(K, UINT, N) = [i(K -- N)] . 
+  eq @genSym(K, USINT, N) = [i(K -- N)] . 
+  eq @genSym(K, UDINT, N) = [i(K -- N)] . 
+  eq @genSym(K, REAL, N) = [r(K -- N)] . 
+  eq @genSym(K, TIME, N) = T[i(K -- N)] . 
+
+  op FVAR--_ : Nat -> SMTVarId .
+  eq @genFVAR(N) = [b(FVAR-- N)] . 
+endm
+
+
+mod SYMBOLIC-SEMANTIC-CONVERSION is 
+  inc CONVERSION-SEMANTICVAL .
+  inc PLC-SYMBOLIC-PRIMITIVES .
+
+  eq conversion0and1toBOOL(BOOL, [(1).Integer]) = [true] .
+  eq conversion0and1toBOOL(BOOL, [(1/1).Real]) = [true] .
+  eq conversion0and1toBOOL(BOOL, [(0).Integer]) = [false] .
+  eq conversion0and1toBOOL(BOOL, [(0/1).Real]) = [false] .
+endm
+

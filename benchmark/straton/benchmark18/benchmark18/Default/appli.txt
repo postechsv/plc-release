@@ -1,0 +1,3 @@
+[LONG]
+A-__PROJECT=
+A-<PROJECT>=

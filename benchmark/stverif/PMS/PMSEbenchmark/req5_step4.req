@@ -1,0 +1,12 @@
+INPUT:
+DGSwbd1 :: DG1_StartReq |-> ??
+DGSwbd1 :: CB1_Close |-> ??
+DGSwbd1 :: CB1_pOpenTime |-> ??
+DGSwbd1 :: CB2_pOpenTime |-> ??
+
+STEP:
+4
+
+CONDITION:
+GLOBALLY((DGSwbd1 :: DG1_RunRated) AND (DGSwbd1 :: CB1_Remote) AND (DGSwbd1 :: DG1_Voltage == DGSwbd1 :: DG1_pNominalVoltage) AND (I[DGSwbd1 :: CB1_Close]) 
+==> FINALLY (DGSwbd1 :: CB1_Closed) )

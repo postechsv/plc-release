@@ -1,0 +1,53 @@
+FUNCTION_BLOCK Main
+	VAR
+		FIB   : fibonacci;
+		OUT1  : DINT;
+		INDEX : DINT;
+		OUT2  : DINT;
+		OUT3  : DINT;
+		CYCLE : DINT := 0;
+	END_VAR
+BEGIN
+	CYCLE := CYCLE + 1;
+	
+	INDEX := INDEX + 1;
+	
+	FIB(N := INDEX) ;
+	OUT3 := FIB.O;
+	
+	FIB(N := INDEX - 1) ;
+	OUT1 := FIB.O;
+	
+	FIB(N := INDEX - 2) ;
+	OUT2 := FIB.O;
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK fibonacci
+	VAR_INPUT
+		N : DINT;
+	END_VAR
+	VAR_OUTPUT
+		O : DINT;
+	END_VAR
+	VAR
+		F1  : DINT;
+		F2  : DINT;
+		CNT : DINT;
+	END_VAR
+BEGIN
+	F1 := 1;
+	F2 := 1;
+	CNT := 2;
+
+	IF N <= CNT THEN
+		O := 1;
+	ELSE
+		WHILE CNT < N DO
+			O := F1 + F2;
+			F1 := F2;
+			F2 := O;
+			CNT := CNT + 1;
+		END_WHILE;
+	END_IF;
+
+END_FUNCTION_BLOCK

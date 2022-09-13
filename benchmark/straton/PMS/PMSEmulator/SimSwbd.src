@@ -1,0 +1,66 @@
+exSwbdBridgeData.DGPowerIncDecFlag[0] := exDGSwbdData1.IncPower;      
+exSwbdBridgeData.DGPowerIncDecFlag[1] := exDGSwbdData2.IncPower;           
+exSwbdBridgeData.DGPowerIncDecFlag[2] := exDGSwbdData1.DecPower;        
+exSwbdBridgeData.DGPowerIncDecFlag[3] := exDGSwbdData2.DecPower;        
+
+exSwbdBridgeData.DGConnFlag[0] := exDGSwbdData1.Connected;
+exSwbdBridgeData.DGConnFlag[1] := exDGSwbdData2.Connected;
+
+exDGSwbdData1.SwbdFrequency := exSwbdBridgeData.NetFrequency;
+exDGSwbdData2.SwbdFrequency := exSwbdBridgeData.NetFrequency;
+
+exSwbdBridgeData.SwbdLoad := exLoadSwbdData1.Load + exLoadSwbdData2.Load + exLoadSwbdData3.Load +
+                             exLoadSwbdData4.Load + BaseLoad;
+
+ReactiveLoad(BaseLoad, BaseLoadPF);
+exSwbdBridgeData.SwbdReLoad := exLoadSwbdData1.ReLoad + exLoadSwbdData2.ReLoad + exLoadSwbdData3.ReLoad +
+                               exLoadSwbdData4.ReLoad + ReactiveLoad.ReLoad;
+
+exSwbdBridgeData.SuppliedCurrent := exDGSwbdData1.DGCurrent + exDGSwbdData2.DGCurrent;
+exSwbdBridgeData.RequiredCurrent := exLoadSwbdData1.Current + exLoadSwbdData2.Current + 
+                                    exLoadSwbdData3.Current + exLoadSwbdData4.Current;
+
+totalNetDGNum := exSwbdBridgeData.TotalNetDGNum;
+totalNetLoad := exSwbdBridgeData.TotalNetLoad;
+totalNetReLoad := exSwbdBridgeData.TotalNetReLoad;
+
+if exDGSwbdData1.NominalVoltage <> 0 then
+    nominalVoltage := exDGSwbdData1.NominalVoltage;
+elsif exDGSwbdData2.NominalVoltage <> 0 then
+    nominalVoltage := exDGSwbdData2.NominalVoltage;
+end_if;
+NetFrequency := exSwbdBridgeData.NetFrequency;
+NetVoltage := NetFrequency * (nominalVoltage/60);
+NetCurrent := exSwbdBridgeData.NetCurrent;
+DeadBus := exSwbdBridgeData.DeadBus;
+
+exLoadSwbdData1.NetVoltage := NetVoltage;
+exLoadSwbdData2.NetVoltage := NetVoltage;
+exLoadSwbdData3.NetVoltage := NetVoltage;
+exLoadSwbdData4.NetVoltage := NetVoltage;
+                       
+if exDGSwbdData1.Connected then
+    basePower1 := totalNetLoad / totalNetDGNum;
+    baseRePower1 := totalNetReLoad / totalNetDGNum;
+    exDGSwbdData1.AdjustedPower := exSwbdBridgeData.DGLoadBalance[0];
+    DGPowerFactor(basePower1, baseRePower1);
+    exDGSwbdData1.DGPF := DGPowerFactor.PF;    
+else
+    basePower1 := 0;
+    baseRePower1 := 0;
+    exDGSwbdData1.AdjustedPower := 0;
+    exDGSwbdData1.DGPF := -1;
+end_if;
+
+if exDGSwbdData2.Connected then
+    basePower2 := totalNetLoad / totalNetDGNum;
+    baseRePower2 := totalNetReLoad / totalNetDGNum;        
+    exDGSwbdData2.AdjustedPower := exSwbdBridgeData.DGLoadBalance[1];
+    DGPowerFactor(basePower2, baseRePower2);
+    exDGSwbdData2.DGPF := DGPowerFactor.PF;
+else
+    basePower2 := 0;
+    baseRePower2 := 0;
+    exDGSwbdData2.AdjustedPower := 0;
+    exDGSwbdData2.DGPF := -1;
+end_if;

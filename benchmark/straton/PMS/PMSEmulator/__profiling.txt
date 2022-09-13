@@ -1,0 +1,25 @@
+From 2020/12/14-22:43:51
+To 2020/12/14-22:44:30
+
+PRG1                             : 0.00 %
+pStartup                         : 100.00 %
+pShutDown                        : 0.00 %
+DGSwbd1                          : 0.00 %
+DGSwbd2                          : 0.00 %
+LoadSwbd1                        : 0.00 %
+LoadSwbd2                        : 0.00 %
+Swbd12                           : 0.00 %
+MODBUS_ADDR_ALLOCATION           : 0.00 %
+pOnDivZero                       : 0.00 %
+pOnBadIndex                      : 0.00 %
+SimCB                            : 0.00 %
+SimDG                            : 0.00 %
+SimLoad                          : 0.00 %
+SimSwbd                          : 0.00 %
+SimBridge                        : 0.00 %
+CalReLoad                        : 0.00 %
+IncValOverTime                   : 0.00 %
+DecValOverTime                   : 0.00 %
+CountDGInSwbdGroup               : 0.00 %
+AssignSwbdGroupAndLoad           : 0.00 %
+CalPowerFactor                   : 0.00 %

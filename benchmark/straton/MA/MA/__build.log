@@ -1,0 +1,25 @@
+Compiler V9.4.100.79
+Loading application symbols...
+PLC_CODER_TIMER
+POSITIVEEdge
+NEGATIVEEdge
+AlarmwithDelay
+Block
+AlarmwithPLO
+MA
+No error detected
+
+Loading application symbols...
+Demo Mode: run time execution limited in time!
+Main
+pStartup
+pShutDown
+pOnDivZero
+pOnBadIndex
+Building application data...
+< 598 BOOL/SINT; 3 INT; 96 DINT/REAL; 0 LINT/LREAL; 16 TIME; 1 STRING;  - CRC = 11975649 >
+On Line Change is disabled
+< 12 POUs - 3 programs, 2 sub-programs, 7 UDFBs >
+Relocating code...
+< Code CRC=258553c7 - File CRC=f982e57a - Size=28648 >
+No error detected

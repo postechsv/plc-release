@@ -1,0 +1,147 @@
+
+Requirement: *(instance.DiagCode &lt;> 32773) AND (0 &lt;= instance.CYCLE AND instance.CYCLE &lt;= 20)* is always true at the end of the PLC cycle.
+             (AG (EoC --> ((instance/DiagCode != 32773) && ((0 <= instance/CYCLE) && (instance/CYCLE <= 20)))))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/Activate = true (instance.Activate = true)
+  - instance/S_ChannelNC = true (instance.S_ChannelNC = true)
+  - instance/DiagCode = 32769 (instance.DiagCode = 32769)
+  - EoC = true (EoC = true)
+  - instance/Error = false (instance.Error = false)
+  - instance/S_AntivalentOut = false (instance.S_AntivalentOut = false)
+  - instance/S_ChannelNO = false (instance.S_ChannelNO = false)
+  - instance/Ready = true (instance.Ready = true)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+Step 2
+  - instance/Activate = true (instance.Activate = true)
+  - instance/Error = false (instance.Error = false)
+  - instance/S_ChannelNO = false (instance.S_ChannelNO = false)
+  - instance/S_ChannelNC = true (instance.S_ChannelNC = true)
+  - instance/CYCLE = 2 (instance.CYCLE = 2)
+  - instance/DiagCode = 32768 (instance.DiagCode = 32768)
+  - EoC = true (EoC = true)
+  - instance/S_AntivalentOut = true (instance.S_AntivalentOut = true)
+  - instance/Ready = true (instance.Ready = true)
+Step 3
+  - instance/S_ChannelNO = false (instance.S_ChannelNO = false)
+  - EoC = true (EoC = true)
+  - instance/S_ChannelNC = true (instance.S_ChannelNC = true)
+  - instance/Ready = true (instance.Ready = true)
+  - instance/DiagCode = 32768 (instance.DiagCode = 32768)
+  - instance/S_AntivalentOut = true (instance.S_AntivalentOut = true)
+  - instance/Activate = true (instance.Activate = true)
+  - instance/CYCLE = 3 (instance.CYCLE = 3)
+  - instance/Error = false (instance.Error = false)
+Step 4
+  - instance/Ready = true (instance.Ready = true)
+  - instance/S_ChannelNO = false (instance.S_ChannelNO = false)
+  - instance/CYCLE = 4 (instance.CYCLE = 4)
+  - instance/S_AntivalentOut = false (instance.S_AntivalentOut = false)
+  - instance/Activate = true (instance.Activate = true)
+  - instance/DiagCode = 32773 (instance.DiagCode = 32773)
+  - EoC = true (EoC = true)
+  - instance/S_ChannelNC = false (instance.S_ChannelNC = false)
+  - instance/Error = false (instance.Error = false)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (870 ms): Successful
+* Requirement representation (69 ms): Successful
+* Reductions (CFD) (75 ms): Successful
+* Model preparation (26 ms): Successful
+* CBMC model building (58 ms): Successful
+* CBMC execution (139089 ms): Successful
+* CBMC output parsing (4 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (0 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req2
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 21
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.Activate
+  -job.req.inputs.1 = instance.S_ChannelNC
+  -job.req.inputs.2 = instance.S_ChannelNO
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.DiagCode <> 32773) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark13/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark13/benchmark13.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark13/output/req2.c
+Converting
+Type-checking req2
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+35146 variables, 212829 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 9.43774s
+
+** Results:
+/home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark13/output/req2.c function VerificationLoop
+[VerificationLoop.assertion.1] line 456 assertion (!(EoC) || ((instance.DiagCode != 32773) && ((0 <= instance.CYCLE) && (instance.CYCLE <= 20)))): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark13/output/req2.c function ma[...]
+
+

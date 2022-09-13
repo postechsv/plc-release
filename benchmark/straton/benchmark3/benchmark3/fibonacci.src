@@ -1,0 +1,14 @@
+    F1 := 1;
+    F2 := 1;
+    CNT := 2;
+
+    IF N <= CNT THEN
+        O := 1;
+    ELSE
+        WHILE CNT < N DO
+            O := F1 + F2;
+            F1 := F2;
+            F2 := O;
+            CNT := CNT + 1;
+        END_WHILE;
+    END_IF;

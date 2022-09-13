@@ -1,0 +1,12 @@
+    CYCLE := CYCLE + 1;
+    
+    INDEX := INDEX + 1;
+    
+    FIB(N := INDEX) ;
+    OUT3 := FIB.O;
+    
+    FIB(N := INDEX - 1) ;
+    OUT1 := FIB.O;
+    
+    FIB(N := INDEX - 2) ;
+    OUT2 := FIB.O;

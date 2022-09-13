@@ -1,0 +1,8 @@
+INPUT:
+empty
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (Main3 :: MOUT >= 0 ) AND ( 0 <= Main3 :: CYCLE AND Main3 :: CYCLE <= 20) )

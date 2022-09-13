@@ -1,0 +1,188 @@
+[:__MODULE_MAIN] 
+
+{@BEGIN:Main}
+[:__LABEL1] 
+
+<IF:CCBLEND>
+526 275 1 
+21 1 1 2 
+530 1 [JA:__LABEL4] 
+285 135 2 1 1 234 
+[:__LABEL4] 
+
+{Main: (1): }
+508 0 8 18 8 17 
+45?152 8 18 
+
+{Main: (2): }
+508 0 526 
+{@BEGIN_INSTANCE:TEMP_MAX:USER_MAX}
+
+{USER_MAX: (1): //2}
+508 2 19 3  2  3  
+[:__LABEL7] 
+ [:__LABEL8] 
+ 66 3  [JR:__LABEL9]  
+
+{USER_MAX: (2): //3}
+508 3 45?152 14  2  
+
+{USER_MAX: (3): //4}
+508 4 526 67 [JR:__LABEL6]  
+[:__LABEL9] 
+ 
+{USER_MAX: (4): //5}
+508 5 45?152 14  3  
+
+{USER_MAX: (5): //6}
+508 6 526 [:__LABEL6] 
+ 
+{USER_MAX: (6): //7}
+508 7 526 [:__LABEL5] 
+ 
+
+{@END_INSTANCE:TEMP_MAX:USER_MAX}
+
+{Main: (6): }
+508 0 45?152 9 14 
+
+{Main: (7): }
+508 0 526 
+{@BEGIN_INSTANCE:INSTANCE_MAX:USER_MAX}
+
+{USER_MAX: (1): //2}
+508 2 19 3  1  9  
+[:__LABEL12] 
+ [:__LABEL13] 
+ 66 3  [JR:__LABEL14]  
+
+{USER_MAX: (2): //3}
+508 3 45?152 12  1  
+
+{USER_MAX: (3): //4}
+508 4 526 67 [JR:__LABEL11]  
+[:__LABEL14] 
+ 
+{USER_MAX: (4): //5}
+508 5 45?152 12  9  
+
+{USER_MAX: (5): //6}
+508 6 526 [:__LABEL11] 
+ 
+{USER_MAX: (6): //7}
+508 7 526 [:__LABEL10] 
+ 
+
+{@END_INSTANCE:INSTANCE_MAX:USER_MAX}
+
+{Main: (11): }
+508 0 45?152 6 12 
+
+{Main: (12): }
+508 0 526 
+{@BEGIN_INSTANCE:TEMP_MIN_2:USER_MIN}
+
+{USER_MIN: (1): //8}
+508 8 19 3  5  4  
+[:__LABEL17] 
+ [:__LABEL18] 
+ 66 3  [JR:__LABEL19]  
+
+{USER_MIN: (2): //9}
+508 9 45?152 15  4  
+
+{USER_MIN: (3): //10}
+508 10 526 67 [JR:__LABEL16]  
+[:__LABEL19] 
+ 
+{USER_MIN: (4): //11}
+508 11 45?152 15  5  
+
+{USER_MIN: (5): //12}
+508 12 526 [:__LABEL16] 
+ 
+{USER_MIN: (6): //13}
+508 13 526 [:__LABEL15] 
+ 
+
+{@END_INSTANCE:TEMP_MIN_2:USER_MIN}
+
+{Main: (16): }
+508 0 45?152 10 15 
+
+{Main: (17): }
+508 0 4 18 3 10 
+8 19 18 2 
+526 
+{@BEGIN_INSTANCE:TEMP_MIN_3:USER_MIN}
+
+{USER_MIN: (1): //8}
+508 8 19 3  19  2  
+[:__LABEL22] 
+ [:__LABEL23] 
+ 66 3  [JR:__LABEL24]  
+
+{USER_MIN: (2): //9}
+508 9 45?152 16  2  
+
+{USER_MIN: (3): //10}
+508 10 526 67 [JR:__LABEL21]  
+[:__LABEL24] 
+ 
+{USER_MIN: (4): //11}
+508 11 45?152 16  19  
+
+{USER_MIN: (5): //12}
+508 12 526 [:__LABEL21] 
+ 
+{USER_MIN: (6): //13}
+508 13 526 [:__LABEL20] 
+ 
+
+{@END_INSTANCE:TEMP_MIN_3:USER_MIN}
+
+{Main: (21): }
+508 0 45?152 11 16 
+
+{Main: (22): }
+508 0 8 18 11 3 
+526 
+{@BEGIN_INSTANCE:INSTANCE_MIN:USER_MIN}
+
+{USER_MIN: (1): //8}
+508 8 19 3  18  1  
+[:__LABEL27] 
+ [:__LABEL28] 
+ 66 3  [JR:__LABEL29]  
+
+{USER_MIN: (2): //9}
+508 9 45?152 13  1  
+
+{USER_MIN: (3): //10}
+508 10 526 67 [JR:__LABEL26]  
+[:__LABEL29] 
+ 
+{USER_MIN: (4): //11}
+508 11 45?152 13  18  
+
+{USER_MIN: (5): //12}
+508 12 526 [:__LABEL26] 
+ 
+{USER_MIN: (6): //13}
+508 13 526 [:__LABEL25] 
+ 
+
+{@END_INSTANCE:INSTANCE_MIN:USER_MIN}
+
+{Main: (26): }
+508 0 45?152 7 13 
+
+{Main: (27): }
+508 0 526 [:__LABEL3] 
+
+<ENDIF>
+234 
+[:__LABEL2] 
+
+{@END:Main}
+[:__MODULE_END_MAIN] 

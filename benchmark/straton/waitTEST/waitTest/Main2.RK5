@@ -1,0 +1,23 @@
+[:__MODULE_MAIN2] 
+
+{@BEGIN:Main2}
+[:__LABEL29] 
+
+<IF:CCBLEND>
+526 530 1 [JA:__LABEL32] 
+285 135 2 1 1 234 
+[:__LABEL32] 
+
+{Main2: (1): }
+508 0 8 4 2 3 
+45?152 2 4 
+
+{Main2: (2): }
+508 0 526 [:__LABEL31] 
+
+<ENDIF>
+234 
+[:__LABEL30] 
+
+{@END:Main2}
+[:__MODULE_END_MAIN2] 

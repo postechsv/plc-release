@@ -1,0 +1,19 @@
+[:__MODULE_PSTARTUP] 
+
+{@BEGIN:pStartup}
+[:__LABEL307] 
+
+<IF:CCBLEND>
+526 530 1 [JA:__LABEL310] 
+285 135 2 1 1 234 
+[:__LABEL310] 
+
+{pStartup: (4): }
+508 0 526 [:__LABEL309] 
+
+<ENDIF>
+234 
+[:__LABEL308] 
+
+{@END:pStartup}
+[:__MODULE_END_PSTARTUP] 

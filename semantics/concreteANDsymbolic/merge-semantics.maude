@@ -1,0 +1,129 @@
+mod PLC-MERGED-CHECKSAT is
+  inc PLC-CONCRETE-CHECKSAT .
+  inc PLC-SYMBOLIC-CHECKSAT .
+endm
+
+mod PLC-MERGED-ARITHMETIC is
+  inc PLC-CONCRETE-ARITHMETIC .
+  inc PLC-SYMBOLIC-ARITHMETIC .
+endm
+
+mod MERGED-DATA-CONVERSION is
+  inc SYMBOLIC-DATA-CONVERSION .
+  inc CONCRETE-DATA-CONVERSION .
+endm
+
+mod MERGED-ARITHMETIC-FUNCTIONS is
+  inc SYMBOLIC-ARITHMETIC-FUNCTIONS .
+  inc CONCRETE-ARITHMETIC-FUNCTIONS .
+endm
+
+mod MERGED-UTIL is
+  inc SYMBOLIC-UTIL .
+endm
+
+mod MERGED-SEMANTIC-CONVERSION is 
+  inc SYMBOLIC-SEMANTIC-CONVERSION .
+  inc CONCRETE-SEMANTIC-CONVERSION .
+endm
+
+mod OPERATION-BETWEEN-CONCRETE-SYMBOLIC is
+  inc PLC-MERGED-PRIMITIVES .
+  inc PLC-MERGED-PRIMITIVE-SYN2SEM-SEM2SYN .
+
+  vars IE1 : IntegerExpr .
+  vars RE1 : RealExpr .
+  vars BE1 : BooleanExpr .
+
+  vars B1 : Bool .
+  vars R1 : Rat .
+  vars I1 : Int .
+
+  var V : SemanticValue .
+
+  op con2sym : SemanticValue -> SemanticValue [memo] .
+  eq con2sym([I1]) = [ convertIntToInteger(I1) ] .
+  eq con2sym([R1]) = [ convertRatToReal(R1) ] .
+  eq con2sym([B1]) = [ convertBoolToBoolean(B1) ] .
+
+  eq [I1] + [IE1] = con2sym([I1]) + [IE1] .
+  eq [IE1] + [I1] = [IE1] + con2sym([I1]) .
+  eq [I1] - [IE1] = con2sym([I1]) - [IE1] .
+  eq [IE1] - [I1] = [IE1] - con2sym([I1]) .
+  eq [I1] * [IE1] = con2sym([I1]) * [IE1] .
+  eq [IE1] * [I1] = [IE1] * con2sym([I1]) .
+  eq [I1] / [IE1] = con2sym([I1]) / [IE1] .
+  eq [IE1] / [I1] = [IE1] / con2sym([I1]) .
+  eq [I1] % [IE1] = con2sym([I1]) % [IE1] .
+  eq [IE1] % [I1] = [IE1] % con2sym([I1]) .
+  eq [I1] < [IE1] = con2sym([I1]) < [IE1] .
+  eq [IE1] < [I1] = [IE1] < con2sym([I1]) .
+  eq [I1] > [IE1] = con2sym([I1]) > [IE1] .
+  eq [IE1] > [I1] = [IE1] > con2sym([I1]) .
+  eq [I1] <= [IE1] = con2sym([I1]) <= [IE1] .
+  eq [IE1] <= [I1] = [IE1] <= con2sym([I1]) .
+  eq [I1] >= [IE1] = con2sym([I1]) >= [IE1] .
+  eq [IE1] >= [I1] = [IE1] >= con2sym([I1]) .
+  eq [I1] ==== [IE1] = con2sym([I1]) ==== [IE1] .
+  eq [IE1] ==== [I1] = [IE1] ==== con2sym([I1]) .
+  eq [I1] <> [IE1] = con2sym([I1]) <> [IE1] .
+  eq [IE1] <> [I1] = [IE1] <> con2sym([I1]) .
+
+  eq T[I1] + T[IE1] = T[ convertIntToInteger(I1) ] + T[IE1] .
+  eq T[IE1] + T[I1] = T[IE1] + T[ convertIntToInteger(I1) ] .
+  eq T[I1] - T[IE1] = T[ convertIntToInteger(I1) ] - T[IE1] .
+  eq T[IE1] - T[I1] = T[IE1] - T[ convertIntToInteger(I1) ] .
+  eq T[I1] * T[IE1] = T[ convertIntToInteger(I1) ] * T[IE1] .
+  eq T[IE1] * T[I1] = T[IE1] * T[ convertIntToInteger(I1) ] .
+  eq T[I1] / T[IE1] = T[ convertIntToInteger(I1) ] / T[IE1] .
+  eq T[IE1] / T[I1] = T[IE1] / T[ convertIntToInteger(I1) ] .
+  eq T[I1] % T[IE1] = T[ convertIntToInteger(I1) ] % T[IE1] .
+  eq T[IE1] % T[I1] = T[IE1] % T[ convertIntToInteger(I1) ] .
+  eq T[I1] < T[IE1] = T[ convertIntToInteger(I1) ] < T[IE1] .
+  eq T[IE1] < T[I1] = T[IE1] < T[ convertIntToInteger(I1) ] .
+  eq T[I1] > T[IE1] = T[ convertIntToInteger(I1) ] > T[IE1] .
+  eq T[IE1] > T[I1] = T[IE1] > T[ convertIntToInteger(I1) ] .
+  eq T[I1] <= T[IE1] = T[ convertIntToInteger(I1) ] <= T[IE1] .
+  eq T[IE1] <= T[I1] = T[IE1] <= T[ convertIntToInteger(I1) ] .
+  eq T[I1] >= T[IE1] = T[ convertIntToInteger(I1) ] >= T[IE1] .
+  eq T[IE1] >= T[I1] = T[IE1] >= T[ convertIntToInteger(I1) ] .
+  eq T[I1] ==== T[IE1] = T[ convertIntToInteger(I1) ] ==== T[IE1] .
+  eq T[IE1] ==== T[I1] = T[IE1] ==== T[ convertIntToInteger(I1) ] .
+  eq T[I1] <> T[IE1] = T[ convertIntToInteger(I1) ] <> T[IE1] .
+  eq T[IE1] <> T[I1] = T[IE1] <> T[ convertIntToInteger(I1) ] .
+
+  eq [R1] + [RE1] = [ convertRatToReal(R1) ] + [RE1] .
+  eq [RE1] + [R1] = [RE1] + [ convertRatToReal(R1) ] .
+  eq [R1] - [RE1] = [ convertRatToReal(R1) ] - [RE1] .
+  eq [RE1] - [R1] = [RE1] - [ convertRatToReal(R1) ] .
+  eq [R1] * [RE1] = [ convertRatToReal(R1) ] * [RE1] .
+  eq [RE1] * [R1] = [RE1] * [ convertRatToReal(R1) ] .
+  eq [R1] / [RE1] = [ convertRatToReal(R1) ] / [RE1] .
+  eq [RE1] / [R1] = [RE1] / [ convertRatToReal(R1) ] .
+  eq [R1] % [RE1] = [ convertRatToReal(R1) ] % [RE1] .
+  eq [RE1] % [R1] = [RE1] % [ convertRatToReal(R1) ] .
+
+  eq [R1] < [RE1] = [ convertRatToReal(R1) ] < [RE1] .
+  eq [RE1] < [R1] = [RE1] < [ convertRatToReal(R1) ] .
+  eq [R1] > [RE1] = [ convertRatToReal(R1) ] > [RE1] .
+  eq [RE1] > [R1] = [RE1] > [ convertRatToReal(R1) ] .
+  eq [R1] <= [RE1] = [ convertRatToReal(R1) ] <= [RE1] .
+  eq [RE1] <= [R1] = [RE1] <= [ convertRatToReal(R1) ] .
+  eq [R1] >= [RE1] = [ convertRatToReal(R1) ] >= [RE1] .
+  eq [RE1] >= [R1] = [RE1] >= [ convertRatToReal(R1) ] .
+  eq [R1] ==== [RE1] = [ convertRatToReal(R1) ] ==== [RE1] .
+  eq [RE1] ==== [R1] = [RE1] ==== [ convertRatToReal(R1) ] .
+  eq [R1] <> [RE1] = [ convertRatToReal(R1) ] <> [RE1] .
+  eq [RE1] <> [R1] = [RE1] <> [ convertRatToReal(R1) ] .
+
+  eq [B1] ==== [BE1] = con2sym([B1]) ==== [BE1] .
+  eq [BE1] ==== [B1] = con2sym([B1]) ==== [BE1] .
+  eq [B1] <> [BE1]= con2sym([B1]) <> [BE1] .
+  eq [BE1] <> [B1] = con2sym([B1]) <> [BE1] .
+
+  eq [B1] AND [BE1] = con2sym([B1]) AND [BE1] .
+  eq [BE1] AND [B1] = [BE1] AND con2sym([B1]) .
+
+  eq [B1] OR [BE1] = con2sym([B1]) OR [BE1] .
+  eq [BE1] OR [B1] = [BE1] OR con2sym([B1]) .
+endm

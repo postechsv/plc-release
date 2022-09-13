@@ -1,0 +1,24 @@
+-job = "verif"
+-id = "req2"
+-name = ""
+-description = ""
+-sourcefiles.0 = "benchmark/plcverif/cmd/workspace2/benchmark1/benchmark1.scl"
+-lf = "step7"
+-inline = "false"
+-reductions.0 = "basic_reductions"
+-info.backend_name = "CbmcBackend"
+-info.backend_algorithm = "CFD-UW21"
+-info.requirement_text = " (instance.OUT > 0) AND ( 0 <= instance.CYCLE AND instance.CYCLE <= 20)  is always true at the end of the PLC cycle."
+-info.plugin_store_keys = {}
+-info.plugin_store_values = {}
+-result = "Violated"
+-result.runtime_ms = "470"
+-result.exec_date = "2022-09-13 13:38:43"
+-result.backend_exectime_ms = "79"
+-result.cex_exists = "true"
+-job.req = "pattern"
+-job.req.inputs = {}
+-job.req.params = {}
+-job.req.bindings.variable.0 = "instance.aaa"
+-job.req.bindings.value.0 = "DINT#2"
+

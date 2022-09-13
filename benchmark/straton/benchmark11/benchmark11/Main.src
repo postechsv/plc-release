@@ -1,0 +1,5 @@
+    CYCLE := CYCLE + 1;
+    NewVar1(Activate := NewVar);
+    Output := NewVar1.Output;
+    NewVar1(Activate := NewVar);
+    Output := NewVar1.Output;

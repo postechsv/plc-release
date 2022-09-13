@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<Appli Expand="YES">
+   <Folder Name="Exception programs">
+      <Program Name="pOnBadIndex"/>
+      <Program Name="pOnDivZero"/>
+      <Program Name="pShutDown"/>
+      <Program Name="pStartup"/>
+   </Folder>
+   <Folder Expand="YES" Name="Programs">
+      <Program Name="Main"/>
+      <Program Name="SF_Antivalent"/>
+      <Program Name="SF_EmergencyStop"/>
+      <Program Name="SF_EnableSwitch"/>
+      <Program Name="SF_Equivalent"/>
+      <Program Name="SF_ESPE"/>
+      <Program Name="SF_GuardLocking"/>
+      <Program Name="SF_GuardMonitoring"/>
+      <Program Name="SF_ModeSelector"/>
+      <Program Name="SF_MutingSeq"/>
+      <Program Name="SF_SafelyLimitSpeed"/>
+      <Program Name="SF_SafeStop1"/>
+      <Program Name="SF_SafetyRequest"/>
+      <Program Name="SF_TwoHandControlTypeII"/>
+      <Program Name="SF_TwoHandControlTypeIII"/>
+   </Folder>
+   <Folder Expand="YES" Name="Watch (for debugging)">
+      <File Name="Soft Scope.SS5"/>
+   </Folder>
+   <Binding/>
+   <Profiles/>
+   <GlobalDef/>
+   <Vars/>
+   <Types Expand="YES"/>
+</Appli>

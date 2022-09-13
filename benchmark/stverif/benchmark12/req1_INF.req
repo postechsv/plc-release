@@ -1,0 +1,8 @@
+INPUT:
+Main :: Activate |-> ??
+
+STEP:
+INF
+
+CONDITION:
+GLOBALLY ( (NOT (Main :: Index == 0)) AND (0 <= Main :: CYCLE AND Main :: CYCLE <= 20))

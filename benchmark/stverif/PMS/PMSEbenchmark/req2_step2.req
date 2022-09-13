@@ -1,0 +1,11 @@
+INPUT:
+DGSwbd1 :: DG1_StartReq |-> ??
+DGSwbd1 :: CB1_Close |-> ??
+DGSwbd1 :: CB1_pOpenTime |-> ??
+DGSwbd1 :: CB2_pOpenTime |-> ??
+
+STEP:
+2
+
+CONDITION:
+GLOBALLY ( (DGSwbd1 :: DG1_RunRated) AND (I[DGSwbd1 :: CB1_Close]) AND (DGSwbd1 :: CB1_Remote) ==> FINALLY (DGSwbd1 :: CB1_Closed) )

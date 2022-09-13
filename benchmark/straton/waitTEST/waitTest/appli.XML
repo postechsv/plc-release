@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<Appli Expand="YES">
+   <Folder Name="Exception programs">
+      <Program Name="pOnBadIndex"/>
+      <Program Name="pOnDivZero"/>
+      <Program Name="pShutDown"/>
+      <Program Name="pStartup"/>
+   </Folder>
+   <Folder Expand="YES" Name="Programs">
+      <Program Name="Main"/>
+      <Program Name="Main2"/>
+   </Folder>
+   <Folder Expand="YES" Name="Watch (for debugging)">
+      <File Name="Soft Scope.SS5"/>
+   </Folder>
+   <Binding/>
+   <Profiles/>
+   <GlobalDef/>
+   <Vars/>
+   <Types/>
+</Appli>

@@ -1,0 +1,414 @@
+
+VAR_GLOBAL
+   DGNotConnected        : ExDGSwbdSt;
+	CBNotConnected        : ExCBSt;
+	LoadNotConnected      : ExLoadSwbdSt;
+	BridgeNotConnected    : ExSwbdBridgeSt;
+	SwbdNotConnected      : ExSwbdBridgeSt;
+	DG2_exDGSwbd1Data     : ExDGSwbdSt;
+	DG1_exDGSwbd1Data     : ExDGSwbdSt;
+	DG1_exDGSwbd2Data     : ExDGSwbdSt;
+	DG2_exDGSwbd2Data     : ExDGSwbdSt;
+	Load1_exLoadSwbd1Data : ExLoadSwbdSt;
+	Load2_exLoadSwbd1Data : ExLoadSwbdSt;
+	Load4_exLoadSwbd1Data : ExLoadSwbdSt;
+	Load3_exLoadSwbd1Data : ExLoadSwbdSt;
+	Load3_exLoadSwbd2Data : ExLoadSwbdSt;
+	Load4_exLoadSwbd2Data : ExLoadSwbdSt;
+	Load2_exLoadSwbd2Data : ExLoadSwbdSt;
+	Load1_exLoadSwbd2Data : ExLoadSwbdSt;
+	PMS1_Addr0            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr1            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr2            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr3            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr4            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr5            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr6            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr7            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr8            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr9            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr10           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr11           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr12           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr13           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr14           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr15           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr16           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr17           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr18           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr19           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr20           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr21           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr22           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr23           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr24           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr25           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr26           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr27           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr28           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr29           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr30           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr31           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr32           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr33           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr34           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr35           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr36           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr80           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr81           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr82           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS1_Addr83           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr0            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr1            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr2            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr3            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr4            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr5            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr6            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr7            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr8            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr9            : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr10           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr11           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr12           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr13           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr14           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr15           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr16           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr17           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr18           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr19           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr20           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr21           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr22           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr23           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr24           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr25           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr26           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr27           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr28           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr29           : REAL;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr30           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr31           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr32           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr33           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr34           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr35           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr80           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr81           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr82           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	PMS2_Addr83           : ModbusBits;
+	(*$subgroup=PMS_MODBUS_ADDR_OLD*)
+	V1                    : BOOL;
+	V2                    : BOOL;
+	V1_Addr100            : INT;
+	V1_Add101             : INT;
+	MBA2                  : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA4                  : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA5                  : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA100                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA102                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA104                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA106                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA108                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA110                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA112                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA114                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA116                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA118                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA120                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA122                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA124                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA126                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA128                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA130                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA132                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA134                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA136                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA138                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA140                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA142                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA144                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA146                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA148                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA150                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA152                : REAL;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA156                : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA157                : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA158                : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA159                : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA160                : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA1000               : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA1100               : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA1101               : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBA1102               : ModbusBits;
+	(*$subgroup=PMS1_MODBUS_ADDR*)
+	MBB200                : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB300                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB302                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB304                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB306                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB308                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB310                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB312                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB314                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB316                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB318                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB320                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB322                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB324                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB326                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB328                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB330                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB332                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB334                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB336                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB338                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB340                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB342                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB344                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB346                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB348                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB350                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB352                : REAL;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB354                : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB355                : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB356                : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB357                : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB358                : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB1200               : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB1300               : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB1301               : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	MBB1302               : ModbusBits;
+	(*$subgroup=PMS2_MODBUS_ADDR*)
+	Modbus_State          : BOOL;
+END_VAR
+
+TYPE ExCBSt
+: STRUCT
+		Opened   : BOOL;
+		Closed   : BOOL;
+		SyncReq  : BOOL;
+		SyncDone : BOOL;
+		Current  : REAL;
+	END_STRUCT
+END_TYPE
+
+TYPE ExDGSwbdSt
+: STRUCT
+		SwbdFrequency  : REAL;
+		Connected      : BOOL;
+		AdjustedPower  : REAL;
+		IncPower       : BOOL;
+		DecPower       : BOOL;
+		DGPF           : REAL;
+		NominalVoltage : REAL;
+		DGCurrent      : REAL;
+	END_STRUCT
+END_TYPE
+
+TYPE ExLoadSwbdSt
+: STRUCT
+		LoadPF     : REAL;
+		Load       : REAL;
+		ReLoad     : REAL;
+		NetVoltage : REAL;
+		Current    : REAL;
+	END_STRUCT
+END_TYPE
+
+TYPE ExSwbdBridgeSt
+: STRUCT
+		SwbdLoad          : REAL;
+		TotalNetLoad      : REAL;
+		DGLoadBalance     : ARRAY [0 .. 1] OF REAL;
+		SwbdGroup         : DINT;
+		DGPowerIncDecFlag : ARRAY [0 .. 3] OF BOOL;
+		DGConnFlag        : ARRAY [0 .. 1] OF BOOL;
+		TotalNetDGNum     : REAL;
+		NetFrequency      : REAL;
+		SwbdReLoad        : REAL;
+		TotalNetReLoad    : REAL;
+		RequiredCurrent   : REAL;
+		SuppliedCurrent   : REAL;
+		NetCurrent        : REAL;
+		DeadBus           : BOOL;
+	END_STRUCT
+END_TYPE
+
+
+TYPE ModbusBits
+: STRUCT
+		BitPos0  : BOOL;
+		BitPos1  : BOOL;
+		BitPos2  : BOOL;
+		BitPos3  : BOOL;
+		BitPos4  : BOOL;
+		BitPos5  : BOOL;
+		BitPos6  : BOOL;
+		BitPos7  : BOOL;
+		BitPos8  : BOOL;
+		BitPos9  : BOOL;
+		BitPos10 : BOOL;
+		BitPos11 : BOOL;
+		BitPos12 : BOOL;
+		BitPos13 : BOOL;
+		BitPos14 : BOOL;
+		BitPos15 : BOOL;
+	END_STRUCT
+END_TYPE
+

@@ -1,0 +1,10 @@
+From 2021/11/26-17:26:11
+To 2021/11/26-17:26:15
+
+pStartup                         : 56.09 %
+pShutDown                        : 0.00 %
+pOnDivZero                       : 0.00 %
+pOnBadIndex                      : 0.00 %
+Main1                            : 19.51 %
+Main2                            : 8.53 %
+Main3                            : 15.85 %

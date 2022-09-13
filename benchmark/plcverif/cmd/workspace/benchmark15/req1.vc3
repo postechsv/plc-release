@@ -1,0 +1,37 @@
+-description = ""
+-id = req1
+-job = verif
+-job.backend = nusmv
+-job.reporters.0 = summary
+-job.reporters.1 = html
+-job.reporters.2 = plaintext
+-job.req = pattern
+-job.req.inputs.0 = instance.S1_S_EStopIn_1
+-job.req.inputs.1 = instance.S1_S_EStopIn_2
+-job.req.inputs.2 = instance.S2_S_ESPE_In
+-job.req.inputs.3 = instance.S0_Reset
+-job.req.inputs.4 = instance.S3_Drive_Reset
+-job.req.inputs.5 = instance.AxisD_1
+-job.req.inputs.6 = instance.InputDevice1_active
+-job.req.inputs.7 = instance.InputDevice2_active
+-job.req.inputs.8 = instance.Internal_Acknowledge
+-job.req.inputs.9 = instance.Error_Equiv1
+-job.req.inputs.10 = instance.Diag_Equiv1
+-job.req.inputs.11 = instance.Error_EStop1
+-job.req.inputs.12 = instance.Diag_EStop1
+-job.req.inputs.13 = instance.Error_ESPE1
+-job.req.inputs.14 = instance.Diag_ESPE1
+-job.req.inputs.15 = instance.Error_SafeStop1
+-job.req.inputs.16 = instance.Diag_SafeStop1
+-job.req.inputs.17 = instance.S_Stopped
+-job.req.pattern_id = pattern-invariant
+-job.req.pattern_params.1 = "( 	NOT instance.Error_Equiv1   	AND NOT instance.Error_EStop1   	AND NOT instance.Error_ESPE1   	AND NOT instance.Error_SafeStop1 ) AND (0 <= instance.CYCLE AND instance.CYCLE <= 20)"
+-lf = step7
+-lf.entry = Main
+-name = ""
+-job.backend.timeout = 7200
+-job.backend.binary_path = tools/nuXmv-2.0.0-linux64.tar/nuXmv-2.0.0-Linux/bin/nuXmv
+-output = benchmark/plcverif/cmd/workspace/benchmark15/output
+-sourcefiles.0 = benchmark/plcverif/cmd/workspace/benchmark15/benchmark15.scl
+-sourcefiles.1 = benchmark/plcverif/cmd/workspace/benchmark15/plcopen.scl
+

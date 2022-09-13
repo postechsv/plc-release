@@ -1,0 +1,150 @@
+
+Requirement: *(instance.STACKOUT > 0)  AND (0 &lt;= instance.CYCLE AND instance.CYCLE &lt;= 20) * is always true at the end of the PLC cycle.
+             (AG (EoC --> ((instance/STACKOUT > 0) && ((0 <= instance/CYCLE) && (instance/CYCLE <= 20)))))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/B2 = false (instance.B2 = false)
+  - instance/I1 = 0 (instance.I1 = 0)
+  - instance/STACK_INT_FB/N = 262144 (instance.STACK_INT_FB.N = 262144)
+  - instance/STACK_INT_FB/STK[2] = 0 (instance.STACK_INT_FB.STK[2] = 0)
+  - instance/STACKFULL = false (instance.STACKFULL = false)
+  - instance/STACK_INT_FB/EMPTY = true (instance.STACK_INT_FB.EMPTY = true)
+  - LIMIT/RET_VAL = 128 (LIMIT.RET_VAL = 128)
+  - instance/STACK_INT_FB/OFLO = false (instance.STACK_INT_FB.OFLO = false)
+  - LIMIT/MN = 1 (LIMIT.MN = 1)
+  - instance/B3 = true (instance.B3 = true)
+  - instance/I2 = 262144 (instance.I2 = 262144)
+  - instance/STACK_INT_FB/STK[5] = 0 (instance.STACK_INT_FB.STK[5] = 0)
+  - instance/STACK_INT_FB/STK[8] = 0 (instance.STACK_INT_FB.STK[8] = 0)
+  - instance/STACK_INT_FB/STK[6] = 0 (instance.STACK_INT_FB.STK[6] = 0)
+  - instance/STACK_INT_FB/PTR = -1 (instance.STACK_INT_FB.PTR = -1)
+  - instance/I3 = 0 (instance.I3 = 0)
+  - instance/I4 = 0 (instance.I4 = 0)
+  - EoC = true (EoC = true)
+  - instance/STACK_INT_FB/STK[1] = 0 (instance.STACK_INT_FB.STK[1] = 0)
+  - instance/STACK_INT_FB/OUT = 0 (instance.STACK_INT_FB.OUT = 0)
+  - instance/STACK_INT_FB/NI = 128 (instance.STACK_INT_FB.NI = 128)
+  - instance/STACK_INT_FB/IN = 0 (instance.STACK_INT_FB.IN = 0)
+  - instance/STACK_INT_FB/SIZE = 0 (instance.STACK_INT_FB.SIZE = 0)
+  - instance/STACK_INT_FB/STK[0] = 0 (instance.STACK_INT_FB.STK[0] = 0)
+  - instance/STACKSIZE = 0 (instance.STACKSIZE = 0)
+  - instance/STACK_INT_FB/PUSH = false (instance.STACK_INT_FB.PUSH = false)
+  - instance/STACK_INT_FB/STK[3] = 0 (instance.STACK_INT_FB.STK[3] = 0)
+  - LIMIT/IN = 262144 (LIMIT.IN = 262144)
+  - instance/B1 = false (instance.B1 = false)
+  - instance/STACK_INT_FB/POP = false (instance.STACK_INT_FB.POP = false)
+  - instance/STACKOUT = 0 (instance.STACKOUT = 0)
+  - instance/STACKEMPTY = true (instance.STACKEMPTY = true)
+  - LIMIT/MX = 128 (LIMIT.MX = 128)
+  - instance/STACK_INT_FB/STK[9] = 0 (instance.STACK_INT_FB.STK[9] = 0)
+  - instance/STACK_INT_FB/STK[7] = 0 (instance.STACK_INT_FB.STK[7] = 0)
+  - instance/STACK_INT_FB/R1 = true (instance.STACK_INT_FB.R1 = true)
+  - instance/STACK_INT_FB/STK[4] = 0 (instance.STACK_INT_FB.STK[4] = 0)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (1027 ms): Successful
+* Requirement representation (65 ms): Successful
+* Reductions (CFD) (52 ms): Successful
+* Model preparation (55 ms): Successful
+* CBMC model building (73 ms): Successful
+* CBMC execution (87011 ms): Successful
+* CBMC output parsing (16 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (0 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req5
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 21
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.I1
+  -job.req.inputs.1 = instance.I2
+  -job.req.inputs.2 = instance.I3
+  -job.req.inputs.3 = instance.I4
+  -job.req.inputs.4 = instance.B1
+  -job.req.inputs.5 = instance.B2
+  -job.req.inputs.6 = instance.B3
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.STACKOUT > 0)  AND (0 <= instance.CYCLE AND instance.CYCLE <= 20) "
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark4/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark4/benchmark4.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark4/output/req5.c
+Converting
+Type-checking req5
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+311081 variables, 1236313 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 22.1979s
+
+** Results:
+/home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark4/output/req5.c function VerificationLoop
+[VerificationLoop.assertion.1] line 473 assertion (!(EoC) || ((instance.STACKOUT > 0) && ((0 <= instance.CYCLE) && (instance.CYCLE <= 20)))): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 21 file /home/jlee/plc/benchmark/plcverif/cmd/workspace2/benchmark4/output/req5.c function main lin[...]
+
+

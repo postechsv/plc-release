@@ -1,0 +1,335 @@
+fmod PLC-PROPER-EXP is
+  inc BASIC-PEXP . 
+  inc FUNID .
+  inc STATEMENT .
+  inc COMMON-SEMANTIC-VALUE .
+
+  sort PProperExp .
+  subsort PProperExp < PExp .
+  subsort Pid < PProperExp .
+  subsort PValue < PProperExp .
+
+  --- arith ops
+  ops _+_ _-_ : PExp PExp -> PProperExp [ctor ditto] .
+  op -_ : PExp -> PProperExp [ctor ditto] .
+  ops _*_ _/_ _%_ : PExp PExp -> PProperExp [ctor ditto] .
+  op _**_ : PExp PExp -> PProperExp [ctor ditto] .
+
+  --- relational ops
+  ops _<_ _<=_ _>_ _>=_ _====_ _<>_ : PExp PExp -> PProperExp [ctor ditto] .
+
+  --- logical ops
+  ops _AND_ _OR_ : PExp PExp -> PProperExp [ctor ditto] .
+  op NOT_ : PExp -> PProperExp [ctor ditto] .
+
+  op _[_] : PExp PExp -> PProperExp [ctor ditto] .
+
+  op _(_) : FunId List{PExp} -> PProperExp [ctor ditto] .
+
+  op _._ : PExp PExp -> PProperExp [ctor ditto] . 
+
+  op ite : PExp PExp PExp -> PProperExp [ctor ditto] . 
+  op truncVal : PExp -> PProperExp [ctor ditto] . 
+  op checkBOOL : PExp -> PProperExp [ctor ditto] . 
+  op convertBOOL : PExp -> PProperExp [ctor ditto] . 
+  op removeTime : PExp -> PProperExp [ctor ditto] . 
+  op addTime : PExp -> PProperExp [ctor ditto] . 
+  op convertToREAL : PExp -> PProperExp [ctor ditto] . 
+
+  
+  op @#cycleValue : -> PProperExp [ctor] .
+  op @#timerValue : -> PProperExp [ctor] .
+endfm
+
+---(
+STRICTNESS-OP and STRICTNESS-RULES defines heating and cooling of composite expression.
+Composite expression must be broken to parts (heating) and evaluated seprately, and then
+put back together (cooling).
+---)
+fmod STRICTNESS-OPS is
+  inc K-SORTS .
+  inc PLC-PROPER-EXP .
+  inc STATEMENT .
+  inc COMMON-SEMANTIC-VALUE .
+
+  --- arith ops
+  op []+_ : PExp -> KLabel [ctor] .
+  op []-_ : PExp -> KLabel [ctor] .
+  op _+[] : SemanticValue -> KLabel [ctor] .
+  op _-[] : SemanticValue -> KLabel [ctor] .
+  op -[] : -> KLabel [ctor] .
+
+  op []*_ : PExp -> KLabel [ctor] .
+  op []**_ : PExp -> KLabel [ctor] .
+  op []/_ : PExp -> KLabel [ctor] .
+  op []%_ : PExp -> KLabel [ctor] .
+  op _*[] : SemanticValue -> KLabel [ctor] .
+  op _**[] : SemanticValue -> KLabel [ctor] .
+  op _/[] : SemanticValue -> KLabel [ctor] .
+  op _%[] : SemanticValue -> KLabel [ctor] .
+
+  --- relational ops
+  op []<_ : PExp -> KLabel [ctor] .
+  op []<=_ : PExp -> KLabel [ctor] .
+  op []>_ : PExp -> KLabel [ctor] .
+  op []>=_ : PExp -> KLabel [ctor] .
+  op []====_ : PExp -> KLabel [ctor] .
+  op []<>_ : PExp -> KLabel [ctor] .
+  op _<[] : SemanticValue -> KLabel [ctor] .
+  op _<=[] : SemanticValue -> KLabel [ctor] .
+  op _>[] : SemanticValue -> KLabel [ctor] .
+  op _>=[] : SemanticValue -> KLabel [ctor] .
+  op _====[] : SemanticValue -> KLabel [ctor] .
+  op _<>[] : SemanticValue -> KLabel [ctor] .
+
+  --- logical ops
+  op []AND_ : PExp -> KLabel [ctor] . 
+  op []OR_ : PExp -> KLabel [ctor] . 
+  op _AND[] : SemanticValue -> KLabel [ctor] . 
+  op _OR[] : SemanticValue -> KLabel [ctor] . 
+
+  op NOT[] : -> KLabel [ctor] .
+
+  op @WAIT(_,_) : PExp PExp -> KLabel [ctor] .
+  op @WAIT([],_) : PExp -> KLabel [ctor] .
+  op WAITTIME([]) : -> KLabel [ctor] .
+
+  op _[[]] : SemanticValue -> KLabel [ctor] .
+  op [][_] : PExp -> KLabel [ctor] .
+  op []._ : Pid -> KLabel [ctor] .
+  op []._ : PRat -> KLabel [ctor] .
+
+
+  op _:=[] : PExp -> KLabel [ctor] .
+
+
+  op _<:=[] : Pid -> KLabel [ctor] .
+
+  op  _(_[]_) : Pid List{PExp} List{PExp} -> KLabel [ctor] .
+  op  _(_[]_) : FunId List{PExp} List{PExp} -> KLabel [ctor] .
+
+  op [_[[]]]:=_ : SemanticValue SemanticValue -> KLabel [ctor] .
+  op [[][_]]:=_ : PExp SemanticValue -> KLabel [ctor] .
+  op [[]._]:=_ : Pid SemanticValue -> KLabel [ctor] .
+
+  op @ite(_,_) : PExp PExp -> KLabel [ctor] .
+
+  op truncVal([]) : -> KLabel [ctor] .
+  op checkBOOL([]) : -> KLabel [ctor] .
+  op convertBOOL([]) : -> KLabel [ctor] .
+  op removeTime([]) : -> KLabel [ctor] .
+  op addTime([]) : -> KLabel [ctor] .
+  op convertToREAL([]) : -> KLabel [ctor] .
+
+  
+endfm
+
+
+fmod PLC-STRICTNESS-RULES is
+  including K-CONFIG .
+  including STRICTNESS-OPS .
+  inc COMMON-SEMANTIC-VALUE .
+  
+  subsort PProperExp < KProper .
+  subsort Stmt < KProper .
+  subsort SemanticValue < KResult .
+
+
+  vars E1 E2 E3 : PExp .
+  vars P1 P2 P3 : PProperExp .
+  vars V1 V2 V3 : SemanticValue .
+  var K : K .
+  vars S S1 S2 S3 : Stmt .
+
+  vars FBI1 FBI2 : Pid .
+
+  eq k((S1 ; S2) ~> K) = k(S1 ~> S2 ~> K) .
+  eq k(skip ~> K) = k(K) .
+
+  eq k((P1 + E1) ~> K) = k(P1 ~> ([]+ E1) ~> K) .
+  eq k(V1 ~> ([]+ E1) ~> K) = k((V1 + E1) ~> K) .
+  eq k((V1 + P1) ~> K) = k(P1 ~> (V1 +[]) ~> K) .
+  eq k(V2 ~> (V1 +[]) ~> K) = k((V1 + V2) ~> K) .
+
+  eq k(- P1 ~> K) = k(P1 ~> (-[]) ~> K) .
+  eq k(V1 ~> (-[]) ~> K) = k(- V1 ~> K) .
+
+  eq k((P1 - E1) ~> K) = k(P1 ~> ([]- E1) ~> K) .
+  eq k(V1 ~> ([]- E1) ~> K) = k((V1 - E1) ~> K) .
+  eq k((V1 - P1) ~> K) = k(P1 ~> (V1 -[]) ~> K) .
+  eq k(V2 ~> (V1 -[]) ~> K) = k((V1 - V2) ~> K) .
+
+  eq k((P1 * E1) ~> K) = k(P1 ~> ([]* E1) ~> K) .
+  eq k(V1 ~> ([]* E1) ~> K) = k((V1 * E1) ~> K) .
+  eq k((V1 * P1) ~> K) = k(P1 ~> (V1 *[]) ~> K) .
+  eq k(V2 ~> (V1 *[]) ~> K) = k((V1 * V2) ~> K) .
+
+  eq k((P1 ** E1) ~> K) = k(P1 ~> ([]** E1) ~> K) .
+  eq k(V1 ~> ([]** E1) ~> K) = k((V1 ** E1) ~> K) .
+  eq k((V1 ** P1) ~> K) = k(P1 ~> (V1 **[]) ~> K) .
+  eq k(V2 ~> (V1 **[]) ~> K) = k((V1 ** V2) ~> K) .
+
+  eq k((P1 / E1) ~> K) = k(P1 ~> ([]/ E1) ~> K) .
+  eq k(V1 ~> ([]/ E1) ~> K) = k((V1 / E1) ~> K) .
+  eq k((V1 / P1) ~> K) = k(P1 ~> (V1 /[]) ~> K) .
+  eq k(V2 ~> (V1 /[]) ~> K) = k((V1 / V2) ~> K) .
+
+  eq k((P1 % E1) ~> K) = k(P1 ~> ([]% E1) ~> K) .
+  eq k(V1 ~> ([]% E1) ~> K) = k((V1 % E1) ~> K) .
+  eq k((V1 % P1) ~> K) = k(P1 ~> (V1 %[]) ~> K) .
+  eq k(V2 ~> (V1 %[]) ~> K) = k((V1 % V2) ~> K) .
+
+  eq k((P1 < E1) ~> K) = k(P1 ~> ([]< E1) ~> K) .
+  eq k(V1 ~> ([]< E1) ~> K) = k((V1 < E1) ~> K) .
+  eq k((V1 < P1) ~> K) = k(P1 ~> (V1 <[]) ~> K) .
+  eq k(V2 ~> (V1 <[]) ~> K) = k((V1 < V2) ~> K) .
+
+  eq k((P1 <= E1) ~> K) = k(P1 ~> ([]<= E1) ~> K) .
+  eq k(V1 ~> ([]<= E1) ~> K) = k((V1 <= E1) ~> K) .
+  eq k((V1 <= P1) ~> K) = k(P1 ~> (V1 <=[]) ~> K) .
+  eq k(V2 ~> (V1 <=[]) ~> K) = k((V1 <= V2) ~> K) .
+
+  eq k((P1 > E1) ~> K) = k(P1 ~> ([]> E1) ~> K) .
+  eq k(V1 ~> ([]> E1) ~> K) = k((V1 > E1) ~> K) .
+  eq k((V1 > P1) ~> K) = k(P1 ~> (V1 >[]) ~> K) .
+  eq k(V2 ~> (V1 >[]) ~> K) = k((V1 > V2) ~> K) .
+
+  eq k((P1 >= E1) ~> K) = k(P1 ~> ([]>= E1) ~> K) .
+  eq k(V1 ~> ([]>= E1) ~> K) = k((V1 >= E1) ~> K) .
+  eq k((V1 >= P1) ~> K) = k(P1 ~> (V1 >=[]) ~> K) .
+  eq k(V2 ~> (V1 >=[]) ~> K) = k((V1 >= V2) ~> K) .
+
+  eq k((P1 ==== E1) ~> K) = k(P1 ~> ([]==== E1) ~> K) .
+  eq k(V1 ~> ([]==== E1) ~> K) = k((V1 ==== E1) ~> K) .
+  eq k((V1 ==== P1) ~> K) = k(P1 ~> (V1 ====[]) ~> K) .
+  eq k(V2 ~> (V1 ====[]) ~> K) = k((V1 ==== V2) ~> K) .
+
+  eq k((P1 <> E1) ~> K) = k(P1 ~> ([]<> E1) ~> K) .
+  eq k(V1 ~> ([]<> E1) ~> K) = k((V1 <> E1) ~> K) .
+  eq k((V1 <> P1) ~> K) = k(P1 ~> (V1 <>[]) ~> K) .
+  eq k(V2 ~> (V1 <>[]) ~> K) = k((V1 <> V2) ~> K) .
+
+  eq k((P1 AND E1) ~> K) = k(P1 ~> ([]AND E1) ~> K) .
+  eq k(V1 ~> ([]AND E1) ~> K) = k((V1 AND E1) ~> K) .
+  eq k((V1 AND P1) ~> K) = k(P1 ~> (V1 AND[]) ~> K) .
+  eq k(V2 ~> (V1 AND[]) ~> K) = k((V1 AND V2) ~> K) .
+
+  eq k((P1 OR E1) ~> K) = k(P1 ~> ([]OR E1) ~> K) .
+  eq k(V1 ~> ([]OR E1) ~> K) = k((V1 OR E1) ~> K) .
+  eq k((V1 OR P1) ~> K) = k(P1 ~> (V1 OR[]) ~> K) .
+  eq k(V2 ~> (V1 OR[]) ~> K) = k((V1 OR V2) ~> K) .
+
+  eq k((NOT P1) ~> K) = k(P1 ~> (NOT[]) ~> K) .
+  eq k(V1 ~> (NOT[]) ~> K) = k(NOT V1 ~> K) .
+
+  eq k(ite(P1, E1, E2) ~> K) = k(P1 ~> @ite(E1, E2) ~> K) .
+  eq k(V1 ~> @ite(E1, E2) ~> K) = k(ite(V1, E1, E2) ~> K) . 
+
+  eq k(truncVal(P1) ~> K) = k(P1 ~> truncVal([]) ~> K) . 
+  eq k(V1 ~> truncVal([]) ~> K) = k(truncVal(V1) ~> K) . 
+
+  eq k(checkBOOL(P1) ~> K) = k(P1 ~> checkBOOL([]) ~> K) . 
+  eq k(V1 ~> checkBOOL([]) ~> K) = k(checkBOOL(V1) ~> K) . 
+
+  eq k(convertBOOL(P1) ~> K) = k(P1 ~> convertBOOL([]) ~> K) . 
+  eq k(V1 ~> convertBOOL([]) ~> K) = k(convertBOOL(V1) ~> K) . 
+
+  eq k(removeTime(P1) ~> K) = k(P1 ~> removeTime([]) ~> K) . 
+  eq k(V1 ~> removeTime([]) ~> K) = k(removeTime(V1) ~> K) . 
+
+  eq k(addTime(P1) ~> K) = k(P1 ~> addTime([]) ~> K) . 
+  eq k(V1 ~> addTime([]) ~> K) = k(addTime(V1) ~> K) . 
+
+  eq k(convertToREAL(P1) ~> K) = k(P1 ~> convertToREAL([]) ~> K) . 
+  eq k(V1 ~> convertToREAL([]) ~> K) = k(convertToREAL(V1) ~> K) . 
+
+
+  var BB : BBranch .
+
+  op IF[]THEN_;_ENDIF : Stmt BBranch -> KLabel [ctor prec 63] .
+  op @_ENDIF : BBranch -> KLabel [ctor prec 61] .
+
+  eq k(IF P1 THEN S1 ; BB ENDIF ~> K) 
+   = k(P1 ~> IF[]THEN S1 ; BB ENDIF ~> K) .
+
+  eq k(V1 ~> IF[]THEN S1 ; BB ENDIF ~> K) 
+   = k(IF V1 THEN S1 ; BB ENDIF ~> K) .
+
+  var CB : CBranch .
+  vars CI CV : Int .
+
+  op CASE[]OF_ELSE_ENDCASE : CBranch Stmt -> KLabel [ctor] .
+
+  eq k(CASE P1 OF CB ELSE S1 ENDCASE ~> K)
+   = k(P1 ~> CASE [] OF CB ELSE S1 ENDCASE ~> K) .
+
+  eq k(V1 ~> CASE [] OF CB ELSE S1 ENDCASE ~> K)
+   = k(CASE V1 OF CB ELSE S1 ENDCASE ~> K) .
+  
+  vars PV1 PV2 : PValue .
+
+  vars F1 I1 ARR FBI : Pid . 
+
+  op FOR_[]TO_BY_DO_ENDFOR : Pid PValue PValue Stmt -> KLabel [ctor] .
+  op FOR_[]TO_DO_ENDFOR : Pid PValue Stmt -> KLabel [ctor] .
+
+  eq k(FOR I1 := P1 TO PV1 BY PV2 DO S1 ENDFOR ~> K)
+   = k(P1 ~> FOR I1 [] TO PV1 BY PV2 DO S1 ENDFOR ~> K) .
+  
+  eq k(V1 ~> FOR I1 [] TO PV1 BY PV2 DO S1 ENDFOR ~> K)
+  = k(FOR I1 := V1 TO PV1 BY PV2 DO S1 ENDFOR ~> K) .
+
+  eq k(FOR I1 := P1 TO PV1 DO S1 ENDFOR)
+   = k(P1 ~> FOR I1[]TO PV1 DO S1 ENDFOR) .
+  
+  eq k(V1 ~> FOR I1[]TO PV1 DO S1 ENDFOR)
+   = k(FOR I1 := V1 TO PV1 DO S1 ENDFOR) .
+
+
+  vars PE1 PE2 : PExp .
+  var FUN : FunId .
+  var Vl : List{PExp} .
+  var El : List{PExp} .
+
+  --- RValue Heating and Cooling
+  eq k(PE1 := P1 ~> K) = k(P1 ~> (PE1 :=[]) ~> K) .
+  eq k(V1 ~> (PE1 :=[]) ~> K) = k(PE1 := V1 ~> K) .
+
+  eq k(P1 . I1 ~> K) = k(P1 ~> []. I1 ~> K) .
+  eq k(V1 ~> []. I1 ~> K) = k(V1 . I1 ~> K) .
+
+  var BITINEDX : PRat .
+
+  eq k(P1 . BITINEDX ~> K) = k(P1 ~> []. BITINEDX ~> K) .
+  eq k(V1 ~> []. BITINEDX ~> K) = k(V1 . BITINEDX ~> K) .
+
+
+  eq k(P1[PE1] ~> K) = k(P1 ~> [][PE1] ~> K) .
+  eq k(V1 ~> [][PE1] ~> K) = k(V1[PE1] ~> K) .
+  eq k(V1[P1] ~> K) = k(P1 ~> V1[[]] ~> K) .
+  eq k(V2 ~> V1[[]] ~> K) = k(V1[V2] ~> K) .
+
+  --- Lvalue Heating and Cooling
+  --- eq k(I1 := V1 ~> K) .
+  eq k(P1 . I1 := V1 ~> K) = k(P1:PProperExp ~> ([[]. I1:Pid]:= V1:SemanticValue) ~> K:K) .
+  eq k(V2 ~> ([[]. I1]:= V1) ~> K) = k(V2 . I1 := V1 ~> K) .
+
+  eq k(P1[PE1] := V1 ~> K) = k(P1 ~> ([[][PE1]]:= V1) ~> K) .
+  eq k(V2 ~> ([[][PE1]]:= V1) ~> K) = k(V2[PE1] := V1 ~> K) .
+
+  eq k(V2[P1] := V1 ~> K) = k(P1 ~> ([V2[[]]]:= V1) ~> K) .
+  eq k(V3 ~> ([V2[[]]]:= V1) ~> K) = k(V2[V3] := V1 ~> K) .
+
+  --- FUN Heating and Cooling
+  eq k(FUN(Vl, P1, El) ~> K) = k(P1 ~> FUN(Vl[]El) ~> K) .
+  eq k(V1 ~> FUN(Vl[]El) ~> K) = k(FUN(Vl, V1, El) ~> K) .
+
+  op ite([],_,_) : SemanticValue SemanticValue -> SemanticValue .
+  eq k(ite(P1, V2, V3) ~> K) = k(P1 ~> ite([], V2, V3) ~> K) .
+  eq k(V1 ~> ite([], V2, V3) ~> K) = k(ite(V1, V2, V3) ~> K) .
+
+
+  ---waittime
+  eq k(WAITTIME(P1) ~> K) = k(P1 ~> WAITTIME([]) ~> K) .
+  eq k(V1 ~> WAITTIME([]) ~> K) = k(WAITTIME(V1) ~> K) .
+endfm

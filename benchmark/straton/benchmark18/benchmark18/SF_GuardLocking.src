@@ -1,0 +1,117 @@
+IF NOT Activate THEN
+        DiagCode := 0;
+    END_IF;
+
+    CASE DiagCode OF
+        0:
+            IF Activate THEN
+                DiagCode := 32769;
+            END_IF;
+        32768:
+            IF NOT S_GuardLock OR NOT S_GuardMonitoring THEN
+                DiagCode := 49156;
+            ELSIF S_SafetyActive THEN
+                DiagCode := 32787;
+            END_IF;
+        32769:
+            IF Reset AND  NOT S_StartReset THEN
+                DiagCode := 49153;
+            ELSIF NOT S_GuardLock OR NOT S_GuardMonitoring THEN
+                DiagCode := 32785;
+            ELSIF (S_StartReset) AND S_GuardMonitoring AND S_GuardLock THEN
+                DiagCode := 32768;
+            END_IF;
+        32771:
+            IF Reset AND NOT S_AutoReset THEN
+                DiagCode := 49155;
+            ELSIF NOT S_GuardMonitoring OR NOT S_GuardLock THEN
+                DiagCode := 32785;
+            ELSIF S_AutoReset THEN
+                DiagCode := 32768;
+            END_IF;
+        32785:
+            IF NOT S_SafetyActive AND (NOT S_GuardMonitoring OR NOT S_GuardLock) THEN
+                DiagCode := 49156;
+            ELSIF (S_SafetyActive AND UnlockRequest) OR NOT S_GuardMonitoring THEN
+                DiagCode := 32786;
+            ELSIF S_GuardMonitoring AND S_GuardLock THEN
+                DiagCode := 32771;
+            END_IF;
+        32786:
+            IF S_GuardMonitoring THEN
+                DiagCode := 32787;
+            ELSIF NOT S_SafetyActive AND NOT S_GuardMonitoring THEN
+                DiagCode := 49156;
+            END_IF;
+        32787:
+            IF NOT S_GuardMonitoring THEN
+                DiagCode := 32786;
+            ELSIF NOT UnlockRequest THEN
+                DiagCode := 32785;
+            END_IF;
+        32788:
+            IF Reset THEN
+                DiagCode := 49154;
+            ELSIF NOT S_SafetyActive THEN
+                DiagCode := 49156;
+            END_IF;
+        49153:
+            IF NOT Reset THEN
+                DiagCode := 32769;
+            END_IF;
+        49154:
+            IF NOT Reset THEN
+                DiagCode := 32788;
+            END_IF;
+        49155:
+            IF NOT Reset THEN
+                DiagCode := 32771;
+            END_IF;
+        49156:
+            IF S_SafetyActive THEN
+                DiagCode := 32788;
+            END_IF;
+    END_CASE;
+
+    CASE DiagCode OF
+        0:
+            Ready := FALSE;
+            S_GuardLocked := FALSE;
+            S_UnlockGuard := FALSE;
+            Error := FALSE;
+        32768:
+            Ready := TRUE;
+            S_GuardLocked := TRUE;
+            S_UnlockGuard := FALSE;
+            Error := FALSE;
+        32769:
+            Ready := TRUE;
+            S_GuardLocked := FALSE;
+            S_UnlockGuard := FALSE;
+            Error := FALSE;
+        32771:
+            Ready := TRUE;
+            S_GuardLocked := FALSE;
+            S_UnlockGuard := FALSE;
+            Error := FALSE;
+        32785:
+            Ready := TRUE;
+            S_GuardLocked := FALSE;
+            S_UnlockGuard := FALSE;
+            Error := FALSE;
+        32788:
+            Ready := TRUE;
+            S_GuardLocked := FALSE;
+            S_UnlockGuard := FALSE;
+            Error := FALSE;
+        32786, 32787:
+            Ready := TRUE;
+            S_GuardLocked := FALSE;
+            S_UnlockGuard := TRUE;
+            Error := FALSE;
+        49153, 49154, 49155, 49156:
+            Ready := TRUE;
+            S_GuardLocked := FALSE;
+            S_UnlockGuard := FALSE;
+            Error := TRUE;
+    END_CASE;
