@@ -1,6 +1,0 @@
-set on_failure_script_quits
-set traces_hiding_prefix ___
-set default_trace_plugin 1
-go
-check_ctlspec -o "/home/jlee/plc/benchmark/plcverif/cmd/benchmark/plcverif/cmd/workspace/benchmark1/output/req1.smv.cex"
-quit
