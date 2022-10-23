@@ -1,26 +1,11 @@
-INPUT:
-Main :: nsIncoming |-> ??
-Main :: ewIncoming |-> ??
-Main :: nspIncoming |-> repeat(FALSE)
-Main :: ewpIncoming |-> repeat(FALSE)
-Main :: yellow1 |-> ??
-
-STEP:
-8
-
-CONDITION:
-GLOBALLY (NOT (Main::bothGreen))
-
-
-jlee@svlab-master:~/plc$ ./stverif.sh apps/trafficLight apps/bbb.req
+jlee@svlab-master:~/plc-release$ ./stbmc.sh apps/trafficLight apps/caseStudy-1.req
 Compiling trafficLight.st ...
 Compile Succeeded
-analyzing trafficLight using bbb
+analyzing trafficLight using caseStudy-1
 Advisory: redefining module BOOLEAN.
 Advisory: redefining module INTEGER.
 Advisory: redefining module REAL.
 Advisory: redefining module REAL-INTEGER.
 test succeeded
-Result will be located in  /home/jlee/plc/apps
-running time :  938.6409697532654 sec
-
+Result will be located in  /home/jlee/plc-release/apps
+running time :  1622.1659774780273 sec
