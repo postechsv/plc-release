@@ -1,2 +1,0 @@
-./plcverifAllCommand.sh &
-./stverifAllCommand.sh &

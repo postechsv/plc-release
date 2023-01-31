@@ -8,7 +8,7 @@ import time
 
 def analyzePLC(maudeFile):
     try:
-        testOut = os.popen("echo 'q' | maude-se-yices2 " + maudeFile).read()
+        testOut = os.popen("echo 'q' | ../maude-se-yices2 " + maudeFile).read()
 
     except:
         print("Maude Error Ocurred")
