@@ -1,0 +1,680 @@
+load full-maude3
+
+fmod SE-SIGN is
+  inc FULL-MAUDE-SIGN .
+
+  sorts @BubbleL@ @BubbleR@ .
+  subsorts @BubbleL@ @BubbleR@ < @Bubble@ .
+
+  op smt-search2_=>1_. : @Bubble@ @Bubble@ -> @Command@ .
+  op smt-search2_=>+_. : @Bubble@ @Bubble@ -> @Command@ .
+  op smt-search2_=>*_. : @Bubble@ @Bubble@ -> @Command@ .
+  op smt-search2_=>!_. : @Bubble@ @Bubble@ -> @Command@ .
+
+  op smt-search2-path_=>1_. : @Bubble@ @Bubble@ -> @Command@ .
+  op smt-search2-path_=>+_. : @Bubble@ @Bubble@ -> @Command@ .
+  op smt-search2-path_=>*_. : @Bubble@ @Bubble@ -> @Command@ .
+  op smt-search2-path_=>!_. : @Bubble@ @Bubble@ -> @Command@ .
+
+  op show`smt-search2`graph : -> @Command@ .
+endfm
+
+fmod SE-META-SIGN is
+  inc META-FULL-MAUDE-SIGN .
+
+  op SE-GRAMMAR : -> FModule [memo] .
+  eq SE-GRAMMAR
+    = addImports((including 'SE-SIGN .), GRAMMAR) .
+
+endfm
+
+
+fmod SE-COMMAND-PROCESSING is
+  pr FM-COMMAND-PROCESSING .
+  pr META-SMT-SEARCH .
+  pr NAT .
+  pr SE-META-SIGN .
+
+  var F : Qid .
+  var ME : ModuleExpression .
+  vars DB : Database .
+  var TL : TermList .
+  var B : Bool .
+  vars T T1 T2 : Term .
+  vars T? T1? T2? : [Term] .
+  vars M M' : Module .
+  var M? : [Module] .
+  var SUB : Substitution .
+  var SmtSub : TermList .
+  var VS : VariableSet .
+  var Ru : Rule .
+  var Tr : Trace2 .
+  var N : Nat .
+  var Cd : Condition .
+  var V : Variable .
+  var C : Constant .
+  var NTL : NeTermList .
+
+  vars T' T'' T''' : Term .
+  vars QI QI' : Qid .
+  vars D D' : Bound .
+  var VDS : VariableSet .
+  var CD : Condition . 
+  var RT : SmtResult2? .
+  var QIL : QidList .
+  var I : Int .
+  
+
+
+  op procSmtSearch : ModuleExpression Module Term Term Qid Bound Bound VariableSet Database -> QidList .
+  op solveBubblesSmtSearchL : Module Term Term Qid Bound Bound Bool VariableSet Database -> QidList .
+  op solveBubblesSmtSearchL1 : Module Term Term Qid Bound Bound Bool VariableSet Database -> QidList .
+  op solveBubblesSmtSearchR : Module Term Term Qid Bound Bound Bool VariableSet Database -> QidList .
+  op solveBubblesSmtSearchR1 : Module Module Term Term Qid Bound Bound Bool VariableSet Database -> QidList .
+  op solveBubblesSmtSearchR2 : Module Term Term Qid Bound Bound VariableSet -> QidList .
+  op procSmtSearch2 : Module Term Term Condition Qid Bound Bound -> QidList .
+  op procSmtSearch3 : Module Term Term Condition Qid Bound Nat Bound -> QidList .
+
+
+  op procSmtSearchPath : ModuleExpression Module Term Term Qid Bound Bound VariableSet Database -> QidList .
+  op solveBubblesSmtSearchPathL : Module Term Term Qid Bound Bound Bool VariableSet Database -> QidList .
+  op solveBubblesSmtSearchPathL1 : Module Term Term Qid Bound Bound Bool VariableSet Database -> QidList .
+  op solveBubblesSmtSearchPathR : Module Term Term Qid Bound Bound Bool VariableSet Database -> QidList .
+  op solveBubblesSmtSearchPathR1 : Module Module Term Term Qid Bound Bound Bool VariableSet Database -> QidList .
+  op solveBubblesSmtSearchPathR2 : Module Term Term Qid Bound Bound VariableSet -> QidList .
+  op procSmtSearchPath2 : Module Term Term Condition Qid Bound Bound -> QidList .
+  op procSmtSearchPath3 : Module Term Term Condition Qid Bound Nat Bound -> QidList .
+
+
+  op gTSubstitution : SmtResult2 -> Substitution .
+  eq gTSubstitution ({T, SUB, T1, T2, TL}) = SUB . 
+
+  op gTSubstitution : Trace2 -> Substitution .
+  eq gTSubstitution ((nil).Trace2) = (none).Substitution .
+
+
+  op eMetaPrettyPrintSub : Module Substitution -> QidList .
+  eq eMetaPrettyPrintSub (M, (none).Substitution) = (nil).QidList .
+  eq eMetaPrettyPrintSub (M, (V <- T) ; SUB) = 
+    '\t eMetaPrettyPrint(M, T) '--> V '\s 
+    if SUB == none then nil
+    else '; '\n eMetaPrettyPrintSub(M, SUB)
+    fi .
+  
+  op eMetaPrettyPrintSub : Module TermList -> QidList .
+  eq eMetaPrettyPrintSub (M, '_`,_[TL]) = eMetaPrettyPrintSub(M, TL) .
+  
+  eq eMetaPrettyPrintSub (M, ('_|->_[T, T'], TL)) = ('\n '\t eMetaPrettyPrint(M, T') '\s '|--> '\s eMetaPrettyPrint(M, T)) eMetaPrettyPrintSub(M, TL) .
+  eq eMetaPrettyPrintSub (M, (empty).TermList) = (nil).QidList .
+
+  op eMetaPrettyPrintSub2 : Module TermList -> QidList .
+  eq eMetaPrettyPrintSub2 (M, '_`,_[TL]) = eMetaPrettyPrintSub2(M, TL) .
+  
+  eq eMetaPrettyPrintSub2 (M, ('_|->_[T, T'], TL)) = ('\n '\t eMetaPrettyPrint(M, T) '\s '|--> '\s eMetaPrettyPrint(M, T')) eMetaPrettyPrintSub2(M, TL) .
+  eq eMetaPrettyPrintSub2 (M, (empty).TermList) = (nil).QidList .
+
+  op eMetaPrettyPrint : Module SmtResult2 -> QidList .
+  ceq eMetaPrettyPrint (M, {T, SUB, T1, T2, TL}) = 
+    ('\n 'symbolic 'state: '\n '\t eMetaPrettyPrint(M', T) 
+     '\n 'constraint: '\n '\t eMetaPrettyPrint(M', T1)
+     '\n 'substitution: '\n eMetaPrettyPrintSub(M', SUB)
+     '\n 'concrete 'state: '\n '\t eMetaPrettyPrint(M', T2)
+     '\n 'assignment: eMetaPrettyPrintSub2(M, TL))
+  if M' := addImports((protecting 'SMT-CHECK .), M) .
+
+
+
+  op procSeSearchCmd : Term Nat ModuleExpression Database -> Tuple{Database, QidList} .
+  op procSeSearchCmd2 : Term ModuleExpression Database -> Tuple{Database, QidList} .
+  op procSeSearchCmd2 : Term ModuleExpression Module VariableSet Database -> QidList .
+
+  op getModule : ModuleExpression Database -> [Module] .
+  eq getModule(ME, DB) 
+    = if getTopModule(ME, DB) :: SModule 
+      then getTopModule(ME, DB)
+      else if getTopModule(ME, DB) :: OModule 
+           then omod2mod(getTopModule(ME, DB), DB)
+           else getTopModule(ME, DB) fi
+      fi .
+
+
+  eq procSeSearchCmd2(T, ME, DB)
+   = if compiledModule(ME, DB)
+     then << DB ; procSeSearchCmd2(T, ME, getModule(ME, DB), getVars(ME, DB), DB) >>
+     else << database(evalModExp(ME, DB)) ;
+             procSeSearchCmd2(T, modExp(evalModExp(ME, DB)),
+               getModule(modExp(evalModExp(ME, DB)), database(evalModExp(ME, DB))),
+               getVars(modExp(evalModExp(ME, DB)), database(evalModExp(ME, DB))),
+               database(evalModExp(ME, DB))) >>
+     fi . 
+
+  eq procSeSearchCmd2('smt-search2_=>1_.[T, T'], ME, M, VS, DB)
+    = procSmtSearch(ME, M, T, T', '1, unbounded, 1, VS, DB) [print "=>1"] .
+  eq procSeSearchCmd2('smt-search2_=>*_.[T, T'], ME, M, VS, DB)
+    = procSmtSearch(ME, M, T, T', '*, unbounded, unbounded, VS, DB) [print "=>*"] .
+  eq procSeSearchCmd2('smt-search2_=>+_.[T, T'], ME, M, VS, DB)
+    = procSmtSearch(ME, M, T, T', '+, unbounded, unbounded, VS, DB) [print "=>+"] .
+  eq procSeSearchCmd2('smt-search2_=>!_.[T, T'], ME, M, VS, DB)
+    = procSmtSearch(ME, M, T, T', '!, unbounded, unbounded, VS, DB) [print "=>!"] .
+
+
+
+  eq procSeSearchCmd2('smt-search2-path_=>1_.[T, T'], ME, M, VS, DB)
+    = procSmtSearchPath(ME, M, T, T', '1, unbounded, 1, VS, DB) .
+  eq procSeSearchCmd2('smt-search2-path_=>*_.[T, T'], ME, M, VS, DB)
+    = procSmtSearchPath(ME, M, T, T', '*, unbounded, unbounded, VS, DB) .
+  eq procSeSearchCmd2('smt-search2-path_=>+_.[T, T'], ME, M, VS, DB)
+    = procSmtSearchPath(ME, M, T, T', '+, unbounded, unbounded, VS, DB) .
+  eq procSeSearchCmd2('smt-search2-path_=>!_.[T, T'], ME, M, VS, DB)
+    = procSmtSearchPath(ME, M, T, T', '!, unbounded, unbounded, VS, DB) .
+
+
+
+
+-------------------------------------------------------------------
+------------------------ Smt search command -----------------------
+-------------------------------------------------------------------
+
+
+
+  ceq procSmtSearch(ME, M, T, T', QI, D, D', VDS, DB) = solveBubblesSmtSearchL(M, T, T', QI, D, D', B, VDS, DB)
+  if B := included('META-MODULE, getImports(getTopModule(ME, DB)), DB) [print "Given module \n" M "\n\n"] .
+
+  eq solveBubblesSmtSearchL(M, 'ububble[T'], T, QI', D, D', B, VDS, DB)
+    = solveBubblesSmtSearchL(M, 'bubble[T'], T, QI', D, D', B, VDS, DB) .
+  eq solveBubblesSmtSearchL(M, 'bubble[QI], T, QI', D, D', B, VDS, DB)
+    = if solveBubbles('bubble[QI], M, B, VDS, DB) :: Term
+      then solveBubblesSmtSearchR(M, solveBubbles('bubble[QI], M, B, VDS, DB), T, QI', D, D', B, VDS, DB)
+      else ('\r 'Error: '\o 'no 'parsing 'for downQidList(QI) '\n)
+      fi .
+  eq solveBubblesSmtSearchL(M, 'bubble['__[TL]], T, QI, D, D', B, VDS, DB)
+    = if solveBubbles('bubble['__[TL]], M, B, VDS, DB) :: Term
+      then solveBubblesSmtSearchR(M, solveBubbles('bubble['__[TL]], M, B, VDS, DB), T, QI, D, D', B, VDS, DB)
+      else if metaParse(GRAMMAR-SEARCH, downQidList('__[TL, ''..Qid]), '@SearchNuPart@) :: ResultPair
+           then solveBubblesSmtSearchL1(
+                  M,
+                  getTerm(metaParse(GRAMMAR-SEARCH, downQidList('__[TL, ''..Qid]), '@SearchNuPart@)),
+                  T, QI, D, D', B, VDS, DB)
+           else solveBubblesSmtSearchR(
+                  getModule(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  getTerm(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  T,
+                  QI,
+                  getBound(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  D',
+                  getBool(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  getVars(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  getDatabase(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)))
+           fi
+      fi .
+
+
+  eq solveBubblesSmtSearchL1(M, '`[`,_`]_.['token[T], T'], T'', QI, D, D', B, VDS, DB)
+    = if downNat(downMetaNat(T)) :: Nat
+         and-then solveBubblesRed(T', M, B, VDS, DB) :: Tuple{Term,Module,Bool,VariableSet,Database}
+      then solveBubblesSmtSearchR(
+             getModule(solveBubblesRed(T', M, B, VDS, DB)),
+             getTerm(solveBubblesRed(T', M, B, VDS, DB)),
+             T'', QI, D,
+             downNat(downMetaNat(T)),
+             B,
+             getVars(solveBubblesRed(T', M, B, VDS, DB)),
+             DB)
+      else ('\r 'Error: '\o 'Incorrect 'command. '\n)
+      fi .
+  eq solveBubblesSmtSearchL1(M, '`[_`,_`]_.['token[T], 'token[T'], T''], T''', QI, D, D', B, VDS, DB)
+    = if downNat(downMetaNat(T)) :: Nat
+         and-then downNat(downMetaNat(T')) :: Nat
+         and-then solveBubblesRed(T'', M, B, VDS, DB) :: Tuple{Term,Module,Bool,VariableSet,Database}
+      then solveBubblesSmtSearchR(
+             getModule(solveBubblesRed(T'', M, B, VDS, DB)),
+             getTerm(solveBubblesRed(T'', M, B, VDS, DB)),
+             T''', QI,
+             downNat(downMetaNat(T)),
+             downNat(downMetaNat(T')),
+             B,
+             getVars(solveBubblesRed(T'', M, B, VDS, DB)),
+             DB)
+      else ('\r 'Error: '\o 'Incorrect 'command. '\n)
+      fi .
+
+  eq solveBubblesSmtSearchR(M, T, T', QI, D, D', B, VDS, DB)
+    = solveBubblesSmtSearchR1(
+        M,
+        addOps(
+          op '_s.t._. : leastSort(M, T) '@Condition@ -> 'PatternCondition [none] .
+          op '_such`that_. : leastSort(M, T) '@Condition@ -> 'PatternCondition [none] .,
+          addSorts('PatternCondition,
+            addInfoConds(M))),
+        T, T', QI, D, D', B, VDS, DB) [print ""] .
+  eq solveBubblesSmtSearchR(M:[Module], T:[Term], T':[Term], QI:[Qid], D:[Bound], D':[Bound], B:[Bool], VDS:[VariableSet], DB:[Database])
+    = ('\r 'Error: '\o 'Incorrect 'use 'of 'the 'smt-search2 'command. '\n) .
+
+  eq solveBubblesSmtSearchR1(M, M', T, 'ububble[T'], QI', D, D', B, VDS, DB)
+    = solveBubblesSmtSearchR1(M, M', T, 'bubble[T'], QI', D, D', B, VDS, DB) .
+  ceq solveBubblesSmtSearchR1(M, M', T, 'bubble[QI], QI', D, D', B, VDS, DB)
+    = if T?:[Term] :: Term
+      then procSmtSearch2(M, T, T?:[Term], nil, QI', D, D')
+      else ('\r 'Error: '\o 'Incorrect 'use 'of 'the 'smt-search2 'command. '\n)
+      fi
+    if T?:[Term] := solveBubbles('bubble[QI], M, B, VDS, DB) .
+  ceq solveBubblesSmtSearchR1(M, M', T, 'bubble['__[TL]], QI, D, D', B, VDS, DB)
+    = if T?:[Term] :: Term
+      then procSmtSearch2(M, T, T?:[Term], nil, QI, D, D')
+      else if metaParse(M', VDS, downQidList('__[TL, ''..Qid]), 'PatternCondition) :: ResultPair
+           then solveBubblesSmtSearchR2(M, T,
+                  getTerm(
+                    metaParse(M', VDS, downQidList('__[TL, ''..Qid]), 'PatternCondition)),
+                  QI, D, D', VDS)
+           else '\r 'Error: '\o 'Incorrect 'use 'of 'the 'smt-search2 'command. '\n
+           fi
+      fi
+    if T?:[Term] := solveBubbles('bubble['__[TL]], M, B, VDS, DB) .
+
+  eq solveBubblesSmtSearchR2(M, T, QI, QI', D, D', VDS)
+    = procSmtSearch2(M, T, QI, nil, QI', D, D') .
+  eq solveBubblesSmtSearchR2(M, T, F[T], QI, D, D', VDS)
+    = procSmtSearch2(M, T, F[T], nil, QI, D, D') .
+  eq solveBubblesSmtSearchR2(M, T, F[T', T''], QI, D, D', VDS)
+    = if F == '_s.t._. or F == '_such`that_.
+      then procSmtSearch2(M, T, T', parseCond(T''), QI, D, D')
+      else procSmtSearch2(M, T, F[T', T''], nil, QI, D, D')
+      fi .
+  eq solveBubblesSmtSearchR2(M, T, F[T', T'', TL], QI, D, D', VDS)
+    = procSmtSearch2(M, T, F[T', T'', TL], nil, QI, D, D') .
+
+
+
+  ceq procSmtSearch2(M, T, T', CD, QI, D, D')
+    = if RT :: SmtResult2
+      then ('smt-search2
+            if D == unbounded and D' == unbounded
+            then nil
+            else '\s '`[
+                 if D == unbounded
+                 then nil
+                 else qid(string(D, 10))
+                 fi
+                 if D' == unbounded
+                 then nil
+                 else '`, qid(string(D', 10))
+                 fi
+                 '`] '\s
+            fi
+            'in eMetaPrettyPrint(getHeader(M)) ':
+            eMetaPrettyPrint(M, T) '\s qid("=>" + string(QI)) '\s
+            eMetaPrettyPrint(M, T'') '. '\n '\n
+            'Solution '1 '\n
+            if gTSubstitution(RT) == none
+            then 'empty 'substitution '\n '\n
+            else eMetaPrettyPrint(M, RT) '\n '\n
+            fi
+            procSmtSearch3(M, T, T'', CD, QI, D, 1, D'))
+      else if RT == failure
+           then ('smt-search2
+           if D == unbounded and D' == unbounded
+            then nil
+            else '\s '`[
+                 if D == unbounded
+                 then nil
+                 else qid(string(D, 10))
+                 fi
+                 if D' == unbounded
+                 then nil
+                 else '`, qid(string(D', 10))
+                 fi
+                 '`] '\s
+            fi
+            'in eMetaPrettyPrint(getHeader(M)) ':
+                 eMetaPrettyPrint(M, T)
+                 '\s qid("=>" + string(QI)) '\s
+                 eMetaPrettyPrint(M, T'') '. '\n '\n
+                'No 'solution. '\n)
+           else '\r 'Error: '\o 'Incorrect 'use 'of 'the 'smt-search2 'command. '\n
+           fi
+      fi
+    if T'' := prepSearchPattern(T')
+    /\ RT := metaSmtSearch2(M, T, T'', CD, QI, D', 0) .
+
+  ceq procSmtSearch3(M, T, T', CD, QI, D, I, D')
+    = if D == unbounded or-else (D == 0 or-else I < D)
+      then if RT :: SmtResult2
+           then ('Solution qid(string(I + 1, 10)) '\n
+                 if gTSubstitution(RT) == none
+                 then 'empty 'substitution '\n '\n
+                 else eMetaPrettyPrint(M, RT) '\n '\n 
+                 fi
+                 procSmtSearch3(M, T, T', CD, QI, D, I + 1, D'))
+           else ('No 'more 'solutions. '\n)
+           fi
+      else nil
+      fi   
+  if RT := metaSmtSearch2(M, T, T', CD, QI, D', I) . 
+
+
+
+------------------------------------------------------------------------
+------------------------ Smt search-path command -----------------------
+------------------------------------------------------------------------
+
+  ceq procSmtSearchPath(ME, M, T, T', QI, D, D', VDS, DB) = solveBubblesSmtSearchPathL(M, T, T', QI, D, D', B, VDS, DB)
+  if B := included('META-MODULE, getImports(getTopModule(ME, DB)), DB) .
+
+  eq solveBubblesSmtSearchPathL(M, 'ububble[T'], T, QI', D, D', B, VDS, DB)
+    = solveBubblesSmtSearchPathL(M, 'bubble[T'], T, QI', D, D', B, VDS, DB) .
+  eq solveBubblesSmtSearchPathL(M, 'bubble[QI], T, QI', D, D', B, VDS, DB)
+    = if solveBubbles('bubble[QI], M, B, VDS, DB) :: Term
+      then solveBubblesSmtSearchPathR(M, solveBubbles('bubble[QI], M, B, VDS, DB), T, QI', D, D', B, VDS, DB)
+      else ('\r 'Error: '\o 'no 'parsing 'for downQidList(QI) '\n)
+      fi .
+  eq solveBubblesSmtSearchPathL(M, 'bubble['__[TL]], T, QI, D, D', B, VDS, DB)
+    = if solveBubbles('bubble['__[TL]], M, B, VDS, DB) :: Term
+      then solveBubblesSmtSearchR(M, solveBubbles('bubble['__[TL]], M, B, VDS, DB), T, QI, D, D', B, VDS, DB)
+      else if metaParse(GRAMMAR-SEARCH, downQidList('__[TL, ''..Qid]), '@SearchNuPart@) :: ResultPair
+           then solveBubblesSmtSearchPathL1(
+                  M,
+                  getTerm(metaParse(GRAMMAR-SEARCH, downQidList('__[TL, ''..Qid]), '@SearchNuPart@)),
+                  T, QI, D, D', B, VDS, DB)
+           else solveBubblesSmtSearchPathR(
+                  getModule(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  getTerm(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  T,
+                  QI,
+                  getBound(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  D',
+                  getBool(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  getVars(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)),
+                  getDatabase(solveBubblesRew('bubble['__[TL]], M, B, D, VDS, DB)))
+           fi
+      fi .
+
+
+  eq solveBubblesSmtSearchPathL1(M, '`[`,_`]_.['token[T], T'], T'', QI, D, D', B, VDS, DB)
+    = if downNat(downMetaNat(T)) :: Nat
+         and-then solveBubblesRed(T', M, B, VDS, DB) :: Tuple{Term,Module,Bool,VariableSet,Database}
+      then solveBubblesSmtSearchPathR(
+             getModule(solveBubblesRed(T', M, B, VDS, DB)),
+             getTerm(solveBubblesRed(T', M, B, VDS, DB)),
+             T'', QI, D,
+             downNat(downMetaNat(T)),
+             B,
+             getVars(solveBubblesRed(T', M, B, VDS, DB)),
+             DB)
+      else ('\r 'Error: '\o 'Incorrect 'command. '\n)
+      fi .
+  eq solveBubblesSmtSearchPathL1(M, '`[_`,_`]_.['token[T], 'token[T'], T''], T''', QI, D, D', B, VDS, DB)
+    = if downNat(downMetaNat(T)) :: Nat
+         and-then downNat(downMetaNat(T')) :: Nat
+         and-then solveBubblesRed(T'', M, B, VDS, DB) :: Tuple{Term,Module,Bool,VariableSet,Database}
+      then solveBubblesSmtSearchPathR(
+             getModule(solveBubblesRed(T'', M, B, VDS, DB)),
+             getTerm(solveBubblesRed(T'', M, B, VDS, DB)),
+             T''', QI,
+             downNat(downMetaNat(T)),
+             downNat(downMetaNat(T')),
+             B,
+             getVars(solveBubblesRed(T'', M, B, VDS, DB)),
+             DB)
+      else ('\r 'Error: '\o 'Incorrect 'command. '\n)
+      fi .
+
+  eq solveBubblesSmtSearchPathR(M, T, T', QI, D, D', B, VDS, DB)
+    = solveBubblesSmtSearchPathR1(
+        M,
+        addOps(
+          op '_s.t._. : leastSort(M, T) '@Condition@ -> 'PatternCondition [none] .
+          op '_such`that_. : leastSort(M, T) '@Condition@ -> 'PatternCondition [none] .,
+          addSorts('PatternCondition,
+            addInfoConds(M))),
+        T, T', QI, D, D', B, VDS, DB) .
+  eq solveBubblesSmtSearchPathR(M:[Module], T:[Term], T':[Term], QI:[Qid], D:[Bound], D':[Bound], B:[Bool], VDS:[VariableSet], DB:[Database])
+    = ('\r 'Error: '\o 'Incorrect 'use 'of 'the 'search 'command. '\n) .
+
+  eq solveBubblesSmtSearchPathR1(M, M', T, 'ububble[T'], QI', D, D', B, VDS, DB)
+    = solveBubblesSmtSearchPathR1(M, M', T, 'bubble[T'], QI', D, D', B, VDS, DB) .
+  ceq solveBubblesSmtSearchPathR1(M, M', T, 'bubble[QI], QI', D, D', B, VDS, DB)
+    = if T?:[Term] :: Term
+      then procSmtSearch2(M, T, T?:[Term], nil, QI', D, D')
+      else ('\r 'Error: '\o 'Incorrect 'use 'of 'the 'search 'command. '\n)
+      fi
+    if T?:[Term] := solveBubbles('bubble[QI], M, B, VDS, DB) .
+  ceq solveBubblesSmtSearchPathR1(M, M', T, 'bubble['__[TL]], QI, D, D', B, VDS, DB)
+    = if T?:[Term] :: Term
+      then procSmtSearchPath2(M, T, T?:[Term], nil, QI, D, D')
+      else if metaParse(M', VDS, downQidList('__[TL, ''..Qid]), 'PatternCondition) :: ResultPair
+           then solveBubblesSmtSearchPathR2(M, T,
+                  getTerm(
+                    metaParse(M', VDS, downQidList('__[TL, ''..Qid]), 'PatternCondition)),
+                  QI, D, D', VDS)
+           else '\r 'Error: '\o 'Incorrect 'use 'of 'the 'search 'command. '\n
+           fi
+      fi
+    if T?:[Term] := solveBubbles('bubble['__[TL]], M, B, VDS, DB) .
+
+  eq solveBubblesSmtSearchPathR2(M, T, QI, QI', D, D', VDS)
+    = procSmtSearchPath2(M, T, QI, nil, QI', D, D') .
+  eq solveBubblesSmtSearchPathR2(M, T, F[T], QI, D, D', VDS)
+    = procSmtSearchPath2(M, T, F[T], nil, QI, D, D') .
+  eq solveBubblesSmtSearchPathR2(M, T, F[T', T''], QI, D, D', VDS)
+    = if F == '_s.t._. or F == '_such`that_.
+      then procSmtSearchPath2(M, T, T', parseCond(T''), QI, D, D')
+      else procSmtSearchPath2(M, T, F[T', T''], nil, QI, D, D')
+      fi .
+  eq solveBubblesSmtSearchPathR2(M, T, F[T', T'', TL], QI, D, D', VDS)
+    = procSmtSearchPath2(M, T, F[T', T'', TL], nil, QI, D, D') .
+
+
+
+  ceq procSmtSearchPath2(M, T, T', CD, QI, D, D')
+    = if Tr :: Trace2
+      then ('search
+            if D == unbounded and D' == unbounded
+            then nil
+            else '\s '`[
+                 if D == unbounded
+                 then nil
+                 else qid(string(D, 10))
+                 fi
+                 if D' == unbounded
+                 then nil
+                 else '`, qid(string(D', 10))
+                 fi
+                 '`] '\s
+            fi
+            'in eMetaPrettyPrint(getHeader(M)) ':
+            eMetaPrettyPrint(M, T) '\s qid("=>" + string(QI)) '\s
+            eMetaPrettyPrint(M, T'') '. '\n '\n
+            'Solution '1 '\n
+            if gTSubstitution(Tr) == none
+            then 'empty 'substitution '\n '\n
+            else 'sang '\n '\n
+	    ---else eMetaPrettyPrint(Tr) '\n '\n
+            fi)
+            ---procSmtSearchPath3(M, T, T'', CD, QI, D, 1, D'))
+      else if Tr == failure
+           then ('search
+           if D == unbounded and D' == unbounded
+            then nil
+            else '\s '`[
+                 if D == unbounded
+                 then nil
+                 else qid(string(D, 10))
+                 fi
+                 if D' == unbounded
+                 then nil
+                 else '`, qid(string(D', 10))
+                 fi
+                 '`] '\s
+            fi
+            'in eMetaPrettyPrint(getHeader(M)) ':
+                 eMetaPrettyPrint(M, T)
+                 '\s qid("=>" + string(QI)) '\s
+                 eMetaPrettyPrint(M, T'') '. '\n '\n
+                'No 'solution. '\n)
+           else '\r 'Error: '\o 'Incorrect 'use 'of 'the 'search 'command. '\n
+           fi
+      fi
+    if T'' := prepSearchPattern(T')
+    /\ Tr := metaSmtSearch2Path(M, T, T'', CD, QI, D', 0) .
+
+  ceq procSmtSearchPath3(M, T, T', CD, QI, D, I, D')
+    = if D == unbounded or-else (D == 0 or-else I < D)
+      then if RT :: SmtResult2
+           then ('Solution qid(string(I + 1, 10)) '\n
+                 if gTSubstitution(RT) == none
+                 then 'empty 'substitution '\n '\n
+                 else eMetaPrettyPrint(M, RT) '\n '\n 
+                 fi
+                 procSmtSearchPath3(M, T, T', CD, QI, D, I + 1, D'))
+           else ('No 'more 'solutions. '\n)
+           fi
+      else nil
+      fi   
+  if RT := metaSmtSearch2(M, T, T', CD, QI, D', I) . 
+
+
+endfm
+
+mod SE-DATABASE-HANDLING is
+  inc FM-DATABASE-HANDLING .
+  pr SE-COMMAND-PROCESSING .
+  pr SE-META-SIGN .
+
+  sorts SearchData SmtSearchDatabaseClass .
+  subsort SmtSearchDatabaseClass < DatabaseClass .
+  op SmtSearch : -> SmtSearchDatabaseClass [ctor] .
+  op searchData :_ : SearchData -> Attribute [ctor] . 
+
+  subsorts SmtResult2? < SearchData .
+  op initSearchData : -> SearchData .
+
+  var O : Oid .
+  var X@SmtSearch : SmtSearchDatabaseClass .
+  var X@DatabaseClass : DatabaseClass .
+  vars DB DB' : Database .
+  vars T T1 T2 : Term .
+  vars QIL QIL' : QidList .
+  var ME : ModuleExpression .
+  var Atts : AttributeSet .
+  var F : Qid .
+  var TL : TermList .
+  var T' : Term . 
+
+
+
+
+
+
+
+
+*** It consumes an input attribute. 
+  crl [SMT-SEARCH2] :
+    < O : X@DatabaseClass | db : DB, input : (F[T, T']), output : QIL, default : ME, Atts >
+    => < O : X@DatabaseClass | 
+	  db : getDatabase(procSeSearchCmd2(F[T, T'], ME, DB)),
+	  input : nilTermList,
+    	  output : getQidList(procSeSearchCmd2(F[T, T'], ME, DB)), 
+	  default : ME, Atts > 
+    if (F == 'smt-search2_=>*_.) or-else
+       ((F == 'smt-search_=>1_.) or-else
+       ((F == 'smt-search_=>+_.) or-else
+       ((F == 'smt-search_=>!_.) or-else
+       ((F == 'smt-search2-path_=>*_.) or-else
+       ((F == 'smt-search2-path_=>1_.) or-else
+       ((F == 'smt-search2-path_=>+_.) or-else
+       ((F == 'smt-search2-path_=>!_.)))))))) [print "parsing\n"] .
+
+  rl [show-smt-search2-graph] :      
+    < O : X@DatabaseClass | db : DB, input : ('show`smt-search2`graph`..@Command@), output : nil, default : ME, Atts >      
+    => < O : X@DatabaseClass | 
+    	  db : DB, input : nilTermList,            
+	  output : ('opopop), default : ME, Atts > .
+endm
+
+fmod SE-BANNER is
+  pr STRING .
+  
+  op se-banner : -> String . 
+  eq se-banner
+   = "Symbolic reachability analysis command available (March 9th, 2020)" . 
+
+endfm
+
+mod SE-FULL-MAUDE is
+---pr META-FULL-MAUDE-SIGN .
+  pr SE-META-SIGN .
+  pr SE-DATABASE-HANDLING .
+  inc LOOP-MODE .
+  pr SE-BANNER .
+
+  subsort Object < State .
+
+  op o : -> Oid .
+  op init : -> System .
+
+  var X@DatabaseClass : DatabaseClass .
+  var X@SmtSearch : SmtSearchDatabaseClass .
+  var DB : Database .
+  var QI : Qid .
+  vars QIL QIL' QIL'' : QidList .
+  var ME : Header .
+  var Atts : AttributeSet .
+  var O : Oid .
+  var TL : TermList .
+  var T : Term .
+  var TY : Type .
+
+  rl [init] :
+    init
+    => [nil,
+        < o : Database |
+         db : initialDatabase,
+      input : nilTermList, output : nil,
+    default : 'CONVERSION >,
+         ('\n '\s '\s '\s '\s '\s '\s '\s string2qidList(se-banner) '\n)] .
+
+
+  rl [in] :
+    [QI QIL,
+     < O : X@DatabaseClass |
+         db : DB, input : nilTermList, output : nil, default : ME, Atts >,
+     QIL']
+    => if metaParse(SE-GRAMMAR, QI QIL, '@Input@) :: ResultPair
+       then [nil,
+             < O : X@DatabaseClass | db : DB,
+                 input : getTerm(metaParse(SE-GRAMMAR, QI QIL, '@Input@)),
+                 output : nil, default : ME, Atts >,
+              QIL']
+       else [nil,
+             < O : X@DatabaseClass | db : DB, input : nilTermList,
+                 output : ('\r 'Warning:
+                           printSyntaxError(metaParse(SE-GRAMMAR, QI QIL, '@Input@),
+                             QI QIL)
+                           '\n
+                           '\r 'Error: '\o 'No 'parse 'for 'input. '\n),
+                 default : ME, Atts >,
+             QIL']
+       fi .
+
+
+  rl [out] :
+    [QIL,
+     < O : X@DatabaseClass |
+         db : DB, input : TL, output : (QI QIL'), default : ME, Atts >,
+     QIL'']
+    => [QIL,
+        < O : X@DatabaseClass |
+            db : DB, input : TL, output : nil, default : ME, Atts >,
+        (QI QIL' QIL'')] .
+
+endm
+
+
+set trace off .
+set break off .
+set profile off .
+
+--- set show advisories on .
+
+loop init .
+ 

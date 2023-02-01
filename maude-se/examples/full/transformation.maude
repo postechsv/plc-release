@@ -1,0 +1,486 @@
+load abst
+
+fmod VAR-SET is
+  pr META-LEVEL .
+
+  sort VarSet .
+  subsort Variable < VarSet .
+  
+  var F : Qid .
+  var C : Constant .
+  vars V : Variable .
+  vars T T' : Term .
+  vars Cd Cd' : EqCondition .
+  var TL : TermList .
+  var NTL : NeTermList .
+  vars VS VS' : VarSet .
+
+  op emptyVarSet : -> VarSet [ctor] .
+  op _;;;_ : VarSet VarSet -> VarSet [ctor comm assoc id: emptyVarSet] .
+  eq V ;;; V = V .
+
+  op _\\\_ : VarSet VarSet -> VarSet [ctor] .
+  eq emptyVarSet \\\ VS = emptyVarSet .
+  eq VS \\\ emptyVarSet = VS .
+  eq (V ;;; VS) \\\ (V ;;; VS') = VS \\\ VS' .
+  eq VS \\\ VS' = VS [owise] .
+ 
+  op _in_ : Variable VarSet ~> Bool .
+  eq V in (V ;;; VS) = true .
+  eq V in VS = false [owise] .
+
+  op varset : TermList -> VarSet .
+  eq varset(V) = V .
+  eq varset(C) = emptyVarSet .
+  eq varset(F[TL]) = varset(TL) .
+  eq varset(empty) = emptyVarSet .
+  eq varset((T, NTL)) = varset(T) ;;; varset(NTL) .
+
+  op varset : EqCondition -> VarSet .
+  eq varset(T = T') = varset(T) ;;; varset(T') .
+  eq varset((nil).EqCondition) = emptyVarSet .
+  ceq varset(Cd /\ Cd') = varset(Cd) ;;; varset(Cd') if Cd =/= nil /\ Cd' =/= nil .
+  eq varset(Cd) = emptyVarSet [owise] .
+
+endfm
+
+fmod TERM-TRANSFORMATION is
+  pr VAR-SET .
+  pr CONVERSION .
+
+  vars T T' Vg : Term .
+  var C : Constant .
+  vars TY TY' : Type .
+  var TYL : TypeList .
+  var V : Variable .
+  var F : Qid .
+  vars TL TL' : TermList .
+  var VS : VarSet .
+  var NTL : NeTermList .
+  var SUB : Substitution .
+  vars Cd Cd' : EqCondition .
+  vars Nt Nt' Nt'' : Term .
+  var ODS : OpDeclSet .
+  var Attr : AttrSet .
+ 
+  sort TermCond .
+*** Term must be a meta term of Nat.
+  op {_,_,_} : TermList EqCondition Term -> TermCond [ctor] .
+
+*** normal type to Expr type.
+  op extendType : TermList -> TermList .
+  ceq extendType(V) = qid(string(getName(V)) + ":" + string(TY) + "Expr") 
+  if TY := getType(V) 
+  /\ TY in ('Boolean ; 'Integer ; 'Real) .
+  eq extendType(V) = V [owise] .  
+  eq extendType(C) = C .
+  eq extendType(F[TL]) = F[extendType(TL)] .
+  eq extendType((T, NTL)) = (extendType(T), extendType(NTL)) .
+  eq extendType(empty) = empty .
+
+  op extendType : TypeList -> TypeList .
+  eq extendType (nil) = nil .
+  ceq extendType (TY TYL) = qid(string(TY) + "Expr") extendType(TYL)
+  if TY in ('Boolean ; 'Integer ; 'Real) . 
+  eq extendType(TY TYL) = TY extendType(TYL) [owise] .
+  
+  op extendType : OpDeclSet -> OpDeclSet .
+  eq extendType ((none).OpDeclSet) = (none).OpDeclSet .
+  eq extendType(op F : TYL -> TY [Attr] . ODS) = (op F : extendType(TYL) -> extendType(TY) [Attr] . extendType(ODS)) . 
+    
+  op varGen : Type Term -> Term .
+  eq varGen ('Boolean, Nt) = 'b[Nt] .
+  eq varGen ('Integer, Nt) = 'i[Nt] .
+  eq varGen ('Real, Nt) = 'r[Nt] .
+  
+  eq varGen ('BooleanExpr, Nt) = 'b[Nt] .
+  eq varGen ('IntegerExpr, Nt) = 'i[Nt] .
+  eq varGen ('RealExpr, Nt) = 'r[Nt] .
+
+
+
+*** The second argument of type Term must be a Nat term.
+  op toSmtGnd : TermList Term -> TermCond .
+  ceq toSmtGnd (V, Nt) = {Vg, extendType(V) := Vg, 's_[Nt]}
+  if Vg := varGen(getType(V), Nt) .
+  eq toSmtGnd (C, Nt) = {C, nil, Nt} .
+  ceq toSmtGnd (F[TL], Nt) = {F[TL'], Cd, Nt'}
+  if {TL', Cd, Nt'} := toSmtGnd(TL, Nt) .
+  eq toSmtGnd (empty, Nt) = {empty, nil, Nt} .  
+  ceq toSmtGnd((T, NTL), Nt) = {(TL, TL'), Cd /\ Cd', Nt''}
+  if {TL, Cd, Nt'} := toSmtGnd(T, Nt)
+  /\ {TL', Cd', Nt''} := toSmtGnd(NTL, Nt') .
+
+  op toSmtGnd : VarSet Term -> TermCond .
+  eq toSmtGnd (emptyVarSet, Nt) = {empty, nil, Nt } .
+  ceq toSmtGnd ((V ;;; VS), Nt) = {empty, Cd /\ Cd' , Nt'' }
+  if {TL, Cd, Nt'} := toSmtGnd (V, Nt)
+  /\ {TL', Cd', Nt''} := toSmtGnd (VS, Nt') .
+
+
+*** assume that each term is smt condition.
+*** and the only sort is (built-in)sort.
+  op toSmtCond : EqCondition -> TermList .
+  eq toSmtCond(nil) = 'true.Boolean .
+  eq toSmtCond(T = T') = '_===_[extendType(T), extendType(T')] .
+  eq toSmtCond(Cd /\ Cd') = '_and_[toSmtCond(Cd), toSmtCond(Cd')] .
+
+  op renaming : TermList -> TermList .
+  eq renaming ('b[T]) = qid("##V##" + string(downTerm(T, (0).Nat), 10) + ":Boolean") .
+  eq renaming ('i[T]) = qid("##V##" + string(downTerm(T, (0).Nat), 10) + ":Integer") .
+  eq renaming ('r[T]) = qid("##V##" + string(downTerm(T, (0).Nat), 10) + ":Real") .
+  eq renaming (F[TL]) = F[renaming(TL)] [owise] .
+  eq renaming (C) = C .
+
+  eq renaming ((T, NTL)) = (renaming(T), renaming(NTL)) .
+  eq renaming (empty) = empty .
+   
+  op renaming : Substitution -> Substitution .
+  op renaming : Substitution VarSet -> Substitution .
+
+  eq renaming (SUB) = renaming(SUB, emptyVarSet) .
+  eq renaming (none, VS) = (none).Substitution .
+  eq renaming ((V <- T) ; SUB, (V ;;; VS)) = renaming(SUB) .
+  eq renaming ((V <- T) ; SUB, VS) = (renamingVar(V) <- renaming(T)) ; renaming(SUB) .
+ 
+*** no variable arbitary.
+*** no narrowing.
+  op renamingVar : Variable -> Variable .
+  ceq renamingVar(V) = qid(string(getName(V)) + ":Boolean") if getType(V) == 'BooleanExpr .
+  ceq renamingVar(V) = qid(string(getName(V)) + ":Integer") if getType(V) == 'IntegerExpr .
+  ceq renamingVar(V) = qid(string(getName(V)) + ":Real") if getType(V) == 'RealExpr .
+  eq renamingVar(V) = V [owise] .  
+  
+endfm
+
+
+
+fmod RULE-MAP is
+
+  pr META-LEVEL .
+  
+  sorts RuleMapElem RuleMap .
+  subsort RuleMapElem < RuleMap .
+
+  sorts Rule? .
+  subsort Rule < Rule? .
+  
+  vars Ru Ru' : Rule .
+  var Lb : Attr .
+  var Rm : RuleMap .
+  var RmE : RuleMapElem .
+
+  op [_||_] : Attr Rule -> RuleMapElem [ctor] .
+
+  op empty : -> RuleMap [ctor] .
+  op __ : RuleMap RuleMap -> RuleMap [ctor assoc comm id: (empty).RuleMap] .
+  eq RmE RmE = RmE .
+
+  op add : RuleMap Attr Rule -> RuleMap .
+  eq add([ Lb || Ru' ] Rm, Lb, Ru) = [ Lb || Ru ] Rm .
+  eq add(Rm, Lb, Ru) = [ Lb || Ru ] Rm [owise] .
+
+  op noRule : -> Rule? [ctor] .
+
+  op find : RuleMap Attr -> Rule? .
+  eq find ([ Lb || Ru ] Rm, Lb) = Ru .
+  eq find (Rm, Lb) = noRule [owise] .
+
+endfm
+
+
+fmod RULE-AUX is
+  pr META-LEVEL .
+  pr RULE-MAP . 
+  sorts RuleLabelPair RuleSetMapPair .
+  op {_,_} : Rule Attr -> RuleLabelPair [ctor] .
+  op {_,_} : RuleSet RuleMap -> RuleSetMapPair [ctor] .
+  
+
+  vars AtS AtS' : AttrSet .
+  var Lb Lb' : Attr .
+  var LbN : Qid .
+  vars T T' : Term .
+  var COND : Condition .
+
+  op removeNoneExecAttr : AttrSet -> AttrSet .
+  eq removeNoneExecAttr (nonexec AtS) = AtS .
+  eq removeNoneExecAttr (AtS) = AtS .
+
+  op updateLabelOfAttr : AttrSet Attr -> AttrSet .
+  eq updateLabelOfAttr (label(LbN) AtS, Lb) = Lb AtS .
+  eq updateLabelOfAttr (AtS, Lb) = Lb AtS [owise] .
+
+*** assume that an input rule to this operator
+*** always have label. This is guaranteed by
+*** updateLabelOfAttr in the operator tr below.
+  op getLabel : Rule -> Attr .
+  eq getLabel (crl T => T' if COND [label(LbN) AtS].) = label(LbN) .
+  eq getLabel (rl T => T' [label(LbN) AtS].) = label(LbN) .
+endfm
+
+fmod TRANSFORMATION is
+  inc TERM-ABST .
+  pr CONVERSION .
+  pr TERM-TRANSFORMATION .
+  pr RULE-AUX .
+
+  sort TranslateResult .
+  op {_,_,_} : Module RuleMap RuleSet -> TranslateResult [ctor] .
+
+  vars TY TY' : Type .
+  var TYS : TypeSet .
+  var VS : VarSet .
+  vars M Mo : Module .
+  var L' : Term .
+  vars COND COND' NvCOND : EqCondition .
+  var ATTR : AttrSet .
+  vars TL TL' : TermList .
+  vars N N' : Nat .
+  vars T T' : Term .
+  vars Nt Nt' : Term .
+  var RS RS' : RuleSet .
+  vars RU RU' : Rule .
+  vars Cd Cd' : EqCondition .
+  var NuT : TermList .
+  vars Rm Rm' Rm'' : RuleMap .
+
+*** For theroy transformation
+  vars H H' : Header .
+  var IL IL' : ImportList .
+  var SS SS' : SortSet .
+  var SSDS SSDS' : SubsortDeclSet .
+  var OPD : OpDecl .
+  vars OPDS OPDS' : OpDeclSet .
+  vars MAS MAS' : MembAxSet .
+  vars EqS EqS' : EquationSet .
+  vars RlS RlS' : RuleSet .
+  var K : Kind .
+  var KS : KindSet .
+  var AtS : AttrSet .
+  var Lb : Attr .
+
+--- Least Upper bound sort of the ruleset.
+  op ruleSet2TypeSet : Module RuleSet -> TypeSet .
+  eq ruleSet2TypeSet (M, none) = (none).EmptyQidSet . 
+  eq ruleSet2TypeSet (M, crl T => T' if Cd [AtS] . RS) = leastSort(M, T) ; leastSort(M, T') ; ruleSet2TypeSet(M, RS) .
+  eq ruleSet2TypeSet (M, rl T => T' [AtS] . RS) = leastSort(M, T) ; leastSort(M, T') ; ruleSet2TypeSet(M, RS) .
+
+--- assume that all rules have sorts that are connected.
+--- which means user should follow the methodology.
+--- otherwise it will not work correctly.
+  op maxSort : Module Type TypeSet -> Type .
+  eq maxSort (M, TY, none) = TY .
+  ceq maxSort (M, TY, TYS) = 
+    if sortLeq(M, TY, TY') then TY'
+    else TY 
+    fi
+  if TY' := maxSort(M, TYS) .
+  
+  op maxSort : Module TypeSet -> Type .
+  eq maxSort (M, TY ; TYS) = maxSort(M, TY, TYS) .
+
+  op maxSort : Module RuleSet -> Type .
+  eq maxSort (M, RS) = maxSort(M, ruleSet2TypeSet(M, RS)) .
+
+  op trRule : Module Rule Nat -> RuleLabelPair . 
+  ceq trRule (M, crl T => T' if COND [ATTR]., N) =
+  	{ crl 'top['##$B$##:BooleanExpr, extendType(L'), '##$N$##:Nat] => 
+	'top['simplifyFormula['##$B'$##:BooleanExpr], extendType(T'), Nt'] if COND' [AtS]., Lb }
+  if {L', Cd, N'} := abst(M, T, 0)
+  /\ VS := ((varset(COND /\ Cd) ;;; varset(T')) \\\ varset(L'))
+  /\ {NuT, NvCOND, Nt' } := toSmtGnd(VS, '##$N$##:Nat)
+  /\ COND' := (NvCOND /\ genSmtCond(Cd /\ COND)) 
+  /\ Lb := label(qid("##$rule$##" + string(N, 10))) 
+  /\ AtS := updateLabelOfAttr(removeNoneExecAttr(ATTR), Lb) .
+
+  ceq trRule (M, rl T => T' [ATTR]., N) =
+  	{ crl 'top['##$B$##:BooleanExpr, extendType(L'), '##$N$##:Nat] => 
+	'top['simplifyFormula['##$B'$##:BooleanExpr], extendType(T'), Nt'] if COND' [AtS]., Lb }
+  if {L', Cd, N'} := abst(M, T, 0)
+  /\ VS := ((varset(Cd) ;;; varset(T')) \\\ varset(L')) 
+  /\ {NuT, NvCOND, Nt' } := toSmtGnd(VS, '##$N$##:Nat)
+  /\ COND' := (NvCOND /\ genSmtCond(Cd)) 
+  /\ Lb := label(qid("##$rule$##" + string(N, 10))) 
+  /\ AtS := updateLabelOfAttr(removeNoneExecAttr(ATTR), Lb) [print "transformed condition " Cd] .
+
+
+  
+  op genSmtCond : EqCondition -> EqCondition .
+  eq genSmtCond(COND) = '##$B'$##:BooleanExpr := '_and_['##$B$##:BooleanExpr, toSmtCond(COND)] /\ 'smtCheck['##$B'$##:BooleanExpr] = 'true.Bool .
+
+*** basic transformation operator
+  op tr : Module RuleSet Nat RuleMap -> RuleSetMapPair .
+  eq tr (M, none, N, Rm) = {none, Rm} .
+  ceq tr (M, RU RS, N, Rm) = { RU' RS', Rm'' }
+  if { RU', Lb } := trRule(M, RU, N) 
+  /\ Rm' := add(Rm, Lb, RU) 
+  /\ {RS', Rm''} := tr(M, RS, s N, Rm') .
+
+  var F : Qid .
+  var PDL : ParameterDeclList .
+
+  op uidHeader : Header -> Header .
+  eq uidHeader (F{PDL}) = qid(string(F) + "##GEN##MOD"){PDL} .
+  eq uidHeader (F) = qid(string(F) + "##GEN##MOD") .
+  eq uidHeader (H) = H [owise] .
+  
+
+  op addSmtCheckModule : Module FModule ~> Module .
+  op addSmtCheckModule : FModule FModule ~> Module .
+  op addSmtCheckModule : Module ~> Module .
+  op replaceRule : Module RuleSet Type ~> Module .
+
+
+  var Iname : Qid .
+  var ME : ModuleExpression .
+  var Imp : Import .
+
+  op getImport : Import -> ModuleExpression .
+  eq getImport(protecting ME .) = ME .
+  eq getImport(including ME .) = ME .
+  eq getImport(extending ME .) = ME .
+
+
+  op extendOps : ImportList -> OpDeclSet .
+  eq extendOps (nil) = none .
+  eq extendOps (Imp IL)
+    = extendType(getOps(upModule(getImport(Imp), false))) extendOps(IL) .
+
+  op addModules : Module Module -> Module .
+  eq addModules(fmod H is IL sorts SS . SSDS OPDS MAS EqS endfm, 
+	fmod H' is IL' sorts SS' . SSDS' OPDS' MAS' EqS' endfm)
+    = fmod H is IL' IL sorts SS' ; SS . (SSDS' SSDS) (OPDS' OPDS) (MAS' MAS) (EqS' EqS) endfm .
+
+  eq addModules(mod H is IL sorts SS . SSDS OPDS MAS EqS RlS endm, 
+	fmod H' is IL' sorts SS' . SSDS' OPDS' MAS' EqS' endfm)
+    = mod H is IL' IL sorts SS' ; SS . (SSDS' SSDS) (OPDS' OPDS) (MAS' MAS) (EqS' EqS) RlS endm .
+
+  eq addModules(mod H is IL sorts SS . SSDS OPDS MAS EqS RlS endm, 
+	mod H' is IL' sorts SS' . SSDS' OPDS' MAS' EqS' RlS' endm)
+    = mod H is IL' IL sorts SS' ; SS . (SSDS' SSDS) (OPDS' OPDS) (MAS' MAS) (EqS' EqS) (RlS' RlS) endm .
+
+
+*** assume that the given modules are all flat.
+  eq addSmtCheckModule(mod H is IL sorts SS . SSDS OPDS MAS EqS RlS endm, 
+	fmod H' is nil sorts SS' . SSDS' OPDS' MAS' EqS' endfm)
+    = mod H is IL sorts SS' ; SS . (SSDS' SSDS) (OPDS' OPDS) (MAS' MAS) (EqS' EqS) RlS endm .
+ 
+  eq addSmtCheckModule(fmod H is nil sorts SS . SSDS OPDS MAS EqS endfm, 
+	fmod H' is nil sorts SS' . SSDS' OPDS' MAS' EqS' endfm)
+    = fmod H is nil sorts SS' ; SS . (SSDS' SSDS) (OPDS' OPDS) (MAS' MAS) (EqS' EqS) endfm .
+
+  eq addSmtCheckModule(M) = addSmtCheckModule(M, upModule('SMT-CHECK, true)) . 
+
+  eq replaceRule(mod H is IL sorts SS . SSDS OPDS MAS EqS RlS endm, RlS', TY)
+    = mod uidHeader(H) is 
+	(protecting 'NAT . protecting 'SMT-CHECK . IL) 
+	sorts ('##TopSort## ; SS ) .
+	(subsort 'Nat < 'SMTVarId . SSDS)
+	--- support operator translation.
+	(op 'top : 'BooleanExpr TY 'Nat -> '##TopSort## [ctor] . OPDS extendType(OPDS) extendOps(IL))
+	MAS EqS RlS' 
+     endm .
+
+  op translate : Module Term ~> TranslateResult .
+  ceq translate(Mo, Nt) = { M, Rm, RS' }
+  if RS := getRls(Mo) 
+  /\ TY := maxSort(Mo, RS)
+  /\ { RS', Rm } := tr(Mo, RS, 0, empty) 
+  /\ M := replaceRule(Mo, RS', TY) . 
+
+endfm
+
+
+fmod META-SMT-SEARCH is
+  pr META-SMT-INTERFACE .
+  pr TRANSFORMATION .
+
+  sorts SmtResult2 SmtResult2? .
+  subsort SmtResult2 < SmtResult2? .
+  
+  op {_,_,_,_,_} : Term Substitution Term Term TermList -> SmtResult2 [ctor] . 
+  op failure : -> SmtResult2? [ctor] .
+   
+  sorts TraceStep2 Trace2 Trace2? .
+  subsort TraceStep2 < Trace2 < Trace2? .
+
+  op nil : -> Trace2 [ctor] .
+  op failure : -> Trace2? [ctor] .
+
+*** TraceStep2 consists of a symbolic solution term, 
+*** a smt condition term, a concrete solution term,
+*** and a rule that applied.
+  op {_,_,_,_} : Term Term Term Rule -> TraceStep2 [ctor] .
+  op __ : Trace2 Trace2 -> Trace2 [ctor assoc id: nil format (d n d)] .
+
+  vars M Mo : Module .
+  vars T T' T'' : Term .
+  vars V : Term .
+  var U : TermList .
+  vars SmtCd : Condition .
+  var SmtSub : TermList .
+  vars SUB : Substitution .
+  var CdT : Term .
+  var TY : Type .
+  vars Nt Nt' : Term .
+  var Qd : Qid .
+  var Bd : Bound .
+  vars N N' : Nat .
+  vars Cd Cd' : Condition . 
+  var ICd : Term .
+  var Rm : RuleMap .
+  var RS : RuleSet .
+  var GenNum : Term .
+  var SSSSS : [ResultTriple?] .
+
+**** command 
+  op metaSmtSearch2 : Module Term Term Condition Qid Bound Nat -> SmtResult2? .
+  ceq metaSmtSearch2 (M, T, T', SmtCd, Qd, Bd, N) = {renaming(T''), renaming(SUB), renaming(ICd), metaBuiltinInst(Mo, T'', SmtSub), renaming(SmtSub)}
+  if {U, Cd, Nt} := toSmtGnd(T, '0.Zero)
+  /\ {V, Cd', N'} := abst(M, T', 0)
+  /\ {Mo, Rm, RS} := translate(M, Nt)
+  /\ {'top[CdT, T'', Nt'], TY, (('##$SS$##:SatAssignmentSet <- SmtSub) ; ('##$Condition$##:BooleanExpr <- ICd) ; ('##$N22$##:Nat <- GenNum) ; SUB)} := 
+	metaSearch(Mo,
+		'top['true.Boolean, U, Nt],
+		'top['##$Condition$##:BooleanExpr, extendType(V), '##$N22$##:Nat],
+		Cd /\ '`{_`}['##$SS$##:SatAssignmentSet] := 'smtCheck['_and_['_and_['##$Condition$##:BooleanExpr, toSmtCond(Cd')], toSmtCond(SmtCd)], 
+		'true.Bool], Qd, Bd, N) [print "Before Translated:\n" M "\nTranslated Module is \n" Mo "\n Condition: " Cd' "\n SmtSub: " SmtSub] .
+
+  eq metaSmtSearch2 (M, T, T', SmtCd, Qd, Bd, N) = failure .
+
+
+  var Tr : Trace .
+  vars Ru Ru' : Rule .
+
+*** smtCheck only once 한지? check 할것.
+  op metaSmtSearch2Path : Module Term Term Condition Qid Bound Nat -> Trace2? .   
+  ceq metaSmtSearch2Path (M, T, T', SmtCd, Qd, Bd, N) = toTrace2(Tr, Rm, M, SmtSub)
+  if { U, Cd, Nt } := toSmtGnd(T, '0.Zero)
+  /\ { V, Cd', N' } := abst(M, T', 0) 
+  /\ { Mo, Rm, RS } := translate(M, Nt) 
+  /\ {'top[CdT, T'', Nt'], TY, (('##$SS$##:SatAssignmentSet <- SmtSub) ; ('##$Condition$##:BooleanExpr <- ICd) ; ('##$N22$##:Nat <- GenNum) ; SUB)} := 
+	metaSearch(Mo,
+		'top['true.Boolean, U, Nt],
+		'top['##$Condition$##:BooleanExpr, extendType(V), '##$N22$##:Nat],
+		Cd /\ '`{_`}['##$SS$##:SatAssignmentSet] := 'smtCheck['_and_['_and_['##$Condition$##:BooleanExpr, toSmtCond(Cd')], toSmtCond(SmtCd)], 
+		'true.Bool], Qd, Bd, N) 
+  /\ Tr := metaSearchPath(Mo,
+		'top['true.Boolean, U, Nt],
+		'top['##$Condition$##:BooleanExpr, extendType(V), '##$N22$##:Nat],
+		Cd /\ '`{_`}['##$SS$##:SatAssignmentSet] := 'smtCheck['_and_['_and_['##$Condition$##:BooleanExpr, toSmtCond(Cd')], toSmtCond(SmtCd)], 
+		'true.Bool], Qd, Bd, N) .
+
+  eq metaSmtSearch2Path (M, T, T', SmtCd, Qd, Bd, N) = failure [owise] .
+
+  op toTrace2 : Trace RuleMap Module Term -> Trace2 .
+  eq toTrace2 (nil, Rm, M, SmtSub) = (nil).Trace2 .
+  ceq toTrace2 ({ 'top[CdT, T'', Nt'], TY, Ru } Tr, Rm, M, SmtSub) = 
+	{ renaming(T''), renaming(CdT), metaBuiltinInst(M, T'', SmtSub), Ru' } toTrace2(Tr, Rm, M, SmtSub)
+  if Ru' := find(Rm, getLabel(Ru)) .
+
+  eq toTrace2 (Tr, Rm, M, SmtSub) = (nil).Trace2 [owise] . 
+
+
+endfm
+

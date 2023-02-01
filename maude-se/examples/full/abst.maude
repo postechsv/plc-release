@@ -1,0 +1,64 @@
+***
+***	Maude term abstraction module.
+***
+*** Abstracting Boolean, Integer, Real term.
+*** abstracting constants to new variables.
+***
+
+fmod TERM-ABST is
+  protecting META-LEVEL .
+  protecting CONVERSION .
+
+  sort TermAbstraction .
+  op {_,_,_} : TermList Condition Nat -> TermAbstraction [ctor format (b! o d d d d b! o)] .
+  
+  var M : Module .
+  var N N' N'' : Nat .
+  var F : Qid .
+  var TY : Type .
+  var TYS : TypeSet .
+  var C : Constant .
+  vars Cd Cd' : Condition .
+  vars V NV : Variable .
+  var T : Term .
+  vars TL TL' : TermList .
+  vars NTL : NeTermList .
+
+
+  op abst : Module TermList Nat -> TermAbstraction [format (r! o)] .
+
+  eq abst(M, V, N) = {V, nil, N} .
+
+*** NV = T since we are not allowing := conditions.
+  ceq abst(M, T, N) = {NV, NV = T, s(N)}
+  if not (T :: Variable)
+  /\ TY := leastSort(M,T)
+  /\ TY in ('Boolean ; 'Integer ; 'Real)
+  /\ NV := auxVarGen(N, TY) . 
+
+  ceq abst(M, C, N) = {C, nil, N}
+  if TY := leastSort(M,C)
+  /\ not TY in ('Boolean ; 'Integer ; 'Real) .
+
+  ceq abst(M, F[TL], N) = {F[TL'], Cd, N'}
+  if TY := leastSort(M,F[TL])
+  /\ not TY in ('Boolean ; 'Integer ; 'Real)
+  /\ {TL', Cd, N'} := abst(M, TL, N) .
+
+  ceq abst(M, (T, NTL), N) = {(TL,TL'), Cd /\ Cd', N''}
+  if { TL, Cd, N' } := abst(M, T, N)
+  /\ { TL', Cd', N'' } := abst(M, NTL, N') .
+
+  eq abst(M, empty, N) = {empty, nil, N} .
+
+
+*** aux functions
+*** An input TY is assumed to be a builtin sort
+*** while the output sort is extende type.
+  op auxVarGen : Nat Type -> Variable .
+  eq auxVarGen(N, TY) = qid("V" + string(N, 10) + ":" + string(TY) + "Expr") .
+
+  op _in_ : Type TypeSet ~> Bool .
+  eq TY in (TY ; TYS) = true .
+  eq TY in TYS = false [owise] .
+endfm

@@ -1,0 +1,102 @@
+load smt
+load smt-check
+
+mod ROBOT is
+  pr REAL-EXPR .
+  inc CONFIGURATION .
+
+  sort Robot .
+  subsort Robot < Cid .
+  op Robot : -> Robot [ctor format(! o)] .
+
+  op pos`:_ : Vector -> Attribute [ctor gather(&)] .
+  op vel`:_ : Vector -> Attribute [ctor gather(&)] .
+  op acc`:_ : Vector -> Attribute [ctor gather(&)] .
+  op time`:_ : RealExpr -> Attribute [ctor gather(&)] .
+
+  sort Vector .
+  op [_,_] : RealExpr RealExpr -> Vector [ctor] .
+endm
+
+
+mod ROBOT-DYNAMICS is
+  pr ROBOT .
+  pr SMT-CHECK .
+  inc NAT .
+  pr META-LEVEL .
+
+
+  sort State .
+  subsort Nat < SMTVarId .
+  op {_,_,_} : BooleanExpr Nat Configuration -> State [ctor] .
+
+  var N : Nat .
+  vars O : Oid .
+  vars CONST CONST' : BooleanExpr .
+  vars PX VX AX PY VY AY PX' VX' AX' PY' VY' AY' T T' TAU : RealExpr .
+  var ATTS : AttributeSet .
+
+  crl [move]:
+      {CONST, N, 
+       < O : C:Robot | pos  : [PX,  PY], 
+                       vel  : [VX,  VY],
+                       acc  : [AX,  AY],  
+                       time : T, ATTS >}
+   => {CONST', N + 5, 
+       < O : C:Robot | pos  : [PX', PY'], 
+                       vel  : [VX', VY'],
+                       acc  : [AX,  AY], 
+                       time : T + TAU, ATTS >}
+   if TAU := r(N)
+   /\ [PX', PY'] := [r(N + 1), r(N + 2)]
+   /\ [VX', VY'] := [r(N + 3), r(N + 4)]
+   /\ CONST' := simplifyFormula(CONST and TAU >= toReal(0)
+            and VX' === VX + AX * TAU
+            and VY' === VY + AY * TAU
+            and PX' === 1/2 * AX * TAU * TAU + VX * TAU + PX
+            and PY' === 1/2 * AY * TAU * TAU + VY * TAU + PY) 
+   /\ smtCheck(CONST') .
+
+  crl [accX]:
+      {CONST,  N,   < O : C:Robot | acc : [AX,  AY], ATTS >}
+   => {CONST', s N, < O : C:Robot | acc : [AX', AY], ATTS >}
+   if AX' := r(N)
+   /\ CONST' := simplifyFormula(CONST and AY === toReal(0))
+   /\ smtCheck(CONST') .
+
+  crl [accY]:
+      {CONST,  N,   < O : C:Robot | acc : [AX, AY],  ATTS >}
+   => {CONST', s N, < O : C:Robot | acc : [AX, AY'], ATTS >}
+   if AY' := r(N)
+   /\ CONST' := simplifyFormula(CONST and AX === toReal(0)) 
+   /\ smtCheck(CONST') .
+
+endm
+
+
+mod ROBOT-ANALYSIS is
+  inc ROBOT-DYNAMICS .
+
+  var N : Nat .
+  vars CONST : BooleanExpr .
+  vars PX VX AX PY VY AY T : RealExpr .
+  var SS : SatAssignmentSet .
+  var OBJ : Object .
+  var ATTS : AttributeSet .
+
+  op r : -> Oid [ctor] .
+endm
+
+
+
+search [1] 
+    {true,  0, 
+     < r : Robot | pos  : [toReal(0), toReal(0)],
+                   vel  : [toReal(0), toReal(0)],
+                   acc  : [toReal(0), toReal(0)],
+                   time : toReal(0) >}
+  =>*
+    {CONST,  N, 
+     < r : Robot | pos  : [PX, PY], ATTS >}
+such that
+    {SS} := smtCheck(CONST and PX === 10/1 and PY === 10/1, true) .

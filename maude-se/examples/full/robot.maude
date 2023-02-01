@@ -1,0 +1,61 @@
+load smt 
+load smt-check 
+load transformation
+load full-maude-se
+
+(omod ROBOT-DYNAMICS is
+  pr REAL .
+  inc CONFIGURATION .
+
+  sort Vector .
+  op `[_`,_`] : Real Real -> Vector [ctor] .
+  sorts RobotTraceItem RobotTrace .
+  subsort Vector < RobotTraceItem < RobotTrace .
+  op ==`(_:_`)==> : Vector Real -> RobotTraceItem [ctor] .
+  op __ : RobotTrace RobotTrace -> RobotTrace [ctor assoc] .
+  class Robot | pos : Vector, vel : Vector, acc : Vector, clock : Real, trace : RobotTrace .
+  sort State .
+  op r : -> Oid [ctor] .
+  subsort Configuration < State .
+
+  vars O : Oid .
+  vars PX VX AX PY VY AY PX' VX' AX' PY' VY' AY' T T' TAU : Real .
+  var ATTS : AttributeSet .
+  var TRACE : RobotTrace .
+
+  crl [move]:
+      < O : Robot | pos  : [PX,  PY], 
+                       vel  : [VX,  VY],
+			acc : [AX, AY],
+                       clock : T,
+                       trace : TRACE >
+   => < O : Robot | pos  : [PX', PY'], 
+                       vel  : [VX', VY'],
+                       clock : T + TAU, 
+                       trace : TRACE ==([VX', VY'] : T + TAU)==> [PX', PY'] >
+   if VX' = VX + AX * TAU
+   /\ VY' = VY + AY * TAU
+   /\ PX' = 1/2 * AX * TAU * TAU + VX * TAU + PX
+   /\ PY' = 1/2 * AY * TAU * TAU + VY * TAU + PY 
+   /\ TAU >= 0/1 = true [nonexec] . 
+
+  crl [accX]:
+      < O : Robot | acc : [AX,  AY] >
+   => < O : Robot | acc : [AX', AY] >
+   if AY = 0/1 [nonexec] .
+
+  crl [accY]:
+      < O : Robot | acc : [AX, AY] >
+   => < O : Robot | acc : [AX, AY'] >
+   if AX = 0/1 [nonexec] . 
+endom)
+
+(smt-search2 [1] 
+    < r : Robot | pos  : [0/1, 0/1],
+                   vel  : [0/1, 0/1],
+                   acc  : [0/1, 0/1],
+                   clock : 0/1,
+		   trace : [0/1, 0/1] >
+  =>*
+    < r : Robot | pos  : [10/1, 10/1] > .)
+

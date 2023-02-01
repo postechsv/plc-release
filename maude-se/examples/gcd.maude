@@ -1,0 +1,37 @@
+load smt
+load smt-check
+
+mod GCD is
+  protecting INTEGER-EXPR .
+  pr SMT-CHECK .
+  pr META-LEVEL .
+
+  ops a b : -> SMTVarId [ctor] .
+
+  sort GcdResult .
+  op gcd : IntegerExpr IntegerExpr -> GcdResult [ctor] .
+  op ret : IntegerExpr -> GcdResult [ctor] .
+
+
+  sort State .
+  op {_,_} : BooleanExpr GcdResult -> State [ctor] .
+
+  vars CONST CONST' : BooleanExpr .
+  vars X Y : IntegerExpr .
+  var SS : SatAssignmentSet .
+
+  crl {CONST, gcd(X, Y)} => {simplifyFormula(CONST'), gcd(X - Y, Y)} 
+   if CONST' := CONST and (X > Y) === (true).Boolean /\ smtCheck(CONST', false) .
+
+  crl {CONST, gcd(X, Y)} => {simplifyFormula(CONST'), gcd(X, Y - X)} 
+   if CONST' := CONST and (X < Y) === (true).Boolean /\ smtCheck(CONST', false) .
+
+  crl {CONST, gcd(X, Y)} => {simplifyFormula(CONST'), ret(X)} 
+   if CONST' := CONST and (X === Y) === (true).Boolean /\ smtCheck(CONST', false) .
+
+
+endm
+
+search [1] {true, gcd(i(a), i(b))} =>* {CONST, ret(NN:IntegerExpr)} such that 
+	CONST' := CONST and i(a) + i(b) === 27 and NN:IntegerExpr === 3 
+	/\ smtCheck(CONST') = (true).Bool .
