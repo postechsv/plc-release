@@ -41,8 +41,17 @@ and UNTIL.
 
 How to install
 ==========
-1. clone this repository
-2. set $PLCSCRIPTPATH to `scripts/` folder 
+*Prerequisite*
+1. Python 3.8.5
+2. Python module antlr4-python3-runtime version 4.9
+
+*Installation*
+1. Install antlr4-python3-runtime version 4.9 if you don't already have it:
+
+  ```python3 -m pip install antlr4-python3-runtime==4.9```
+
+2. clone this repository
+3. set $PLCSCRIPTPATH to `scripts/` folder
 
 Directory structure
 ==========
