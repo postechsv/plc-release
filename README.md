@@ -43,7 +43,8 @@ How to install
 ==========
 *Prerequisite*
 1. Python 3.8.5
-2. Python module antlr4-python3-runtime version 4.9
+2. pip3 22.0
+e. Python module antlr4-python3-runtime version 4.9
 
 *Installation*
 1. Install antlr4-python3-runtime version 4.9 if you don't already have it:
@@ -51,13 +52,15 @@ How to install
   ```python3 -m pip install antlr4-python3-runtime==4.9```
 
 2. clone this repository
-3. set $PLCSCRIPTPATH to `scripts/` folder
+3. set `$PLCSCRIPTPATH` to `scripts/` folder
+4. set `$MAUDE_BIN` to `maude-se/` folder
 
 Directory structure
 ==========
 * `apps/` contains example PLC software (trafficLight) and example requirement specifications (.req files).
 * `benchmark/` contains benchmark models for STbmc and PLCverif for performance comparison.
 * `libs/` contains standard PLC function block definitions.
+* `maude-se/` contains the `maude-se-yices2` tool and its built-in library.
 * `scripts/` contains files for tool implementation including parsing, compiling, reporting counterexample, etc.
 * `semantics/` is the semantic definition of PLC ST.
   - `builtinfunctions/` contains the definition of standard functions
@@ -67,6 +70,7 @@ Directory structure
   - `syntax` contains the syntactic definition of PLC ST.
 * `stbmc.sh` is the shell script to execute STbmc.
 
+
 How to run
 ==========
 * In the home directory of plc-release, type in the following command:
@@ -75,7 +79,14 @@ How to run
    and `caseStudy-1.req`, `caseStudy-2.req` as requirement specifications.
    These examples are explained in section 6 of [this paper](https://dl.acm.org/doi/abs/10.1145/3563822.3568016).
 * To verify the requirement `caseStudy-1.req`, use the following command:
-```./stbmc.sh apps/trafficLight apps/caseStudy-1.req```
+
+```
+>./stbmc.sh apps/trafficLight apps/caseStudy-1.req
+Compiling trafficLight.st ...
+Compile Succeeded
+analyzing trafficLight using caseStudy-1
+test succeeded
+```
 
 
 
