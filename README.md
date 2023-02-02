@@ -44,7 +44,7 @@ How to install
 *Prerequisite*
 1. Python 3.8.5
 2. pip3 22.0
-e. Python module antlr4-python3-runtime version 4.9
+3 . Python module antlr4-python3-runtime version 4.9
 
 *Installation*
 1. Install antlr4-python3-runtime version 4.9 if you don't already have it:
@@ -73,10 +73,11 @@ Directory structure
 
 How to run
 ==========
+*General instruction*
 * In the home directory of plc-release, type in the following command:
 ```./stbmc.sh [PLC project directory] [requirement file]```
-* `apps/trafficLight` is provided as an example PLC project 
-   and `caseStudy-1.req`, `caseStudy-2.req` as requirement specifications.
+* `apps/trafficLight`, `apps/trafficLight-repaired` is provided as example PLC projects 
+   and `sim.req`, `caseStudy-1.req` (r1.req in the paper), `caseStudy-2.req` (r2.req in the paper) as requirement specifications.
    These examples are explained in section 6 of [this paper](https://dl.acm.org/doi/abs/10.1145/3563822.3568016).
 * To verify the requirement `caseStudy-1.req`, use the following command:
 
@@ -86,8 +87,42 @@ Compiling trafficLight.st ...
 Compile Succeeded
 analyzing trafficLight using caseStudy-1
 test succeeded
+Result will be located in [top-directory]/apps
+running time :  1622.1659774780273 sec
 ```
 
+*Benchmark - STbmc*
+
+Benchmark PLC models for STbmc are stored in `benchmark/straton`,
+There are 18 benchmark models named `benchmark[index]` where `[index]` is 1, 2, 3, ..., 18.
+Requirement specifications for each model are stored in `benchmark/stverif/benchmark[index]`.
+There are 1-5 requirement specifications for each model, each named `req[index]_INF.req`.
+
+To run the first benchmark model with the first requirement file, use the following command in the top directory:
+
+```
+>./stverif.sh ../benchmark/straton/benchmark1/benchmark1 benchmark/stverif/benchmark1/req1_INF.req
+```
+
+*Benchmark - PLCverif*
+
+PLCverif executable file `plcverif-cli` is located in `benchmark/plcverif/cmd`.
+Under `benchmark/plcverif/cmd/` folder, `workspace` and `workspace2` are respectively set up for nuXmv and CBMC backend engine.
+The following instructions are for nuXmv setting. To use CBMC you can simply replace `workspace` with `workspace2` for each command.
+
+Each benchmark model (`benchmark[index].scl` file) can be found in `benchmark/plcverif/cmd/workspace/benchmark[index]`,
+along with its requirement specifications (`req[index].vc3`).
+
+To run the first benchmark model with the first requirement file, use the following command in the top directory.
+(PLCverif automatically locates and uses the corresponding .scl file.)
+
+```
+>./benchmark/plcverif/cmd/plcverif-cli benchmark/plcverif/cmd/workspace/benchmark1/req1.vc3
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+...
+```
 
 
 
