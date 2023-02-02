@@ -1,0 +1,13 @@
+IF motherLight = RED THEN
+    color := RED;
+END_IF;
+
+IF motherLight = GREEN AND buttonLit THEN    
+    color := motherLight;
+    buttonLit := FALSE;
+END_IF;
+
+IF motherLight = YELLOW AND color = GREEN THEN
+    color := BLINKING;
+END_IF;
+

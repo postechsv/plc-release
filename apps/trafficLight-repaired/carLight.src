@@ -1,0 +1,25 @@
+yellowTime := MAX(T#500ms, yellowTime);
+
+(* override behavior *)
+IF continueRed THEN
+    color := RED;
+ELSE 
+    IF continueGreen THEN
+        color := GREEN;
+    ELSE
+(* default behavior *)
+        IF currTime < T#2s THEN
+            continueRed := color <> RED;
+            color := RED;
+        ELSE 
+            IF currTime < T#3500ms - yellowTime AND color <> YELLOW THEN
+                continueGreen := color <> GREEN;
+                color := GREEN;
+            ELSE
+                color := YELLOW;
+            END_IF;    
+        END_IF;
+    END_IF;
+END_IF;
+
+continueRed := continueRed AND NOT (currTime <= T#500ms AND present);
