@@ -99,7 +99,7 @@ fmod PREPROCESSING is
   vars PNAME VARNAME FBNAME ENAME EVAL : Pid .
   var EVALPVAL : PValue .
   vars EVALPVALREST EVALPVALREST' : List{PValue} .
-  vars PH PE M  NEXTLOC : Nat .
+  vars PH PE PR M  NEXTLOC : Nat .
   var TYPE : PType .
   var STR STR' : Map{Location, SemanticValue} .
   var V : PValue .
@@ -142,7 +142,7 @@ fmod PREPROCESSING is
   op getVarSection : KConfig -> VarSection .
  
   ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR)  CT ENDCONFIG) POUs]]]
-  =  makeCycleTime(CT) task(nilProcIds) inStream(empty) outStream(empty) constraints(syn2sem(TRUE)) cycleCounter(0) 
+  =  makeCycleTime(CT) jobQueue(nilProcIds) inStream(empty) outStream(empty) constraints(syn2sem(TRUE)) cycleCounter(0) 
     MAINLIST LTLContainer(emptyLTLFormula) LTLResult(UNSAT) LTLSubGoal(emptyFreshVarMap , 0)
     store(STR') inputCollector(empty) inputStreamSpec(empty) cycleCounterBound(INF)
     pickObjs(pickProcs(preprocessPOUs(NEWOBJS), procs(empty)), objs(empty))
@@ -187,15 +187,15 @@ fmod PREPROCESSING is
 
 
   eq makeProgramList(emptyProgramList, OBJLOC) = nil .
-  eq makeProgramList( PNAME([# PH, # PE]) ;; ML, OBJLOC) = (PNAME, program[ PNAME ], OBJLOC) makeProgramList(ML, OBJLOC + 1) . 
+  eq makeProgramList( PNAME([# PH, # PE, # PR]) ;; ML, OBJLOC) = (PNAME, program[ PNAME ], OBJLOC) makeProgramList(ML, OBJLOC + 1) . 
 
   eq makeSubProgramList(emptyProgramList, OBJLOC) = nil .
   eq makeSubProgramList(PNAME ;; ML, OBJLOC) = (PNAME, fbtype[ PNAME ], OBJLOC) makeSubProgramList(ML, OBJLOC + 1) . 
 
 
   eq makeProgramKConfig(nil, emptyProgramList, KCF) = KCF .
-  eq makeProgramKConfig(((PNAME, program[ PNAME ], OBJLOC) TODOLIST), (PNAME([# PH, # PE]) ;; ML), mainList(MLR))   
-   = makeProgramKConfig(TODOLIST, ML, mainList(MLR @m(OBJLOC, PH, PE)) )  .
+  eq makeProgramKConfig(((PNAME, program[ PNAME ], OBJLOC) TODOLIST), (PNAME([# PH, # PE, # PR]) ;; ML), mainList(MLR))   
+   = makeProgramKConfig(TODOLIST, ML, mainList(MLR @m(OBJLOC, PH, PE, PR)) )  .
 
 
   eq getDataForbuildSingleObj((PNAME, program[ PNAME ], OBJLOC) , (POUDef(PROGRAM PNAME VSC CSC ENDPROGRAM) KCF )) 

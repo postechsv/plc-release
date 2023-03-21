@@ -7,8 +7,8 @@ fmod MAINLIST is
 
   subsort MainEntry < MainList .
   op emptyML : -> MainList .
-  op @m : ProcessId Nat Nat -> MainEntry [ctor] . 
-  op __ : MainList MainList -> MainList [ctor assoc id: emptyML] .            
+  op @m : ProcessId Nat Nat Nat -> MainEntry [ctor] . --- period phase priority 
+  op __ : MainList MainList -> MainList [ctor assoc id: emptyML] .
 endfm
 
 fmod STREAM is
@@ -122,7 +122,7 @@ fmod CODE-CONFIG is
   op objs : KConfig -> KConfig [ctor] . 
   op proc : KConfig -> KConfig [ctor] . --- Bool ProcessId KConfig ProgramStack
   op procs : KConfig -> KConfig [ctor] .
-  op task : List{ProcessId} -> KConfig [ctor] .
+  op jobQueue : List{ProcessId} -> KConfig [ctor] .
   op mainList : MainList -> KConfig [ctor] . 
   op cycleTime : Nat -> KConfig [ctor] .
   op constraints : BoolSemanticVal -> KConfig [ctor] .

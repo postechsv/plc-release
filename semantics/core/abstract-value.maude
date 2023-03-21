@@ -2,7 +2,7 @@ fmod PROCESS-ID is
   inc NAT .
   sort ProcessId .
   subsort Nat < ProcessId .
-  ops input output : -> ProcessId .
+  ops input output : -> ProcessId [ctor] .
 endfm
 
 fmod ARRAYENV is
