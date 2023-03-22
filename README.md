@@ -101,7 +101,7 @@ There are 1-5 requirement specifications for each model, each named `req[index]_
 To run the first benchmark model with the first requirement file, use the following command in the top directory:
 
 ```
->./stverif.sh ../benchmark/straton/benchmark1/benchmark1 benchmark/stverif/benchmark1/req1_INF.req
+>./stbmc.sh benchmark/straton/benchmark1/benchmark1 benchmark/stverif/benchmark1/req1_INF.req
 ```
 
 *Benchmark - PLCverif*
