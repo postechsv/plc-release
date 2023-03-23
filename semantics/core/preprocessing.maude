@@ -91,7 +91,7 @@ fmod PREPROCESSING is
   op setProjectConfig : AppConfig -> KConfig .
   var POUs : POUSection .
   vars SUBML ML : ProgramList .
-  var MLR : MainList .
+  vars PHM PEM : Map{ProcessId, Nat} .
   vars VDC VDC2 : VarDeclSet .
   var CT : CycleTime .
   var POUDEF : POUDefinition .
@@ -136,29 +136,30 @@ fmod PREPROCESSING is
   op makeParmeterList : VarDeclSet -> VarSecTypePairList .
   op makeCycleTime : CycleTime -> KConfig . 
   op pickProcs : KConfig KConfig -> KConfig .
-  op pickObjs : KConfig KConfig -> KConfig .
+  op pickupIns : KConfig KConfig -> KConfig .
   op getDataForbuildSingleObj : Triple KConfig -> preprocessingPair .
-  op makeObjAndProc : Triple KConfig Env -> KConfig .
+  op makeInstance : Triple KConfig Env -> KConfig .
   op getVarSection : KConfig -> VarSection .
  
   ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR)  CT ENDCONFIG) POUs]]]
-  =  makeCycleTime(CT) task(nilProcIds) inStream(empty) outStream(empty) constraints(syn2sem(TRUE)) cycleCounter(0) 
+  =  makeCycleTime(CT) jobQueue(nilProcIds) inStream(empty) outStream(empty) constraints(syn2sem(TRUE)) cycleCounter(0) 
     MAINLIST LTLContainer(emptyLTLFormula) LTLResult(UNSAT) LTLSubGoal(emptyFreshVarMap , 0)
     store(STR') inputCollector(empty) inputStreamSpec(empty) cycleCounterBound(INF)
-    pickObjs(pickProcs(preprocessPOUs(NEWOBJS), procs(empty)), objs(empty))
-    randomSeed(0) newVarIndex(0)
+    pickupIns(preprocessPOUs(NEWOBJS), inss(empty))
+---    pickupIns(pickProcs(preprocessPOUs(NEWOBJS), procs(empty)), inss(empty))
+    randomSeed(0) newVarIndex(0) wait(empty)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))
-    /\ MAINLIST := makeProgramKConfig(TODOLIST', ML, mainList(emptyML) ) 
+    /\ MAINLIST := makeProgramKConfig(TODOLIST', ML, phase(empty) period(empty)) 
     /\ {ENV', STR', nil, NEWOBJS} := buildObj(TODOLIST TODOLIST' SUBPROTODOLIST , GENV, STR, (getPOUs(POUs) enumTypes(TDS)),  countVarDecl(VDC) + countTODOLIST(TODOLIST') + countTODOLIST(SUBPROTODOLIST) ) 
      .
   
-  eq pickProcs(KCF, procs(AUX)) = procs(AUX) KCF [owise] . 
-  eq pickProcs((proc(COM) KCF), procs(AUX)) = pickProcs(KCF, procs(AUX proc(COM) )) . 
+---  eq pickProcs(KCF, procs(AUX)) = procs(AUX) KCF [owise] . 
+---  eq pickProcs((proc(COM) KCF), procs(AUX)) = pickProcs(KCF, procs(AUX proc(COM) )) . 
   
-  eq pickObjs(KCF, objs(AUX)) = KCF objs(AUX) [owise] . 
-  eq pickObjs((obj(COM) KCF), objs(AUX)) = pickObjs(KCF, objs(AUX obj(COM) )) . 
+  eq pickupIns(KCF, inss(AUX)) = KCF inss(AUX) [owise] . 
+  eq pickupIns((POUIns(COM) KCF), inss(AUX)) = pickupIns(KCF, inss(AUX POUIns(COM))) . 
   
   eq makeCycleTime(CycleTime: # CT:Rat) = cycleTime(CT:Rat) .
   
@@ -192,11 +193,9 @@ fmod PREPROCESSING is
   eq makeSubProgramList(emptyProgramList, OBJLOC) = nil .
   eq makeSubProgramList(PNAME ;; ML, OBJLOC) = (PNAME, fbtype[ PNAME ], OBJLOC) makeSubProgramList(ML, OBJLOC + 1) . 
 
-
   eq makeProgramKConfig(nil, emptyProgramList, KCF) = KCF .
-  eq makeProgramKConfig(((PNAME, program[ PNAME ], OBJLOC) TODOLIST), (PNAME([# PH, # PE]) ;; ML), mainList(MLR))   
-   = makeProgramKConfig(TODOLIST, ML, mainList(MLR @m(OBJLOC, PH, PE)) )  .
-
+  eq makeProgramKConfig(((PNAME, program[ PNAME ], OBJLOC) TODOLIST), (PNAME([# PH, # PE]) ;; ML), period(PEM) phase(PHM))   
+   = makeProgramKConfig(TODOLIST, ML, period((PEM, OBJLOC |-> PE)) phase((PHM, OBJLOC |-> PH)))  .
 
   eq getDataForbuildSingleObj((PNAME, program[ PNAME ], OBJLOC) , (POUDef(PROGRAM PNAME VSC CSC ENDPROGRAM) KCF )) 
   = {(PNAME, program[ PNAME ], OBJLOC), POUDef(PROGRAM PNAME VSC CSC ENDPROGRAM)}  .
@@ -209,18 +208,18 @@ fmod PREPROCESSING is
   eq getVarSection(POUDef(FUNCTIONBLOCK PNAME VSC CSC ENDFUNCTIONBLOCK)) = VSC .
   eq getVarSection(POUDef(STRUCT PNAME VSC ENDSTRUCT)) = VSC .
   
-  eq makeObjAndProc((PNAME, program[ PNAME ],  OBJLOC), POUDef(PROGRAM PNAME VSC CODE S ENDCODE ENDPROGRAM), ENV) 
-  = (obj(id(OBJLOC) fbtype(PNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) proc(procSwitch(false) id(OBJLOC) k(S) callStack(ENV))) .
-  eq makeObjAndProc((VARNAME, fbtype[ FBNAME ], OBJLOC), POUDef(FUNCTIONBLOCK FBNAME VSC CSC ENDFUNCTIONBLOCK), ENV) 
-  = obj(id(OBJLOC) fbtype(FBNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
-  eq makeObjAndProc((VARNAME, structype[ FBNAME ], OBJLOC), POUDef(STRUCT FBNAME VSC ENDSTRUCT), ENV) 
-  = obj(id(OBJLOC) fbtype(FBNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
+  eq makeInstance((PNAME, program[ PNAME ], OBJLOC), POUDef(PROGRAM PNAME VSC CODE S ENDCODE ENDPROGRAM), ENV) 
+  = (POUIns(id(OBJLOC) fbtype(PNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV))) .
+  eq makeInstance((VARNAME, fbtype[ FBNAME ], OBJLOC), POUDef(FUNCTIONBLOCK FBNAME VSC CSC ENDFUNCTIONBLOCK), ENV) 
+  = POUIns(id(OBJLOC) fbtype(FBNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
+  eq makeInstance((VARNAME, structype[ FBNAME ], OBJLOC), POUDef(STRUCT FBNAME VSC ENDSTRUCT), ENV) 
+  = POUIns(id(OBJLOC) fbtype(FBNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
 
   eq buildObj(nil, GENV, STR, KCF, NEXTLOC) = {GENV, STR, nil, KCF} .
   ceq buildObj((TODOONE TODOLIST), GENV,  STR, (KCF enumTypes(ENUM1)), NEXTLOC)
   = buildObj((TODOLIST TODOLIST' ), GENV, (STR'), 
   (KCF enumTypes(ENUM1) 
-  makeObjAndProc((VARNAME, TYPE, OBJLOC), TARGETPOU, ENV')
+  makeInstance((VARNAME, TYPE, OBJLOC), TARGETPOU, ENV')
   ) 
   , (NEXTLOC + countVarsection(VSC))
   )

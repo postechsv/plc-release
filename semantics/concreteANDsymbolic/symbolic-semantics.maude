@@ -168,13 +168,13 @@ mod SYMBOLIC-ARITHMETIC-FUNCTIONS is
 
   op RANDOM--_ : Nat -> SMTVarId [ctor] .
 
- crl [randomNotZero] : procs(proc(procSwitch(true) (k(RAND([I1]) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST) newVarIndex(NVI)
-  => procs(proc(procSwitch(true) (k([i(RANDOM-- NVI)] ~> K)) RESTCOMPONENTPROC) RESTPROCS) 
+ crl [randomNotZero] : k(RAND([I1]) ~> K) constraints(CONST) newVarIndex(NVI)
+  => k([i(RANDOM-- NVI)] ~> K) 
     constraints(CONST AND ([I1] > syn2sem(# 0)) AND ([i(RANDOM-- NVI)] >= syn2sem(# 0)) AND ([i(RANDOM-- NVI)] < [I1]) ) newVarIndex(s NVI)
     if checkSAT(CONST AND ([I1] > syn2sem(# 0))) .
 
- crl [randomZero] : procs(proc(procSwitch(true) (k(RAND([I1]) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST)
-  => procs(proc(procSwitch(true) (k(syn2sem(# 0) ~> K)) RESTCOMPONENTPROC) RESTPROCS) 
+ crl [randomZero] : k(RAND([I1]) ~> K) constraints(CONST)
+  => k(syn2sem(# 0) ~> K) 
     constraints(CONST AND ([I1] ==== syn2sem(# 0)))
     if checkSAT(CONST AND ([I1] ==== syn2sem(# 0))) .
     

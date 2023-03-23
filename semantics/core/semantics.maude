@@ -35,55 +35,55 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   inc COMMON-SEMANTIC-VALUE .
   inc CONVERSION-SEMANTICVAL .
 
-  var OBJLOC : ProcessId .
+  var INSLOC : ProcessId .
   var I : Pid .
   vars V VV : SemanticValue .
   var K : K .
-  vars ENV OBJENV  : Env .
+  vars ENV INSENV  : Env .
   var ENVSTACK : ProgramStack .
   vars ARRAYENV ARRAYENV1 ARRAYENV2  : ArrayEnv .
   var STORE : Map{Location, SemanticValue} .
   vars CONST CONST' : SemanticValue .
   var ARRAYINDEX  LOCINDEX : Nat .
-  vars RESTPROCS RESTOBJS OBJS : KConfig .
+  vars RESTPROCS RESTINSS INSS : KConfig .
   var LOCATION  : Location .
-  vars RESTCOMPONENTPROC RESTCOMPONENTOBJ : KConfig .  
+  vars RESTCOMPONENTPROC RESTCOMPONENTINS : KConfig .  
   var TYPE : PType .
 
 --- assignment
 
   op @store : Location SemanticValue -> KLabel [ctor] .
- ceq procs(proc(procSwitch(true) k(@store(LOCATION,V) ~> K) RESTCOMPONENTPROC) RESTPROCS) store(STORE) 
-   = procs(proc(procSwitch(true) k(K) RESTCOMPONENTPROC) RESTPROCS) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
+ ceq k(@store(LOCATION,V) ~> K) store(STORE) 
+   = k(K) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
   if loc(LOCINDEX, TYPE) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
-  eq procs(proc(procSwitch(true) k(I := V ~> K) callStack(ENV :: ENVSTACK) RESTCOMPONENTPROC) RESTPROCS)  
-   = procs(proc(procSwitch(true) k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(I := V ~> K) callStack(ENV :: ENVSTACK)  
+   = k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) .
 
-  eq procs(proc(procSwitch(true) k(ObjLoc(OBJLOC) . I := V ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) 
-   = procs(proc(procSwitch(true) k(@store(getObjEnv(OBJLOC,OBJS)[I],V) ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) .
+  eq k(ObjLoc(INSLOC) . I := V ~> K) inss(INSS) 
+   = k(@store(getObjEnv(INSLOC,INSS)[I],V) ~> K) inss(INSS) .
 
-  crl [arrayAssignment] : procs(proc(procSwitch(true) k(arrayLoc(ARRAYENV)[VV] := V ~> K) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
-   => procs(proc(procSwitch(true) k(@store(LOCATION,V) ~> K) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND CONST'))
+  crl [arrayAssignment] : k(arrayLoc(ARRAYENV)[VV] := V ~> K) constraints(CONST)
+   => k(@store(LOCATION,V) ~> K) constraints(simplify(CONST AND CONST'))
    if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
 
 
 --- lookup --- get location
   op @lookup : Location -> KLabel [ctor] .
-  eq procs(proc(procSwitch(true) k(@lookup(LOCATION) ~> K) RESTCOMPONENTPROC) RESTPROCS) store(STORE) 
-   = procs(proc(procSwitch(true) k(STORE[LOCATION] ~> K) RESTCOMPONENTPROC) RESTPROCS) store(STORE) .
+  eq k(@lookup(LOCATION) ~> K) store(STORE) 
+   = k(STORE[LOCATION] ~> K) store(STORE) .
 
   --- Pid
-  eq procs(proc(procSwitch(true) k(I ~> K) callStack(ENV :: ENVSTACK) RESTCOMPONENTPROC) RESTPROCS) 
-   = procs(proc(procSwitch(true) k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(I ~> K) callStack(ENV :: ENVSTACK)
+   = k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) .
   
   --- _._._._
-  eq procs(proc(procSwitch(true) k(ObjLoc(OBJLOC) . I ~> K)                 RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) 
-   = procs(proc(procSwitch(true) k(@lookup(getObjEnv(OBJLOC,OBJS)[I]) ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) .
+  eq k(ObjLoc(INSLOC) . I ~> K) inss(INSS) 
+   = k(@lookup(getObjEnv(INSLOC,INSS)[I]) ~> K) inss(INSS) .
 
   --- array[V]
-  crl [arrayLookup] : procs(proc(procSwitch(true) k(arrayLoc(ARRAYENV)[VV] ~> K) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
-   => procs(proc(procSwitch(true) k(@lookup(LOCATION) ~> K) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND CONST'))
+  crl [arrayLookup] : k(arrayLoc(ARRAYENV)[VV] ~> K) constraints(CONST)
+   => k(@lookup(LOCATION) ~> K) constraints(simplify(CONST AND CONST'))
    if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
 
   crl [array]: arrayLookup((ARRAYENV1, (ARRAYINDEX, LOCATION), ARRAYENV2), V, CONST) 
@@ -110,92 +110,82 @@ mod CONDITIONAL-SEMANTICS is
   var RESTCOMPONENTPROC : KConfig .  
 
   --- ite
-  crl [iteTrue] : procs(proc(procSwitch(true) (k(ite(ITECONDITION, PE1, PE2) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST)
-  => procs(proc(procSwitch(true) (k(PE1 ~> K)) RESTCOMPONENTPROC ) RESTPROCS) 
-     constraints(CONST AND (ITECONDITION))
+  crl [iteTrue] : k(ite(ITECONDITION, PE1, PE2) ~> K) constraints(CONST)
+  => k(PE1 ~> K) constraints(CONST AND (ITECONDITION))
      if checkSAT(CONST AND (ITECONDITION)) .
   
-  crl [iteFalse] : procs(proc(procSwitch(true) (k(ite(ITECONDITION, PE1, PE2) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST)
-  => procs(proc(procSwitch(true) (k(PE2 ~> K)) RESTCOMPONENTPROC ) RESTPROCS) 
-     constraints(CONST AND (NOT ITECONDITION))
+  crl [iteFalse] : k(ite(ITECONDITION, PE1, PE2) ~> K) constraints(CONST)
+  => k(PE2 ~> K) constraints(CONST AND (NOT ITECONDITION))
      if checkSAT(CONST AND (NOT ITECONDITION)) .
 
   --- if statement
   crl [IFTRUE] :  
-      procs(proc(procSwitch(true) k(IF IFSTATEMENT THEN S1 ; BB ENDIF ~> K) RESTCOMPONENTPROC ) RESTPROCS) 
-      constraints(CONST)
-   => procs(proc(procSwitch(true) k(S1 ~> K) RESTCOMPONENTPROC) RESTPROCS) 
-      constraints(simplify(CONST AND IFSTATEMENT))
+      k(IF IFSTATEMENT THEN S1 ; BB ENDIF ~> K) constraints(CONST)
+   => k(S1 ~> K) constraints(simplify(CONST AND IFSTATEMENT))
    if checkSAT(CONST AND IFSTATEMENT) .
 
   crl [IFFALSE] : 
-      procs(proc(procSwitch(true) k(IF IFSTATEMENT THEN S1 ; emptyBBranch ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) 
-      constraints(CONST)
-   => procs(proc(procSwitch(true) k(K) RESTCOMPONENTPROC) RESTPROCS) 
-      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
+      k(IF IFSTATEMENT THEN S1 ; emptyBBranch ENDIF ~> K) constraints(CONST)
+   => k(K) constraints(simplify(CONST AND (NOT IFSTATEMENT)))
    if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
   crl [IFFALSE-ELSIF] : 
-      procs(proc(procSwitch(true) k(IF IFSTATEMENT THEN S1 ; ELSIF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) 
-      constraints(CONST)
-   => procs(proc(procSwitch(true) k(IF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) 
-      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
+      k(IF IFSTATEMENT THEN S1 ; ELSIF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K)constraints(CONST)
+   => k(IF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) constraints(simplify(CONST AND (NOT IFSTATEMENT)))
    if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
   crl [IFFALSE-ELSE] :  
-      procs(proc(procSwitch(true) k(IF IFSTATEMENT THEN S1 ; ELSE S2 ; ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) 
-      constraints(CONST)
-   => procs(proc(procSwitch(true) k(S2 ~> K) RESTCOMPONENTPROC) RESTPROCS) 
-      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
+      k(IF IFSTATEMENT THEN S1 ; ELSE S2 ; ENDIF ~> K) constraints(CONST)
+   => k(S2 ~> K) constraints(simplify(CONST AND (NOT IFSTATEMENT)))
    if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
 
   --- case statement
-  eq  procs(proc(procSwitch(true) k(CASE V OF emptyCBranch ELSE S1 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS)
-   =  procs(proc(procSwitch(true) k(S1 ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+  eq  k(CASE V OF emptyCBranch ELSE S1 ENDCASE ~> K)
+   =  k(S1 ~> K) .
 
   crl [caseMatch] :  
-      procs(proc(procSwitch(true) k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K)
       constraints(CONST)
-   => procs(proc(procSwitch(true) k(S1 ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+   => k(S1 ~> K) 
       constraints(simplify(CONST AND V ==== syn2sem(PV2)))
    if checkSAT(CONST AND V ==== syn2sem(PV2)) .
   
 
   crl [caseMatchRangeVersion] :  
-      procs(proc(procSwitch(true) k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) 
       constraints(CONST)
-   => procs(proc(procSwitch(true) k(S1 ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+   => k(S1 ~> K)
       constraints(simplify(CONST AND syn2sem(PV1) <= V  AND V <= syn2sem(PV2)))
    if checkSAT(CONST AND syn2sem(PV1) <= V  AND V <= syn2sem(PV2)) .
 
   crl [caseNotMatch] :  
-      procs(proc(procSwitch(true) k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) 
       constraints(CONST)
-   => procs(proc(procSwitch(true) k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+   => k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) 
       constraints(simplify(CONST AND V <> syn2sem(PV2)))
    if checkSAT(CONST AND V <> syn2sem(PV2)) .
   
 
   crl [caseNotMatchRangeVersion] :  
-      procs(proc(procSwitch(true) k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+      k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) 
       constraints(CONST)
-   => procs(proc(procSwitch(true) k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+   => k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K)
       constraints(simplify(CONST AND (syn2sem(PV1) > V  OR V > syn2sem(PV2))))
    if checkSAT(CONST AND (syn2sem(PV1) > V  OR V > syn2sem(PV2))) .
 
   --- while statement
-  eq procs(proc(procSwitch(true) k(WHILE WHILESTATEMENT DO S1 ENDWHILE ~> K) RESTCOMPONENTPROC) RESTPROCS)
-   = procs(proc(procSwitch(true) k(IF WHILESTATEMENT THEN S1 ; WHILE WHILESTATEMENT DO S1 ENDWHILE ; ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(WHILE WHILESTATEMENT DO S1 ENDWHILE ~> K)
+   = k(IF WHILESTATEMENT THEN S1 ; WHILE WHILESTATEMENT DO S1 ENDWHILE ; ENDIF ~> K) .
   
 
   --- repeat statement
-  eq procs(proc(procSwitch(true) k(REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ~> K) RESTCOMPONENTPROC) RESTPROCS)
-   = procs(proc(procSwitch(true) k(IF NOT REPEATSTATEMENT THEN S1 ; REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ; ENDIF ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ~> K)
+   = k(IF NOT REPEATSTATEMENT THEN S1 ; REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ; ENDIF ~> K) .
 
   --- for statement
-  eq procs(proc(procSwitch(true) k(FOR I := V TO PV1 BY PV2 DO S1 ENDFOR ~> K) RESTCOMPONENTPROC) RESTPROCS) 
-   = procs(proc(procSwitch(true) k(I := V ~> WHILE I <= PV1 DO S1 ; I := I + PV2 ; ENDWHILE ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(FOR I := V TO PV1 BY PV2 DO S1 ENDFOR ~> K) 
+   = k(I := V ~> WHILE I <= PV1 DO S1 ; I := I + PV2 ; ENDWHILE ~> K) .
 endm
 
 
@@ -205,15 +195,15 @@ mod CALL-SEMANTICS is
   inc COMMON-SEMANTIC-VALUE .
 
   var CPR : ProcessId .
-  vars ENV ENV' OBJENV  : Env .
-  vars RESTCOMPONENTPROC RESTCOMPONENTOBJ RESTPROCS RESTOBJS OBJS : KConfig .  
+  vars ENV ENV' INSENV  : Env .
+  vars RESTCOMPONENTPROC RESTCOMPONENTINS RESTPROCS RESTINSS INSS : KConfig .  
   var K : K .
   var S : Stmt .
   var ARGS : List{FArgElement} .
   vars STORE STORE' : Map{Location, SemanticValue} .
   var LOCATION : Location .
   vars FBI FBNAME I1 I2 : Pid .
-  vars OBJLOC ARRAYINDEX : Nat .
+  vars INSLOC ARRAYINDEX : Nat .
   vars V1 V2 CONST CONST' : SemanticValue .
   var RESTENV : ProgramStack .
   var RESTID : List{ProcessId} .
@@ -231,18 +221,18 @@ mod CALL-SEMANTICS is
   op @bind : Env ProcessId -> KLabel [ctor] .
   op @pop : -> KLabel [ctor] .
 
-  ceq procs(proc(procSwitch(true) k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS) store(STORE)
-    = procs(proc(procSwitch(true) k(@call(OBJLOC,ARGS) ~> K) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS) store(STORE)
-   if ObjLoc(OBJLOC) := STORE[ENV[FBI]] .
+  ceq k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) store(STORE)
+    = k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) store(STORE)
+   if ObjLoc(INSLOC) := STORE[ENV[FBI]] .
 
-  ceq procs(proc(procSwitch(true) k(@call(OBJLOC,ARGS) ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS)  
-    = procs(proc(procSwitch(true) k(@call(OBJLOC,ARGS,OBJENV,FBNAME) ~> K) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) 
-   if OBJENV := getObjEnv(OBJLOC,OBJS)
-   /\ FBNAME := getObjType(OBJLOC,OBJS) .
+  ceq k(@call(INSLOC,ARGS) ~> K) inss(INSS)  
+    = k(@call(INSLOC,ARGS,INSENV,FBNAME) ~> K) inss(INSS) 
+   if INSENV := getObjEnv(INSLOC,INSS)
+   /\ FBNAME := getObjType(INSLOC,INSS) .
 
-  eq procs(proc(procSwitch(true) k(@call(OBJLOC,ARGS,OBJENV,FBNAME) ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+  eq k(@call(INSLOC,ARGS,INSENV,FBNAME) ~> K)
      PARDef(FBNAME, PARMETERDATA, S) 
-   = procs(proc(procSwitch(true) k(@args(norm(ARGS,PARMETERDATA)) ~> @bind(OBJENV,OBJLOC) ~> S ~> @pop ~> K) RESTCOMPONENTPROC) RESTPROCS) 
+   = k(@args(norm(ARGS,PARMETERDATA)) ~> @bind(INSENV,INSLOC) ~> S ~> @pop ~> K) 
      PARDef(FBNAME, PARMETERDATA, S) .
 
   op @ALTERNATIVE : -> PExp [ctor] .
@@ -277,33 +267,33 @@ mod CALL-SEMANTICS is
 --- parameter binding
 
   ---in parameter
-  eq procs(proc(procSwitch(true) k(@args((INPAR(I1) <:= V1) , ARGS) ~> @bind(ENV,CPR)  ~> K) RESTCOMPONENTPROC) RESTPROCS)
-   = procs(proc(procSwitch(true) k(@args(ARGS) ~> @bind(ENV,CPR) ~> I1 := V1  ~> K) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(@args((INPAR(I1) <:= V1) , ARGS) ~> @bind(ENV,CPR)  ~> K)
+   = k(@args(ARGS) ~> @bind(ENV,CPR) ~> I1 := V1  ~> K) .
 
   --- inout parameter
-  eq procs(proc(procSwitch(true) (k(@args((INOUTPAR(I1) <:= I2) , ARGS) ~> @bind(ENV',CPR)  ~> K)) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS)
-   = procs(proc(procSwitch(true) (k(@args(ARGS) ~> @bind(insert(I1, ENV[I2], ENV'),CPR)  ~> K)) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(@args((INOUTPAR(I1) <:= I2) , ARGS) ~> @bind(ENV',CPR)  ~> K) callStack(ENV :: RESTENV)
+   = k(@args(ARGS) ~> @bind(insert(I1, ENV[I2], ENV'),CPR)  ~> K) callStack(ENV :: RESTENV) .
 
-  eq procs(proc(procSwitch(true) (k(@args((INOUTPAR(I1) <:= ObjLoc(OBJLOC) . I2) , ARGS) ~> @bind(ENV,CPR)  ~> K)) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS)
-   = procs(proc(procSwitch(true) (k(@args(ARGS) ~> @bind(insert(I1, getObjEnv(OBJLOC,OBJS)[I2], ENV),CPR)  ~> K)) RESTCOMPONENTPROC) RESTPROCS) objs(OBJS) .
+  eq k(@args((INOUTPAR(I1) <:= ObjLoc(INSLOC) . I2) , ARGS) ~> @bind(ENV,CPR)  ~> K) inss(INSS)
+   = k(@args(ARGS) ~> @bind(insert(I1, getObjEnv(INSLOC,INSS)[I2], ENV),CPR)  ~> K) inss(INSS) .
 
-  crl [argBinding] : procs(proc(procSwitch(true) (k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
-  =>  procs(proc(procSwitch(true) (k(@args(ARGS) ~> @bind(insert(I1, LOCATION, ENV),CPR)  ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND CONST'))
+  crl [argBinding] : k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K) constraints(CONST)
+  => k(@args(ARGS) ~> @bind(insert(I1, LOCATION, ENV),CPR)  ~> K) constraints(simplify(CONST AND CONST'))
   if arrayLookup(ARRAYENV, V2, CONST) => {LOCATION, CONST'} .
 
 
 --- context switching
-  eq procs(proc(procSwitch(true) k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV) RESTCOMPONENTPROC) RESTPROCS)
-   = procs(proc(procSwitch(true) k(K) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV)
+   = k(K) callStack(ENV :: RESTENV) .
 
-  eq  procs(proc(procSwitch(true) (k(@pop ~> K)) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS)
-   =  procs(proc(procSwitch(true) (k(K)) callStack(RESTENV) RESTCOMPONENTPROC) RESTPROCS) .
+  eq k(@pop ~> K) callStack(ENV :: RESTENV)
+   = k(K) callStack(RESTENV) .
 
-  eq  procs(proc(procSwitch(true) (k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) RESTCOMPONENTPROC) RESTPROCS)
-   =  procs(proc(procSwitch(true) (k(K)) callStack(RESTENV) RESTCOMPONENTPROC) RESTPROCS) . 
+  eq  k(return ~> @pop ~> K) callStack(ENV :: RESTENV)
+   =  k(K) callStack(RESTENV) . 
 
-  eq  procs(proc(procSwitch(true) (k(return ~> S ~> K)) RESTCOMPONENTPROC) RESTPROCS)
-   =  procs(proc(procSwitch(true) (k(return ~> K)) RESTCOMPONENTPROC) RESTPROCS) . 
+  eq  k(return ~> S ~> K)
+   =  k(return ~> K) [owise] . 
 endm
 
 
@@ -314,8 +304,8 @@ fmod STREAM-UPDATE-STREAM-DATA is
 
   var ENV : Env .
   var PE1 : PExp .
-  var OBJLOC OBJLOC2 : ProcessId .
-  vars RESTCOMPONENTOBJ RESTOBJS : KConfig .  
+  var INSLOC INSLOC2 : ProcessId .
+  vars RESTCOMPONENTINS RESTINSS : KConfig .  
   var STORE : Map{Location, SemanticValue} .
   var LOCATION : Location .
   vars STREAM STREAM2 : StreamMap .
@@ -334,53 +324,53 @@ fmod STREAM-UPDATE-STREAM-DATA is
 
 
   op readInstream : List{PExp} StreamMap KConfig KConfig StreamMap -> KConfig .
-  eq readInstream(READYMAINLIST, empty, RESTOBJS, store(STORE), STREAM2) =  store(simplifyStore(STORE)) inStream(STREAM2) .
+  eq readInstream(READYMAINLIST, empty, RESTINSS, store(STORE), STREAM2) =  store(simplifyStore(STORE)) inStream(STREAM2) .
 
-  eq readInstream(READYMAINLIST, ((MAIN :: PE1 |-> nilSemanticList) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  = readInstream(READYMAINLIST, STREAM, RESTOBJS, store(STORE), (STREAM2 , (MAIN :: PE1 |-> nilSemanticList))) .
+  eq readInstream(READYMAINLIST, ((MAIN :: PE1 |-> nilSemanticList) , STREAM), RESTINSS, store(STORE), STREAM2) 
+  = readInstream(READYMAINLIST, STREAM, RESTINSS, store(STORE), (STREAM2 , (MAIN :: PE1 |-> nilSemanticList))) .
   
-  ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL, SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(insert(LOCATION, (VAL), STORE)), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) 
-  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
+  ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL, SEQ)) , STREAM), RESTINSS, store(STORE), STREAM2) 
+  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTINSS, store(insert(LOCATION, (VAL), STORE)), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) 
+  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTINSS, store(STORE)) .
 
-  eq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (**, SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) 
+  eq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (**, SEQ)) , STREAM), RESTINSS, store(STORE), STREAM2) 
+  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTINSS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) 
  .
 
-  ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(insert(LOCATION, (VAL), STORE)), (STREAM2, (MAIN :: PE1 |-> nilSemanticList)) ) 
-  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
+  ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL)) , STREAM), RESTINSS, store(STORE), STREAM2) 
+  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTINSS, store(insert(LOCATION, (VAL), STORE)), (STREAM2, (MAIN :: PE1 |-> nilSemanticList)) ) 
+  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTINSS, store(STORE)) .
 
-  eq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> **) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> nilSemanticList)) ) .
+  eq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> **) , STREAM), RESTINSS, store(STORE), STREAM2) 
+  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTINSS, store(STORE), (STREAM2, (MAIN :: PE1 |-> nilSemanticList)) ) .
 
-  eq readInstream(READYMAINLIST, ((MAIN :: PE1 |-> (SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  readInstream(READYMAINLIST, STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) [owise] .
+  eq readInstream(READYMAINLIST, ((MAIN :: PE1 |-> (SEQ)) , STREAM), RESTINSS, store(STORE), STREAM2) 
+  =  readInstream(READYMAINLIST, STREAM, RESTINSS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) [owise] .
 
 
   op writeOutstreamAux : StreamMap KConfig KConfig StreamMap ~> StreamMap . 
   op writeOutstream : Nat StreamMap KConfig KConfig StreamMap ~> StreamMap . 
 
-  ceq writeOutstream(CYCLENAT, STREAM, RESTOBJS, store(STORE), STREAM2) = writeOutstreamAux(STREAM, RESTOBJS, store(STORE), STREAM2) if CYCLENAT >= 1 .
-  ceq writeOutstream(CYCLENAT, STREAM, RESTOBJS, store(STORE), STREAM2) = STREAM if CYCLENAT == 0 .
+  ceq writeOutstream(CYCLENAT, STREAM, RESTINSS, store(STORE), STREAM2) = writeOutstreamAux(STREAM, RESTINSS, store(STORE), STREAM2) if CYCLENAT >= 1 .
+  ceq writeOutstream(CYCLENAT, STREAM, RESTINSS, store(STORE), STREAM2) = STREAM if CYCLENAT == 0 .
 
-  eq writeOutstreamAux(empty, RESTOBJS, store(STORE), STREAM2) = STREAM2 .
+  eq writeOutstreamAux(empty, RESTINSS, store(STORE), STREAM2) = STREAM2 .
   
-  ceq [AAA] : writeOutstreamAux(((MAIN :: PE1 |-> (SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  writeOutstreamAux(STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ, ( simplify(STORE[LOCATION]) )))) ) 
-  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
+  ceq [AAA] : writeOutstreamAux(((MAIN :: PE1 |-> (SEQ)) , STREAM), RESTINSS, store(STORE), STREAM2) 
+  =  writeOutstreamAux(STREAM, RESTINSS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ, ( simplify(STORE[LOCATION]) )))) ) 
+  if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTINSS, store(STORE)) .
 
   op findLocVal : PExp KConfig KConfig ~> SemanticValue .
   
-  ceq findLocVal(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) RESTCOMPONENTOBJ) RESTOBJS), store(STORE)) = ObjLoc(OBJLOC2)
-  if LOCATION := ENV[I] /\ $hasMapping(STORE, LOCATION) /\ ObjLoc(OBJLOC2) := STORE[LOCATION] .
+  ceq findLocVal(ObjLoc(INSLOC) . I, (POUIns(id(INSLOC) mem(ENV) RESTCOMPONENTINS) RESTINSS), store(STORE)) = ObjLoc(INSLOC2)
+  if LOCATION := ENV[I] /\ $hasMapping(STORE, LOCATION) /\ ObjLoc(INSLOC2) := STORE[LOCATION] .
 
-  ceq findLocVal(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) RESTCOMPONENTOBJ) RESTOBJS), store(STORE)) = locVal(LOCATION)
+  ceq findLocVal(ObjLoc(INSLOC) . I, (POUIns(id(INSLOC) mem(ENV) RESTCOMPONENTINS) RESTINSS), store(STORE)) = locVal(LOCATION)
   if LOCATION := ENV[I] /\ $hasMapping(STORE, LOCATION) [owise] .
 
-  eq findLocVal(I, (obj(fbtype(I) id(OBJLOC) RESTCOMPONENTOBJ) RESTOBJS), store(STORE)) = ObjLoc(OBJLOC) .
+  eq findLocVal(I, (POUIns(fbtype(I) id(INSLOC) RESTCOMPONENTINS) RESTINSS), store(STORE)) = ObjLoc(INSLOC) .
 
-  eq findLocVal(PE1 . I, RESTOBJS, store(STORE)) = findLocVal(findLocVal(PE1 , RESTOBJS, store(STORE)) . I, RESTOBJS, store(STORE)) [owise] .
+  eq findLocVal(PE1 . I, RESTINSS, store(STORE)) = findLocVal(findLocVal(PE1 , RESTINSS, store(STORE)) . I, RESTINSS, store(STORE)) [owise] .
 
 
 
@@ -390,10 +380,10 @@ fmod STREAM-UPDATE-STREAM-DATA is
 
   op findLocType : PExp KConfig KConfig ~> PType .
   
-  ceq findLocType(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) RESTCOMPONENTOBJ) RESTOBJS), store(STORE)) = LOCTYPE 
+  ceq findLocType(ObjLoc(INSLOC) . I, (POUIns(id(INSLOC) mem(ENV) RESTCOMPONENTINS) RESTINSS), store(STORE)) = LOCTYPE 
   if loc(LOCN, LOCTYPE) := ENV[I] .
 
-  eq findLocType(PE1 . I, RESTOBJS, store(STORE)) = findLocType(findLocVal(PE1 , RESTOBJS, store(STORE)) . I, RESTOBJS, store(STORE)) .
+  eq findLocType(PE1 . I, RESTINSS, store(STORE)) = findLocType(findLocVal(PE1 , RESTINSS, store(STORE)) . I, RESTINSS, store(STORE)) .
 
 
 endfm
@@ -489,7 +479,7 @@ mod STREAM-EXTENSION is
   vars REALINPUT INPUTSPEC INPUTCOLLECT : List{StreamValue} .
   vars STRMAP STRMAP2 STRMAP3 : StreamMap .
   vars RESTMAP RESTMAP2 : [StreamMap] .
-  vars KCF OBJS : KConfig .
+  vars KCF INSS : KConfig .
   vars STORE : Map{Location, SemanticValue} .
   vars N CURR BOUND NEWVARNUM NEWVARNUM1 NEWVARNUM2 : Nat .
   vars E E1 E2 E3: StreamValue .
@@ -535,8 +525,8 @@ mod STREAM-EXTENSION is
    = ((KEY |-> @genSym(KEY, @getType(KEY, KCF), N)), updateIS(RESTMAP, KCF cycleCounter(N))) .
 
   op @getType : StreamKey KConfig ~> PType .
-  eq @getType(FN :: ID, objs(OBJS) store(STORE) KCF)
-   = findLocType(FN . ID, OBJS, store(STORE)) .
+  eq @getType(FN :: ID, inss(INSS) store(STORE) KCF)
+   = findLocType(FN . ID, INSS, store(STORE)) .
 
   eq [gen1] : genKeyTypePair(empty, KCF) = emptyKTPS .
   eq [gen2] : genKeyTypePair(((KEY |-> SEQ), RESTMAP), KCF) = genKeyTypePair(RESTMAP, KCF) [owise] .
@@ -730,21 +720,22 @@ endm
 mod CYCLE-SEMANTICS is
   inc CODE-CONFIG .
   inc STREAM-EXTENSION .
+  inc CALL-SEMANTICS .
 
-  vars ML ML1 : MainList .
-  var TKS : List{ProcessId} .
-  var PRID : ProcessId .
+  vars TKS DONE : List{ProcessId} .
+  vars PRID PRID' : ProcessId .
+  vars PEM PHM : Map{ProcessId, Nat} .
   vars PERIOD DUE CYCLECOUNT BOUND NEWVARNUM NEWVARNUM' : Nat .
   var PNAME : Pid .
   var S : Stmt .
   vars CT  : Rat .
   vars STREAM STREAM' : StreamMap .
-  vars KCF PROCS OBJS : KConfig .
+  vars KCF INSS : KConfig .
   var K : K .
-  vars RESTCOMPONENTPROC RESTCOMPONENTOBJ : KConfig . 
-  var NEXTOBJS : KConfig .
+  vars RESTCOMPONENTPROC RESTCOMPONENTINS : KConfig . 
+  var NEXTINSS : KConfig .
   var PARMETERDATA : VarSecTypePairList .
-  var RESTOBJS : KConfig .
+  var RESTINSS : KConfig .
   vars TNAT CONST FVAR : SemanticValue .
   var STORE : Map{Location, SemanticValue} .
   vars OUTSTREAM OUTSTREAM' INSTREAM : StreamMap .
@@ -754,32 +745,75 @@ mod CYCLE-SEMANTICS is
   var LTLRESULT LTLRESULT' : checkSATResult .
   vars FVARMAP FVARMAP' FVARMAP'' : FreshVarMap .
   var FVARMAPFORMULA : LTLFormula .
+  var WMAP : Map{ProcessId, KSPair} .
+  var STACK : ProgramStack .
+  var ENV : Env .
 
   op collectReadyProcList : List{ProcessId} KConfig ~> List{PExp} .
-  eq collectReadyProcList(nilProcIds, PROCS) = nilPExpList .
-  eq collectReadyProcList(PRID :: TKS, (obj(id(PRID) fbtype(PNAME)  RESTCOMPONENTOBJ) RESTOBJS))
-  = PNAME , collectReadyProcList(TKS, (obj(id(PRID) fbtype(PNAME)  RESTCOMPONENTOBJ) RESTOBJS)) .
+  eq collectReadyProcList(nilProcIds, INSS) = nilPExpList .
+  eq collectReadyProcList(PRID :: TKS, (POUIns(id(PRID) fbtype(PNAME) RESTCOMPONENTINS) RESTINSS))
+  = PNAME , collectReadyProcList(TKS, (POUIns(id(PRID) fbtype(PNAME)  RESTCOMPONENTINS) RESTINSS)) .
 
+---(
   op collectTaskFromMainList : MainList List{ProcessId} ~> List{ProcessId} .
   eq collectTaskFromMainList((@m(PRID, 1, PERIOD) ML1 ) , TKS) = collectTaskFromMainList(ML1, (TKS :: PRID)) .
   ceq collectTaskFromMainList((@m(PRID, DUE, PERIOD) ML1 ) , TKS) = collectTaskFromMainList(ML1 , (TKS)) if DUE =/= 1 .
   eq collectTaskFromMainList(emptyML, TKS) = TKS .
+---)
 
+  op @checkTurn : -> KLabel [ctor] .
+  op @callNext : -> KLabel [ctor] .
+
+  eq [endProg] :
+     k(K) callStack(nilProgramStack) jobQueue(PRID :: TKS) done(DONE)
+   = k(@checkTurn) callStack(nilProgramStack) jobQueue(TKS) done(DONE :: PRID) .
+
+  eq [scExec] :
+     k(@checkTurn) jobQueue(PRID :: TKS) phase((PRID |-> 1, PHM))
+   = k(@callNext) jobQueue(PRID :: TKS) phase((PRID |-> 1, PHM)) .
+
+  eq [scSkip] :
+     k(@checkTurn) jobQueue(PRID :: TKS) phase((PRID |-> DUE, PHM))
+   = k(@callNext) jobQueue(PRID :: TKS) phase((PRID |-> DUE, PHM)) [owise] .
+
+--- wait call
+  eq k(@callNext) callStack(nilProgramStack) jobQueue(PRID :: TKS)
+     wait((PRID |-> pair(K, STACK), WMAP))
+   = k(K) callStack(STACK) jobQueue(PRID :: TKS) wait(WMAP) .
+
+--- normal program call
+ ceq k(@callNext) callStack(nilProgramStack) jobQueue(PRID :: TKS)
+     inss(POUIns(id(PRID) fbtype(PNAME) mem(ENV) RESTCOMPONENTINS) RESTINSS)
+     PARDef(PNAME, PARMETERDATA, S) wait(WMAP)
+   = k(@call(PRID, nilPExpList, ENV, PNAME)) callStack(nilProgramStack) jobQueue(PRID :: TKS)
+     inss(POUIns(id(PRID) fbtype(PNAME) mem(ENV) RESTCOMPONENTINS) RESTINSS) wait(WMAP)
+if not $hasMapping(WMAP, PRID) .
+
+---(
   op decideWhatProcToRun : KConfig KConfig ~> KConfig .
-  eq decideWhatProcToRun(task(nilProcIds), procs(PROCS)) = task(nilProcIds) procs(PROCS) .
+  eq decideWhatProcToRun(jobQueue(nilProcIds), procs(PROCS)) = jobQueue(nilProcIds) procs(PROCS) .
 
-  eq decideWhatProcToRun(task((PRID :: TKS)), procs(proc(procSwitch(false) id(PRID) RESTCOMPONENTPROC) PROCS))
-  = task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) RESTCOMPONENTPROC) PROCS) .
-  
+  eq decideWhatProcToRun(jobQueue((PRID :: TKS)), procs(proc(procSwitch(false) id(PRID) RESTCOMPONENTPROC) PROCS))
+  = jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) RESTCOMPONENTPROC) PROCS) .
+ ---)
+
+  op updatePhase : Map{ProcessId, Nat} Map{ProcessId, Nat} ~> Map{ProcessId, Nat} .
+  eq updatePhase(empty, PEM) = empty .
+ ceq updatePhase((PRID |-> DUE, PHM), PEM) = PRID |-> DUE - 1, updatePhase(PHM, PEM) if DUE > 1 .
+  eq updatePhase((PRID |-> 1, PHM), (PRID |-> PERIOD , PEM))
+   = PRID |-> PERIOD, updatePhase(PHM, PEM) .
+
+---(
   op updateMainList : MainList ~> MainList .
   eq updateMainList(emptyML) = emptyML .
   ceq updateMainList(@m(PRID, DUE, PERIOD) ML1) = @m(PRID, DUE - 1, PERIOD) updateMainList(ML1) if DUE > 1 .
   eq updateMainList(@m(PRID, 1, PERIOD) ML1) = @m(PRID, PERIOD, PERIOD) updateMainList(ML1) .
+---)
 
-  op plusCycleTimeFromOBJTIMER : Rat KConfig ~> KConfig .
-  eq plusCycleTimeFromOBJTIMER(CT, empty) = empty .
-  eq plusCycleTimeFromOBJTIMER(CT, (obj(timer(@timer(TNAT)) RESTCOMPONENTOBJ) KCF)) 
-  = obj(timer(@timer(simplify(TNAT + syn2sem(T# CT ms)))) RESTCOMPONENTOBJ) plusCycleTimeFromOBJTIMER(CT,  KCF) .
+  op plusCycleTimeFromINSTIMER : Rat KConfig ~> KConfig .
+  eq plusCycleTimeFromINSTIMER(CT, empty) = empty .
+  eq plusCycleTimeFromINSTIMER(CT, (POUIns(timer(@timer(TNAT)) RESTCOMPONENTINS) KCF)) 
+  = POUIns(timer(@timer(simplify(TNAT + syn2sem(T# CT ms)))) RESTCOMPONENTINS) plusCycleTimeFromINSTIMER(CT,  KCF) .
 
   op updateLTLResult : SemanticValue LTLFormula StreamMap Nat ~> checkSATResult .
   ceq updateLTLResult(CONST, LTLFORMULA, OUTSTREAM, CYCLECOUNT) = UNSAT if CYCLECOUNT < 1 .
@@ -801,41 +835,44 @@ mod CYCLE-SEMANTICS is
 
   ceq updateLTLFormula(LTLFORMULA, emptyFreshVarMap, NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP) = {LTLFORMULA, FVARMAP, NEWVARNUM} if CYCLECOUNT > 1 .
 
-  
 
- crl [cycle] : cycleCounter(CYCLECOUNT) cycleCounterBound(BOUND) task( nilProcIds ) mainList( ML ) 
-               outStream(OUTSTREAM) inStream(INSTREAM) cycleTime(CT) procs(PROCS) objs(OBJS) store(STORE) 
+ crl [cycle] : cycleCounter(CYCLECOUNT) cycleCounterBound(BOUND) jobQueue(nilProcIds)
+               outStream(OUTSTREAM) inStream(INSTREAM) cycleTime(CT) inss(INSS) store(STORE) k(K) 
                constraints(CONST) LTLContainer(LTLFORMULA) LTLResult(LTLRESULT)
                inputCollector(INPUTCOLLECTSTREAM) inputStreamSpec(INPUTSPECSTREAM) LTLSubGoal(FVARMAP , NEWVARNUM)
+               period(PEM) phase(PHM) done(TKS)
+---            mainList(ML)
    => cycleCounter(CYCLECOUNT + 1) cycleCounterBound(BOUND) cycleTime(CT)
-      decideWhatProcToRun(task(TKS), procs(PROCS))
-      objs(plusCycleTimeFromOBJTIMER(CT, OBJS))
-      mainList( updateMainList(ML) ) 
-      readInstream(collectReadyProcList(TKS, OBJS), REALINPUTSTREAM', OBJS, store(STORE), empty)
+---      decideWhatProcToRun(jobQueue(TKS), procs(PROCS))
+      jobQueue(TKS) k(@callNext)
+      inss(plusCycleTimeFromINSTIMER(CT, INSS))
+---      mainList(updateMainList(ML)) 
+      phase(updatePhase(PHM, PEM)) period(PEM)
+      readInstream(collectReadyProcList(TKS, INSS), REALINPUTSTREAM', INSS, store(STORE), empty)
       outStream(OUTSTREAM')
-      constraints(simplify(CONST)) LTLContainer(LTLFORMULA') LTLResult(  LTLRESULT' )
+      constraints(simplify(CONST)) LTLContainer(LTLFORMULA') LTLResult(LTLRESULT')
       inputCollector(INPUTCOLLECTSTREAM') inputStreamSpec(INPUTSPECSTREAM') LTLSubGoal(FVARMAP' , NEWVARNUM')
     if 
     CYCLECOUNT <= BOUND /\
     checkSAT(CONST) /\ 
-    REALINPUTSTREAM' := updateIS(INPUTSPECSTREAM, (objs(OBJS) store(STORE) cycleCounter(CYCLECOUNT))) /\
+    REALINPUTSTREAM' := updateIS(INPUTSPECSTREAM, (inss(INSS) store(STORE) cycleCounter(CYCLECOUNT))) /\
     INPUTSPECSTREAM' := updateISSpec(INPUTSPECSTREAM) /\
     INPUTCOLLECTSTREAM' := updateISCollector(REALINPUTSTREAM', INPUTCOLLECTSTREAM) /\
-    TKS := collectTaskFromMainList(ML,  nilProcIds ) /\ 
-    OUTSTREAM' := writeOutstream(CYCLECOUNT, OUTSTREAM, OBJS, store(STORE), empty) /\
+    OUTSTREAM' := writeOutstream(CYCLECOUNT, OUTSTREAM, INSS, store(STORE), empty) /\
     {LTLFORMULA', FVARMAP', NEWVARNUM'} := updateLTLFormula(LTLFORMULA, FVARMAP, NEWVARNUM, CYCLECOUNT, BOUND - 1, emptyFreshVarMap) /\
     LTLRESULT' := updateLTLResult(CONST, combineLTLFormulaAndMap(LTLFORMULA', FVARMAP'), (transformISKey(INPUTCOLLECTSTREAM'), OUTSTREAM'), CYCLECOUNT) /\
     LTLRESULT == UNSAT 
       .
-      
 
-  eq [programTaskDone] : task( PRID :: TKS ) procs(proc(procSwitch(true) id(PRID) k(.K) RESTCOMPONENTPROC) PROCS)
-                         objs(obj(id(PRID) fbtype(PNAME) RESTCOMPONENTOBJ) RESTOBJS)
+---(
+  eq [programTaskDone] : jobQueue( PRID :: TKS ) procs(proc(procSwitch(true) id(PRID) k(.K) RESTCOMPONENTPROC) PROCS)
+                         inss(POUIns(id(PRID) fbtype(PNAME) RESTCOMPONENTINS) RESTINSS)
                          PARDef(PNAME, PARMETERDATA, S) 
-   = decideWhatProcToRun(task( TKS ), procs(proc(procSwitch(false) id(PRID) k(S) RESTCOMPONENTPROC) PROCS))
-     objs(obj(id(PRID) fbtype(PNAME) RESTCOMPONENTOBJ) RESTOBJS)
+   = decideWhatProcToRun(jobQueue( TKS ), procs(proc(procSwitch(false) id(PRID) k(S) RESTCOMPONENTPROC) PROCS))
+     inss(POUIns(id(PRID) fbtype(PNAME) RESTCOMPONENTINS) RESTINSS)
      PARDef(PNAME, PARMETERDATA, S)
       .
+---)
 endm
 
 --- wait semantics
@@ -848,55 +885,79 @@ mod WAIT-SEMANTICS is
   var E : PExp .
   var K : K .
   vars CT : Rat .
-  vars ML1 ML2 : MainList .
   vars V1 CONST : SemanticValue .
   vars D P : Nat .
   var RESTPROCS : KConfig .
   var RESTCOMPONENTPROC : KConfig .
+  var STACK : ProgramStack .
+  var WMAP : Map{ProcessId, KSPair} .
+  var PHM : Map{ProcessId, Nat} .
 
   eq k(WAIT(E) ~> K) = k(IF E THEN skip ; ELSE @release ; WAIT(E) ; ENDIF   ~> K) .
 
-  eq task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) (k(@release ~> K)) RESTCOMPONENTPROC) RESTPROCS)
-  = decideWhatProcToRun( task(TKS), procs(proc(procSwitch(false) id(PRID) (k(K)) RESTCOMPONENTPROC) RESTPROCS) ) .
+  eq jobQueue(PRID :: TKS) k(@release ~> K) callStack(STACK) wait(WMAP) phase((PRID |-> D, PHM))
+   = jobQueue(PRID :: TKS) k(.K) callStack(nilProgramStack) wait((WMAP, PRID |-> pair(K, STACK)))
+     phase((PRID |-> 1, PHM)) .
 
-  crl [WAITTIMEDECREASE] : task(PRID :: TKS) mainList(ML1 @m(PRID, D, P) ML2) 
+ crl [WAITTIMEDECREASE] : 
+     jobQueue(PRID :: TKS) phase((PRID |-> D, PHM)) callStack(STACK)
+     k(WAITTIME(V1) ~> K) cycleTime(CT) constraints(CONST) wait(WMAP)
+  => jobQueue(PRID :: TKS) k(.K) callStack(nilProgramStack)
+     phase((PRID |-> 1, PHM)) cycleTime(CT)
+     wait((WMAP, PRID |-> pair(WAITTIME(V1 - syn2sem(T# CT ms)) ~> K, STACK)))
+     constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
+  if checkSAT(V1 > syn2sem(T# 0 ms)) .
+
+ crl [WAITTIMEND] :
+     jobQueue(PRID :: TKS) k(WAITTIME(V1) ~> K) constraints(CONST)
+  => jobQueue(PRID :: TKS) k(K)
+     constraints(simplify(CONST AND V1 <= syn2sem(T# 0 ms)))
+  if checkSAT(V1 <= syn2sem(T# 0 ms)) .
+
+---(
+  eq jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) (k(@release ~> K)) RESTCOMPONENTPROC) RESTPROCS)
+  = decideWhatProcToRun( jobQueue(TKS), procs(proc(procSwitch(false) id(PRID) (k(K)) RESTCOMPONENTPROC) RESTPROCS) ) .
+
+  crl [WAITTIMEDECREASE] : jobQueue(PRID :: TKS) mainList(ML1 @m(PRID, D, P) ML2) 
                            procs(proc(procSwitch(true) id(PRID) (k(WAITTIME(V1) ~> K)) RESTCOMPONENTPROC) RESTPROCS) cycleTime(CT) constraints(CONST)
-     => decideWhatProcToRun(task( TKS ), procs(proc(procSwitch(false) id(PRID) (k(WAITTIME(V1 - syn2sem(T# CT ms)) ~> K)) RESTCOMPONENTPROC) RESTPROCS) )
+     => decideWhatProcToRun(jobQueue( TKS ), procs(proc(procSwitch(false) id(PRID) (k(WAITTIME(V1 - syn2sem(T# CT ms)) ~> K)) RESTCOMPONENTPROC) RESTPROCS) )
         mainList(ML1 @m(PRID, 1, P) ML2) 
         cycleTime(CT)  constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
         if checkSAT(V1 > syn2sem(T# 0 ms)) .
 
-  crl [WAITTIMEND] : task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(WAITTIME(V1) ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
-   => task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(K)) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND V1 <= syn2sem(T# 0 ms)))
+  crl [WAITTIMEND] : jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(WAITTIME(V1) ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
+   => jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(K)) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND V1 <= syn2sem(T# 0 ms)))
    if checkSAT(V1 <= syn2sem(T# 0 ms)) .
+---)
 endm
 
 --- semantics for time-related FBs (TON, ...)
 fmod TIMER-SEMANTICS is 
   inc CODE-CONFIG .
 
-  vars CPR : ProcessId .
+  var CPR : ProcessId .
+  var TKS : List{ProcessId} .
   var IDSTACK : List{ProcessId} .
   var K : K .  
   vars CT PTIME : Rat .
   var PV1 : PValue .
-  vars RESTPROCS RESTOBJS : KConfig .
-  vars RESTCOMPONENTPROC RESTCOMPONENTOBJ : KConfig .
+  vars RESTPROCS RESTINSS : KConfig .
+  vars RESTCOMPONENTPROC RESTCOMPONENTINS : KConfig .
   var TVAL : SemanticValue .
 
-  eq procs(proc(procSwitch(true) (k(@#cycleValue ~> K)) RESTCOMPONENTPROC) RESTPROCS) cycleTime(CT) 
+  eq k(@#cycleValue ~> K) cycleTime(CT) 
    =
-     procs(proc(procSwitch(true) (k(syn2sem(T# CT ms) ~> K)) RESTCOMPONENTPROC) RESTPROCS) cycleTime(CT) .
+     k(syn2sem(T# CT ms) ~> K) cycleTime(CT) .
 
-  eq procs(proc(procSwitch(true)  (k(@#timerValue ~> K)) RESTCOMPONENTPROC) RESTPROCS)
-     objs(obj(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTOBJ) RESTOBJS)
+  eq k(@#timerValue ~> K) jobQueue(CPR :: TKS)
+     inss(POUIns(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTINS) RESTINSS)
    =
-     procs(proc(procSwitch(true) (k(TVAL ~> K)) RESTCOMPONENTPROC) RESTPROCS)
-     objs(obj(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTOBJ) RESTOBJS) .
+     k(TVAL ~> K) jobQueue(CPR :: TKS)
+     inss(POUIns(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTINS) RESTINSS) .
 
-  eq procs(proc(procSwitch(true) (k(@#timerSetValue(T# PTIME ms) ~> K)) RESTCOMPONENTPROC) RESTPROCS)
-     objs(obj(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTOBJ) RESTOBJS)
+  eq k(@#timerSetValue(T# PTIME ms) ~> K) jobQueue(CPR :: TKS) 
+     inss(POUIns(id(CPR) timer(@timer(TVAL)) RESTCOMPONENTINS) RESTINSS)
    =
-     procs(proc(procSwitch(true) (k(K)) RESTCOMPONENTPROC) RESTPROCS)
-     objs(obj(id(CPR) timer(@timer(syn2sem(T# PTIME ms))) RESTCOMPONENTOBJ) RESTOBJS) .
+     k(K) jobQueue(CPR :: TKS)
+     inss(POUIns(id(CPR) timer(@timer(syn2sem(T# PTIME ms))) RESTCOMPONENTINS) RESTINSS) .
 endfm

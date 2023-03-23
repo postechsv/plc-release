@@ -1,3 +1,4 @@
+---(
 fmod MAINLIST is
   inc PROCESS-ID .
   inc PID .
@@ -10,6 +11,7 @@ fmod MAINLIST is
   op @m : ProcessId Nat Nat -> MainEntry [ctor] . 
   op __ : MainList MainList -> MainList [ctor assoc id: emptyML] .            
 endfm
+---)
 
 fmod STREAM is
   inc BASIC-PEXP .
@@ -46,12 +48,21 @@ endfm
 fmod PROGRAMSTACK is
   inc ENV .
   inc PROCESS-ID .
+  inc K-CONFIG .
   sort ProgramStack .
 
   subsort Env < ProgramStack .
   op nilProgramStack : -> ProgramStack [ctor] .
   op _::_ : ProgramStack ProgramStack -> ProgramStack [assoc id: nilProgramStack] .
+
+  sort KSPair .
+  op emptyPair : -> KSPair [ctor] .
+  op pair : K ProgramStack -> KSPair [ctor] .
 endfm
+
+view KSPair from TRIV to PROGRAMSTACK is
+  sort Elt to KSPair .
+endv
 
 fmod VARPARMETERTYPE is
   inc VAR-DECLARATION-SYNTAX .
@@ -94,12 +105,10 @@ op $size to $sizex
 ) .
   inc VARPARMETERTYPE .
 
-  op procSwitch : Bool -> KConfig [ctor] .
   op id : ProcessId -> KConfig [ctor] .
   op fbtype : Pid -> KConfig [ctor] .
   op timer : Timer -> KConfig [ctor] .
   op mem : Env -> KConfig [ctor] .
-  op callStack : ProgramStack -> KConfig [ctor] .
 endfm
 
 --- CODE-CONFIG defines K Configuration (cell structure)  
@@ -107,10 +116,14 @@ fmod CODE-CONFIG is
   inc TIMER .
   pr MAP{Location, SemanticValue} .
   inc POU-DEF .
-  inc MAINLIST .
   inc STREAM .
   inc COMPONENT .
   inc FRESHVARMATCHING .
+  inc MAP{ProcessId, Nat} .
+  inc MAP{ProcessId, KSPair} .
+
+  op callStack : ProgramStack -> KConfig [ctor] .
+  op wait : Map{ProcessId, KSPair} -> KConfig [ctor] .
 
   op randomSeed : Nat -> KConfig [ctor] .
   op genv : Env -> KConfig [ctor] .
@@ -118,17 +131,20 @@ fmod CODE-CONFIG is
   op store : Map{Location, SemanticValue} -> KConfig [ctor] .  
   op POUDef : POUDefinition -> KConfig [ctor] .
   op PARDef : Pid VarSecTypePairList Stmt -> KConfig [ctor] .
-  op obj : KConfig -> KConfig [ctor] . --- ProcessId Pid Timer Env
-  op objs : KConfig -> KConfig [ctor] . 
-  op proc : KConfig -> KConfig [ctor] . --- Bool ProcessId KConfig ProgramStack
-  op procs : KConfig -> KConfig [ctor] .
-  op task : List{ProcessId} -> KConfig [ctor] .
-  op mainList : MainList -> KConfig [ctor] . 
+  op POUIns : KConfig -> KConfig [ctor] . --- ProcessId Pid Timer Env
+  op inss : KConfig -> KConfig [ctor] . 
+---  op proc : KConfig -> KConfig [ctor] . --- Bool ProcessId KConfig ProgramStack
+---  op procs : KConfig -> KConfig [ctor] .
+  op jobQueue : List{ProcessId} -> KConfig [ctor] .
+  op done : List{ProcessId} -> KConfig [ctor] .
+---  op mainList : MainList -> KConfig [ctor] . 
+  op period : Map{ProcessId, Nat} -> KConfig [ctor] .
+  op phase : Map{ProcessId, Nat} -> KConfig [ctor] .
+
   op cycleTime : Nat -> KConfig [ctor] .
-  op constraints : BoolSemanticVal -> KConfig [ctor] .
   op cycleCounter : Nat -> KConfig [ctor] .
 
-
+  op constraints : BoolSemanticVal -> KConfig [ctor] .
   ops inStream outStream : StreamMap -> KConfig [ctor] .
   op inputCollector : StreamMap -> KConfig [ctor] .
   op inputStreamSpec : StreamMap -> KConfig [ctor] .
@@ -150,8 +166,8 @@ fmod CODE-CONFIG is
   var REST OBJS : KConfig .  
 ---
   op getObjEnv : ProcessId KConfig ~> Env .
-  eq getObjEnv(LOC, obj(id(LOC) mem(ENV) REST) OBJS) = ENV .
+  eq getObjEnv(LOC, POUIns(id(LOC) mem(ENV) REST) OBJS) = ENV .
 
   op getObjType : ProcessId KConfig ~> Pid .
-  eq getObjType(LOC, obj(id(LOC) fbtype(FBNAME) REST) OBJS) = FBNAME .
+  eq getObjType(LOC, POUIns(id(LOC) fbtype(FBNAME) REST) OBJS) = FBNAME .
 endfm
