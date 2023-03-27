@@ -765,7 +765,7 @@ mod CYCLE-SEMANTICS is
   op @callNext : -> KLabel [ctor] .
 
   eq [endProg] :
-     k(K) callStack(nilProgramStack) jobQueue(PRID :: TKS) done(DONE)
+     k(.K) callStack(nilProgramStack) jobQueue(PRID :: TKS) done(DONE)
    = k(@checkTurn) callStack(nilProgramStack) jobQueue(TKS) done(DONE :: PRID) .
 
   eq [scExec] :
@@ -786,7 +786,8 @@ mod CYCLE-SEMANTICS is
      inss(POUIns(id(PRID) fbtype(PNAME) mem(ENV) RESTCOMPONENTINS) RESTINSS)
      PARDef(PNAME, PARMETERDATA, S) wait(WMAP)
    = k(@call(PRID, nilPExpList, ENV, PNAME)) callStack(nilProgramStack) jobQueue(PRID :: TKS)
-     inss(POUIns(id(PRID) fbtype(PNAME) mem(ENV) RESTCOMPONENTINS) RESTINSS) wait(WMAP)
+     inss(POUIns(id(PRID) fbtype(PNAME) mem(ENV) RESTCOMPONENTINS) RESTINSS)
+     PARDef(PNAME, PARMETERDATA, S) wait(WMAP)
 if not $hasMapping(WMAP, PRID) .
 
 ---(
@@ -844,7 +845,7 @@ if not $hasMapping(WMAP, PRID) .
 ---            mainList(ML)
    => cycleCounter(CYCLECOUNT + 1) cycleCounterBound(BOUND) cycleTime(CT)
 ---      decideWhatProcToRun(jobQueue(TKS), procs(PROCS))
-      jobQueue(TKS) k(@callNext)
+      jobQueue(TKS) k(@checkTurn)
       inss(plusCycleTimeFromINSTIMER(CT, INSS))
 ---      mainList(updateMainList(ML)) 
       phase(updatePhase(PHM, PEM)) period(PEM) done(nilProcIds)
