@@ -847,7 +847,7 @@ if not $hasMapping(WMAP, PRID) .
       jobQueue(TKS) k(@callNext)
       inss(plusCycleTimeFromINSTIMER(CT, INSS))
 ---      mainList(updateMainList(ML)) 
-      phase(updatePhase(PHM, PEM)) period(PEM)
+      phase(updatePhase(PHM, PEM)) period(PEM) done(nilProcIds)
       readInstream(collectReadyProcList(TKS, INSS), REALINPUTSTREAM', INSS, store(STORE), empty)
       outStream(OUTSTREAM')
       constraints(simplify(CONST)) LTLContainer(LTLFORMULA') LTLResult(LTLRESULT')

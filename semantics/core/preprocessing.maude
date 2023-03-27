@@ -92,6 +92,7 @@ fmod PREPROCESSING is
   var POUs : POUSection .
   vars SUBML ML : ProgramList .
   vars PHM PEM : Map{ProcessId, Nat} .
+  var PL : List{ProcessId} .
   vars VDC VDC2 : VarDeclSet .
   var CT : CycleTime .
   var POUDEF : POUDefinition .
@@ -147,12 +148,12 @@ fmod PREPROCESSING is
     store(STR') inputCollector(empty) inputStreamSpec(empty) cycleCounterBound(INF)
     pickupIns(preprocessPOUs(NEWOBJS), inss(empty))
 ---    pickupIns(pickProcs(preprocessPOUs(NEWOBJS), procs(empty)), inss(empty))
-    randomSeed(0) newVarIndex(0) wait(empty)
+    randomSeed(0) newVarIndex(0) wait(empty) k(.K) callStack(nilProgramStack) 
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))
-    /\ MAINLIST := makeProgramKConfig(TODOLIST', ML, phase(empty) period(empty)) 
-    /\ {ENV', STR', nil, NEWOBJS} := buildObj(TODOLIST TODOLIST' SUBPROTODOLIST , GENV, STR, (getPOUs(POUs) enumTypes(TDS)),  countVarDecl(VDC) + countTODOLIST(TODOLIST') + countTODOLIST(SUBPROTODOLIST) ) 
+    /\ MAINLIST := makeProgramKConfig(TODOLIST', ML, done(nilProcIds) phase(empty) period(empty)) 
+    /\ {ENV', STR', nil, NEWOBJS} := buildObj(TODOLIST TODOLIST' SUBPROTODOLIST, GENV, STR, (getPOUs(POUs) enumTypes(TDS)),  countVarDecl(VDC) + countTODOLIST(TODOLIST') + countTODOLIST(SUBPROTODOLIST) ) 
      .
   
 ---  eq pickProcs(KCF, procs(AUX)) = procs(AUX) KCF [owise] . 
@@ -162,8 +163,6 @@ fmod PREPROCESSING is
   eq pickupIns((POUIns(COM) KCF), inss(AUX)) = pickupIns(KCF, inss(AUX POUIns(COM))) . 
   
   eq makeCycleTime(CycleTime: # CT:Rat) = cycleTime(CT:Rat) .
-  
-
 
   eq getPOUs(BEGINPOUS nil ENDPOUS) = empty . 
   eq getPOUs(BEGINPOUS POUDEF POUDEFS ENDPOUS) = POUDef(POUDEF) getPOUs(BEGINPOUS POUDEFS ENDPOUS) .
@@ -194,8 +193,8 @@ fmod PREPROCESSING is
   eq makeSubProgramList(PNAME ;; ML, OBJLOC) = (PNAME, fbtype[ PNAME ], OBJLOC) makeSubProgramList(ML, OBJLOC + 1) . 
 
   eq makeProgramKConfig(nil, emptyProgramList, KCF) = KCF .
-  eq makeProgramKConfig(((PNAME, program[ PNAME ], OBJLOC) TODOLIST), (PNAME([# PH, # PE]) ;; ML), period(PEM) phase(PHM))   
-   = makeProgramKConfig(TODOLIST, ML, period((PEM, OBJLOC |-> PE)) phase((PHM, OBJLOC |-> PH)))  .
+  eq makeProgramKConfig(((PNAME, program[ PNAME ], OBJLOC) TODOLIST), (PNAME([# PH, # PE]) ;; ML), done(PL) period(PEM) phase(PHM))   
+   = makeProgramKConfig(TODOLIST, ML, done(PL :: OBJLOC) period((PEM, OBJLOC |-> PE)) phase((PHM, OBJLOC |-> PH)))  .
 
   eq getDataForbuildSingleObj((PNAME, program[ PNAME ], OBJLOC) , (POUDef(PROGRAM PNAME VSC CSC ENDPROGRAM) KCF )) 
   = {(PNAME, program[ PNAME ], OBJLOC), POUDef(PROGRAM PNAME VSC CSC ENDPROGRAM)}  .
