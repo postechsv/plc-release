@@ -142,7 +142,7 @@ fmod PREPROCESSING is
   op getVarSection : KConfig -> VarSection .
  
   ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR)  CT ENDCONFIG) POUs]]]
-  =  makeCycleTime(CT) task(nilProcIds) inStream(empty) outStream(empty) constraints(syn2sem(TRUE)) cycleCounter(0) 
+  =  makeCycleTime(CT) jobQueue(nilProcIds) inStream(empty) outStream(empty) constraints(syn2sem(TRUE)) cycleCounter(0) 
     MAINLIST LTLContainer(emptyLTLFormula) LTLResult(UNSAT) LTLSubGoal(emptyFreshVarMap , 0)
     store(STR') inputCollector(empty) inputStreamSpec(empty) cycleCounterBound(INF)
     pickObjs(pickProcs(preprocessPOUs(NEWOBJS), procs(empty)), objs(empty))

@@ -94,7 +94,7 @@ op $size to $sizex
 ) .
   inc VARPARMETERTYPE .
 
-  op procSwitch : Bool -> KConfig [ctor] .
+---  op procSwitch : Bool -> KConfig [ctor] .
   op id : ProcessId -> KConfig [ctor] .
   op fbtype : Pid -> KConfig [ctor] .
   op timer : Timer -> KConfig [ctor] .
@@ -120,19 +120,25 @@ fmod CODE-CONFIG is
   op PARDef : Pid VarSecTypePairList Stmt -> KConfig [ctor] .
   op obj : KConfig -> KConfig [ctor] . --- ProcessId Pid Timer Env
   op objs : KConfig -> KConfig [ctor] . 
-  op proc : KConfig -> KConfig [ctor] . --- Bool ProcessId KConfig ProgramStack
-  op procs : KConfig -> KConfig [ctor] .
-  op task : List{ProcessId} -> KConfig [ctor] .
-  op mainList : MainList -> KConfig [ctor] . 
+---  op proc : KConfig -> KConfig [ctor] . --- Bool ProcessId KConfig ProgramStack
+---  op procs : KConfig -> KConfig [ctor] .
+---  op jobQueue : List{ProcessId} -> KConfig [ctor] .
+---  op mainList : MainList -> KConfig [ctor] . 
   op cycleTime : Nat -> KConfig [ctor] .
   op constraints : BoolSemanticVal -> KConfig [ctor] .
   op cycleCounter : Nat -> KConfig [ctor] .
 
+  op interval : Nat -> KConfig [ctor] .
+  op phase : Nat -> KConfig [ctor] .
+  op priority : Nat -> KConfig [ctor] .
+  op onHoldTime : Nat -> KConfig [ctor] .
+
+  op task : KConfig -> KConfig [ctor] . --- ProcessId K ProgramStack interval phase priority yieldTime
+  op tasks : KConfig -> KConfig [ctor] .
 
   ops inStream outStream : StreamMap -> KConfig [ctor] .
   op inputCollector : StreamMap -> KConfig [ctor] .
   op inputStreamSpec : StreamMap -> KConfig [ctor] .
-
 
   op enumTypes : TypeDeclSet -> KConfig [ctor] .
 

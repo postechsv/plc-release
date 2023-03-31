@@ -755,6 +755,8 @@ mod CYCLE-SEMANTICS is
   vars FVARMAP FVARMAP' FVARMAP'' : FreshVarMap .
   var FVARMAPFORMULA : LTLFormula .
 
+  ops @pBlock @nBlock : -> KLabel [ctor] .
+
   op collectReadyProcList : List{ProcessId} KConfig ~> List{PExp} .
   eq collectReadyProcList(nilProcIds, PROCS) = nilPExpList .
   eq collectReadyProcList(PRID :: TKS, (obj(id(PRID) fbtype(PNAME)  RESTCOMPONENTOBJ) RESTOBJS))
@@ -766,10 +768,10 @@ mod CYCLE-SEMANTICS is
   eq collectTaskFromMainList(emptyML, TKS) = TKS .
 
   op decideWhatProcToRun : KConfig KConfig ~> KConfig .
-  eq decideWhatProcToRun(task(nilProcIds), procs(PROCS)) = task(nilProcIds) procs(PROCS) .
+  eq decideWhatProcToRun(jobQueue(nilProcIds), procs(PROCS)) = jobQueue(nilProcIds) procs(PROCS) .
 
-  eq decideWhatProcToRun(task((PRID :: TKS)), procs(proc(procSwitch(false) id(PRID) RESTCOMPONENTPROC) PROCS))
-  = task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) RESTCOMPONENTPROC) PROCS) .
+  eq decideWhatProcToRun(jobQueue((PRID :: TKS)), procs(proc(procSwitch(false) id(PRID) RESTCOMPONENTPROC) PROCS))
+  = jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) RESTCOMPONENTPROC) PROCS) .
   
   op updateMainList : MainList ~> MainList .
   eq updateMainList(emptyML) = emptyML .
@@ -800,21 +802,20 @@ mod CYCLE-SEMANTICS is
   {LTLFORMULA', FVARMAP'', NEWVARNUM'} := addFreshVar(toNNF(genFormula(FVARMAPFORMULA, CYCLECOUNT - 1, BOUND)), NEWVARNUM)  .
 
   ceq updateLTLFormula(LTLFORMULA, emptyFreshVarMap, NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP) = {LTLFORMULA, FVARMAP, NEWVARNUM} if CYCLECOUNT > 1 .
+ 
 
-  
-
- crl [cycle] : cycleCounter(CYCLECOUNT) cycleCounterBound(BOUND) task( nilProcIds ) mainList( ML ) 
+ crl [cycle] : cycleCounter(CYCLECOUNT) cycleCounterBound(BOUND) jobQueue( nilProcIds ) mainList( ML ) 
                outStream(OUTSTREAM) inStream(INSTREAM) cycleTime(CT) procs(PROCS) objs(OBJS) store(STORE) 
                constraints(CONST) LTLContainer(LTLFORMULA) LTLResult(LTLRESULT)
                inputCollector(INPUTCOLLECTSTREAM) inputStreamSpec(INPUTSPECSTREAM) LTLSubGoal(FVARMAP , NEWVARNUM)
    => cycleCounter(CYCLECOUNT + 1) cycleCounterBound(BOUND) cycleTime(CT)
-      decideWhatProcToRun(task(TKS), procs(PROCS))
+      decideWhatProcToRun(jobQueue(TKS), procs(PROCS))
       objs(plusCycleTimeFromOBJTIMER(CT, OBJS))
       mainList( updateMainList(ML) ) 
       readInstream(collectReadyProcList(TKS, OBJS), REALINPUTSTREAM', OBJS, store(STORE), empty)
       outStream(OUTSTREAM')
-      constraints(simplify(CONST)) LTLContainer(LTLFORMULA') LTLResult(  LTLRESULT' )
-      inputCollector(INPUTCOLLECTSTREAM') inputStreamSpec(INPUTSPECSTREAM') LTLSubGoal(FVARMAP' , NEWVARNUM')
+      constraints(simplify(CONST)) LTLContainer(LTLFORMULA') LTLResult(LTLRESULT')
+      inputCollector(INPUTCOLLECTSTREAM') inputStreamSpec(INPUTSPECSTREAM') LTLSubGoal(FVARMAP', NEWVARNUM')
     if 
     CYCLECOUNT <= BOUND /\
     checkSAT(CONST) /\ 
@@ -826,16 +827,86 @@ mod CYCLE-SEMANTICS is
     {LTLFORMULA', FVARMAP', NEWVARNUM'} := updateLTLFormula(LTLFORMULA, FVARMAP, NEWVARNUM, CYCLECOUNT, BOUND - 1, emptyFreshVarMap) /\
     LTLRESULT' := updateLTLResult(CONST, combineLTLFormulaAndMap(LTLFORMULA', FVARMAP'), (transformISKey(INPUTCOLLECTSTREAM'), OUTSTREAM'), CYCLECOUNT) /\
     LTLRESULT == UNSAT 
-      .
+    .
       
 
-  eq [programTaskDone] : task( PRID :: TKS ) procs(proc(procSwitch(true) id(PRID) k(.K) RESTCOMPONENTPROC) PROCS)
+  op stride : KConfig ~> Nat . 
+  op updateMinTime : KConfig Nat ~> KConfig .
+
+  op blocked : K ~> Bool .
+  eq blocked(@nBlock ~> K) = true .
+  eq blocked(@pBlock ~> K) = true .
+  eq blocked(K) = false [owise] .
+
+  op nextCandidates : KConfig ~> List{ProcessId} .
+
+  op duePrograms : KConfig ~> KConfig .
+  op topPriority : KConfig ~> KConfig .
+  op longestWaiting : KConfig ~> KConfig .
+  op getIds : KConfig ~> List{ProcessId} .
+
+  eq duePrograms(empty) = empty .
+  eq duePrograms(task(readyIn(0) RTC) TASKS) = task(readyIn(0) RTC) duePrograms(TASKS) .
+
+  eq topPriority(empty) = empty .
+  eq topPriority(task(RTC)) = task(RTC) .
+ ceq topPriority(task(priority(PR1) RTC) task(priority(PR2) RTC2) TASKS)
+   = topPriority(task(priority(PR1) RTC) TASKS)
+  if PR1 < PR2 .
+
+  eq longestWaiting(empty) = empty .
+  eq longestWaiting(task(RTC)) = task(RTC) .
+ ceq longestWaiting(task(minBlockedTime(HT) RTC) task(minBlockedTime(HT2) RTC2) TASKS)
+   = longestWaiting(task(minBlockedTime(HT) RTC) TASKS)
+  if HT > HT2 .
+
+  eq getIds(empty) = nilProcIds .
+  eq getIds(task(id(PRID) RTC) TASKS) = PRID :: getIds(TASKS) .
+
+  op allBlocked : KConfig ~> Bool .
+
+  eq allBlocked(empty) = true .
+  eq allBlocked(task(k(K) RTC) TASKS) = blocked(K) and allBlocked(TASKS) .
+
+  eq nextCandidates(TASKS) = getIds(longestWaiting(topPriority(duePrograms(TASKS)))) .
+
+  eq [programFinished] : 
+     tasks(task(id(PRID) k(.K) RTC) TASKS)
+   = tasks(task(id(PRID) k(@nBlock) RTC) TASKS) .
+
+ crl [awake] : tasks(task(id(PRID) k(@nBlock) minBlockedTime(HT) interval(INTERVAL) readyIn(0) RTC) TASKS)
+     objs(obj(id(PRID) fbtype(PNAME) RESTCOMPONENTOBJ) RESTOBJS)
+     PARDef(PNAME, PARMETERDATA, S)
+  => tasks(task(id(PRID) k(S) minBlockedTime(0) interval(INTERVAL) readyIn(INTERVAL - HT) RTC) TASKS) 
+     objs(obj(id(PRID) fbtype(PNAME) RESTCOMPONENTOBJ) RESTOBJS)
+     PARDef(PNAME, PARMETERDATA, S)
+  if allAsleep(TASKS)
+  /\ occursx(PRID, nextCandidates(id(PRID) task(k(@nBlock) minBlockedTime(HT) interval(INTERVAL) readyIn(0)) TASKS)
+
+ crl [preempt] :
+     tasks(task(id(PRID) k(K) priority(PR1) RTC)
+           task(id(PRID2) k(@nBlock) priority(PR2) readyIn(0) interval(INTERVAL) minBlockedTime(HT) RTC2) TASKS)
+  => tasks(task(id(PRID) k(K) priority(PR1) RTC)
+           task(id(PRID2) k(@nBlock) priority(PR2) readyIn(INTERVAL - HT) interval(INTERVAL) minBlockedTime(0)  RTC2) TASKS)
+  if not blocked(K) /\ PR2 < PR1 .
+
+ crl [updateMinTime] :
+     tasks(TASKS) objs(OBJS)
+  => updateMinTime(tasks(TASKS) objs(OBJS), T)
+  if T := stride(TASKS) /\ T > 0 .
+
+
+--- priority queue????
+
+---(
+  eq [programTaskDone] : jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) k(.K) RESTCOMPONENTPROC) PROCS)
                          objs(obj(id(PRID) fbtype(PNAME) RESTCOMPONENTOBJ) RESTOBJS)
                          PARDef(PNAME, PARMETERDATA, S) 
-   = decideWhatProcToRun(task( TKS ), procs(proc(procSwitch(false) id(PRID) k(S) RESTCOMPONENTPROC) PROCS))
+   = decideWhatProcToRun(jobQueue(TKS), procs(proc(procSwitch(false) id(PRID) k(S) RESTCOMPONENTPROC) PROCS))
      objs(obj(id(PRID) fbtype(PNAME) RESTCOMPONENTOBJ) RESTOBJS)
      PARDef(PNAME, PARMETERDATA, S)
       .
+---)
 endm
 
 --- wait semantics
@@ -856,18 +927,18 @@ mod WAIT-SEMANTICS is
 
   eq k(WAIT(E) ~> K) = k(IF E THEN skip ; ELSE @release ; WAIT(E) ; ENDIF   ~> K) .
 
-  eq task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) (k(@release ~> K)) RESTCOMPONENTPROC) RESTPROCS)
-  = decideWhatProcToRun( task(TKS), procs(proc(procSwitch(false) id(PRID) (k(K)) RESTCOMPONENTPROC) RESTPROCS) ) .
+  eq jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID) (k(@release ~> K)) RESTCOMPONENTPROC) RESTPROCS)
+  = decideWhatProcToRun( jobQueue(TKS), procs(proc(procSwitch(false) id(PRID) (k(K)) RESTCOMPONENTPROC) RESTPROCS) ) .
 
-  crl [WAITTIMEDECREASE] : task(PRID :: TKS) mainList(ML1 @m(PRID, D, P) ML2) 
+  crl [WAITTIMEDECREASE] : jobQueue(PRID :: TKS) mainList(ML1 @m(PRID, D, P) ML2) 
                            procs(proc(procSwitch(true) id(PRID) (k(WAITTIME(V1) ~> K)) RESTCOMPONENTPROC) RESTPROCS) cycleTime(CT) constraints(CONST)
-     => decideWhatProcToRun(task( TKS ), procs(proc(procSwitch(false) id(PRID) (k(WAITTIME(V1 - syn2sem(T# CT ms)) ~> K)) RESTCOMPONENTPROC) RESTPROCS) )
+     => decideWhatProcToRun(jobQueue( TKS ), procs(proc(procSwitch(false) id(PRID) (k(WAITTIME(V1 - syn2sem(T# CT ms)) ~> K)) RESTCOMPONENTPROC) RESTPROCS) )
         mainList(ML1 @m(PRID, 1, P) ML2) 
         cycleTime(CT)  constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
         if checkSAT(V1 > syn2sem(T# 0 ms)) .
 
-  crl [WAITTIMEND] : task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(WAITTIME(V1) ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
-   => task(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(K)) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND V1 <= syn2sem(T# 0 ms)))
+  crl [WAITTIMEND] : jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(WAITTIME(V1) ~> K)) RESTCOMPONENTPROC) RESTPROCS) constraints(CONST)
+   => jobQueue(PRID :: TKS) procs(proc(procSwitch(true) id(PRID)  (k(K)) RESTCOMPONENTPROC) RESTPROCS) constraints(simplify(CONST AND V1 <= syn2sem(T# 0 ms)))
    if checkSAT(V1 <= syn2sem(T# 0 ms)) .
 endm
 
