@@ -5,6 +5,7 @@ fmod PROCESS-ID is
   ops input output : -> ProcessId .
 endfm
 
+
 fmod ARRAYENV is
   inc LOCATION .
   sorts ArraySingleEnv ArrayEnv .
@@ -56,14 +57,11 @@ fmod COMMON-SEMANTIC-VALUE is
  
   op locVal : Location -> LocSemVal .
 
-
- 
   op [enumVal(_,_)] : Pid Pid -> EnumSemanticVal .
   op UNKNOWNOUTPUTVAL : -> SemanticValue . 
 
   op arrayLoc : ArrayEnv -> NonLocSemval .
   op ObjLoc : ProcessId -> NonLocSemval .  
-
 
   op syn2sem : PValue -> SemanticValue .
   op syn2sem : PRat -> RatSemanticVal .
@@ -127,7 +125,8 @@ fmod COMMON-SEMANTIC-VALUE is
   eq syn2sem(ET1 # P1) = [enumVal(ET1, P1)] .
 
   
-
+  op @block : -> KLabel [ctor] .
+  op @loadNBlock : -> KLabel [ctor] .
 endfm
 
 fmod SEMANTIC-LIST is
