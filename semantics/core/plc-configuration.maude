@@ -131,8 +131,6 @@ fmod LTLFORMULA is
   eq collectKeySet(KEY{N}) = KEY . --- concrete base case
   eq collectKeySet(KEY) = KEY . --- symbolic base case
   eq collectKeySet(OP1) = emptySKSet [owise] .
-
-
 endfm
 
 fmod PROGRAMSTACK is
@@ -164,6 +162,12 @@ fmod VSET is
   op @ : Pid -> VSet [ctor] .
   op emptyVSet : -> VSet [ctor] .
   op __ : VSet VSet -> VSet [ctor assoc comm id: emptyVSet] .
+  op in : Pid VSet ~> Bool .
+
+  var VS : VSet .
+  var I : Pid .
+  eq in(I, @(I) VS) = true .
+  eq in(I, VS) = false [owise] .
 endfm
 
 fmod TIMER is
@@ -214,11 +218,11 @@ fmod CODE-CONFIG is
   inc LTLFORMULA .
   inc VSET .
 
----  ops inputVars outputVars : 
+  ops inVars outVars : SKSet -> KConfig [ctor] . 
   op activeJob : JobOption -> KConfig [ctor] .
   op randomSeed : Nat -> KConfig [ctor] .
   op minCurrTime : Nat -> KConfig [ctor] .
-  op globalVariables : VSet -> KConfig [ctor] .
+  op globalVars : VSet -> KConfig [ctor] .
   op env : Env -> KConfig [ctor] .
   op store : Map{Location, SemanticValue} -> KConfig [ctor] .  
   op POUDef : POUDefinition -> KConfig [ctor] .

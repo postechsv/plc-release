@@ -148,12 +148,13 @@ fmod PREPROCESSING is
     store(STR') inputCollector(empty) inputStreamSpec(empty) cycleCounterBound(INF)
     pickObjs(preprocessPOUs(NEWOBJS), objs(empty))
     randomSeed(0) newVarIndex(0) activeJob(None)
-    globalVariables(makeGVSet(VDC)) minCurrTime(0)
+    globalVars(makeGVSet(VDC)) minCurrTime(0) 
+    inVars(emptySKSet) outVars(emptySKSet)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))
     /\ MAINLIST := makeProgramKConfig(TODOLIST', ML, interval(empty) sQueue(emptyJList) futureJobs(emptyJSet)) 
-    /\ {ENV', STR', nil, NEWOBJS} := buildObj(TODOLIST TODOLIST' SUBPROTODOLIST , GENV, STR, (getPOUs(POUs) enumTypes(TDS)),  countVarDecl(VDC) + countTODOLIST(TODOLIST') + countTODOLIST(SUBPROTODOLIST) ) 
+    /\ {ENV', STR', nil, NEWOBJS} := buildObj(TODOLIST TODOLIST' SUBPROTODOLIST , GENV, STR, (getPOUs(POUs) enumTypes(TDS)),  countVarDecl(VDC) + countTODOLIST(TODOLIST') + countTODOLIST(SUBPROTODOLIST)) 
      .
   
   eq pickObjs(KCF, objs(AUX)) = KCF objs(AUX) [owise] . 
@@ -215,7 +216,7 @@ fmod PREPROCESSING is
   eq getVarSection(POUDef(STRUCT PNAME VSC ENDSTRUCT)) = VSC .
   
   eq makeObjAndProc((PNAME, program[ PNAME ],  OBJLOC), POUDef(PROGRAM PNAME VSC CODE S ENDCODE ENDPROGRAM), ENV) 
-  = (obj(id(OBJLOC) fbtype(PNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) task(id(OBJLOC) k(@block ~> S) callStack(ENV))) .
+  = (obj(id(OBJLOC) fbtype(PNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) task(id(OBJLOC) k(@loadNBlock) callStack(ENV))) .
   eq makeObjAndProc((VARNAME, fbtype[ FBNAME ], OBJLOC), POUDef(FUNCTIONBLOCK FBNAME VSC CSC ENDFUNCTIONBLOCK), ENV) 
   = obj(id(OBJLOC) fbtype(FBNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
   eq makeObjAndProc((VARNAME, structype[ FBNAME ], OBJLOC), POUDef(STRUCT FBNAME VSC ENDSTRUCT), ENV) 
