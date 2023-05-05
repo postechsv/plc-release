@@ -153,8 +153,12 @@ fmod SEMANTIC-LIST is
   op _,_ : List{StreamValue} List{StreamValue} -> List{StreamValue} [ctor ditto] .
   op _,_ : NeList{StreamValue} List{StreamValue} -> NeList{StreamValue} [ctor ditto] .
   op _,_ : List{StreamValue} NeList{StreamValue} -> NeList{StreamValue} [ctor ditto] .
+  op len : List{StreamValue} ~> Nat .
   eq SL:List{StreamValue} , nilStreamList  =  SL:List{StreamValue} .
   eq nilStreamList, SL:List{StreamValue}   =  SL:List{StreamValue} .
+  eq len(nilStreamList) = 0 .
+  eq len(V:StreamValue) = 1 .
+  eq len(V:StreamValue, VL:List{StreamValue}) = 1 + len(VL:List{StreamValue}) .
 endfm
 
 view SemanticValue from TRIV to COMMON-SEMANTIC-VALUE is

@@ -141,15 +141,16 @@ fmod PREPROCESSING is
   op makeObjAndProc : Triple KConfig Env -> KConfig .
   op getVarSection : KConfig -> VarSection .
   op makeGVSet : VarDeclSet ~> VSet .
- 
+  op initCond : ~> SemanticValue . 
+
   ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR) ENDCONFIG) POUs]]]
-  = inStream(empty) outStream(empty) constraints(syn2sem(TRUE)) 
-    MAINLIST LTLContainer(emptyLTLFormula) LTLResult(UNSAT) LTLSubGoal(emptyFreshVarMap , 0)
-    store(STR') inputCollector(empty) inputStreamSpec(empty) cycleCounterBound(INF)
+  = inStream(empty) outStream(empty) constraints(initCond) 
+    MAINLIST LTLCondition(emptyLTLFormula) store(STR') 
+    inputCollector(empty) inputPattern(empty) maxTime(INF)
     pickObjs(preprocessPOUs(NEWOBJS), objs(empty))
     randomSeed(0) newVarIndex(0) activeJob(None)
     globalVars(makeGVSet(VDC)) minCurrTime(0) 
-    inVars(emptySKSet) outVars(emptySKSet)
+    inVars(emptySKSet) outVars(emptySKSet) tindex(0)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))

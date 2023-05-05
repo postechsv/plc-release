@@ -55,10 +55,15 @@ fmod STREAM is
   op _,_ : StreamMap StreamMap -> StreamMap [ctor assoc comm id: empty] .   
   op _|->_ : StreamKey List{StreamValue} -> StreamMapEntry [ctor] . 
 
+  op minSize : StreamMap ~> Nat .
+
   sort SKSet .
   subsort StreamKey < SKSet . 
   op emptySKSet : -> SKSet [ctor] .
   op _nnn_ : SKSet SKSet -> SKSet [ctor assoc comm id: emptySKSet] .
+  op setDiff : SKSet SKSet ~> SKSet .
+  op streamKeySet : StreamMap ~> SKSet .
+  op genEmptyStream : SKSet ~> StreamMap .
 
   vars SKS1 SKS2 : SKSet .
   var KEY : StreamKey .
@@ -67,10 +72,8 @@ fmod STREAM is
 
   eq KEY nnn KEY = KEY .
 
-  op setDiff : SKSet SKSet ~> SKSet .
-  op streamKeySet : StreamMap ~> SKSet .
-  op genEmptyStream : SKSet ~> StreamMap .
-
+  eq minSize(KEY |-> SEQ) = len(SEQ) .
+  eq minSize((KEY |-> SEQ), RESTMAP) = min(len(SEQ), minSize(RESTMAP)) .
 
   eq setDiff(SKS1, emptySKSet) = SKS1 .
   eq setDiff((KEY nnn SKS1), (KEY nnn SKS2)) = setDiff(SKS1, SKS2) .
@@ -81,6 +84,51 @@ fmod STREAM is
 
   eq genEmptyStream(emptySKSet) = empty .
   eq genEmptyStream((KEY nnn SKS1)) = ((KEY |-> nilSemanticList), genEmptyStream(SKS1)) .
+
+  --- adapter
+  sort Adapter .
+  ops min max first last : -> Adapter [ctor] . 
+
+  sorts AdapterMap AdapterMapEntry .
+  subsort AdapterMapEntry < AdapterMap .
+  op emptyAMap : -> AdapterMap [ctor] .
+  op _|->_ : Pid Adapter -> AdapterMapEntry [ctor] .
+  op _,_ : AdapterMap AdapterMap -> AdapterMap [ctor assoc comm id: emptyAMap] .
+
+  op adapt : StreamMap AdapterMap Nat ~> StreamMap . 
+  op adaptSeq : List{StreamValue} Adapter Nat ~> List{StreamValue} .
+  op take : List{StreamValue} Nat ~> List{StreamValue} .
+  op pick : List{StreamValue} Adapter ~> StreamValue .
+  op erase : List{StreamValue} Nat ~> List{StreamValue} .
+
+  var P : Pid .
+  var V : PExp .
+  var N : Nat .
+  var AM : AdapterMap . 
+  var AD : Adapter .
+  var HEAD : StreamValue .
+  eq adapt(empty, AM, N) = empty .
+  eq adapt(((P :: V |-> SEQ), RESTMAP), ((P |-> AD), AM), N)
+   = (P :: V |-> adaptSeq(SEQ, AD, (len(SEQ) quo N) + 1)), adapt(RESTMAP, ((P |-> AD), AM), N) .
+  eq adapt(((I[P :: V] |-> SEQ), RESTMAP), ((P |-> AD), AM), N)
+   = (I[P :: V] |-> adaptSeq(SEQ, AD, (len (SEQ) quo N) + 1)), adapt(RESTMAP, ((P |-> AD), AM), N) .
+
+  eq erase(nilStreamList, N) = nilStreamList .
+  eq erase(HEAD, s N) = nilStreamList .
+  eq erase(SEQ, 0) = SEQ .
+  eq erase((HEAD, SEQ), s N) = erase(SEQ, N) .
+
+  eq adaptSeq(SEQ, AD, N) = pick(take(SEQ, N), AD), adaptSeq(erase(SEQ, N), AD, N) . 
+  eq adaptSeq(nilStreamList, AD, N) = nilStreamList .
+
+  eq take(SEQ, 0) = nilStreamList .
+  eq take(HEAD, s N) = HEAD .
+  eq take(nilStreamList, N) = nilStreamList .
+  eq take((HEAD, SEQ), s N) = HEAD, take(SEQ, N) .
+
+  eq pick(HEAD, AD) = HEAD .
+  eq pick((HEAD, SEQ), first) = HEAD .
+  eq pick((SEQ, HEAD), last) = HEAD .
 endfm
 
 fmod LTLFORMULA is
@@ -218,6 +266,7 @@ fmod CODE-CONFIG is
   inc LTLFORMULA .
   inc VSET .
 
+  op tindex : Nat -> KConfig [ctor] .
   ops inVars outVars : SKSet -> KConfig [ctor] . 
   op activeJob : JobOption -> KConfig [ctor] .
   op randomSeed : Nat -> KConfig [ctor] .
@@ -231,7 +280,6 @@ fmod CODE-CONFIG is
   op objs : KConfig -> KConfig [ctor] . 
   op cycleTime : Nat -> KConfig [ctor] .
   op constraints : BoolSemanticVal -> KConfig [ctor] .
-  op cycleCounter : Nat -> KConfig [ctor] .
 
   op interval : Map{ProcessId, Nat} -> KConfig [ctor] .
   op futureJobs : JobSet -> KConfig [ctor] .
@@ -241,17 +289,14 @@ fmod CODE-CONFIG is
 
   ops inStream outStream : StreamMap -> KConfig [ctor] .
   op inputCollector : StreamMap -> KConfig [ctor] .
-  op inputStreamSpec : StreamMap -> KConfig [ctor] .
+  op inputPattern : StreamMap -> KConfig [ctor] .
 
   op enumTypes : TypeDeclSet -> KConfig [ctor] .
 
-  op cycleCounterBound : Nat -> KConfig [ctor] .
+  op maxTime : Nat -> KConfig [ctor] .
   op newVarIndex : Nat -> KConfig [ctor] .
   
-  op LTLContainer : LTLFormula -> KConfig [ctor] .
-  op LTLResult : checkSATResult -> KConfig [ctor] .
-  op LTLSubGoal : FreshVarMap Nat -> KConfig [ctor] .
-  
+  op LTLCondition : LTLFormula -> KConfig [ctor] .
 
   var LOC : ProcessId .
   var ENV : Env .
@@ -263,4 +308,7 @@ fmod CODE-CONFIG is
 
   op getObjType : ProcessId KConfig ~> Pid .
   eq getObjType(LOC, obj(id(LOC) fbtype(FBNAME) REST) OBJS) = FBNAME .
+
+  op initCond : ~> SemanticValue .
+  op tv : Nat ~> SemanticValue .
 endfm

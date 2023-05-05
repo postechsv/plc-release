@@ -4,6 +4,7 @@ fmod CHECKSAT-RESULT is
   inc STREAM .
 
   op _--_ : StreamKey Nat -> SMTVarId . 
+  op time : Nat -> SMTVarId .
 
   op emptyAssignment : -> checkSATResult [ctor] .
   op _||-->_ : SMTVarId Integer -> checkSATResult [ctor prec 40 format (cn o g o)] .  
@@ -182,7 +183,7 @@ mod SYMBOLIC-ARITHMETIC-FUNCTIONS is
 endm
 
 mod SYMBOLIC-UTIL is
-  inc STREAM-EXTENSION .
+  inc CYCLE-SEMANTICS .
   inc PLC-SYMBOLIC-PRIMITIVES .
   inc PLC-SYMBOLIC-CHECKSAT .
 
@@ -190,6 +191,8 @@ mod SYMBOLIC-UTIL is
   var K : StreamKey .
   var T : PType .
 
+  eq tv(N) = [i(time(N))] .
+  eq initCond = tv(0) ==== [0] .
 
   eq @genSym(K, BOOL, N) = [b(K -- N)] . 
   eq @genSym(K, INT, N) = [i(K -- N)] . 
@@ -200,9 +203,6 @@ mod SYMBOLIC-UTIL is
   eq @genSym(K, UDINT, N) = [i(K -- N)] . 
   eq @genSym(K, REAL, N) = [r(K -- N)] . 
   eq @genSym(K, TIME, N) = T[i(K -- N)] . 
-
-  op FVAR--_ : Nat -> SMTVarId .
-  eq @genFVAR(N) = [b(FVAR-- N)] . 
 endm
 
 

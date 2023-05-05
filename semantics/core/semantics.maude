@@ -331,44 +331,6 @@ fmod STREAM-UPDATE-STREAM-DATA is
   eq simplifyStore(((LOCATION |-> SV1), STORE)) = ((LOCATION |-> simplify(SV1)) , simplifyStore(STORE)) .
   eq simplifyStore(empty) = empty .
 
-  op readInstream : List{PExp} StreamMap KConfig KConfig StreamMap -> KConfig .
-  eq readInstream(READYMAINLIST, empty, RESTOBJS, store(STORE), STREAM2) =  store(simplifyStore(STORE)) inStream(STREAM2) .
-
-  eq readInstream(READYMAINLIST, ((MAIN :: PE1 |-> nilSemanticList) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-   = readInstream(READYMAINLIST, STREAM, RESTOBJS, store(STORE), (STREAM2 , (MAIN :: PE1 |-> nilSemanticList))) .
-  
-ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL, SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
- =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(insert(LOCATION, (VAL), STORE)), (STREAM2, (MAIN :: PE1 |-> (SEQ)))) 
- if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
-
-  eq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (**, SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) .
-
-ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
- =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(insert(LOCATION, (VAL), STORE)), (STREAM2, (MAIN :: PE1 |-> nilSemanticList))) 
- if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
-
-  eq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> **) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  readInstream((NOTMAIN1, MAIN, NOTMAIN2), STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> nilSemanticList))) .
-
-  eq readInstream(READYMAINLIST, ((MAIN :: PE1 |-> (SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
-  =  readInstream(READYMAINLIST, STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ))) ) [owise] .
-
-
-  op writeOutstreamAux : StreamMap KConfig KConfig StreamMap ~> StreamMap . 
-  op writeOutstream : Nat StreamMap KConfig KConfig StreamMap ~> StreamMap . 
-
- ceq writeOutstream(CYCLENAT, STREAM, RESTOBJS, store(STORE), STREAM2)
-   = writeOutstreamAux(STREAM, RESTOBJS, store(STORE), STREAM2) if CYCLENAT >= 1 .
- ceq writeOutstream(CYCLENAT, STREAM, RESTOBJS, store(STORE), STREAM2)
-   = STREAM if CYCLENAT == 0 .
-
-  eq writeOutstreamAux(empty, RESTOBJS, store(STORE), STREAM2) = STREAM2 .
-  
- ceq writeOutstreamAux(((MAIN :: PE1 |-> (SEQ)) , STREAM), RESTOBJS, store(STORE), STREAM2) 
- =  writeOutstreamAux(STREAM, RESTOBJS, store(STORE), (STREAM2, (MAIN :: PE1 |-> (SEQ, ( simplify(STORE[LOCATION]) )))) ) 
- if locVal(LOCATION) := findLocVal(MAIN . PE1, RESTOBJS, store(STORE)) .
-
   op findLocVal : PExp KConfig KConfig ~> SemanticValue .
   
  ceq findLocVal(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) REST) RESTOBJS), store(STORE)) = ObjLoc(OBJLOC2)
@@ -380,9 +342,6 @@ ceq readInstream((NOTMAIN1, MAIN, NOTMAIN2), ((MAIN :: PE1 |-> (VAL)) , STREAM),
   eq findLocVal(I, (obj(fbtype(I) id(OBJLOC) REST) RESTOBJS), store(STORE)) = ObjLoc(OBJLOC) .
 
   eq findLocVal(PE1 . I, RESTOBJS, store(STORE)) = findLocVal(findLocVal(PE1 , RESTOBJS, store(STORE)) . I, RESTOBJS, store(STORE)) [owise] .
-
----***&&&^^^%%%
-
 endfm
 
 mod STREAM-SEMANTICS is
@@ -422,9 +381,9 @@ mod STREAM-SEMANTICS is
    = @ ((KEY |-> SEQ), STREAM') |= k(refer(SEQ, NN:Nat) ~> K) .
 
   op replaceStreams : KConfig KConfig ~> KConfig .
-  eq replaceStreams(KC:KConfig cycleCounterBound(BOUND) inputCollector(INPUTCOLLECTOR) inputStreamSpec(INPUTSPECSTREAM) LTLContainer(LTLFORMULA) inStream(OS1:StreamMap) outStream(OS2:StreamMap) inVars(SS1:SKSet) outVars(SS2:SKSet), 
-  cycleCounterBound(BOUND') inputCollector(INPUTCOLLECTOR') inputStreamSpec(INPUTSPECSTREAM') LTLContainer(LTLFORMULA') inStream(STREAM) outStream(STREAM2) inVars(INVARS) outVars(OUTVARS))
-   = KC:KConfig cycleCounterBound(BOUND') inputCollector(INPUTCOLLECTOR') inputStreamSpec(INPUTSPECSTREAM') LTLContainer(LTLFORMULA') inStream(STREAM) outStream(STREAM2) inVars(INVARS) outVars(OUTVARS) .
+  eq replaceStreams(KC:KConfig maxTime(BOUND) inputCollector(INPUTCOLLECTOR) inputPattern(INPUTSPECSTREAM) LTLCondition(LTLFORMULA) inStream(OS1:StreamMap) outStream(OS2:StreamMap) inVars(SS1:SKSet) outVars(SS2:SKSet), 
+  maxTime(BOUND') inputCollector(INPUTCOLLECTOR') inputPattern(INPUTSPECSTREAM') LTLCondition(LTLFORMULA') inStream(STREAM) outStream(STREAM2) inVars(INVARS) outVars(OUTVARS))
+   = KC:KConfig maxTime(BOUND') inputCollector(INPUTCOLLECTOR') inputPattern(INPUTSPECSTREAM') LTLCondition(LTLFORMULA') inStream(STREAM) outStream(STREAM2) inVars(INVARS) outVars(OUTVARS) .
 
 endm
 
@@ -436,10 +395,8 @@ mod STREAM-EXTENSION is
 
   --- main operators - streams
   op genEmptyStream : SKSet ~> StreamMap .
-  op genIS : StreamMap ~> StreamMap . --- to be deleted
   op repeat : NeList{StreamValue} -> NeList{StreamValue} .
   op symbolic : -> StreamValue .
-  op genOS : LTLFormula StreamMap ~> StreamMap .
   op tail : StreamMap -> [StreamMap] .
   op streamLength : StreamMap -> [Nat] .
 
@@ -478,54 +435,17 @@ mod STREAM-EXTENSION is
   var LOCN : Nat . 
   var SKSET : SKSet .
 
-  --- to be deleted (updateIS, updateISSpec, updateISCollector)
-  op updateIS : StreamMap KConfig ~> StreamMap .
-  op updateISSpec : StreamMap ~> StreamMap .
-  op updateISCollector : StreamMap StreamMap ~> StreamMap .
   op transformISKey : StreamMap ~> StreamMap .
 
   eq transformISKey(((FN :: ID  |-> SEQ), RESTMAP)) = ((I[FN :: ID] |-> SEQ), transformISKey(RESTMAP)) .
   eq transformISKey(empty) = empty .
 
-  --- to be deleted (genIS)
-
-  eq genIS(((KEY |-> SEQ), RESTMAP)) = ((KEY |-> nilStreamList), genIS(RESTMAP)) [owise] .
-  eq genIS(((KEY |-> repeat(SEQ)), RESTMAP)) = ((KEY |-> nilStreamList), genIS(RESTMAP)) .
-  eq genIS(((KEY |-> symbolic), RESTMAP)) = ((KEY |-> nilStreamList), genIS(RESTMAP)) .
-  eq genIS(empty) = empty .
-
-  eq updateISSpec((KEY |-> (E)), RESTMAP) = updateISSpec(RESTMAP) [owise] .
-  eq updateISSpec((KEY |-> (E, SEQ)), RESTMAP) = ((KEY |-> SEQ), updateISSpec(RESTMAP)) [owise] .
-  eq updateISSpec((KEY |-> repeat(E, SEQ)), RESTMAP) = ((KEY |-> repeat(SEQ, E)), updateISSpec(RESTMAP)) .
-  eq updateISSpec((KEY |-> repeat(E)), RESTMAP) = ((KEY |-> repeat(E)), updateISSpec(RESTMAP)) .
-  eq updateISSpec((KEY |-> symbolic), RESTMAP) = ((KEY |-> symbolic), updateISSpec(RESTMAP)) .
-  eq updateISSpec(empty) = empty .
-
-  eq updateISCollector(((KEY |-> (E)), RESTMAP), ((KEY |-> SEQ), RESTMAP2)) = updateISCollector(RESTMAP, ((KEY |-> (SEQ, E)), RESTMAP2)) .
-  eq updateISCollector(empty, RESTMAP) = RESTMAP .
-
-  eq updateIS(empty, KCF) = empty .
-  eq updateIS(((KEY |-> (E1 , SEQ)), RESTMAP), KCF) = ((KEY |-> E1), updateIS(RESTMAP, KCF)) [owise] .
-  eq updateIS(((KEY |-> (E1)), RESTMAP), KCF) = ((KEY |-> E1), updateIS(RESTMAP, KCF)) [owise] .
-  eq updateIS(((KEY |-> repeat(E, SEQ)), RESTMAP), KCF ) = ((KEY |-> E), updateIS(RESTMAP, KCF)) .
-  eq updateIS(((KEY |-> repeat(E)), RESTMAP), KCF ) = ((KEY |-> E), updateIS(RESTMAP, KCF)) .
-
   --- sym variable generation
   op @genSym : StreamKey PType Nat ~> List{StreamValue} .
----  eq updateIS(((KEY |-> symbolic), RESTMAP), KCF cycleCounter(N))
----   = ((KEY |-> @genSym(KEY, @getType(KEY, KCF), N)), updateIS(RESTMAP, KCF cycleCounter(N))) .
 
   op @getType : Pid Env ~> PType .
  ceq @getType(ID, ENV) = LOCTYPE
   if loc(LOCN, LOCTYPE) := ENV[ID] . 
-
-  --- to be deleted (genKeyTypePair)
-  eq genKeyTypePair(empty, KCF) = emptyKTPS .
----  eq genKeyTypePair(((KEY |-> SEQ), RESTMAP), KCF) = genKeyTypePair(RESTMAP, KCF) [owise] .
----  eq genKeyTypePair(((KEY |-> repeat(SEQ)), RESTMAP), KCF) = genKeyTypePair(RESTMAP, KCF) .
----  eq genKeyTypePair(((KEY |-> symbolic), RESTMAP), KCF) = (KEY is @getType(KEY, KCF)) genKeyTypePair(RESTMAP, KCF) .
-
-  eq genOS(COND, STRMAP) = genEmptyStream(setDiff(collectKeySet(COND), streamKeySet(transformISKey(STRMAP)))) .
 
   --- streamMap tail
   op @tail : List{StreamValue} ~> List{StreamValue} . 
@@ -545,7 +465,7 @@ mod STREAM-EXTENSION is
   op genFormula : LTLFormula Nat Nat ~> PExp .
   --- base
   eq genFormula(emptyLTLFormula, CURR, BOUND) = emptyLTLFormula .
-  eq genFormula(FVAR, CURR, BOUND) = FVAR .
+---  eq genFormula(FVAR, CURR, BOUND) = FVAR .
   eq genFormula(KEY{s N}, CURR, BOUND) = NEXT(KEY{N}) .
   eq genFormula(KEY{0}, CURR, BOUND) = genFormula(KEY, CURR, BOUND) .
   eq genFormula(PV:PValue, CURR, BOUND) = PV:PValue .
@@ -577,85 +497,6 @@ mod STREAM-EXTENSION is
   eq genFormula(GLOBALLY(COND), CURR, BOUND) = genFormula(COND, CURR, BOUND) AND genFormula(WNEXT(GLOBALLY(COND)), CURR, BOUND) .
   --- UNTIL
   eq genFormula(COND UNTIL COND2, CURR, BOUND) = genFormula(COND2, CURR, BOUND) OR (genFormula(COND, CURR, BOUND) AND NEXT(COND UNTIL COND2)) .
-
-
-  op toNNF : PExp ~> PExp .
-
-  eq toNNF(emptyLTLFormula) = emptyLTLFormula .
-  eq toNNF(KEY{N}) = KEY{N} .
-  eq toNNF(PV:PValue) = PV:PValue .
-  eq toNNF(FVAR) = FVAR .
-
-  eq toNNF(NOT (OP1 AND OP2)) = toNNF(NOT OP1) OR toNNF(NOT OP2) .
-  eq toNNF(NOT (OP1 OR OP2)) = toNNF(NOT OP1) AND toNNF(NOT OP2) .
-  eq toNNF(NOT (NOT(COND))) = toNNF(COND) .
-  eq toNNF(NOT (COND)) = (NOT (toNNF(COND))) [owise] .
-
-  eq toNNF(OP1 ==== OP2) = toNNF(OP1) ==== toNNF(OP2) .
-  eq toNNF(OP1 <> OP2) = toNNF(OP1) <> toNNF(OP2) .
-  eq toNNF(OP1 < OP2) = toNNF(OP1) < toNNF(OP2) .
-  eq toNNF(OP1 > OP2) = toNNF(OP1) > toNNF(OP2) .
-  eq toNNF(OP1 <= OP2) = toNNF(OP1) <= toNNF(OP2) .
-  eq toNNF(OP1 >= OP2) = toNNF(OP1) >= toNNF(OP2) .
-  eq toNNF(OP1 AND OP2) = toNNF(OP1) AND toNNF(OP2) .
-  eq toNNF(OP1 OR OP2) = toNNF(OP1) OR toNNF(OP2) .
-
-  eq toNNF(NEXT(COND)) = NEXT(COND) .
-  eq toNNF(WNEXT(COND)) = WNEXT(COND) .
-
-
-  op addFreshVar : LTLFormula Nat ~> TripleTuple .
-  --- base
-  eq addFreshVar(emptyLTLFormula, NEWVARNUM) = {emptyLTLFormula, emptyFreshVarMap, NEWVARNUM} .
-  eq addFreshVar(FVAR, NEWVARNUM) = {FVAR, emptyFreshVarMap, NEWVARNUM} .
-  eq addFreshVar(PV:PValue, NEWVARNUM) = {PV:PValue , emptyFreshVarMap, NEWVARNUM} .
-  eq addFreshVar(KEY{N}, NEWVARNUM) = {KEY{N}, emptyFreshVarMap, NEWVARNUM} .
-
- ceq addFreshVar(OP1 ==== OP2, NEWVARNUM) = {LEFTFORMULA ==== RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
-
- ceq addFreshVar(OP1 <> OP2, NEWVARNUM) = {LEFTFORMULA <> RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
-
- ceq addFreshVar(OP1 < OP2, NEWVARNUM) = {LEFTFORMULA < RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
-
- ceq addFreshVar(OP1 > OP2, NEWVARNUM) = {LEFTFORMULA > RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
-
- ceq addFreshVar(OP1 <= OP2, NEWVARNUM) = {LEFTFORMULA <= RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
-
- ceq addFreshVar(OP1 >= OP2, NEWVARNUM) = {LEFTFORMULA >= RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
-
- ceq addFreshVar(OP1 AND OP2, NEWVARNUM) = {LEFTFORMULA AND RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
-
- ceq addFreshVar(OP1 OR OP2, NEWVARNUM) = {LEFTFORMULA OR RIGHTFORMULA, (FVARMAP1, FVARMAP2), NEWVARNUM2 }
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(OP1, NEWVARNUM) /\ {RIGHTFORMULA, FVARMAP2, NEWVARNUM2} := addFreshVar(OP2, NEWVARNUM1)  .
-
-  op @genFVAR : Nat ~> SemanticValue .
-
- ceq addFreshVar(NEXT(COND), NEWVARNUM) = {FVAR, (FVAR <-| COND), NEWVARNUM + 1} 
- if FVAR := @genFVAR(NEWVARNUM) .
-
- ceq addFreshVar(WNEXT(COND), NEWVARNUM) = {FVAR, (FVAR <-| COND), NEWVARNUM + 1} 
- if FVAR := @genFVAR(NEWVARNUM) .
-
- ceq addFreshVar(NOT NEXT(COND), NEWVARNUM) = {FVAR, (FVAR <-| NOT (COND)), NEWVARNUM + 1}
- if FVAR := @genFVAR(NEWVARNUM) .
-
- ceq addFreshVar(NOT WNEXT(COND), NEWVARNUM) = {FVAR, (FVAR <-| NOT (COND)), NEWVARNUM + 1}
- if FVAR := @genFVAR(NEWVARNUM) .
-
- ceq addFreshVar(NOT COND, NEWVARNUM) = {NOT (LEFTFORMULA), FVARMAP1, NEWVARNUM1}
- if {LEFTFORMULA, FVARMAP1, NEWVARNUM1} := addFreshVar(COND, NEWVARNUM) [owise] .
-
-  op combineLTLFormulaAndMap : LTLFormula FreshVarMap ~> LTLFormula .
-  eq combineLTLFormulaAndMap(COND , ((FVAR <-| OP1), FVARMAP1)) 
-  = combineLTLFormulaAndMap((COND AND (FVAR ==== syn2sem(FALSE))) , FVARMAP1) .
-  eq combineLTLFormulaAndMap(COND, emptyFreshVarMap) = COND .
 endm
 
 --- starting new cycle
@@ -666,7 +507,7 @@ mod CYCLE-SEMANTICS is
   var TKS : List{ProcessId} .
   vars PRID PRID2 : ProcessId .
   vars PERIOD DUE CYCLECOUNT BOUND NEWVARNUM NEWVARNUM' : Nat .
-  vars PR ES DL PR2 ES2 DL2 INTERVAL MCT : Nat .
+  vars PR ES DL PR2 ES2 DL2 INTERVAL MCT N MAXTIME : Nat .
   var PNAME : Pid .
   var S : Stmt .
   vars CT  : Rat .
@@ -676,7 +517,7 @@ mod CYCLE-SEMANTICS is
   var NEXTOBJS : KConfig .
   var PARMETERDATA : VarSecTypePairList .
   var RESTOBJS : KConfig .
-  vars TNAT CONST FVAR : SemanticValue .
+  vars TNAT CONST CONST' FVAR : SemanticValue .
   var STORE : Map{Location, SemanticValue} .
   vars OUTSTREAM OUTSTREAM' INSTREAM : StreamMap .
   vars REALINPUTSTREAM INPUTSPECSTREAM INPUTCOLLECTSTREAM : StreamMap . 
@@ -728,93 +569,93 @@ mod CYCLE-SEMANTICS is
   --- input case 1: last single value
   eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> VAL), STREAM)
+     inputPattern((PNAME :: VAR |-> VAL), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
    = task(id(PRID) k(VAR := VAL ~> @takeInput(VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> nilStreamList), STREAM)
+     inputPattern((PNAME :: VAR |-> nilStreamList), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
 
   --- input case 2: single value
   eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> VAL, SEQ), STREAM)
+     inputPattern((PNAME :: VAR |-> VAL, SEQ), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
    = task(id(PRID) k(VAR := VAL ~> @takeInput(VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> SEQ), STREAM)
+     inputPattern((PNAME :: VAR |-> SEQ), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
 
   --- input case 3: repeat single value
   eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> repeat(VAL)), STREAM)
+     inputPattern((PNAME :: VAR |-> repeat(VAL)), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
    = task(id(PRID) k(VAR := VAL ~> @takeInput(VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> repeat(VAL)), STREAM)
+     inputPattern((PNAME :: VAR |-> repeat(VAL)), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
 
   --- input case 4: repeat value
   eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> repeat(VAL, SEQ)), STREAM)
+     inputPattern((PNAME :: VAR |-> repeat(VAL, SEQ)), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
    = task(id(PRID) k(VAR := VAL ~> @takeInput(VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> repeat(SEQ, VAL)), STREAM)
+     inputPattern((PNAME :: VAR |-> repeat(SEQ, VAL)), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
 
   --- input case 5: last symbolic value
   eq activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> symbolic), STREAM)
+     inputPattern((PNAME :: VAR |-> symbolic), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
    = activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(VAR := @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)
                      ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> nilStreamList), STREAM)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> nilStreamList), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
 
   --- input case 6: symbolic value
   eq activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> symbolic, SEQ), STREAM)
+     inputPattern((PNAME :: VAR |-> symbolic, SEQ), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
    = activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(VAR := @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)
                      ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> SEQ), STREAM)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> SEQ), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
 
   --- input case 7: repeat symbolic
   eq activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> repeat(symbolic)), STREAM)
+     inputPattern((PNAME :: VAR |-> repeat(symbolic)), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
    = activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(VAR := @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)
                      ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> repeat(symbolic)), STREAM)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(symbolic)), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
 
   --- input case 8: repeat symbolic and other
   eq activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> repeat(symbolic, SEQ)), STREAM)
+     inputPattern((PNAME :: VAR |-> repeat(symbolic, SEQ)), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
    = activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(VAR := @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)
                      ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputStreamSpec((PNAME :: VAR |-> repeat(SEQ, symbolic)), STREAM)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(SEQ, symbolic)), STREAM)
      inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
 
   eq k(@writeOutput(VAR, VARS) ~> K)
@@ -836,53 +677,6 @@ mod CYCLE-SEMANTICS is
      task(id(PRID) k(K) REST)
      objs(obj(timer(@timer(TNAT + syn2sem(T# INTERVAL ms))) REST2) RESTOBJS) .
 
-  op updateLTLResult : SemanticValue LTLFormula StreamMap Nat ~> checkSATResult .
- ceq updateLTLResult(CONST, LTLFORMULA, OUTSTREAM, CYCLECOUNT) = UNSAT if CYCLECOUNT < 1 .
- ceq updateLTLResult(CONST, emptyLTLFormula, OUTSTREAM, CYCLECOUNT) = UNSAT if CYCLECOUNT >= 1 .
- ceq updateLTLResult(CONST, LTLFORMULA, OUTSTREAM, CYCLECOUNT) = checkSATwithAssignment(CONST AND (OUTSTREAM |= LTLFORMULA)) if CYCLECOUNT >= 1 [owise]  .
-
-  op updateLTLFormula : LTLFormula FreshVarMap Nat Nat Nat FreshVarMap ~> TripleTuple .
-
- ceq updateLTLFormula(LTLFORMULA, FVARMAP, NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP') = { LTLFORMULA, FVARMAP, NEWVARNUM } if CYCLECOUNT == 0 .
-
- ceq updateLTLFormula(LTLFORMULA, FVARMAP, NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP') 
-   = addFreshVar(toNNF(genFormula(LTLFORMULA, CYCLECOUNT - 1, BOUND)), NEWVARNUM) if CYCLECOUNT == 1 .
-
- ceq updateLTLFormula(LTLFORMULA, ((FVAR <-| FVARMAPFORMULA), FVARMAP), NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP') 
-   = updateLTLFormula((LTLFORMULA AND (FVAR ==== (LTLFORMULA'))), FVARMAP, NEWVARNUM', CYCLECOUNT, BOUND, (FVARMAP', FVARMAP'')) 
-  if 
-  CYCLECOUNT > 1 /\
-  {LTLFORMULA', FVARMAP'', NEWVARNUM'} := addFreshVar(toNNF(genFormula(FVARMAPFORMULA, CYCLECOUNT - 1, BOUND)), NEWVARNUM)  .
-
- ceq updateLTLFormula(LTLFORMULA, emptyFreshVarMap, NEWVARNUM, CYCLECOUNT, BOUND, FVARMAP) = {LTLFORMULA, FVARMAP, NEWVARNUM} if CYCLECOUNT > 1 .
- 
----(
- crl [cycle] : cycleCounter(CYCLECOUNT) cycleCounterBound(BOUND) jobQueue( nilProcIds ) mainList( ML ) 
-               outStream(OUTSTREAM) inStream(INSTREAM) cycleTime(CT) objs(OBJS) store(STORE) 
-               constraints(CONST) LTLContainer(LTLFORMULA) LTLResult(LTLRESULT)
-               inputCollector(INPUTCOLLECTSTREAM) inputStreamSpec(INPUTSPECSTREAM) LTLSubGoal(FVARMAP , NEWVARNUM)
-   => cycleCounter(CYCLECOUNT + 1) cycleCounterBound(BOUND) cycleTime(CT)
-      decideWhatProcToRun(jobQueue(TKS), procs(PROCS))
-      objs(plusCycleTimeFromOBJTIMER(CT, OBJS))
-      mainList( updateMainList(ML) ) 
-      readInstream(collectReadyProcList(TKS, OBJS), REALINPUTSTREAM', OBJS, store(STORE), empty)
-      outStream(OUTSTREAM')
-      constraints(simplify(CONST)) LTLContainer(LTLFORMULA') LTLResult(LTLRESULT')
-      inputCollector(INPUTCOLLECTSTREAM') inputStreamSpec(INPUTSPECSTREAM') LTLSubGoal(FVARMAP', NEWVARNUM')
-    if 
-    CYCLECOUNT <= BOUND /\
-    checkSAT(CONST) /\ 
-    REALINPUTSTREAM' := updateIS(INPUTSPECSTREAM, (objs(OBJS) store(STORE) cycleCounter(CYCLECOUNT))) /\
-    INPUTSPECSTREAM' := updateISSpec(INPUTSPECSTREAM) /\
-    INPUTCOLLECTSTREAM' := updateISCollector(REALINPUTSTREAM', INPUTCOLLECTSTREAM) /\
-    TKS := collectTaskFromMainList(ML,  nilProcIds ) /\ 
-    OUTSTREAM' := writeOutstream(CYCLECOUNT, OUTSTREAM, OBJS, store(STORE), empty) /\
-    {LTLFORMULA', FVARMAP', NEWVARNUM'} := updateLTLFormula(LTLFORMULA, FVARMAP, NEWVARNUM, CYCLECOUNT, BOUND - 1, emptyFreshVarMap) /\
-    LTLRESULT' := updateLTLResult(CONST, combineLTLFormulaAndMap(LTLFORMULA', FVARMAP'), (transformISKey(INPUTCOLLECTSTREAM'), OUTSTREAM'), CYCLECOUNT) /\
-    LTLRESULT == UNSAT 
-    .
----) 
-
  ceq [invalid] :
      minCurrTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
@@ -890,20 +684,28 @@ mod CYCLE-SEMANTICS is
      futureJobs(@j(PRID2, PR2, ES2, DL2) JOBS)
    = minCurrTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@block ~> K) REST)
+     task(id(- PRID) k(@block ~> K) REST)
      futureJobs(@j(PRID2, PR2, ES2, DL2) JOBS)
   if DL2 < MCT .
 
-
-  rl [schedule] :
+  --- is minimum current time necessary?
+ crl [schedule] :
      minCurrTime(MCT)
      activeJob(None)
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(@block ~> K) REST)
+     tindex(N)
+     constraints(CONST)
   => minCurrTime(if MCT < ES then ES else MCT fi)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), SQ))
-     task(id(PRID) k(K) REST) .
+     task(id(PRID) k(K) REST)
+     tindex(s N)
+     constraints(CONST') 
+  if CONST' := CONST AND tv(N) < tv(s N) AND 
+               syn2sem(# ES) <= tv(s N) AND
+               syn2sem(# DL) > tv(s N)
+  /\ checkSAT(CONST') .
 
   rl [endProgram] :
      activeJob(Some(@j(PRID, PR, ES, DL)))
@@ -925,27 +727,39 @@ mod CYCLE-SEMANTICS is
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
      PARDef(PNAME, PARMETERDATA, S) .
 
-  rl [placeJob] :
+ crl [placeJob] :
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(K) REST)
+     maxTime(MAXTIME)
   => futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@loadNBlock) REST) .
+     task(id(PRID) k(@loadNBlock) REST)
+     maxTime(MAXTIME)
+     if ES <= MAXTIME .
 
-  rl [preempt] :
+ crl [preempt] :
      minCurrTime(MCT)
      activeJob(Some(@j(PRID2, PR2, ES2, DL2)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(@block ~> K1) REST)
      task(id(PRID2) k(K2) REST2)
+     tindex(N)
+     constraints(CONST)
   => minCurrTime(if MCT < ES then ES else MCT fi)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(K1) REST)
-     task(id(PRID2) k(@block ~> K2) REST2) .
+     task(id(PRID2) k(@block ~> K2) REST2)
+     tindex(s N)
+     constraints(CONST')
+  if CONST' := CONST AND tv(N) < tv(s N) AND 
+               syn2sem(# ES) <= tv(s N) AND
+               syn2sem(# DL) > tv(s N) AND
+               syn2sem(# DL2) > tv(s N) 
+  /\ checkSAT(CONST') .
 endm
 
 --- wait semantics
@@ -958,10 +772,10 @@ mod WAIT-SEMANTICS is
   var E : PExp .
   var K : K .
   vars MCT : Rat .
-  vars V1 CONST : SemanticValue .
+  vars V1 CONST CONST' : SemanticValue .
   vars D P : Nat .
   var REST : KConfig .
-  vars PR ES DL IN WT : Nat .
+  vars PR ES DL IN WT N : Nat .
   var JOBS : JobSet .
   vars Q1 Q2 : JobList .
   var IM : Map{ProcessId, Nat} .
@@ -996,7 +810,28 @@ mod WAIT-SEMANTICS is
      constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
   if checkSAT(V1 > syn2sem(T# 0 ms)) .
 
----( ???
+
+ crl [WAITTIMEND] :
+     minCurrTime(MCT)
+     activeJob(Some(@j(PRID, PR, ES, DL)))
+     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
+     futureJobs(JOBS)
+     interval((PRID |-> IN, IM))
+     task(id(PRID) (k(WAITTIME(V1) ~> K)) REST)
+     tindex(N)
+     constraints(CONST)
+  => minCurrTime(MCT)
+     activeJob(Some(@j(PRID, PR, ES, DL)))
+     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
+     futureJobs(JOBS)
+     interval((PRID |-> IN, IM))
+     task(id(PRID) (k(K)) REST)
+     tindex(s N)
+     constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
+  if CONST' := CONST AND tv(N) < tv(s N) AND tv(s N) - syn2sem(# ES) >= V1 
+  /\ checkSAT(CONST') .
+
+---( this works only in concrete case
  crl [WAITTIMEEND] :
      minCurrTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
@@ -1041,12 +876,6 @@ fmod TIMER-SEMANTICS is
   vars REST REST2 : KConfig .
   var TVAL : SemanticValue .
 
----(
-  eq task((k(@#cycleValue ~> K)) REST) cycleTime(CT) 
-   =
-     task((k(syn2sem(T# CT ms) ~> K)) REST) cycleTime(CT) .
----)
-
   eq task(id(CPR) (k(@#timerValue ~> K)) REST) 
      objs(obj(id(CPR) timer(@timer(TVAL)) REST2) RESTOBJS)
    =
@@ -1059,3 +888,4 @@ fmod TIMER-SEMANTICS is
      task(id(CPR) k(K) REST) 
      objs(obj(id(CPR) timer(@timer(syn2sem(T# PTIME ms))) REST2) RESTOBJS) .
 endfm
+
