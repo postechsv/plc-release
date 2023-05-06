@@ -92,10 +92,10 @@ fmod STREAM is
   sorts AdapterMap AdapterMapEntry .
   subsort AdapterMapEntry < AdapterMap .
   op emptyAMap : -> AdapterMap [ctor] .
-  op _|->_ : Pid Adapter -> AdapterMapEntry [ctor] .
+  op _|->_/_ : Pid Adapter Nat -> AdapterMapEntry [ctor] .
   op _,_ : AdapterMap AdapterMap -> AdapterMap [ctor assoc comm id: emptyAMap] .
 
-  op adapt : StreamMap AdapterMap Nat ~> StreamMap . 
+  op adapt : StreamMap AdapterMap ~> StreamMap . 
   op adaptSeq : List{StreamValue} Adapter Nat ~> List{StreamValue} .
   op take : List{StreamValue} Nat ~> List{StreamValue} .
   op pick : List{StreamValue} Adapter ~> StreamValue .
@@ -107,11 +107,11 @@ fmod STREAM is
   var AM : AdapterMap . 
   var AD : Adapter .
   var HEAD : StreamValue .
-  eq adapt(empty, AM, N) = empty .
-  eq adapt(((P :: V |-> SEQ), RESTMAP), ((P |-> AD), AM), N)
-   = (P :: V |-> adaptSeq(SEQ, AD, (len(SEQ) quo N) + 1)), adapt(RESTMAP, ((P |-> AD), AM), N) .
-  eq adapt(((I[P :: V] |-> SEQ), RESTMAP), ((P |-> AD), AM), N)
-   = (I[P :: V] |-> adaptSeq(SEQ, AD, (len (SEQ) quo N) + 1)), adapt(RESTMAP, ((P |-> AD), AM), N) .
+  eq adapt(empty, AM) = empty .
+  eq adapt(((P :: V |-> SEQ), RESTMAP), ((P |-> AD / N), AM))
+   = (P :: V |-> adaptSeq(SEQ, AD, N)), adapt(RESTMAP, ((P |-> AD / N), AM)) .
+  eq adapt(((I[P :: V] |-> SEQ), RESTMAP), ((P |-> AD / N), AM))
+   = (I[P :: V] |-> adaptSeq(SEQ, AD, N)), adapt(RESTMAP, ((P |-> AD / N), AM)) .
 
   eq erase(nilStreamList, N) = nilStreamList .
   eq erase(HEAD, s N) = nilStreamList .
@@ -129,6 +129,9 @@ fmod STREAM is
   eq pick(HEAD, AD) = HEAD .
   eq pick((HEAD, SEQ), first) = HEAD .
   eq pick((SEQ, HEAD), last) = HEAD .
+
+  --- min ???
+  --- max ???
 endfm
 
 fmod LTLFORMULA is
@@ -145,7 +148,6 @@ fmod LTLFORMULA is
 
   ops FINALLY GLOBALLY NEXT WNEXT : LTLFormula -> LTLFormula [ctor] .
   ops _UNTIL_ _==>_ : LTLFormula LTLFormula -> LTLFormula [ctor] .
-
 
   sorts FreshVarMapEntry FreshVarMap .
   subsort FreshVarMapEntry < FreshVarMap .
