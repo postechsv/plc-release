@@ -1,4 +1,4 @@
-# Generated from D:/plc/scripts\ST.g4 by ANTLR 4.9.2
+# Generated from ST.g4 by ANTLR 4.9.1
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .STParser import STParser
@@ -41,15 +41,6 @@ class STListener(ParseTreeListener):
 
     # Exit a parse tree produced by STParser#aProgram.
     def exitAProgram(self, ctx:STParser.AProgramContext):
-        pass
-
-
-    # Enter a parse tree produced by STParser#cycletime.
-    def enterCycletime(self, ctx:STParser.CycletimeContext):
-        pass
-
-    # Exit a parse tree produced by STParser#cycletime.
-    def exitCycletime(self, ctx:STParser.CycletimeContext):
         pass
 
 

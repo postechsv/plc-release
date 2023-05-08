@@ -54,7 +54,7 @@ class stTranslate(STVisitor):
         return "PROGRAMS\n" + programSection + "PROGRAMSEND\n"
 
     def visitAProgram(self, ctx:STParser.AProgramContext):
-        return "'" + ctx.name.text + "([ " + " # " + ctx.period.text + " , " + " # " + ctx.phase.text + " ]) ;; \n"
+        return "'" + ctx.name.text + "([ " + " # " + ctx.interval.text + " , " + " # " + ctx.phase.text + " , " + " # " + ctx.priority.text + " ]) ;; \n"
 
     def visitPros(self, ctx:STParser.ProsContext): return ctx.name.text, ctx.program()
     def visitSubs(self, ctx:STParser.SubsContext): return ctx.name.text, ctx.program()

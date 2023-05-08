@@ -17,10 +17,6 @@ fmod ALU-SEMANTICS is
   eq k(T# T1 ms  ~> K) = k(syn2sem(T# T1 ms) ~> K) .
   eq k(ENUMTYPE # ENUMVAL  ~> K) = k([enumVal(ENUMTYPE, ENUMVAL)] ~> K) .
 
-  ---div0
----  ceq k(V1 / V2 ~> K) = k(syn2sem(# 2147483647) ~> K) if checkSAT(V2 ==== syn2sem(# 0)) .
----  ceq k(V1 / V2 ~> K) = k(syn2sem(# 2147483647, REAL) ~> K) if checkSAT(V2 ==== syn2sem(# 0, REAL)) .
-
   ---bitfield
   eq k(V1 . # T1  ~> K) = k(V1 . syn2sem(# T1) ~> K) .
 endfm

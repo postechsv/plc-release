@@ -1,4 +1,4 @@
-# Generated from D:/plc/scripts\ST.g4 by ANTLR 4.9.2
+# Generated from ST.g4 by ANTLR 4.9.1
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .STParser import STParser
@@ -26,11 +26,6 @@ class STVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by STParser#aProgram.
     def visitAProgram(self, ctx:STParser.AProgramContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by STParser#cycletime.
-    def visitCycletime(self, ctx:STParser.CycletimeContext):
         return self.visitChildren(ctx)
 
 

@@ -4,11 +4,10 @@ import COMMON ;
 
 stapp : config (pros|subs|udfbs|funcs)* ;
 
-config : programSection cycletime typeSection (var_global)? ;
+config : programSection typeSection (var_global)? ;
 
 programSection : PROGRAMS  (aProgram)+ PROGRAMSEND ;
-aProgram : name=ID '(' '[' period=INT ',' phase=INT ']' ')' ';;' ;
-cycletime : CycleTime ':' cycle=INT ;
+aProgram : name=ID '(' '[' interval=INT ',' phase=INT ',' priority=INT ']' ')' ';;' ;
 
 typeSection : TYPESTART enum* bitfield* structure* ENDTYPE ;
 enum : name=ID ':' enumVar=idList ';' ;
@@ -108,14 +107,14 @@ timeval : ('t#' timesize=INT ms=ID | 'T#' INT ms=ID) ;
 
 listInitVar : number (',' number)*
             | (TRUE|FALSE) (',' (TRUE|FALSE))*
-            | timeval (',' timeval)* ;
+            | timeval (',' timeval)*
+            | idList ;
 
 idList : ID (',' ID)* ;
 
 
 PROGRAMS : 'PROGRAMS' ;
 PROGRAMSEND : 'PROGRAMSEND' ;
-CycleTime : 'CycleTime' ;
 TYPESTART : 'TYPE' ;
 ENDTYPE : 'END_TYPE' ;
 STRUCT : 'STRUCT' ;

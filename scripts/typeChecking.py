@@ -27,7 +27,6 @@ class typeChecker:
         totalEnvInstance.setGlobal(self.visitor.globalVarEnv)
         totalEnvInstance.setTypes(self.visitor.enumDict, self.visitor.bitDict)
         totalEnvInstance.setFBenv(self.visitor.FBEnvDict)
-        totalEnvInstance.setCycleTime(self.visitor.cycleTime)
 
         return deepcopy(totalEnvInstance)
 

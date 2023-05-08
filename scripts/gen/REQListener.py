@@ -1,4 +1,4 @@
-# Generated from D:/plc/scripts\REQ.g4 by ANTLR 4.9.2
+# Generated from REQ.g4 by ANTLR 4.9.1
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .REQParser import REQParser
@@ -8,30 +8,12 @@ else:
 # This class defines a complete listener for a parse tree produced by REQParser.
 class REQListener(ParseTreeListener):
 
-    # Enter a parse tree produced by REQParser#STEPYES.
-    def enterSTEPYES(self, ctx:REQParser.STEPYESContext):
+    # Enter a parse tree produced by REQParser#REQUIREMENT.
+    def enterREQUIREMENT(self, ctx:REQParser.REQUIREMENTContext):
         pass
 
-    # Exit a parse tree produced by REQParser#STEPYES.
-    def exitSTEPYES(self, ctx:REQParser.STEPYESContext):
-        pass
-
-
-    # Enter a parse tree produced by REQParser#STEPNO.
-    def enterSTEPNO(self, ctx:REQParser.STEPNOContext):
-        pass
-
-    # Exit a parse tree produced by REQParser#STEPNO.
-    def exitSTEPNO(self, ctx:REQParser.STEPNOContext):
-        pass
-
-
-    # Enter a parse tree produced by REQParser#SYMBOLIC.
-    def enterSYMBOLIC(self, ctx:REQParser.SYMBOLICContext):
-        pass
-
-    # Exit a parse tree produced by REQParser#SYMBOLIC.
-    def exitSYMBOLIC(self, ctx:REQParser.SYMBOLICContext):
+    # Exit a parse tree produced by REQParser#REQUIREMENT.
+    def exitREQUIREMENT(self, ctx:REQParser.REQUIREMENTContext):
         pass
 
 
@@ -80,21 +62,21 @@ class REQListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by REQParser#STEPPPARTNUM.
-    def enterSTEPPPARTNUM(self, ctx:REQParser.STEPPPARTNUMContext):
+    # Enter a parse tree produced by REQParser#BOUND.
+    def enterBOUND(self, ctx:REQParser.BOUNDContext):
         pass
 
-    # Exit a parse tree produced by REQParser#STEPPPARTNUM.
-    def exitSTEPPPARTNUM(self, ctx:REQParser.STEPPPARTNUMContext):
+    # Exit a parse tree produced by REQParser#BOUND.
+    def exitBOUND(self, ctx:REQParser.BOUNDContext):
         pass
 
 
-    # Enter a parse tree produced by REQParser#STEPPARTID.
-    def enterSTEPPARTID(self, ctx:REQParser.STEPPARTIDContext):
+    # Enter a parse tree produced by REQParser#INFBOUND.
+    def enterINFBOUND(self, ctx:REQParser.INFBOUNDContext):
         pass
 
-    # Exit a parse tree produced by REQParser#STEPPARTID.
-    def exitSTEPPARTID(self, ctx:REQParser.STEPPARTIDContext):
+    # Exit a parse tree produced by REQParser#INFBOUND.
+    def exitINFBOUND(self, ctx:REQParser.INFBOUNDContext):
         pass
 
 
@@ -170,12 +152,30 @@ class REQListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by REQParser#functionblock.
-    def enterFunctionblock(self, ctx:REQParser.FunctionblockContext):
+    # Enter a parse tree produced by REQParser#amap.
+    def enterAmap(self, ctx:REQParser.AmapContext):
         pass
 
-    # Exit a parse tree produced by REQParser#functionblock.
-    def exitFunctionblock(self, ctx:REQParser.FunctionblockContext):
+    # Exit a parse tree produced by REQParser#amap.
+    def exitAmap(self, ctx:REQParser.AmapContext):
+        pass
+
+
+    # Enter a parse tree produced by REQParser#adapter.
+    def enterAdapter(self, ctx:REQParser.AdapterContext):
+        pass
+
+    # Exit a parse tree produced by REQParser#adapter.
+    def exitAdapter(self, ctx:REQParser.AdapterContext):
+        pass
+
+
+    # Enter a parse tree produced by REQParser#pname.
+    def enterPname(self, ctx:REQParser.PnameContext):
+        pass
+
+    # Exit a parse tree produced by REQParser#pname.
+    def exitPname(self, ctx:REQParser.PnameContext):
         pass
 
 
@@ -212,6 +212,15 @@ class REQListener(ParseTreeListener):
 
     # Exit a parse tree produced by REQParser#number.
     def exitNumber(self, ctx:REQParser.NumberContext):
+        pass
+
+
+    # Enter a parse tree produced by REQParser#bools.
+    def enterBools(self, ctx:REQParser.BoolsContext):
+        pass
+
+    # Exit a parse tree produced by REQParser#bools.
+    def exitBools(self, ctx:REQParser.BoolsContext):
         pass
 
 

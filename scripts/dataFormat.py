@@ -39,9 +39,6 @@ class totalEnv:
         self.enumDict, self.bitDict = deepcopy(enums), deepcopy(bits)
     def setFBenv(self, fbenv):
         self.FBEnvDict = deepcopy(fbenv)
-    def setCycleTime(self, cycleTime): self.cycleTime = cycleTime
-
-    def returnCycleTimeMaude(self): return "CycleTime: # " + str(self.cycleTime)
 
     def returnConfigMaude(self):
         result = ""
@@ -49,6 +46,8 @@ class totalEnv:
         subproPart = "SUBPROGRAMS"
         for subpro in self.subprograms:
             subproPart += "\n'" + subpro + " ;;"
+        if len(self.subprograms) == 0:
+            subproPart += '\nemptyProgramList'
 
         subproPart += "\nSUBPROGRAMSEND"
 
@@ -66,9 +65,7 @@ class totalEnv:
         if globalVarResult != "": globalVarResult = "\n\nBEGINVAR\n" + globalVarResult + "ENDVAR\n\n"
         else: globalVarResult = "\n\nBEGINVAR\n" + "emptyVarDecl\n" + "ENDVAR\n\n"
 
-        result += subproPart + typePart + globalVarResult
-
-        result += self.returnCycleTimeMaude() + "\n"
+        result += subproPart + typePart + globalVarResult + "\n"
 
         return result
 
@@ -223,7 +220,8 @@ class VarFormat:
                 if "TRUE" == aIint or "true" == aIint or "FALSE" == aIint or "false" == aIint:
                     self.init[ith] = aIint.upper()
                 else:
-                    self.init[ith] = "# " + aIint
+                    if aIint.isnumeric():
+                        self.init[ith] = "# " + aIint
 
     def setDefaultUseType(self):
         if self.useType == "": self.useType = "##PRIV"
@@ -233,7 +231,10 @@ class VarFormat:
         if self.type in structres:
             self.type = "structype [ '" + self.type + " ]"
         elif self.type in functionblocks: self.type = "fbtype [ '" + self.type + " ]"
-        elif self.type in enums: self.type = "enumtype [ '" + self.type + " ]"
+        elif self.type in enums:
+            for i in range(len(self.init)):
+                self.init[i] = "'" + self.type + " # '" + self.init[i]
+            self.type = "enumtype [ '" + self.type + " ]"
         else:
             if int(self.dim) > 0: self.type = "ARRAY [ # 0 .. # " + self.dim + " ] OF " + self.type
             return

@@ -10,13 +10,13 @@ def returnAfterMergingWithAppFormat(loadFormat, content):
     return loadFormat + " \n\n" + "mod APP is \n" \
             + "inc PLC-CORE .\n"  \
             + "inc PLC-LIB .\n" \
-            + "op PROJECTFILE : -> StratonProject .\n" \
-            + "eq PROJECTFILE =\n" \
+            + "op projectFile : -> StratonProject .\n" \
+            + "eq projectFile =\n" \
             + "(\n" + content + "\n) .\n" \
-                                     + "  op LINKEDFILE : -> StratonProject .\n" \
-                                     + "  eq LINKEDFILE = PROJECTFILE <-load- LIB .\n" \
-                                     + "  op APP : -> KConfig .\n" \
-                                     + "  eq APP = [[[ LINKEDFILE ]]] .\n" \
+                                     + "  op linkedFile : -> StratonProject .\n" \
+                                     + "  eq linkedFile = projectFile <-load- lib .\n" \
+                                     + "  op app : -> KConfig .\n" \
+                                     + "  eq app = [[[ linkedFile ]]] .\n" \
                                      + "endm\n"
 
 class MAINTRANSLATOR:
@@ -72,7 +72,3 @@ class MAINTRANSLATOR:
 
     def returnMaudeFilePath(self): return self.returnMaudeFile
 
-"""
-MAINTRANSLATOR("./MA", "symbolic", "MA", "example1")
-MAINTRANSLATOR("./PMSEmulator", "symbolic", "PMS", "example1")
-"""

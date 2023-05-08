@@ -101,6 +101,8 @@ fmod STREAM is
   op pick : List{StreamValue} Adapter ~> StreamValue .
   op erase : List{StreamValue} Nat ~> List{StreamValue} .
 
+  op cutSize : StreamMap AdapterMap ~> Nat .
+
   var P : Pid .
   var V : PExp .
   var N : Nat .
@@ -118,7 +120,7 @@ fmod STREAM is
   eq erase(SEQ, 0) = SEQ .
   eq erase((HEAD, SEQ), s N) = erase(SEQ, N) .
 
-  eq adaptSeq(SEQ, AD, N) = pick(take(SEQ, N), AD), adaptSeq(erase(SEQ, N), AD, N) . 
+  eq adaptSeq(SEQ, AD, N) = pick(take(SEQ, N), AD), adaptSeq(erase(SEQ, N), AD, N) [owise] . 
   eq adaptSeq(nilStreamList, AD, N) = nilStreamList .
 
   eq take(SEQ, 0) = nilStreamList .
@@ -132,6 +134,9 @@ fmod STREAM is
 
   --- min ???
   --- max ???
+
+  eq cutSize(((P :: V |-> SEQ), RESTMAP), ((P |-> AD / N), AM))
+   = len(SEQ) / N .
 endfm
 
 fmod LTLFORMULA is

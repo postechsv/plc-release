@@ -7,46 +7,53 @@ from gen.REQVisitor import REQVisitor
 
 class DataExtractor(REQVisitor):
     def __init__(self):
-        self.bound = ""
+        self.stepsize = ""
         self.INPUTSTREAM = ""
         self.CONDITION = ""
-        self.AMAP = ""
 
     # Visit a parse tree produced by REQParser#STEPYES.
-    def visitREQUIREMENT(self, ctx:REQParser.REQUIREMENTContext):
-        self.visit(ctx.bound())
+    def visitSTEPYES(self, ctx:REQParser.STEPYESContext):
+        self.visit(ctx.steppart())
 
         self.INPUTSTREAM += "( " + self.visit(ctx.inputpart(0)) + " )"
 
         for i in range(1, len(ctx.inputpart())):
             self.INPUTSTREAM += " , \n" + "( " + self.visit(ctx.inputpart(i)) + " )"
 
-        self.AMAP += "( " + self.visit(ctx.amap(0)) + " )"
+        self.CONDITION = self.visit(ctx.expr())
 
-        for i in range(1, len(ctx.amap())):
-            self.AMAP += " , \n" + "( " + self.visit(ctx.amap(i)) + " )"
+
+    # Visit a parse tree produced by REQParser#STEPNO.
+    def visitSTEPNO(self, ctx:REQParser.STEPNOContext):
+        self.INPUTSTREAM += "( " + self.visit(ctx.inputpart(0)) + " )"
+
+        for i in range(1, len(ctx.inputpart())):
+            self.INPUTSTREAM += " , \n" + "( " + self.visit(ctx.inputpart(i)) + " )"
 
         self.CONDITION = self.visit(ctx.expr())
 
+    def visitSYMBOLIC(self, ctx:REQParser.SYMBOLICContext):
+        return self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname()) + " |-> " + "symbolic"
+
     def visitREPEATNUM(self, ctx:REQParser.REPEATNUMContext):
-        return self.visit(ctx.pname()) + " :: " + self.visit(ctx.varname()) + " |-> repeat( " + self.visit(ctx.numdatas()) + " )"
+        return self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname()) + " |-> repeat( " + self.visit(ctx.numdatas()) + " )"
 
     def visitREPEATBOOL(self, ctx:REQParser.REPEATBOOLContext):
-        return self.visit(ctx.pname()) + " :: " + self.visit(ctx.varname()) + " |-> repeat( " + self.visit(ctx.booldatas()) + " )"
+        return self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname()) + " |-> repeat( " + self.visit(ctx.booldatas()) + " )"
 
     def visitCONCRETENUM(self, ctx:REQParser.CONCRETENUMContext):
-        return self.visit(ctx.pname()) + " :: " + self.visit(ctx.varname()) + " |-> " + self.visit(ctx.numdatas())
+        return self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname()) + " |-> " + self.visit(ctx.numdatas())
 
     def visitCONCRETEBOOL(self, ctx:REQParser.CONCRETEBOOLContext):
-        return self.visit(ctx.pname()) + " :: " + self.visit(ctx.varname()) + " |-> " + self.visit(ctx.booldatas())
+        return self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname()) + " |-> " + self.visit(ctx.booldatas())
 
     def visitEMPTY(self, ctx:REQParser.EMPTYContext): return "empty"
 
-    def visitBOUND(self, ctx: REQParser.BOUNDContext): self.bound = ctx.b.text
-    def visitINFBOUND(self, ctx: REQParser.INFBOUNDContext):
-        if ctx.b.text != "INF":
+    def visitSTEPPPARTNUM(self, ctx: REQParser.STEPPPARTNUMContext): self.stepsize = ctx.stepsize.text
+    def visitSTEPPARTID(self, ctx: REQParser.STEPPARTIDContext):
+        if ctx.stepsize.text != "INF":
             print("Warning : Invalid step size.")
-        self.bound = "INF"
+        self.stepsize = "INF"
 
 
     def visitUNARY(self, ctx:REQParser.UNARYContext): return ctx.op.text + " ( " + self.visit(ctx.expr()) +" ) "
@@ -60,25 +67,21 @@ class DataExtractor(REQVisitor):
 
     def visitVARNAME(self, ctx: REQParser.VARNAMEContext):
         if "I[" in ctx.getText():
-            return "I[ " + self.visit(ctx.pname()) + " :: " + self.visit(ctx.varname()) + " ]"
+            return "I[ " + self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname()) + " ]"
         else:
-            return self.visit(ctx.pname()) + " :: " + self.visit(ctx.varname())
+            return self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname())
 
     def visitVARNAMEINDEX(self, ctx:REQParser.VARNAMEINDEXContext):
         if "I[" in ctx.getText():
-            return "I[ " + self.visit(ctx.pname()) + " :: " + self.visit(ctx.varname()) + " { " + ctx.index.text +" } " + " ]"
+            return "I[ " + self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname()) + " { " + ctx.index.text +" } " + " ]"
         else:
-            return self.visit(ctx.pname()) + " :: " + self.visit(ctx.varname()) + " { " + ctx.index.text +" } "
+            return self.visit(ctx.functionblock()) + " :: " + self.visit(ctx.varname()) + " { " + ctx.index.text +" } "
 
     def visitBASICNUM(self, ctx: REQParser.BASICNUMContext): return "# " + ctx.getText()
     def visitBASICTRUE(self, ctx:REQParser.BASICTRUEContext): return "TRUE"
     def visitBASICFALSE(self, ctx: REQParser.BASICFALSEContext): return "FALSE"
 
-    def visitAmap(self, ctx:REQParser.AmapContext): return self.visit(ctx.pname()) + " |-> " + self.visit(ctx.adapter()) + " / " + ctx.denominator.text
-
-    def visitAdapter(self, ctx:REQParser.AdapterContext): return ctx.getText()
-
-    def visitPname(self, ctx:REQParser.PnameContext): return "'" + ctx.getText()
+    def visitFunctionblock(self, ctx:REQParser.FunctionblockContext): return "'" + ctx.getText()
 
     def translator(self, text, milestone, behavior):
         returnPart = ""
@@ -135,14 +138,9 @@ class DataExtractor(REQVisitor):
 
 
     def visitNumber(self, ctx:REQParser.NumberContext):
-        if ctx.getText() == "??":
-            return " symbolic "
-        else:
-            return "[ (" + ctx.getText() + ").Int ]"
+        return "[ (" + ctx.getText() + ").Int ]"
 
     def visitTimeval(self, ctx:REQParser.TimevalContext):
-        if ctx.getText() == "??":
-            return " symbolic "
         if "ms" == ctx.ms.text.lower():
             return "T[ (" + ctx.number().getText() + ").Int ]"
         elif "s" == ctx.ms.text.lower():
@@ -153,7 +151,6 @@ class DataExtractor(REQVisitor):
 
     def truefalseTranslator(self, booleanData):
         if booleanData == "TRUE" or booleanData =="true": return "[(true).Bool]"
-        elif booleanData == "??": return " symbolic "
         else: return "[(false).Bool]"
 
     def visitBooldatas(self, ctx:REQParser.BooldatasContext):
@@ -173,37 +170,45 @@ class ReqFileTranslator:
 
 
         self.searchFormat = "mod MC is \n" \
-"  inc APP . \n" \
-"  op cond : ~> PExp . \n" \
-"  op appExt : ~> KConfig . \n" \
-"  ops rawis is os : ~> StreamMap .  \n" \
-"  op bound : -> Nat . \n" \
-"  op am : ~> AdapterMap . \n" \
-"  eq bound = " + visitor.bound + " . \n" \
-"  eq cond = " + visitor.CONDITION + " . \n" \
-"  eq rawis = ( \n" + visitor.INPUTSTREAM + \
-"              ) . \n" \
-"  eq is = genEmptyStream(streamKeySet(rawis)) .  \n" \
-"  eq os = genEmptyStream(setDiff(collectKeySet(cond), streamKeySet(transformISKey(is)))) .\n" \
-"  eq am = ( \n" + visitor.AMAP + \
-"           ) . \n" \
-"  eq appExt = replaceStreams(app, maxTime(bound) inputCollector(is) inputPattern(rawis) LTLCondition(cond) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os))) .\n" \
-"  var CONST : SemanticValue . \n" \
-"  vars IS' OS' : StreamMap . \n" \
-"endm\n" \
-"search [1] \n" \
-"appExt =>* constraints(CONST) inputCollector(IS') \n" \
-"           outStream(OS') REST:KConfig \n" \
-"such that \n" \
-"checkSAT((adapt((transformISKey(IS'), OS'), am) |= genFormula(NOT cond, 0, cutSize(OS', am))) AND CONST) . "
+                       "  inc APP . \n" \
+                       "  op COND : ~> PExp . \n" \
+                       "  op APPEXT : ~> KConfig . \n" \
+                       "  ops RAWIS IS OS : ~> StreamMap .  \n" \
+                       "  op BOUND : -> Nat . \n" \
+                       "  eq BOUND = " + visitor.stepsize + " . \n" \
+                                                                 "  eq COND = \n" \
+                                                                 "  NOT ( " + visitor.CONDITION + \
+                       "       ) .\n" \
+                       "  eq RAWIS = ( \n" + visitor.INPUTSTREAM + \
+                       "              ) . \n" \
+                       "  eq IS = genIS(RAWIS) .  \n" \
+                       "  eq OS = genOS(COND, IS) .\n" \
+                       "  eq APPEXT = replaceStreams(APP , cycleCounterBound(BOUND) inputCollector(IS) inputStreamSpec(RAWIS) LTLContainer(COND) inStream(IS) outStream(OS)) .\n" \
+                       "endm\n" \
+                       "search [1] \n" \
+                       "APPEXT =>* LTLResult(RESULT:checkSATResult) constraints(CONST:SemanticValue) REST:KConfig    \n" \
+                       "outStream(STRMAP:StreamMap) such that \n" \
+                       "RESULT:checkSATResult =/= UNSAT /\ \n" \
+                       "KTPS:KeyTypePairSet := genKeyTypePair(RAWIS, APP) ."
+
         if "symbolic" in visitor.INPUTSTREAM:
             self.symbolicOrconcrete = "symbolic"
         else:
             self.symbolicOrconcrete = "concrete"
 
-        self.BOUND = visitor.bound
+        self.STEPSIZE = visitor.stepsize
 
     def results(self):
-        return self.searchFormat, self.symbolicOrconcrete, self.BOUND
+        return self.searchFormat, self.symbolicOrconcrete, self.STEPSIZE
 
 
+if __name__ == '__main__':
+    while(1):
+        data = InputStream(input(">>> "))
+        lexer = REQLexer(data)
+        stream = CommonTokenStream(lexer)
+        parser = REQParser(stream)
+        tree = parser.inputpart()
+        visitor = DataExtractor()
+        output = visitor.visit(tree)
+        print(output)

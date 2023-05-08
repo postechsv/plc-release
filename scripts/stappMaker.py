@@ -58,14 +58,5 @@ class StappFileMaker:
         #print(globalVarConfig)
         return programConfig + "\n" + typeConfig + "\n" + globalVarConfig + "\n" + POUS
 
-"""
-test = StappFileMaker(".", "./MA")
-open("ma.txt", 'w').write(test.makeStapp())
-
-test = StappFileMaker(".", "./PMSEmulator")
-open("pms.txt", 'w').write(test.makeStapp())
-"""
-
-
 
 

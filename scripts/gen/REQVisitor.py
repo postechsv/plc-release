@@ -1,4 +1,4 @@
-# Generated from D:/plc/scripts\REQ.g4 by ANTLR 4.9.2
+# Generated from REQ.g4 by ANTLR 4.9.1
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .REQParser import REQParser
@@ -9,18 +9,8 @@ else:
 
 class REQVisitor(ParseTreeVisitor):
 
-    # Visit a parse tree produced by REQParser#STEPYES.
-    def visitSTEPYES(self, ctx:REQParser.STEPYESContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by REQParser#STEPNO.
-    def visitSTEPNO(self, ctx:REQParser.STEPNOContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by REQParser#SYMBOLIC.
-    def visitSYMBOLIC(self, ctx:REQParser.SYMBOLICContext):
+    # Visit a parse tree produced by REQParser#REQUIREMENT.
+    def visitREQUIREMENT(self, ctx:REQParser.REQUIREMENTContext):
         return self.visitChildren(ctx)
 
 
@@ -49,13 +39,13 @@ class REQVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by REQParser#STEPPPARTNUM.
-    def visitSTEPPPARTNUM(self, ctx:REQParser.STEPPPARTNUMContext):
+    # Visit a parse tree produced by REQParser#BOUND.
+    def visitBOUND(self, ctx:REQParser.BOUNDContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by REQParser#STEPPARTID.
-    def visitSTEPPARTID(self, ctx:REQParser.STEPPARTIDContext):
+    # Visit a parse tree produced by REQParser#INFBOUND.
+    def visitINFBOUND(self, ctx:REQParser.INFBOUNDContext):
         return self.visitChildren(ctx)
 
 
@@ -99,8 +89,18 @@ class REQVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by REQParser#functionblock.
-    def visitFunctionblock(self, ctx:REQParser.FunctionblockContext):
+    # Visit a parse tree produced by REQParser#amap.
+    def visitAmap(self, ctx:REQParser.AmapContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by REQParser#adapter.
+    def visitAdapter(self, ctx:REQParser.AdapterContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by REQParser#pname.
+    def visitPname(self, ctx:REQParser.PnameContext):
         return self.visitChildren(ctx)
 
 
@@ -121,6 +121,11 @@ class REQVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by REQParser#number.
     def visitNumber(self, ctx:REQParser.NumberContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by REQParser#bools.
+    def visitBools(self, ctx:REQParser.BoolsContext):
         return self.visitChildren(ctx)
 
 

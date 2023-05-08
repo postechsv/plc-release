@@ -204,7 +204,6 @@ class dclStappMaker:
     def makeStapp(self):
         programConfig = ""
         programConfig += "PROGRAMS\n" + self.makeStPrograms() + "PROGRAMSEND\n"
-        programConfig += "CycleTime: " + str(self.visitor.cycletime) + "\n"
 
         typeConfig = self.makeStENUMS() + "\n" + self.makeStBITFIELDS() + "\n"
 
@@ -212,11 +211,3 @@ class dclStappMaker:
 
         return programConfig, typeConfig, globalVarConfig
 
-"""
-dcl1 = dclStappMaker(".").makeStGlobalConfig("applik5p/appli_MA.k5p")
-print(dcl1)
-
-
-dcl1 = dclStappMaker(".").makeStGlobalConfig("applik5p/appli_PMS.k5p")
-print(dcl1)
-"""

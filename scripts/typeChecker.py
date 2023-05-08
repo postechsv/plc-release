@@ -34,7 +34,6 @@ class typeCheck(STVisitor):
         self.FBEnvDict = dict()
         self.FBEnvDict = deepcopy(libFBs)
 
-        self.cycleTime = ""
         self.switch = True
 
         self.nowPou = ""
@@ -57,7 +56,6 @@ class typeCheck(STVisitor):
 
     def visitConfig(self, ctx:STParser.ConfigContext):
         self.visit(ctx.programSection())
-        self.visit(ctx.cycletime())
         self.visit(ctx.typeSection())
 
         try:
@@ -67,9 +65,6 @@ class typeCheck(STVisitor):
 
     def visitAProgram(self, ctx:STParser.AProgramContext):
         self.programs.append(ctx.name.text)
-
-    def visitCycletime(self, ctx: STParser.CycletimeContext):
-        self.cycleTime = ctx.cycle.text
 
     def visitEnum(self, ctx:STParser.EnumContext):
         self.enumDict[ctx.name.text] = Enumformat(ctx.name.text, self.visit(ctx.idList()))
