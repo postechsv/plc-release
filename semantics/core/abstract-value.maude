@@ -58,6 +58,7 @@ fmod COMMON-SEMANTIC-VALUE is
   op locVal : Location -> LocSemVal .
 
   op [enumVal(_,_)] : Pid Pid -> EnumSemanticVal .
+  op placeHolder : -> SemanticValue .
   op UNKNOWNOUTPUTVAL : -> SemanticValue . 
 
   op arrayLoc : ArrayEnv -> NonLocSemval .

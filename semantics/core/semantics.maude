@@ -44,6 +44,7 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   vars REST : KConfig .  
   var TYPE : PType .
   var VS : VSet .
+  var LOG : Log .
 
 --- assignment
 
@@ -53,8 +54,11 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   if loc(LOCINDEX, TYPE) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
   --- global
-  rl task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS)
-  => task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
+  rl [globalAssign] :
+     log(LOG)
+     task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS)
+  => log(LOG (I , 'globalAssign, V))
+     task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
  ceq task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
    = task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
@@ -63,7 +67,7 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   eq task(k(ObjLoc(OBJLOC) . I := V ~> K) REST) objs(OBJS) 
    = task(k(@store(getObjEnv(OBJLOC,OBJS)[I],V) ~> K) REST) objs(OBJS) .
 
- crl [arrayAssignment] : task(k(arrayLoc(ARRAYENV)[VV] := V ~> K) REST) constraints(CONST)
+ crl [arrayAssign] : task(k(arrayLoc(ARRAYENV)[VV] := V ~> K) REST) constraints(CONST)
   => task(k(@store(LOCATION,V) ~> K) REST) constraints(simplify(CONST AND CONST'))
   if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
 
@@ -74,8 +78,11 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 
   --- Pid
   --- global
-  rl task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) 
-  => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
+  rl [globalLookup] :
+     log(LOG) store(STORE)
+     task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) 
+  => log(LOG (I , 'globalLookUp, placeHolder)) store(STORE)
+     task(k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
  ceq task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
    = task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
@@ -92,6 +99,11 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
  crl [array]: arrayLookup((ARRAYENV1, (ARRAYINDEX, LOCATION), ARRAYENV2), V, CONST) 
            => {LOCATION, (V ==== syn2sem(# ARRAYINDEX))}
   if checkSAT(CONST AND (V ==== syn2sem(# ARRAYINDEX))) .
+
+  eq task(k(botSpace(I) ~> K) 
+          callStack(ENVSTACK :: ENV) REST)
+   = task(k(@lookup(ENV[I]) ~> K)
+          callStack(ENVSTACK :: ENV) REST) . 
 endm
 
 --- conditional statement semantics
@@ -109,6 +121,7 @@ mod CONDITIONAL-SEMANTICS is
   var CONST : SemanticValue .
   vars IFSTATEMENT2 WHILESTATEMENT REPEATSTATEMENT PE1 PE2 : PExp .
   var REST : KConfig .  
+  var LOG : Log .
 
   --- ite
  crl [iteTrue] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST)
@@ -123,30 +136,38 @@ mod CONDITIONAL-SEMANTICS is
 
  --- if statement
  crl [IFTRUE] :  
+     log(LOG)
      task(k(IF IFSTATEMENT THEN S1 ; BB ENDIF ~> K) REST ) 
      constraints(CONST)
-  => task(k(S1 ~> K) REST) 
+  => log(LOG (' , 'IFTRUE, placeHolder))
+     task(k(S1 ~> K) REST) 
      constraints(simplify(CONST AND IFSTATEMENT))
   if checkSAT(CONST AND IFSTATEMENT) .
 
  crl [IFFALSE] : 
+     log(LOG)
      task(k(IF IFSTATEMENT THEN S1 ; emptyBBranch ENDIF ~> K) REST) 
      constraints(CONST)
-  => task(k(K) REST) 
+  => log(LOG (' , 'IFFALSE, placeHolder))
+     task(k(K) REST) 
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
  crl [IFFALSE-ELSIF] : 
+     log(LOG)
      task(k(IF IFSTATEMENT THEN S1 ; ELSIF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) REST) 
      constraints(CONST)
-  => task(k(IF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) REST) 
+  => log(LOG (' , 'IFFALSE-ELSIF, placeHolder))
+     task(k(IF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) REST) 
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
- crl [IFFALSE-ELSE] :  
+ crl [IFFALSE-ELSE] : 
+     log(LOG) 
      task(k(IF IFSTATEMENT THEN S1 ; ELSE S2 ; ENDIF ~> K) REST) 
      constraints(CONST)
-  => task(k(S2 ~> K) REST) 
+  => log(LOG (' , 'IFFALSE-ELSE, placeHolder))
+     task(k(S2 ~> K) REST) 
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
@@ -156,14 +177,16 @@ mod CONDITIONAL-SEMANTICS is
    =  task(k(S1 ~> K) REST)  .
 
  crl [caseMatch] :  
+     log(LOG)
      task(k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
      constraints(CONST)
-  => task(k(S1 ~> K) REST)  
+  => log(LOG (' , 'caseMatch, V))
+     task(k(S1 ~> K) REST)  
      constraints(simplify(CONST AND V ==== syn2sem(PV2)))
   if checkSAT(CONST AND V ==== syn2sem(PV2)) .
   
 
- crl [caseMatchRangeVersion] :  
+ crl [caseMatchRanged] :  
      task(k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
      constraints(CONST)
   => task(k(S1 ~> K) REST)  
@@ -177,7 +200,7 @@ mod CONDITIONAL-SEMANTICS is
      constraints(simplify(CONST AND V <> syn2sem(PV2)))
   if checkSAT(CONST AND V <> syn2sem(PV2)) .
 
- crl [caseNotMatchRangeVersion] :  
+ crl [caseNotMatchRanged] :  
      task(k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
      constraints(CONST)
   => task(k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) REST)  
@@ -286,7 +309,7 @@ mod CALL-SEMANTICS is
   eq task((k(@args((INOUTPAR(I1) <:= ObjLoc(OBJLOC) . I2) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  objs(OBJS)
    = task((k(@args(ARGS) ~> @bind(insert(I1, getObjEnv(OBJLOC,OBJS)[I2], ENV),CPR)  ~> K)) REST)  objs(OBJS) .
 
- crl [argBinding] : 
+ crl [arrayArgBind] : 
      task((k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  constraints(CONST)
   => task((k(@args(ARGS) ~> @bind(insert(I1, LOCATION, ENV),CPR)  ~> K)) REST)  constraints(simplify(CONST AND CONST'))
   if arrayLookup(ARRAYENV, V2, CONST) => {LOCATION, CONST'} .
@@ -356,7 +379,7 @@ mod STREAM-SEMANTICS is
   vars LTLFORMULA LTLFORMULA' : LTLFormula .
   vars INVARS OUTVARS : SKSet .
 
----  op _{_} : StreamKey Nat -> PProperExp [prec 1] .
+  op _{_} : StreamKey Nat -> PProperExp [prec 1] .
   op _|=_ : StreamMap PExp -> [SemanticValue] .
   op @_|=_ : StreamMap KConfig -> [SemanticValue] .
   op @_|=_ : StreamMap PValue -> [SemanticValue] .
@@ -483,9 +506,9 @@ mod STREAM-EXTENSION is
   eq genFormula(COND ==> COND2, CURR, BOUND) 
    = (NOT genFormula(COND, CURR, BOUND)) OR genFormula(COND2, CURR, BOUND) .
   --- NEXT
- ceq genFormula(NEXT(COND), CURR, BOUND) = NEXT(COND) if BOUND > CURR .
+ ceq genFormula(NEXT(COND), CURR, BOUND) = genFormula(COND, CURR + 1, BOUND) if BOUND > CURR .
  ceq genFormula(NEXT(COND), CURR, BOUND) = FALSE if CURR >= BOUND .
- ceq genFormula(WNEXT(COND), CURR, BOUND) = WNEXT(COND) if BOUND > CURR .
+ ceq genFormula(WNEXT(COND), CURR, BOUND) = genFormula(COND, CURR + 1, BOUND) if BOUND > CURR .
  ceq genFormula(WNEXT(COND), CURR, BOUND) = TRUE if CURR >= BOUND .
  --- FINALLY
   eq genFormula(FINALLY(COND), CURR, BOUND) = genFormula(COND, CURR, BOUND) OR genFormula(NEXT(FINALLY(COND)), CURR, BOUND) .
@@ -534,9 +557,10 @@ mod CYCLE-SEMANTICS is
   var ENV : Env .
   var LOCN : Nat .
   var LOCTYPE : PType .
-
-  ops @input @output @timerUpdate : -> KLabel [ctor] .
-  ops @takeInput @writeOutput : List{PExp} -> KLabel [ctor] .  
+  var LOG : Log .
+  var ENVSTACK : ProgramStack .
+  ops @dummyInput @input @output @timerUpdate : -> KLabel [ctor] .
+  ops @takeInput @writeOutput @ignoreInput : List{PExp} -> KLabel [ctor] .  
   op getVarList : SKSet Pid ~> List{PExp} .
   eq getVarList(PNAME :: VAR nnn INVARS, PNAME)
    = (VAR, getVarList(INVARS, PNAME)) . 
@@ -549,6 +573,13 @@ mod CYCLE-SEMANTICS is
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
      inVars(INVARS) . 
 
+  eq task(id(PRID) k(@dummyInput ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inVars(INVARS)
+   = task(id(PRID) k(@ignoreInput(getVarList(INVARS, PNAME)) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inVars(INVARS) . 
+
   eq task(id(PRID) k(@output ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
      outVars(OUTVARS)
@@ -557,6 +588,9 @@ mod CYCLE-SEMANTICS is
      outVars(OUTVARS) . 
 
   eq k(@takeInput(nilPExpList) ~> K)
+   = k(K) .
+
+  eq k(@ignoreInput(nilPExpList) ~> K)
    = k(K) .
 
   eq k(@writeOutput(nilPExpList) ~> K)
@@ -655,7 +689,7 @@ mod CYCLE-SEMANTICS is
      inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
 
   eq k(@writeOutput(VAR, VARS) ~> K)
-   = k(VAR ~> @writeOutput(VAR, VARS) ~> K) .
+   = k(botSpace(VAR) ~> @writeOutput(VAR, VARS) ~> K) .
 
   --- output
   eq task(id(PRID) k(VAL ~> @writeOutput(VAR, VARS) ~> K) REST)
@@ -664,6 +698,95 @@ mod CYCLE-SEMANTICS is
    = task(id(PRID) k(@writeOutput(VARS) ~> K) REST)
      objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
      outStream((PNAME :: VAR |-> SEQ, VAL), STREAM) . 
+
+  --- dummyInput case 1: last single value
+  eq task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> VAL), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
+   = task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> nilStreamList), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
+
+  --- dummyInput case 2: single value
+  eq task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> VAL, SEQ), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
+   = task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> SEQ), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
+
+  --- dummyInput case 3: repeat single value
+  eq task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(VAL)), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
+   = task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(VAL)), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
+
+  --- dummyInput case 4: repeat value
+  eq task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(VAL, SEQ)), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
+   = task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(SEQ, VAL)), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
+
+  --- dummyInput case 5: last symbolic value
+  eq activeJob(Some(@j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> symbolic), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
+   = activeJob(Some(@j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> nilStreamList), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
+
+  --- dummyInput case 6: symbolic value
+  eq activeJob(Some(@j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> symbolic, SEQ), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
+   = activeJob(Some(@j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> SEQ), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
+
+  --- dummyInput case 7: repeat symbolic
+  eq activeJob(Some(@j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(symbolic)), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
+   = activeJob(Some(@j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(symbolic)), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
+
+  --- dummyInput case 8: repeat symbolic and other
+  eq activeJob(Some(@j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(symbolic, SEQ)), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
+   = activeJob(Some(@j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
+     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
+     inputPattern((PNAME :: VAR |-> repeat(SEQ, symbolic)), STREAM)
+     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
+
 
   --- timer update
   eq interval((PRID |-> INTERVAL, IM)) 
@@ -686,13 +809,15 @@ mod CYCLE-SEMANTICS is
 
   --- is minimum current time necessary?
  crl [schedule] :
+     log(LOG)
      minCurrTime(MCT)
      activeJob(None)
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(@block ~> K) REST)
      tindex(N)
      constraints(CONST)
-  => minCurrTime(if MCT < ES then ES else MCT fi)
+  => log(LOG (getProgramName(PRID), 'schedule, syn2sem(# ES)))
+     minCurrTime(if MCT < ES then ES else MCT fi)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(K) REST)
@@ -704,12 +829,14 @@ mod CYCLE-SEMANTICS is
   /\ checkSAT(CONST') .
 
   rl [endProgram] :
+     log(LOG)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(.K) REST)
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
      interval((PRID |-> INTERVAL, IM))
-  => activeJob(None)
+  => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES)))
+     activeJob(None)
      task(id(PRID) k(.K) REST)
      sQueue((Q1, Q2))
      futureJobs((JOBS @j(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
@@ -724,17 +851,20 @@ mod CYCLE-SEMANTICS is
      PARDef(PNAME, PARMETERDATA, S) .
 
  crl [placeJob] :
+     log(LOG)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(K) REST)
      maxTime(MAXTIME)
-  => futureJobs(JOBS)
+  => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
+     futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST)
      maxTime(MAXTIME)
      if ES <= MAXTIME .
 
  crl [preempt] :
+     log(LOG)
      minCurrTime(MCT)
      activeJob(Some(@j(PRID2, PR2, ES2, DL2)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
@@ -743,7 +873,8 @@ mod CYCLE-SEMANTICS is
      task(id(PRID2) k(K2) REST2)
      tindex(N)
      constraints(CONST)
-  => minCurrTime(if MCT < ES then ES else MCT fi)
+  => log(LOG (getProgramName(PRID), 'preempt, syn2sem(# ES)))
+     minCurrTime(if MCT < ES then ES else MCT fi)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
@@ -756,6 +887,11 @@ mod CYCLE-SEMANTICS is
                syn2sem(# DL) > tv(s N) AND
                syn2sem(# DL2) > tv(s N) 
   /\ checkSAT(CONST') .
+
+  eq log(LOG (getProgramName(PRID), QQ:Qid, SS:SemanticValue) LOG':Log)
+     objs(obj(id(PRID) fbtype(PNAME) REST) OBJS)
+   = log(LOG (PNAME, QQ:Qid, SS:SemanticValue) LOG':Log)
+     objs(obj(id(PRID) fbtype(PNAME) REST) OBJS) .
 endm
 
 --- wait semantics
@@ -775,6 +911,7 @@ mod WAIT-SEMANTICS is
   var JOBS : JobSet .
   vars Q1 Q2 : JobList .
   var IM : Map{ProcessId, Nat} .
+  var LOG : Log .
 
   eq k(WAIT(E) ~> K) = k(IF E THEN skip ; ELSE @release ; WAIT(E) ; ENDIF   ~> K) .
 
@@ -787,9 +924,10 @@ mod WAIT-SEMANTICS is
      sQueue(Q1, Q2)
      futureJobs((JOBS @j(PRID, PR, ES + IN, DL + IN)))
      interval((PRID |-> IN, IM))
-     task(id(PRID) (k(@block ~> @timerUpdate ~> K)) REST) . --- input?
+     task(id(PRID) (k(@output ~> @block ~> @dummyInput ~>  @timerUpdate ~> K)) REST) .
 
- crl [WAITTIMEDECREASE] :
+ crl [waitTimeDecrease] :
+     log(LOG)
      minCurrTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
@@ -797,7 +935,8 @@ mod WAIT-SEMANTICS is
      interval((PRID |-> IN, IM))
      task(id(PRID) (k(WAITTIME(V1) ~> K)) REST)
      constraints(CONST)
-  => minCurrTime(MCT)
+  => log(LOG (getProgramName(PRID), 'waitTimeDecrease, V1))
+     minCurrTime(MCT)
      activeJob(None)
      sQueue(Q1, Q2)
      futureJobs((JOBS @j(PRID, PR, ES + IN, DL + IN)))
@@ -807,7 +946,8 @@ mod WAIT-SEMANTICS is
   if checkSAT(V1 > syn2sem(T# 0 ms)) .
 
 
- crl [WAITTIMEND] :
+ crl [waitTimeEnd] :
+     log(LOG)
      minCurrTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
@@ -816,7 +956,8 @@ mod WAIT-SEMANTICS is
      task(id(PRID) (k(WAITTIME(V1) ~> K)) REST)
      tindex(N)
      constraints(CONST)
-  => minCurrTime(MCT)
+  => log(LOG (getProgramName(PRID), 'waitTimeEnd, V1))
+     minCurrTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)

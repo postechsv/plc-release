@@ -261,6 +261,19 @@ op $size to $sizex
   op callStack : ProgramStack -> KConfig [ctor] .
 endfm
 
+fmod LOG is
+  inc COMMON-SEMANTIC-VALUE .
+  inc PID . 
+
+  sorts Log LogEntry .
+  subsort LogEntry < Log .
+  op emptyLog : -> Log [ctor format(u o)] .
+  op __ : Log Log -> Log [ctor assoc id: emptyLog prec 1] .
+  op _,_,_ : Pid Qid SemanticValue -> LogEntry [ctor prec 0 format(u u u u u on)] .
+
+  op getProgramName : ProcessId ~> Pid .
+endfm
+
 --- CODE-CONFIG defines K Configuration (cell structure)  
 fmod CODE-CONFIG is
   inc TIMER .
@@ -272,7 +285,9 @@ fmod CODE-CONFIG is
   inc COMPONENT .
   inc LTLFORMULA .
   inc VSET .
+  inc LOG .
 
+  op log : Log -> KConfig [ctor] .
   op tindex : Nat -> KConfig [ctor] .
   ops inVars outVars : SKSet -> KConfig [ctor] . 
   op activeJob : JobOption -> KConfig [ctor] .
@@ -318,4 +333,5 @@ fmod CODE-CONFIG is
 
   op initCond : ~> SemanticValue .
   op tv : Nat ~> SemanticValue .
+  op botSpace : PExp ~> PExp .
 endfm

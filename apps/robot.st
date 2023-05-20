@@ -1,7 +1,7 @@
 PROGRAMS
-balancer([4, 0, 1]) ;;
-obstacle([40, 0, 2]) ;;
-background([50, 0 ,3]) ;;
+balancer([1, 4, 0]) ;;
+obstacle([2, 6, 0]) ;;
+background([3, 12, 0]) ;;
 PROGRAMSEND
 
 TYPE
@@ -14,7 +14,7 @@ obstacle_flag : BOOL := FALSE ;
 END_VAR
 
 PROGRAM balancer
-VAR_IN
+VAR_INPUT
 cmd_forward : DINT ;
 cmd_turn : DINT ;
 gyro_sensor : REAL ;
@@ -26,11 +26,11 @@ pwm_r : DINT ;
 END_VAR
 
 VAR
-avg_cnt : DINT ;
+avg_cnt : REAL ;
 gyro_offset : REAL ;
 END_VAR
 
-CASE MODE OF
+CASE mode OF
 INIT:
     gyro_offset := 0;
     avg_cnt := 0;
@@ -47,34 +47,28 @@ CONTROL:
    IF obstacle_flag THEN
        cmd_forward := -100;
        cmd_turn := 0;
-   ELSE
-       skip;
    END_IF;
 
-ELSE:
-    skip;
-END_CASE
+ELSE
+    ;
+END_CASE;
 
 END_PROGRAM
 
 PROGRAM obstacle
 
-VAR_IN
+VAR_INPUT
 sonar : REAL;
 END_VAR
 
-IF mode := CONTROL AND sonar <= 100 THEN
+IF mode = CONTROL AND sonar <= 100 THEN
     obstacle_flag := 1;
-ELSE
-    skip;
 END_IF;
 
 END_PROGRAM
 
 
 PROGRAM background
-
-emptyVDecl
 
 WAIT(FALSE);
 

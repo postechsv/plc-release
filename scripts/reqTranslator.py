@@ -195,7 +195,7 @@ class ReqFileTranslator:
 "appExt =>* constraints(CONST) inputCollector(IS') \n" \
 "           outStream(OS') REST:KConfig \n" \
 "such that \n" \
-"checkSAT((adapt((transformISKey(IS'), OS'), am) |= genFormula(NOT cond, 0, cutSize(OS', am))) AND CONST) . "
+"checkSAT((adapt((transformISKey(IS'), OS'), am) |= genFormula(NOT cond, 0, cutSize(OS', am) - 1)) AND CONST) . "
         if "symbolic" in visitor.INPUTSTREAM:
             self.symbolicOrconcrete = "symbolic"
         else:
