@@ -862,6 +862,7 @@ mod CYCLE-SEMANTICS is
      task(id(PRID) k(@loadNBlock) REST)
      maxTime(MAXTIME)
      if ES <= MAXTIME .
+---     /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
 
  crl [preempt] :
      log(LOG)

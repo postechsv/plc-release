@@ -19,6 +19,7 @@ fmod JOBS is
   vars TID1 TID2 : ProcessId .
   vars PR1 PR2 ES1 ES2 DL1 DL2 : Nat .
   var JL : JobList .
+  var JS : JobSet .
   eq add(emptyJList, J:Job) = J:Job .
  ceq add((@j(TID1, PR1, ES1, DL1), JL), @j(TID2, PR2, ES2, DL2))
    = (@j(TID2, PR2, ES2, DL2), @j(TID1, PR1, ES1, DL1), JL)
@@ -33,6 +34,14 @@ fmod JOBS is
      else
        (@j(TID2, PR2, ES2, DL2), @j(TID1, PR1, ES1, DL1), JL)
      fi [owise] .
+
+  op earlist : Job JobSet ~> Bool .
+
+ ceq earlist(@j(TID1, PR1, ES1, DL1), (@j(TID2, PR2, ES2, DL2) JS)) = false
+  if ES1 > ES2 or (ES1 == ES2 and PR1 > PR2) .
+
+  eq earlist(@j(TID1, PR1, ES1, DL1), JS) = true [owise] .
+
   sort JobOption .
   op Some : Job -> JobOption [ctor] .
   op None : -> JobOption [ctor] .

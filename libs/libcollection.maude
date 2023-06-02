@@ -311,7 +311,7 @@ endfm
 
 fmod PLC-LIB is
   inc LIST{POUDefinition} .
-  op LIB : -> List{POUDefinition} .
+  op lib : -> List{POUDefinition} .
   inc CMP .
   inc CTD .
   inc CTU .
@@ -321,6 +321,6 @@ fmod PLC-LIB is
   inc PLS .
   inc TON .
   inc TP .
-  eq LIB = CMP CTD CTU CTUD FTRIG RTRIG PLS TON TP .
+  eq lib = CMP CTD CTU CTUD FTRIG RTRIG PLS TON TP .
 endfm
 
