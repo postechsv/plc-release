@@ -62,7 +62,7 @@ fmod COMMON-SEMANTIC-VALUE is
   op UNKNOWNOUTPUTVAL : -> SemanticValue . 
 
   op arrayLoc : ArrayEnv -> NonLocSemval .
-  op ObjLoc : ProcessId -> NonLocSemval .  
+  op InsLoc : ProcessId -> NonLocSemval .  
 
   op syn2sem : PValue -> SemanticValue .
   op syn2sem : PRat -> RatSemanticVal .

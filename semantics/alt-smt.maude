@@ -1,0 +1,333 @@
+***(
+ Extending BOOL, RAT and INT with SMT variables  of the form bb(x), ii(x)
+ and rr(x)
+ 
+ BoolExpr (Bool extended with SMT variables) expressions can be checked for satisfiability 
+ using smtCheck that transforms a BoolExpr into a BoolExpression 
+
+)
+
+load smt .
+load smt-check .
+
+fmod ALT-BOOLEAN-EXPR is
+  including VAR-ID .
+  including BOOL .
+
+  sort BoolExpr .
+  subsort Bool < BoolExpr .
+  
+  sort BoolVar .
+  subsort BoolVar < BoolExpr .
+  op bb : SMTVarId -> BoolVar [ctor] .
+
+  op not_ : BoolExpr -> BoolExpr [ditto] .
+  op _and_ : BoolExpr BoolExpr -> BoolExpr [ditto] .
+  op _xor_ : BoolExpr BoolExpr -> BoolExpr [ditto] .
+  op _or_ : BoolExpr BoolExpr -> BoolExpr [ditto] .
+  op _implies_ : BoolExpr BoolExpr -> BoolExpr [ditto] .
+
+  op _===_ : BoolExpr BoolExpr -> BoolExpr [comm prec 51] .
+  op _=/==_ : BoolExpr BoolExpr -> BoolExpr [comm prec 51] .
+  op _?_:_ : BoolExpr BoolExpr BoolExpr -> BoolExpr [gather (e e e) prec 71] .
+
+  vars A B C : BoolExpr .
+
+--- from BOOL-OPS
+  eq true and A = A .
+  eq false and A = false .
+  eq A and A = A .
+  eq false xor A = A .
+  eq A xor A = false .
+
+---(
+  eq A and (B xor C) = A and B xor A and C .
+  eq not A = A xor true .
+  eq A or B = A and B xor A xor B .
+  eq A implies B = not(A xor A and B) .
+---)
+
+  eq true implies A  = A .
+  eq false implies A = true .
+  eq A implies true  = true .
+
+--- some basic equations
+  eq A === A = true .
+
+  eq (true ===  false) = (false).Bool .
+  eq (true =/== false) = (true).Bool .
+
+  eq true  ? A : B = A .
+  eq false ? A : B = B .
+endfm
+
+
+fmod ALT-INTEGER-EXPR is
+  protecting ALT-BOOLEAN-EXPR .
+  including INT .
+
+  sort IntExpr .
+  subsort Int < IntExpr .
+
+  sort IntVar .
+  subsort IntVar < IntExpr .
+  op ii : SMTVarId -> IntVar [ctor] .
+
+  op -_ : IntExpr -> IntExpr [ditto] .
+  op _+_ : IntExpr IntExpr -> IntExpr [ditto] .
+  op _*_ : IntExpr IntExpr -> IntExpr [ditto] .
+  op _-_ : IntExpr IntExpr -> IntExpr [ditto] .
+
+  op _<_ : IntExpr IntExpr -> BoolExpr [ditto] .
+  op _<=_ : IntExpr IntExpr -> BoolExpr [ditto] .
+  op _>_ : IntExpr IntExpr -> BoolExpr [ditto].
+  op _>=_ : IntExpr IntExpr -> BoolExpr [ditto] .
+
+  op _===_ : IntExpr IntExpr -> BoolExpr [comm prec 51] .
+  op _=/==_ : IntExpr IntExpr -> BoolExpr [comm prec 51] .
+  op _?_:_ : BoolExpr IntExpr IntExpr -> IntExpr [gather (e e e) prec 71] .
+
+--- The following operators are currently not supported.
+---( 
+  op _div_ : IntExpr IntExpr -> IntExpr [gather (E e) prec 31] . 
+  op _mod_ : IntExpr IntExpr -> IntExpr [gather (E e) prec 31] .
+  op _divisible_ : IntExpr IntExpr -> BoolExpr [prec 51] .
+---)
+
+  vars A B : IntExpr .
+  vars I J : Int .
+
+--- some basic equations
+  --- eq A === A = true .
+  --- eq A <= A = true .
+  --- eq A >= A = true .
+
+  eq (A ===  B) = A <= B and A >= B .
+  eq (A =/== B) = A < B  or  A > B .
+
+  eq true  ? A : B = A .
+  eq false ? A : B = B .
+endfm
+
+
+--- Because RAT includes INT, ALT-REAL must include ALT-INTEGER.
+fmod ALT-REAL-INTEGER-EXPR is
+  including VAR-ID .
+  protecting ALT-INTEGER-EXPR .
+  including RAT .
+
+  sort RExpr .
+  subsort Rat < RExpr .
+
+  sort RVar StRExpr .
+  subsort RVar < StRExpr < RExpr .
+  op rr : SMTVarId -> RVar [ctor] .
+
+  op -_ : RExpr -> RExpr [ditto] .
+  op _+_ : RExpr RExpr -> RExpr [ditto] .
+  op _*_ : RExpr RExpr -> RExpr [ditto] .
+  op _-_ : RExpr RExpr -> RExpr [ditto] .
+  op _/_ : RExpr RExpr -> RExpr [ditto] .
+
+  op -_ : StRExpr -> StRExpr [ditto] .
+  op _+_ : StRExpr RExpr -> StRExpr [ditto] .
+  op _*_ : StRExpr RExpr -> StRExpr [ditto] .
+
+  op _-_ : StRExpr RExpr -> StRExpr [ditto] .
+  op _-_ : RExpr StRExpr -> StRExpr [ditto] .
+  op _/_ : StRExpr RExpr -> StRExpr [ditto] .
+  op _/_ : RExpr StRExpr -> StRExpr [ditto] .
+
+  op _<_ : RExpr RExpr -> BoolExpr [ditto] .
+  op _<=_ : RExpr RExpr -> BoolExpr [ditto] .
+  op _>_ : RExpr RExpr -> BoolExpr [ditto] .
+  op _>=_ : RExpr RExpr -> BoolExpr [ditto] .
+
+  op _===_ : RExpr RExpr -> BoolExpr [comm prec 51] .
+  op _=/==_ : RExpr RExpr -> BoolExpr [comm prec 51] .
+  op _?_:_ : BoolExpr RExpr RExpr -> RExpr [gather (e e e) prec 71] .
+  op _?_:_ : BoolExpr Int Int -> Int [ditto] .
+
+  op toReal : IntExpr -> RExpr .
+  op toInteger : RExpr -> IntExpr .
+  op isInteger : RExpr -> BoolExpr .
+
+  vars A B : RExpr .
+  var I : Int .
+  vars R S : Rat .
+
+--- some basic equations
+  --- eq A === A = true .
+  --- eq A <= A = true .
+  --- eq A >= A = true .
+   eq (A ===  B) = A <= B and A >= B .
+   eq (A =/== B) = A <  B  or A >  B .
+
+  eq true  ? A : B = A .
+  eq false ? A : B = B .
+
+  eq 0 + A = A .
+
+  eq toReal(I) = I .
+  eq toInteger(R) = floor(R) .
+
+  eq isInteger(I) = true .
+  eq isInteger(R) = floor(R) === R .
+endfm
+
+
+--- from an old version of the HybridSynchAADL implementation
+fmod META-SMT-CONSTANT-TRANS is
+  protecting META-LEVEL .
+  protecting CONVERSION .
+
+  vars T T' : Term .
+
+  sort Nat? .
+  subsort Nat < Nat? .
+  op error : -> Nat? [ctor] .
+
+  op metaTrIntC : Term -> TermQid [memo] .
+  eq metaTrIntC(T) = qid(string(downTerm(T,error),10) + ".Integer")  .
+
+  op metaTrRatC : Term -> TermQid [memo] .
+  eq metaTrRatC('_/_[T,T']) 
+   = qid(string(downTerm(T,error),10) + "/" + string(downTerm(T',error),10) + ".Real") .
+
+  eq metaTrRatC(T) = qid(string(downTerm(T,error),10) + "/1.Real") [owise] .
+endfm
+
+
+--- translate ALT-SMT exps to SMT exps
+fmod SMT-EXP-TRANS is
+  protecting REAL-INTEGER-EXPR .
+  protecting ALT-REAL-INTEGER-EXPR .
+  protecting META-SMT-CONSTANT-TRANS * (op __ to _#_) . --- to avoid a parsing error
+
+  op trBool : BoolExpr ~> BooleanExpr .
+  op trInt  : IntExpr ~> IntegerExpr .
+  op trReal : RExpr ~> RealExpr .
+
+  var B : Bool .
+  var I : Int .
+  var R : Rat .
+  var ID : SMTVarId .
+  vars BE BE1 BE2 : BoolExpr .
+  vars IE IE1 IE2 : IntExpr .
+  vars RE RE1 RE2 : RExpr .
+
+  --- error terms for downTerm
+  sort Integer? Real? .
+  subsort Integer < Integer? .
+  subsort Real < Real? .
+  op error : -> Integer? [ctor] .
+  op error : -> Real? [ctor] .
+
+  --- translation for atoms
+  op trRealAtom : Rat ~> Real [memo].
+  eq trRealAtom(R) = downTerm(metaTrRatC(upTerm(R)),error) .
+
+  op trIntAtom  : Int ~> Integer [memo] .
+  eq trIntAtom(I) = downTerm(metaTrIntC(upTerm(I)),error) .
+
+--- Boolean
+  eq trBool(true)  = true .
+  eq trBool(false) = false .
+  eq trBool(bb(ID)) = b(ID) .
+
+  eq trBool(not BE) = not trBool(BE) .
+  eq trBool(BE1 and BE2) = trBool(BE1) and trBool(BE2) .
+  eq trBool(BE1 xor BE2) = trBool(BE1) xor trBool(BE2) .
+  eq trBool(BE1 or  BE2) = trBool(BE1) or  trBool(BE2) .
+  eq trBool(BE1 implies BE2) = trBool(BE1) implies trBool(BE2) .
+
+  eq trBool(BE1 ===  BE2) = trBool(BE1) ===  trBool(BE2) .
+  eq trBool(BE1 =/== BE2) = trBool(BE1) =/== trBool(BE2) .
+
+  eq trBool(BE ? BE1 : BE2) = trBool(BE) ? trBool(BE1) : trBool(BE2) .
+
+--- Integer
+  eq trInt(I) = trIntAtom(I) .
+  eq trInt(ii(ID)) = i(ID) .
+
+  eq trInt(- IE) = - trInt(IE) .
+  eq trInt(IE1 + IE2) = trInt(IE1) + trInt(IE2) .
+  eq trInt(IE1 * IE2) = trInt(IE1) * trInt(IE2) .
+  eq trInt(IE1 - IE2) = trInt(IE1) - trInt(IE2) .
+
+  eq trBool(IE1 <  IE2) = trInt(IE1) <  trInt(IE2) .
+  eq trBool(IE1 <= IE2) = trInt(IE1) <= trInt(IE2) .
+  eq trBool(IE1 >  IE2) = trInt(IE1) >  trInt(IE2) .
+  eq trBool(IE1 >= IE2) = trInt(IE1) >= trInt(IE2) .
+
+  eq trBool(IE1 ===  IE2) = trInt(IE1) ===  trInt(IE2) .
+  eq trBool(IE1 =/== IE2) = trInt(IE1) =/== trInt(IE2) .
+
+  eq trInt(BE ? IE1 : IE2) = trBool(BE) ? trInt(IE1) : trInt(IE2) .
+
+--- Real
+  eq trReal(R) = trRealAtom(R) .
+  eq trReal(rr(ID)) = r(ID) .
+
+  eq trReal(- RE) = - trReal(RE) .
+  eq trReal(RE1 + RE2) = trReal(RE1) + trReal(RE2) .
+  eq trReal(RE1 * RE2) = trReal(RE1) * trReal(RE2) .
+  eq trReal(RE1 - RE2) = trReal(RE1) - trReal(RE2) .
+  eq trReal(RE1 / RE2) = trReal(RE1) / trReal(RE2) .
+
+  eq trBool(RE1 <  RE2) = trReal(RE1) <  trReal(RE2) .
+  eq trBool(RE1 <= RE2) = trReal(RE1) <= trReal(RE2) .
+  eq trBool(RE1 >  RE2) = trReal(RE1) >  trReal(RE2) .
+  eq trBool(RE1 >= RE2) = trReal(RE1) >= trReal(RE2) .
+
+  eq trBool(RE1 ===  RE2) = trReal(RE1) ===  trReal(RE2) .
+  eq trBool(RE1 =/== RE2) = trReal(RE1) =/== trReal(RE2) .
+
+  eq trReal(BE ? RE1 : RE2) = trBool(BE) ? trReal(RE1) : trReal(RE2) .
+
+  eq trReal(toReal(IE)) = toReal(trInt(IE)) .
+  eq trInt(toInteger(RE)) = toInteger(trReal(RE)) .
+  eq trBool(isInteger(RE)) = isInteger(trReal(RE)) . 
+endfm
+
+
+fmod ALT-SMT-CHECK is
+  protecting SMT-EXP-TRANS .
+  protecting SMT-CHECK .
+
+  var B : Bool . var BE : BoolExpr .
+
+  op smtCheck : BoolExpr -> SmtCheckResult .
+  eq smtCheck(BE) = smtCheck(BE, false) .
+
+  op smtCheck : BoolExpr Bool -> SmtCheckResult .
+  eq smtCheck((true).BoolExpr,  B) = true .
+  eq smtCheck((false).BoolExpr, B) = false .
+  eq smtCheck(BE, B) = smtCheck(trBool(BE), B) [owise] .
+endfm
+
+
+
+fmod TEST-TR is
+  including SMT-EXP-TRANS .
+
+  subsort Nat < SMTVarId .
+endfm
+
+red trBool(bb(0) and (3 * toInteger(4) > (isInteger(rr(1)) ? toInteger(rr(1)) : 0))) .
+
+red trBool((3/2 * 4/1 > (rr(1) >= 0 ? rr(1) : - rr(1))) implies false) .
+
+
+fmod TEST-CHECK is
+  including ALT-SMT-CHECK .
+
+  subsort Nat < SMTVarId .
+endfm
+
+red smtCheck((3/2 * 4/1 > (rr(1) >= 0 ? rr(1) : - rr(1))) implies false) .
+
+red smtCheck((3/2 * 4/1 > (rr(1) >= 0 ? rr(1) : - rr(1))) implies false, true) .
+
+red smtCheck(rr(2) === (rr(1) > 0 ? rr(1) : - rr(1)) and rr(1) < 0 and rr(2) < 0) .
+

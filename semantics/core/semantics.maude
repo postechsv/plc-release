@@ -29,17 +29,17 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   inc COMMON-SEMANTIC-VALUE .
   inc CONVERSION-SEMANTICVAL .
 
-  var OBJLOC : ProcessId .
+  var INSLOC : ProcessId .
   var I : Pid .
   vars V VV : SemanticValue .
   var K : K .
-  vars ENV OBJENV  : Env .
+  vars ENV INSENV  : Env .
   var ENVSTACK : ProgramStack .
   vars ARRAYENV ARRAYENV1 ARRAYENV2  : ArrayEnv .
   var STORE : Map{Location, SemanticValue} .
   vars CONST CONST' : SemanticValue .
   var ARRAYINDEX  LOCINDEX : Nat .
-  vars RESTOBJS OBJS : KConfig .
+  vars RESTINSS INSS : KConfig .
   var LOCATION  : Location .
   vars REST : KConfig .  
   var TYPE : PType .
@@ -64,8 +64,8 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
    = task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
   if not in(I, VS) .
 
-  eq task(k(ObjLoc(OBJLOC) . I := V ~> K) REST) objs(OBJS) 
-   = task(k(@store(getObjEnv(OBJLOC,OBJS)[I],V) ~> K) REST) objs(OBJS) .
+---  eq task(k(InsLoc(INSLOC) . I := V ~> K) REST) inss(INSS) 
+---   = task(k(@store(getInsEnv(INSLOC,INSS)[I],V) ~> K) REST) inss(INSS) .
 
  crl [arrayAssign] : task(k(arrayLoc(ARRAYENV)[VV] := V ~> K) REST) constraints(CONST)
   => task(k(@store(LOCATION,V) ~> K) REST) constraints(simplify(CONST AND CONST'))
@@ -88,8 +88,8 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
    = task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
    if not in(I, VS) .
   --- _._._._
-  eq task(k(ObjLoc(OBJLOC) . I ~> K)                 REST) objs(OBJS) 
-   = task(k(@lookup(getObjEnv(OBJLOC,OBJS)[I]) ~> K) REST) objs(OBJS) .
+  eq task(k(InsLoc(INSLOC) . I ~> K)                 REST) inss(INSS) 
+   = task(k(@lookup(getInsEnv(INSLOC,INSS)[I]) ~> K) REST) inss(INSS) .
 
   --- array[V]
  crl [arrayLookup] : task(k(arrayLoc(ARRAYENV)[VV] ~> K) REST) constraints(CONST)
@@ -104,6 +104,11 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
           callStack(ENVSTACK :: ENV) REST)
    = task(k(@lookup(ENV[I]) ~> K)
           callStack(ENVSTACK :: ENV) REST) . 
+
+  eq task(k(botWrite(I, V) ~> K)
+          callStack(ENVSTACK :: ENV) REST)
+   = task(k(@store(ENV[I], V) ~> K)
+          callStack(ENVSTACK :: ENV) REST) .
 endm
 
 --- conditional statement semantics
@@ -227,15 +232,15 @@ mod CALL-SEMANTICS is
   inc COMMON-SEMANTIC-VALUE .
 
   var CPR : ProcessId .
-  vars ENV ENV' OBJENV  : Env .
-  vars REST RESTOBJS OBJS : KConfig .  
+  vars ENV ENV' INSENV  : Env .
+  vars REST RESTINSS INSS : KConfig .  
   var K : K .
   var S : Stmt .
   var ARGS : List{FArgElement} .
   vars STORE STORE' : Map{Location, SemanticValue} .
   var LOCATION : Location .
   vars FBI FBNAME I1 I2 : Pid .
-  vars OBJLOC ARRAYINDEX : Nat .
+  vars INSLOC ARRAYINDEX : Nat .
   vars V1 V2 CONST CONST' : SemanticValue .
   var RESTENV : ProgramStack .
   var RESTID : List{ProcessId} .
@@ -252,33 +257,33 @@ mod CALL-SEMANTICS is
   op @args : List{FArgElement} -> KLabel [ctor] .
   op @bind : Env ProcessId -> KLabel [ctor] .
   op @pop : -> KLabel [ctor] .
+  op tag : List{FArgElement} VarSecTypePairList -> List{FArgElement} .
 
  ceq task(k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
-   = task(k(@call(OBJLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
-  if ObjLoc(OBJLOC) := STORE[ENV[FBI]] .
+   = task(k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
+  if InsLoc(INSLOC) := STORE[ENV[FBI]] .
 
- ceq task(k(@call(OBJLOC,ARGS) ~> K) REST) objs(OBJS)  
-   = task(k(@call(OBJLOC,ARGS,OBJENV,FBNAME) ~> K) REST) objs(OBJS) 
-  if OBJENV := getObjEnv(OBJLOC,OBJS)
-  /\ FBNAME := getObjType(OBJLOC,OBJS) .
+ ceq task(k(@call(INSLOC,ARGS) ~> K) REST) inss(INSS)  
+   = task(k(@call(INSLOC,ARGS,INSENV,FBNAME) ~> K) REST) inss(INSS) 
+  if INSENV := getInsEnv(INSLOC,INSS)
+  /\ FBNAME := getInsType(INSLOC,INSS) .
 
-  eq task(k(@call(OBJLOC,ARGS,OBJENV,FBNAME) ~> K) REST) 
+  eq task(k(@call(INSLOC,ARGS,INSENV,FBNAME) ~> K) REST) 
      PARDef(FBNAME, PARMETERDATA, S) 
-   = task(k(@args(norm(ARGS,PARMETERDATA)) ~> @bind(OBJENV,OBJLOC) ~> S ~> @pop ~> K) REST) 
+   = task(k(@args(tag(ARGS,PARMETERDATA)) ~> @bind(INSENV,INSLOC) ~> S ~> @pop ~> K) REST) 
      PARDef(FBNAME, PARMETERDATA, S) .
 
   op @ALTERNATIVE : -> PExp [ctor] .
   op INPAR(_) : Pid -> Pid [ctor] .
   op INOUTPAR(_) : Pid -> Pid [ctor] .
 
-  op norm : List{FArgElement} VarSecTypePairList -> List{FArgElement} .
-  eq norm((ONEARG, ARGS) , ((I1, ##IN)    PARMETERDATA)) = (INPAR(I1)    <:= ONEARG), norm(ARGS, PARMETERDATA) .
-  eq norm((ONEARG, ARGS) , ((I1, ##INOUT) PARMETERDATA)) = (INOUTPAR(I1) <:= ONEARG), norm(ARGS, PARMETERDATA) .
-  eq norm(nilPExpList, emptyVarSecTypePairList) = nilPExpList .
+  eq tag((ONEARG, ARGS) , ((I1, ##IN)    PARMETERDATA)) = (INPAR(I1)    <:= ONEARG), tag(ARGS, PARMETERDATA) .
+  eq tag((ONEARG, ARGS) , ((I1, ##INOUT) PARMETERDATA)) = (INOUTPAR(I1) <:= ONEARG), tag(ARGS, PARMETERDATA) .
+  eq tag(nilPExpList, emptyVarSecTypePairList) = nilPExpList .
 
-  eq norm(((I1 <:= ONEARG) , ARGS) , (PARMETERDATA1 (I1, ##IN)    PARMETERDATA2)) = (INPAR(I1)    <:= ONEARG), norm(ARGS, (PARMETERDATA1 PARMETERDATA2)) .
-  eq norm(((I1 <:= ONEARG) , ARGS) , (PARMETERDATA1 (I1, ##INOUT) PARMETERDATA2)) = (INOUTPAR(I1) <:= ONEARG), norm(ARGS, (PARMETERDATA1 PARMETERDATA2)) .
-  eq norm(nilPExpList, emptyVarSecTypePairList) = nilPExpList .
+  eq tag(((I1 <:= ONEARG) , ARGS) , (PARMETERDATA1 (I1, ##IN)    PARMETERDATA2)) = (INPAR(I1)    <:= ONEARG), tag(ARGS, (PARMETERDATA1 PARMETERDATA2)) .
+  eq tag(((I1 <:= ONEARG) , ARGS) , (PARMETERDATA1 (I1, ##INOUT) PARMETERDATA2)) = (INOUTPAR(I1) <:= ONEARG), tag(ARGS, (PARMETERDATA1 PARMETERDATA2)) .
+  eq tag(nilPExpList, emptyVarSecTypePairList) = nilPExpList .
 
   --- parameter computation
   --- in parameter
@@ -306,8 +311,8 @@ mod CALL-SEMANTICS is
   eq task((k(@args((INOUTPAR(I1) <:= I2) , ARGS) ~> @bind(ENV',CPR)  ~> K)) callStack(ENV :: RESTENV) REST) 
    = task((k(@args(ARGS) ~> @bind(insert(I1, ENV[I2], ENV'),CPR)  ~> K)) callStack(ENV :: RESTENV) REST)  .
 
-  eq task((k(@args((INOUTPAR(I1) <:= ObjLoc(OBJLOC) . I2) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  objs(OBJS)
-   = task((k(@args(ARGS) ~> @bind(insert(I1, getObjEnv(OBJLOC,OBJS)[I2], ENV),CPR)  ~> K)) REST)  objs(OBJS) .
+  eq task((k(@args((INOUTPAR(I1) <:= InsLoc(INSLOC) . I2) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  inss(INSS)
+   = task((k(@args(ARGS) ~> @bind(insert(I1, getInsEnv(INSLOC,INSS)[I2], ENV),CPR)  ~> K)) REST)  inss(INSS) .
 
  crl [arrayArgBind] : 
      task((k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  constraints(CONST)
@@ -334,8 +339,8 @@ fmod STREAM-UPDATE-STREAM-DATA is
   vars PNAME I MAIN : Pid .
   var ENV : Env .
   var PE1 : PExp .
-  var OBJLOC OBJLOC2 : ProcessId .
-  vars REST RESTOBJS : KConfig .  
+  var INSLOC INSLOC2 : ProcessId .
+  vars REST RESTINSS : KConfig .  
   var STORE : Map{Location, SemanticValue} .
   var LOCATION : Location .
   vars STREAM STREAM2 : StreamMap .
@@ -352,15 +357,25 @@ fmod STREAM-UPDATE-STREAM-DATA is
 
   op findLocVal : PExp KConfig KConfig ~> SemanticValue .
   
- ceq findLocVal(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) REST) RESTOBJS), store(STORE)) = ObjLoc(OBJLOC2)
- if LOCATION := ENV[I] /\ $hasMapping(STORE, LOCATION) /\ ObjLoc(OBJLOC2) := STORE[LOCATION] .
+ ceq findLocVal(InsLoc(INSLOC) . I, (ins(id(INSLOC) mem(ENV) REST) RESTINSS), store(STORE)) = InsLoc(INSLOC2)
+ if LOCATION := ENV[I] /\ $hasMapping(STORE, LOCATION) /\ InsLoc(INSLOC2) := STORE[LOCATION] .
 
- ceq findLocVal(ObjLoc(OBJLOC) . I, (obj(id(OBJLOC) mem(ENV) REST) RESTOBJS), store(STORE)) = locVal(LOCATION)
+ ceq findLocVal(InsLoc(INSLOC) . I, (ins(id(INSLOC) mem(ENV) REST) RESTINSS), store(STORE)) = locVal(LOCATION)
  if LOCATION := ENV[I] /\ $hasMapping(STORE, LOCATION) [owise] .
 
-  eq findLocVal(I, (obj(fbtype(I) id(OBJLOC) REST) RESTOBJS), store(STORE)) = ObjLoc(OBJLOC) .
+  eq findLocVal(I, (ins(fbtype(I) id(INSLOC) REST) RESTINSS), store(STORE)) = InsLoc(INSLOC) .
 
-  eq findLocVal(PE1 . I, RESTOBJS, store(STORE)) = findLocVal(findLocVal(PE1 , RESTOBJS, store(STORE)) . I, RESTOBJS, store(STORE)) [owise] .
+  eq findLocVal(PE1 . I, RESTINSS, store(STORE)) = findLocVal(findLocVal(PE1 , RESTINSS, store(STORE)) . I, RESTINSS, store(STORE)) [owise] .
+
+  var LOCN : Nat .
+  var LOCTYPE : PType .
+
+  op findLocType : PExp KConfig KConfig ~> PType .
+  
+  ceq findLocType(InsLoc(INSLOC) . I, (task(id(INSLOC) mem(ENV) REST) RESTINSS), store(STORE)) = LOCTYPE 
+  if loc(LOCN, LOCTYPE) := ENV[I] .
+
+  eq findLocType(PE1 . I, RESTINSS, store(STORE)) = findLocType(findLocVal(PE1 , RESTINSS, store(STORE)) . I, RESTINSS, store(STORE)) .
 endfm
 
 mod STREAM-SEMANTICS is
@@ -398,12 +413,6 @@ mod STREAM-SEMANTICS is
 
   eq @ ((KEY |-> SEQ), STREAM') |= k(KEY{NN:Nat} ~> K)
    = @ ((KEY |-> SEQ), STREAM') |= k(refer(SEQ, NN:Nat) ~> K) .
-
-  op replaceStreams : KConfig KConfig ~> KConfig .
-  eq replaceStreams(KC:KConfig maxTime(BOUND) inputCollector(INPUTCOLLECTOR) inputPattern(INPUTSPECSTREAM) LTLCondition(LTLFORMULA) inStream(OS1:StreamMap) outStream(OS2:StreamMap) inVars(SS1:SKSet) outVars(SS2:SKSet), 
-  maxTime(BOUND') inputCollector(INPUTCOLLECTOR') inputPattern(INPUTSPECSTREAM') LTLCondition(LTLFORMULA') inStream(STREAM) outStream(STREAM2) inVars(INVARS) outVars(OUTVARS))
-   = KC:KConfig maxTime(BOUND') inputCollector(INPUTCOLLECTOR') inputPattern(INPUTSPECSTREAM') LTLCondition(LTLFORMULA') inStream(STREAM) outStream(STREAM2) inVars(INVARS) outVars(OUTVARS) .
-
 endm
 
 mod STREAM-EXTENSION is
@@ -414,8 +423,9 @@ mod STREAM-EXTENSION is
 
   --- main operators - streams
   op genEmptyStream : SKSet ~> StreamMap .
-  op repeat : NeList{StreamValue} -> NeList{StreamValue} .
-  op symbolic : -> StreamValue .
+  op repeat : NeList{StreamValue} -> NeList{StreamValue} [ctor] .
+  op symbolic : -> StreamValue [ctor] .
+  ops symB symI symR symT : -> StreamValue [ctor] .
   op tail : StreamMap -> [StreamMap] .
   op streamLength : StreamMap -> [Nat] .
 
@@ -439,7 +449,7 @@ mod STREAM-EXTENSION is
   vars REALINPUT INPUTSPEC INPUTCOLLECT : List{StreamValue} .
   vars STRMAP STRMAP2 STRMAP3 : StreamMap .
   vars RESTMAP RESTMAP2 : [StreamMap] .
-  vars KCF OBJS : KConfig .
+  vars KCF INSS : KConfig .
   vars STORE : Map{Location, SemanticValue} .
   vars N CURR BOUND NEWVARNUM NEWVARNUM1 NEWVARNUM2 : Nat .
   vars E E1 E2 E3: StreamValue .
@@ -519,23 +529,23 @@ mod STREAM-EXTENSION is
 endm
 
 --- starting new cycle
-mod CYCLE-SEMANTICS is
+mod SCHEDULING-SEMANTICS is
   inc CODE-CONFIG .
   inc STREAM-EXTENSION .
 
   var TKS : List{ProcessId} .
   vars PRID PRID2 : ProcessId .
   vars PERIOD DUE CYCLECOUNT BOUND NEWVARNUM NEWVARNUM' : Nat .
-  vars PR ES DL PR2 ES2 DL2 INTERVAL MCT N MAXTIME : Nat .
+  vars PR ES DL PR2 ES2 DL2 INTERVAL MCT N M MAXTIME : Nat .
   var PNAME : Pid .
   var S : Stmt .
   vars CT  : Rat .
-  vars KCF PROCS OBJS : KConfig .
+  vars KCF PROCS INSS : KConfig .
   vars K K1 K2 : K .
   vars REST REST2 : KConfig . 
-  var NEXTOBJS : KConfig .
+  var NEXTINSS : KConfig .
   var PARMETERDATA : VarSecTypePairList .
-  var RESTOBJS : KConfig .
+  var RESTINSS : KConfig .
   vars TNAT CONST CONST' FVAR : SemanticValue .
   var STORE : Map{Location, SemanticValue} .
   vars OUTSTREAM OUTSTREAM' INSTREAM : StreamMap .
@@ -552,249 +562,228 @@ mod CYCLE-SEMANTICS is
   var VAR : PExp .
   var VARS : List{PExp} .
   var VAL : SemanticValue .
+  var SVAL : StreamValue .
   vars SEQ SEQ2 : List{SemanticValue} .
+  vars SSEQ SSEQ2 : List{StreamValue} .
   vars STREAM STREAM2 : StreamMap .
   var ENV : Env .
   var LOCN : Nat .
   var LOCTYPE : PType .
   var LOG : Log .
   var ENVSTACK : ProgramStack .
-  ops @dummyInput @input @output @timerUpdate : -> KLabel [ctor] .
-  ops @takeInput @writeOutput @ignoreInput : List{PExp} -> KLabel [ctor] .  
+  var TYPE : PType .
+
+  ops @input @output @timerUpdate : -> KLabel [ctor] .
+  ops @takeInput @writeOutput : List{PExp} -> KLabel [ctor] .  
   op getVarList : SKSet Pid ~> List{PExp} .
   eq getVarList(PNAME :: VAR nnn INVARS, PNAME)
    = (VAR, getVarList(INVARS, PNAME)) . 
   eq getVarList(INVARS, PNAME) = nilPExpList [owise] .
 
   eq task(id(PRID) k(@input ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      inVars(INVARS)
    = task(id(PRID) k(@takeInput(getVarList(INVARS, PNAME)) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inVars(INVARS) . 
-
-  eq task(id(PRID) k(@dummyInput ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inVars(INVARS)
-   = task(id(PRID) k(@ignoreInput(getVarList(INVARS, PNAME)) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      inVars(INVARS) . 
 
   eq task(id(PRID) k(@output ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      outVars(OUTVARS)
    = task(id(PRID) k(@writeOutput(getVarList(OUTVARS, PNAME)) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      outVars(OUTVARS) . 
 
   eq k(@takeInput(nilPExpList) ~> K)
    = k(K) .
 
-  eq k(@ignoreInput(nilPExpList) ~> K)
-   = k(K) .
-
   eq k(@writeOutput(nilPExpList) ~> K)
    = k(K) .
 
-  --- input case 1: last single value
+  op getType : StreamKey KConfig ~> PType .
+  eq getType(PNAME :: VAR, 
+             inss(ins(id(PRID) fbtype(PNAME) mem(ENV) REST)INSS) store(STORE) KCF)
+   = @getType(VAR, ENV) .
+
+  op annotateType : StreamMap KConfig ~> StreamMap .
+  op annotateType : List{StreamValue} PType ~> List{StreamValue} .
+
+  eq annotateType(empty, KCF) = empty .
+
+  eq annotateType(((PNAME :: VAR |-> SSEQ), STREAM), KCF)
+   = ((PNAME :: VAR |-> annotateType(SSEQ, getType(PNAME :: VAR, KCF))), annotateType(STREAM, KCF)) .
+
+  eq annotateType((nilStreamList), TYPE) = nilStreamList .
+  eq annotateType((VAL), TYPE) = VAL .
+  eq annotateType((symbolic), BOOL) = symB .
+  eq annotateType((symbolic), REAL) = symR .
+  eq annotateType((symbolic), TIME) = symT .
+  eq annotateType((symbolic), INT) = symI .
+  eq annotateType((symbolic), DINT) = symI .
+  eq annotateType((symbolic), SINT) = symI .
+  eq annotateType((symbolic), UINT) = symI .
+  eq annotateType((symbolic), USINT) = symI .
+  eq annotateType((symbolic), UDINT) = symI .
+
+  eq annotateType(repeat(SSEQ), TYPE)
+   = repeat(annotateType(SSEQ, TYPE)) .
+  eq annotateType(repeat(SSEQ), SSEQ2, TYPE)
+   = repeat(annotateType(SSEQ, TYPE)) .
+
+  eq annotateType((SVAL, SSEQ), TYPE)
+   = annotateType(SVAL, TYPE), annotateType(SSEQ, TYPE) .
+
+  sorts Range Ranges .
+  subsort Range < Ranges .
+  var RR : Ranges .
+
+  op empty : -> Ranges [ctor] .
+  op __ : Ranges Ranges -> Ranges [ctor assoc comm id: empty] .
+  op _|->_ : Pid Nat -> Range [ctor] .
+ 
+  op genRanges : KConfig Nat ~> Ranges .
+  eq genRanges(inss(ins(fbtype(PNAME) id(PRID) REST) RESTINSS) 
+               interval((PRID |-> INTERVAL, IM))
+               sQueue(Q1, @j(PRID, PR, ES, DL), Q2) REST2, MAXTIME)
+             = (PNAME |-> ((MAXTIME - ES) quo INTERVAL + 1)) genRanges(
+               inss(RESTINSS) REST2
+               interval((PRID |-> INTERVAL, IM))
+               sQueue(Q1, @j(PRID, PR, ES, DL), Q2), MAXTIME) .
+
+  eq genRanges(REST, MAXTIME) = empty [owise] .
+
+  op srange : Ranges AdapterMap ~> Nat .
+  eq srange(((PNAME |-> N) RR), ((PNAME |-> AD:Adapter / M), AMAP:AdapterMap))
+   = N quo M + (if N rem M > 0 then 1 else 0 fi) .
+
+  op genIS : StreamMap Ranges ~> StreamMap .
+  op buildSeq : StreamKey Nat Nat List{StreamValue} ~> List{StreamValue} .
+  op repSeq : StreamKey List{StreamValue} Nat Nat ~> List{StreamValue} .
+
+  eq genIS(empty, RR) = empty .
+
+  eq genIS(((PNAME :: VAR |-> SSEQ), STREAM), ((PNAME |-> N) RR))
+   = (PNAME :: VAR |-> buildSeq(PNAME :: VAR, 0, N, SSEQ)), genIS(STREAM, RR) .
+
+  eq buildSeq(PNAME :: VAR, N, N, SSEQ) = nilStreamList .
+
+ ceq buildSeq(PNAME :: VAR, M, N, VAL)
+   = (VAL, buildSeq(PNAME :: VAR, s M, N, nilStreamList))
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, symB)
+   = (@genSym(PNAME :: VAR, BOOL, M), buildSeq(PNAME :: VAR, s M, N, nilStreamList))
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, symI)
+   = (@genSym(PNAME :: VAR, INT, M), buildSeq(PNAME :: VAR, s M, N, nilStreamList))
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, symR)
+   = (@genSym(PNAME :: VAR, REAL, M), buildSeq(PNAME :: VAR, s M, N, nilStreamList))
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, symT)
+   = (@genSym(PNAME :: VAR, TIME, M), buildSeq(PNAME :: VAR, s M, N, nilStreamList))
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, (VAL, SSEQ))
+   = (VAL, buildSeq(PNAME :: VAR, s M, N, SSEQ)) 
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, (symB, SSEQ))
+   = (@genSym(PNAME :: VAR, BOOL, M), buildSeq(PNAME :: VAR, s M, N, SSEQ))
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, (symI, SSEQ))
+   = (@genSym(PNAME :: VAR, INT, M), buildSeq(PNAME :: VAR, s M, N, SSEQ))
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, (symR, SSEQ))
+   = (@genSym(PNAME :: VAR, REAL, M), buildSeq(PNAME :: VAR, s M, N, SSEQ))
+     if M < N .
+
+ ceq buildSeq(PNAME :: VAR, M, N, (symT, SSEQ))
+   = (@genSym(PNAME :: VAR, TIME, M), buildSeq(PNAME :: VAR, s M, N, SSEQ))
+     if M < N .
+
+  eq buildSeq(PNAME :: VAR, M, N, repeat(SSEQ))
+   = repSeq(PNAME :: VAR, SSEQ, M, N) .
+
+  eq repSeq(PNAME :: VAR, SSEQ, N, N) = nilStreamList .
+
+ ceq repSeq(PNAME :: VAR, VAL, M, N)
+   = VAL, repSeq(PNAME :: VAR, VAL, s M, N) 
+  if M < N .
+
+ ceq repSeq(PNAME :: VAR, symB, M, N)
+   = @genSym(PNAME :: VAR, BOOL, M), repSeq(PNAME :: VAR, symB, s M, N) 
+  if M < N .
+
+ ceq repSeq(PNAME :: VAR, symI, M, N)
+   = @genSym(PNAME :: VAR, INT, M), repSeq(PNAME :: VAR, symI, s M, N) 
+  if M < N .
+ 
+ ceq repSeq(PNAME :: VAR, symR, M, N)
+   = @genSym(PNAME :: VAR, REAL, M), repSeq(PNAME :: VAR, symR, s M, N) 
+  if M < N .
+
+ ceq repSeq(PNAME :: VAR, symT, M, N)
+   = @genSym(PNAME :: VAR, TIME, M), repSeq(PNAME :: VAR, symT, s M, N) 
+  if M < N .
+
+ ceq repSeq(PNAME :: VAR, (VAL, SSEQ), M, N)
+   = VAL, repSeq(PNAME :: VAR, (SSEQ, VAL), M, N)
+  if M < N .
+  
+ ceq repSeq(PNAME :: VAR, (symB, SSEQ), M, N)
+   = @genSym(PNAME :: VAR, BOOL, M), repSeq(PNAME :: VAR, (SSEQ, symB), M, N)
+  if M < N .
+
+ ceq repSeq(PNAME :: VAR, (symI, SSEQ), M, N)
+   = @genSym(PNAME :: VAR, INT, M), repSeq(PNAME :: VAR, (SSEQ, symB), M, N)
+  if M < N .
+
+ ceq repSeq(PNAME :: VAR, (symR, SSEQ), M, N)
+   = @genSym(PNAME :: VAR, REAL, M), repSeq(PNAME :: VAR, (SSEQ, symB), M, N)
+  if M < N .
+
+ ceq repSeq(PNAME :: VAR, (symT, SSEQ), M, N)
+   = @genSym(PNAME :: VAR, TIME, M), repSeq(PNAME :: VAR, (SSEQ, symB), M, N)
+  if M < N .
+
   eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> VAL), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = task(id(PRID) k(VAR := VAL ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> nilStreamList), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     inStream((PNAME :: VAR |-> VAL), STREAM)
+   = task(id(PRID) k(botWrite(VAR, VAL) ~> @takeInput(VARS) ~> K) REST)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     inStream((PNAME :: VAR |-> nilStreamList), STREAM) .
 
-  --- input case 2: single value
   eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> VAL, SEQ), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = task(id(PRID) k(VAR := VAL ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> SEQ), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
-
-  --- input case 3: repeat single value
-  eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(VAL)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = task(id(PRID) k(VAR := VAL ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(VAL)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
-
-  --- input case 4: repeat value
-  eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(VAL, SEQ)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = task(id(PRID) k(VAR := VAL ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(SEQ, VAL)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
-
-  --- input case 5: last symbolic value
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> symbolic), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(VAR := @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)
-                     ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> nilStreamList), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
-
-  --- input case 6: symbolic value
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> symbolic, SEQ), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(VAR := @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)
-                     ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> SEQ), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
-
-  --- input case 7: repeat symbolic
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(symbolic)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(VAR := @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)
-                     ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(symbolic)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
-
-  --- input case 8: repeat symbolic and other
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(symbolic, SEQ)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(VAR := @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)
-                     ~> @takeInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(SEQ, symbolic)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     inStream((PNAME :: VAR |-> VAL, SEQ), STREAM)
+   = task(id(PRID) k(botWrite(VAR, VAL) ~> @takeInput(VARS) ~> K) REST)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     inStream((PNAME :: VAR |-> SEQ), STREAM) .
 
   eq k(@writeOutput(VAR, VARS) ~> K)
    = k(botSpace(VAR) ~> @writeOutput(VAR, VARS) ~> K) .
 
   --- output
   eq task(id(PRID) k(VAL ~> @writeOutput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      outStream((PNAME :: VAR |-> SEQ), STREAM)
    = task(id(PRID) k(@writeOutput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      outStream((PNAME :: VAR |-> SEQ, VAL), STREAM) . 
-
-  --- dummyInput case 1: last single value
-  eq task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> VAL), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> nilStreamList), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
-
-  --- dummyInput case 2: single value
-  eq task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> VAL, SEQ), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> SEQ), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
-
-  --- dummyInput case 3: repeat single value
-  eq task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(VAL)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(VAL)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
-
-  --- dummyInput case 4: repeat value
-  eq task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(VAL, SEQ)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(SEQ, VAL)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, VAL), STREAM2) .
-
-  --- dummyInput case 5: last symbolic value
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> symbolic), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> nilStreamList), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
-
-  --- dummyInput case 6: symbolic value
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> symbolic, SEQ), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> SEQ), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
-
-  --- dummyInput case 7: repeat symbolic
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(symbolic)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(symbolic)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
-
-  --- dummyInput case 8: repeat symbolic and other
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@ignoreInput(VAR, VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(symbolic, SEQ)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2), STREAM2)
-   = activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@ignoreInput(VARS) ~> K) REST)
-     objs(obj(id(PRID) fbtype(PNAME) mem(ENV) REST2) OBJS)
-     inputPattern((PNAME :: VAR |-> repeat(SEQ, symbolic)), STREAM)
-     inputCollector((PNAME :: VAR |-> SEQ2, @genSym(PNAME :: VAR, @getType(VAR, ENV), ES)), STREAM2) .
-
 
   --- timer update
   eq interval((PRID |-> INTERVAL, IM)) 
      task(id(PRID) k(@timerUpdate ~> K) REST)
-     objs(obj(timer(@timer(TNAT)) REST2) RESTOBJS)
+     inss(ins(timer(@timer(TNAT)) REST2) RESTINSS)
    = interval((PRID |-> INTERVAL, IM)) 
      task(id(PRID) k(K) REST)
-     objs(obj(timer(@timer(TNAT + syn2sem(T# INTERVAL ms))) REST2) RESTOBJS) .
+     inss(ins(timer(@timer(TNAT + syn2sem(T# INTERVAL ms))) REST2) RESTINSS) .
 
  ceq [invalid] :
      minCurrTime(MCT)
@@ -844,25 +833,35 @@ mod CYCLE-SEMANTICS is
 
   eq [loadNBlock] :
      task(id(PRID) k(@loadNBlock) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S)
    = task(id(PRID) k(@block ~> @input ~> @timerUpdate ~> S ~> @output) REST)
-     objs(obj(id(PRID) fbtype(PNAME) REST2) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S) .
 
- crl [placeJob] :
+  rl [placeJob] :
      log(LOG)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
-     task(id(PRID) k(K) REST)
-     maxTime(MAXTIME)
+     task(id(PRID) k(.K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@loadNBlock) REST)
-     maxTime(MAXTIME)
-     if ES <= MAXTIME .
+     task(id(PRID) k(@loadNBlock) REST) .
 ---     /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
+
+  rl [placeJob-wait] :
+     log(LOG)
+     futureJobs((@j(PRID, PR, ES, DL) JOBS))
+     sQueue(SQ)
+     task(id(PRID) k(@block ~> K) REST)
+  => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
+     futureJobs(JOBS)
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@block ~> K) REST) .
+---     /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
+
+
 
  crl [preempt] :
      log(LOG)
@@ -890,15 +889,20 @@ mod CYCLE-SEMANTICS is
   /\ checkSAT(CONST') .
 
   eq log(LOG (getProgramName(PRID), QQ:Qid, SS:SemanticValue) LOG':Log)
-     objs(obj(id(PRID) fbtype(PNAME) REST) OBJS)
+     inss(ins(id(PRID) fbtype(PNAME) REST) INSS)
    = log(LOG (PNAME, QQ:Qid, SS:SemanticValue) LOG':Log)
-     objs(obj(id(PRID) fbtype(PNAME) REST) OBJS) .
+     inss(ins(id(PRID) fbtype(PNAME) REST) INSS) .
+
+
+ ceq futureJobs(JOBS @j(PRID, PR, ES, DL)) maxTime(MAXTIME)
+   = futureJobs(JOBS) maxTime(MAXTIME)
+  if ES > MAXTIME .
 endm
 
 --- wait semantics
 mod WAIT-SEMANTICS is
   inc CODE-CONFIG .
-  inc CYCLE-SEMANTICS .
+  inc SCHEDULING-SEMANTICS .
   
   var PRID : ProcessId .
   vars TKS : List{ProcessId} .
@@ -925,7 +929,7 @@ mod WAIT-SEMANTICS is
      sQueue(Q1, Q2)
      futureJobs((JOBS @j(PRID, PR, ES + IN, DL + IN)))
      interval((PRID |-> IN, IM))
-     task(id(PRID) (k(@output ~> @block ~> @dummyInput ~>  @timerUpdate ~> K)) REST) .
+     task(id(PRID) (k(@output ~> @block ~> @input ~>  @timerUpdate ~> K)) REST) .
 
  crl [waitTimeDecrease] :
      log(LOG)
@@ -942,7 +946,7 @@ mod WAIT-SEMANTICS is
      sQueue(Q1, Q2)
      futureJobs((JOBS @j(PRID, PR, ES + IN, DL + IN)))
      interval((PRID |-> IN, IM))
-     task(id(PRID) (k(@block ~> @timerUpdate ~> WAITTIME(V1 - syn2sem(T# IN ms)) ~> K)) REST)
+     task(id(PRID) (k(@output ~> @block ~> @input ~> @timerUpdate ~> WAITTIME(V1 - syn2sem(T# IN ms)) ~> K)) REST)
      constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
   if checkSAT(V1 > syn2sem(T# 0 ms)) .
 
@@ -1010,20 +1014,20 @@ fmod TIMER-SEMANTICS is
   var K : K .  
   vars CT PTIME : Rat .
   var PV1 : PValue .
-  vars RESTOBJS : KConfig .
+  vars RESTINSS : KConfig .
   vars REST REST2 : KConfig .
   var TVAL : SemanticValue .
 
   eq task(id(CPR) (k(@#timerValue ~> K)) REST) 
-     objs(obj(id(CPR) timer(@timer(TVAL)) REST2) RESTOBJS)
+     inss(ins(id(CPR) timer(@timer(TVAL)) REST2) RESTINSS)
    =
      task(id(CPR) (k(TVAL ~> K)) REST) 
-     objs(obj(id(CPR) timer(@timer(TVAL)) REST2) RESTOBJS) .
+     inss(ins(id(CPR) timer(@timer(TVAL)) REST2) RESTINSS) .
 
   eq task(id(CPR) k(@#timerSetValue(T# PTIME ms) ~> K) REST) 
-     objs(obj(id(CPR) timer(@timer(TVAL)) REST2) RESTOBJS)
+     inss(ins(id(CPR) timer(@timer(TVAL)) REST2) RESTINSS)
    =
      task(id(CPR) k(K) REST) 
-     objs(obj(id(CPR) timer(@timer(syn2sem(T# PTIME ms))) REST2) RESTOBJS) .
+     inss(ins(id(CPR) timer(@timer(syn2sem(T# PTIME ms))) REST2) RESTINSS) .
 endfm
 

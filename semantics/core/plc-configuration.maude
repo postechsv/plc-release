@@ -276,7 +276,7 @@ fmod LOG is
 
   sorts Log LogEntry .
   subsort LogEntry < Log .
-  op emptyLog : -> Log [ctor format(u o)] .
+  op emptyLog : -> LogEntry [ctor format(u o)] .
   op __ : Log Log -> Log [ctor assoc id: emptyLog prec 1] .
   op _,_,_ : Pid Qid SemanticValue -> LogEntry [ctor prec 0 format(u u u u u on)] .
 
@@ -307,8 +307,8 @@ fmod CODE-CONFIG is
   op store : Map{Location, SemanticValue} -> KConfig [ctor] .  
   op POUDef : POUDefinition -> KConfig [ctor] .
   op PARDef : Pid VarSecTypePairList Stmt -> KConfig [ctor] .
-  op obj : KConfig -> KConfig [ctor] . --- ProcessId Pid Timer Env
-  op objs : KConfig -> KConfig [ctor] . 
+  op ins : KConfig -> KConfig [ctor] . --- ProcessId Pid Timer Env
+  op inss : KConfig -> KConfig [ctor] . 
   op cycleTime : Nat -> KConfig [ctor] .
   op constraints : BoolSemanticVal -> KConfig [ctor] .
 
@@ -319,8 +319,6 @@ fmod CODE-CONFIG is
   op task : KConfig -> KConfig [ctor] . --- ProcessId K ProgramStack interval phase priority futureJob
 
   ops inStream outStream : StreamMap -> KConfig [ctor] .
-  op inputCollector : StreamMap -> KConfig [ctor] .
-  op inputPattern : StreamMap -> KConfig [ctor] .
 
   op enumTypes : TypeDeclSet -> KConfig [ctor] .
 
@@ -332,15 +330,16 @@ fmod CODE-CONFIG is
   var LOC : ProcessId .
   var ENV : Env .
   var FBNAME : Pid .
-  var REST OBJS : KConfig .  
+  var REST INSS : KConfig .  
 ---
-  op getObjEnv : ProcessId KConfig ~> Env .
-  eq getObjEnv(LOC, obj(id(LOC) mem(ENV) REST) OBJS) = ENV .
+  op getInsEnv : ProcessId KConfig ~> Env .
+  eq getInsEnv(LOC, ins(id(LOC) mem(ENV) REST) INSS) = ENV .
 
-  op getObjType : ProcessId KConfig ~> Pid .
-  eq getObjType(LOC, obj(id(LOC) fbtype(FBNAME) REST) OBJS) = FBNAME .
+  op getInsType : ProcessId KConfig ~> Pid .
+  eq getInsType(LOC, ins(id(LOC) fbtype(FBNAME) REST) INSS) = FBNAME .
 
   op initCond : ~> SemanticValue .
   op tv : Nat ~> SemanticValue .
   op botSpace : PExp ~> PExp .
+  op botWrite : PExp SemanticValue ~> K .
 endfm
