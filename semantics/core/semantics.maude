@@ -806,7 +806,7 @@ mod SCHEDULING-SEMANTICS is
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(@block ~> K) REST)
   => log(LOG (getProgramName(PRID), 'schedule, syn2sem(# ES)))
-     globalTime(if MINT < ES then ES else MINT fi, if MAXT < DL then DL else MAXT fi)
+     globalTime(if MINT < ES then ES else MINT fi, if MAXT > DL then DL else MAXT fi)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(K) REST)
@@ -816,25 +816,29 @@ mod SCHEDULING-SEMANTICS is
 
   eq updateInterval(globalTime(MINT, MAXT), emptyJobList) = globalTime(0, 100000000) .
 
-  eq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), 
+  eq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), emptyJobList)) = globalTime(max(ES, MINT), min(DL, MAXT)) .
 
+ ceq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), SQ)
+   = updateInterval(globalTime(max(ES, MINT), min(DL, MAXT)), SQ) if SQ =/= emptyJobList .
+
+ ceq globalTime(MINT, MAXT) = globalTime(- MINT, - MAXT) if MINT > MAXT .
 
  crl [endProgram] :
      log(LOG)
-     globalTime(MCT)
+     globalTime(MINT, MAXT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(.K) REST)
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
      interval((PRID |-> INTERVAL, IM))
   => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES)))
-     globalTime(MCT)
+     updateInterval(globalTime(MINT, MAXT), (Q1, Q2))
      activeJob(None)
      task(id(PRID) k(.K) REST)
      sQueue((Q1, Q2))
      futureJobs((JOBS @j(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
      interval((PRID |-> INTERVAL, IM))
-  if MCT <= DL .
+  if MINT <= DL .
 
 
   eq [loadNBlock] :
@@ -847,36 +851,40 @@ mod SCHEDULING-SEMANTICS is
 
  crl [placeJob] :
      log(LOG)
-     globalTime(MCT)
+     globalTime(MINT, MAXT)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(.K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
-     globalTime(MCT)
+     updateInterval(globalTime(MINT, MAXT), add(SQ, @j(PRID, PR, ES, DL)))
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) .
-  if MCT < DL
+  if MINT < DL
   /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
 
-  rl [placeJob-wait] :
+ crl [placeJob-wait] :
      log(LOG)
+     globalTime(MINT, MAXT)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(@block ~> K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
+     updateInterval(globalTime(MINT, MAXT), add(SQ, @j(PRID, PR, ES, DL)))
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) .
----     /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
+  if MINT < DL
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
 
 
  crl [preempt] :
      log(LOG)
-     globalTime(MCT)
+     globalTime(MINT, MAXT)
      activeJob(Some(@j(PRID2, PR2, ES2, DL2)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
@@ -884,18 +892,15 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID2) k(K2) REST2)
      constraints(CONST)
   => log(LOG (getProgramName(PRID), 'preempt, syn2sem(# ES)))
-     globalTime(if MCT < ES then ES else MCT fi)
+     globalTime(if MINT < ES then ES else MCT fi, if MAXT > DL then DL else MAXT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(K1) REST)
      task(id(PRID2) k(@block ~> K2) REST2)
      constraints(CONST')
-  if CONST' := CONST AND tv(N) < tv(s N) AND 
-               syn2sem(# ES) <= tv(s N) AND
-               syn2sem(# DL) > tv(s N) AND
-               syn2sem(# DL2) > tv(s N) 
-  /\ checkSAT(CONST') .
+  if MINT < DL . 
+
 
   eq log(LOG (getProgramName(PRID), QQ:Qid, SS:SemanticValue) LOG':Log)
      inss(ins(id(PRID) fbtype(PNAME) REST) INSS)
