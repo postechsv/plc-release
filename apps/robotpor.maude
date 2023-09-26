@@ -174,4 +174,4 @@ false .
 ---srew appExt using porStep * .
 srew [1] appExt using (porStep * ; goalState) .
 ---srew [1] appExt using (porStep * ; (goalState ? checkSatAssign : fail)) .
-
+srew appExt using (porStep *) ; (porStep ? fail : idle) . 

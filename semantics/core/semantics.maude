@@ -832,7 +832,7 @@ mod SCHEDULING-SEMANTICS is
      futureJobs(JOBS)
      interval((PRID |-> INTERVAL, IM))
   => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES)))
-     updateInterval(globalTime(MINT, MAXT), (Q1, Q2))
+     updateInterval(globalTime(MINT, 1000000), (Q1, Q2))
      activeJob(None)
      task(id(PRID) k(.K) REST)
      sQueue((Q1, Q2))
