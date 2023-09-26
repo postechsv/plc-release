@@ -133,7 +133,7 @@ fmod STREAM is
   eq adaptSeq(nilStreamList, AD, N) = nilStreamList .
 
   eq take(SEQ, 0) = nilStreamList .
-  eq take(HEAD, s N) = HEAD .
+---  eq take(HEAD, s N) = HEAD .
   eq take(nilStreamList, N) = nilStreamList .
   eq take((HEAD, SEQ), s N) = HEAD, take(SEQ, N) .
 
@@ -279,6 +279,7 @@ fmod LOG is
   op emptyLog : -> LogEntry [ctor format(u o)] .
   op __ : Log Log -> Log [ctor assoc id: emptyLog prec 1] .
   op _,_,_ : Pid Qid SemanticValue -> LogEntry [ctor prec 0 format(u u u u u on)] .
+  op _,_,_ : ProcessId Qid SemanticValue -> LogEntry [ctor prec 0 format(u u u u u on)] .
 
   op getProgramName : ProcessId ~> Pid .
 endfm
@@ -301,7 +302,7 @@ fmod CODE-CONFIG is
   ops inVars outVars : SKSet -> KConfig [ctor] . 
   op activeJob : JobOption -> KConfig [ctor] .
   op randomSeed : Nat -> KConfig [ctor] .
-  op minCurrTime : Nat -> KConfig [ctor] .
+  op globalTime : Nat -> KConfig [ctor] .
   op globalVars : VSet -> KConfig [ctor] .
   op env : Env -> KConfig [ctor] .
   op store : Map{Location, SemanticValue} -> KConfig [ctor] .  
