@@ -301,7 +301,7 @@ fmod CODE-CONFIG is
   ops inVars outVars : SKSet -> KConfig [ctor] . 
   op activeJob : JobOption -> KConfig [ctor] .
   op randomSeed : Nat -> KConfig [ctor] .
-  op minCurrTime : Nat -> KConfig [ctor] .
+  op globalTime : Nat Nat -> KConfig [ctor] .
   op globalVars : VSet -> KConfig [ctor] .
   op env : Env -> KConfig [ctor] .
   op store : Map{Location, SemanticValue} -> KConfig [ctor] .  
