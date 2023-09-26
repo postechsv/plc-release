@@ -536,7 +536,7 @@ mod SCHEDULING-SEMANTICS is
   var TKS : List{ProcessId} .
   vars PRID PRID2 : ProcessId .
   vars PERIOD DUE CYCLECOUNT BOUND NEWVARNUM NEWVARNUM' : Nat .
-  vars PR ES DL PR2 ES2 DL2 INTERVAL MCT N M MAXTIME : Nat .
+  vars PR ES DL PR2 ES2 DL2 INTERVAL MINT MAXT N M MAXTIME : Nat .
   var PNAME : Pid .
   var S : Stmt .
   vars CT  : Rat .
@@ -785,51 +785,57 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(K) REST)
      inss(ins(timer(@timer(TNAT + syn2sem(T# INTERVAL ms))) REST2) RESTINSS) .
 
+---(
  ceq [invalid] :
-     minCurrTime(MCT)
+     globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(K) REST)
      futureJobs(@j(PRID2, PR2, ES2, DL2) JOBS)
-   = minCurrTime(MCT)
+   = globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(- PRID) k(@block ~> K) REST)
      futureJobs(@j(PRID2, PR2, ES2, DL2) JOBS)
   if DL2 < MCT .
+---)
 
   --- is minimum current time necessary?
  crl [schedule] :
      log(LOG)
-     minCurrTime(MCT)
+     globalTime(MINT, MAXT)
      activeJob(None)
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(@block ~> K) REST)
-     tindex(N)
-     constraints(CONST)
   => log(LOG (getProgramName(PRID), 'schedule, syn2sem(# ES)))
-     minCurrTime(if MCT < ES then ES else MCT fi)
+     globalTime(if MINT < ES then ES else MINT fi, if MAXT < DL then DL else MAXT fi)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(K) REST)
-     tindex(s N)
-     constraints(CONST') 
-  if CONST' := CONST AND tv(N) < tv(s N) AND 
-               syn2sem(# ES) <= tv(s N) AND
-               syn2sem(# DL) > tv(s N)
-  /\ checkSAT(CONST') .
+  if MINT < DL .
 
-  rl [endProgram] :
+  op updateInterval : KConfig JobList ~> KConfig .
+
+  eq updateInterval(globalTime(MINT, MAXT), emptyJobList) = globalTime(0, 100000000) .
+
+  eq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), 
+
+
+ crl [endProgram] :
      log(LOG)
+     globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(.K) REST)
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
      interval((PRID |-> INTERVAL, IM))
   => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES)))
+     globalTime(MCT)
      activeJob(None)
      task(id(PRID) k(.K) REST)
      sQueue((Q1, Q2))
      futureJobs((JOBS @j(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
-     interval((PRID |-> INTERVAL, IM)) .
+     interval((PRID |-> INTERVAL, IM))
+  if MCT <= DL .
+
 
   eq [loadNBlock] :
      task(id(PRID) k(@loadNBlock) REST)
@@ -839,16 +845,21 @@ mod SCHEDULING-SEMANTICS is
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S) .
 
-  rl [placeJob] :
+ crl [placeJob] :
      log(LOG)
+     globalTime(MCT)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(.K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
+     globalTime(MCT)
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) .
----     /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
+  if MCT < DL
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
+
 
   rl [placeJob-wait] :
      log(LOG)
@@ -865,22 +876,20 @@ mod SCHEDULING-SEMANTICS is
 
  crl [preempt] :
      log(LOG)
-     minCurrTime(MCT)
+     globalTime(MCT)
      activeJob(Some(@j(PRID2, PR2, ES2, DL2)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(@block ~> K1) REST)
      task(id(PRID2) k(K2) REST2)
-     tindex(N)
      constraints(CONST)
   => log(LOG (getProgramName(PRID), 'preempt, syn2sem(# ES)))
-     minCurrTime(if MCT < ES then ES else MCT fi)
+     globalTime(if MCT < ES then ES else MCT fi)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(K1) REST)
      task(id(PRID2) k(@block ~> K2) REST2)
-     tindex(s N)
      constraints(CONST')
   if CONST' := CONST AND tv(N) < tv(s N) AND 
                syn2sem(# ES) <= tv(s N) AND
@@ -931,9 +940,10 @@ mod WAIT-SEMANTICS is
      interval((PRID |-> IN, IM))
      task(id(PRID) (k(@output ~> @block ~> @input ~>  @timerUpdate ~> K)) REST) .
 
+---(
  crl [waitTimeDecrease] :
      log(LOG)
-     minCurrTime(MCT)
+     globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
@@ -941,7 +951,7 @@ mod WAIT-SEMANTICS is
      task(id(PRID) (k(WAITTIME(V1) ~> K)) REST)
      constraints(CONST)
   => log(LOG (getProgramName(PRID), 'waitTimeDecrease, V1))
-     minCurrTime(MCT)
+     globalTime(MCT)
      activeJob(None)
      sQueue(Q1, Q2)
      futureJobs((JOBS @j(PRID, PR, ES + IN, DL + IN)))
@@ -953,7 +963,7 @@ mod WAIT-SEMANTICS is
 
  crl [waitTimeEnd] :
      log(LOG)
-     minCurrTime(MCT)
+     globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
@@ -962,7 +972,7 @@ mod WAIT-SEMANTICS is
      tindex(N)
      constraints(CONST)
   => log(LOG (getProgramName(PRID), 'waitTimeEnd, V1))
-     minCurrTime(MCT)
+     globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
@@ -975,13 +985,13 @@ mod WAIT-SEMANTICS is
 
 ---( this works only in concrete case
  crl [WAITTIMEEND] :
-     minCurrTime(MCT)
+     globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
      interval((PRID |-> IN, IM))
      task(id(PRID) (k(WAITTIME(V1) ~> K)) REST)
-  => minCurrTime(MCT + WT)
+  => globalTime(MCT + WT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
@@ -989,6 +999,7 @@ mod WAIT-SEMANTICS is
      task(id(PRID) (k(K)) REST)
   if checkSAT(V1 <= syn2sem(T# IN ms))
   /\ V1 := T[WT]  .
+---)
 ---)
 
 ---(
