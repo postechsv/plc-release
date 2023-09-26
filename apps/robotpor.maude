@@ -1,0 +1,177 @@
+load /home/jlee/plc-release/scripts/../semantics/interpreter/merge 
+load /home/jlee/plc-release/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+op projectFile : -> StratonProject .
+eq projectFile =
+(
+BEGINCONFIG
+PROGRAMS
+'balancer([  # 1 ,  # 4 ,  # 0 ]) ;; 
+'obstacle([  # 2 ,  # 6 ,  # 0 ]) ;; 
+'background([  # 3 ,  # 12 ,  # 0 ]) ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+'MODE ## ( 'INIT , 'CAL , 'CONTROL ) ; 
+ENDTYPE
+
+
+
+BEGINVAR
+'mode : enumtype [ 'MODE ] := ( 'MODE # 'INIT ) : ##GLOBAL ; 
+'obstacle_flag : BOOL := ( FALSE ) : ##GLOBAL ; 
+ENDVAR
+
+
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'balancer 
+BEGINVAR
+'avg_cnt : REAL : ##PRIV ; 
+'gyro_offset : REAL : ##PRIV ; 
+'cmd_forward : DINT : ##IN ; 
+'cmd_turn : DINT : ##IN ; 
+'gyro_sensor : REAL : ##IN ; 
+'theta_m_l : REAL : ##IN ; 
+'theta_m_r : REAL : ##IN ; 
+'battery : REAL : ##IN ; 
+'pwm_l : DINT : ##IN ; 
+'pwm_r : DINT : ##IN ; 
+ENDVAR
+
+CODE
+CASE 'mode OF 
+@ 'MODE # 'INIT : 
+'gyro_offset := (ANYTOREAL(# 0)) ; 
+'avg_cnt := (ANYTOREAL(# 0)) ; 
+'mode := 'MODE # 'CAL ; 
+@ 'MODE # 'CAL : 
+'gyro_offset := 'gyro_offset + 'gyro_sensor ; 
+'avg_cnt := 'avg_cnt + (ANYTOREAL(# 1)) ; 
+IF 'avg_cnt >= (ANYTOREAL(# 5)) THEN 
+'gyro_offset := 'gyro_offset / 'avg_cnt ; 
+'mode := 'MODE # 'CONTROL ; 
+ENDIF ; 
+@ 'MODE # 'CONTROL : 
+IF 'obstacle_flag THEN 
+'cmd_forward := (ANYTODINT(# -100)) ; 
+'cmd_turn := (ANYTODINT(# 0)) ; 
+ENDIF ; 
+ELSE 
+skip ; 
+ENDCASE ; 
+
+ENDCODE
+ENDPROGRAM
+
+PROGRAM 'obstacle 
+BEGINVAR
+'sonar : REAL : ##IN ; 
+ENDVAR
+
+CODE
+IF 'mode ==== 'MODE # 'CONTROL AND 'sonar <= (ANYTOREAL(# 100)) THEN 
+'obstacle_flag := (ANYTOBOOL(# 1)) ; 
+ENDIF ; 
+
+ENDCODE
+ENDPROGRAM
+
+PROGRAM 'background 
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+CODE
+WAIT ( FALSE ) ; 
+
+ENDCODE
+ENDPROGRAM
+
+ENDPOUS
+
+) .
+  op linkedFile : -> StratonProject .
+  eq linkedFile = projectFile <-load- lib .
+  op app : -> KConfig .
+  eq app = [[[ linkedFile ]]] .
+endm
+mod MC is 
+  inc APP . 
+  op cond : ~> PExp . 
+  op appExt : ~> KConfig . 
+  op ranges : ~> Ranges .
+  ops rawis is os : ~> StreamMap .  
+  op bound : -> Nat . 
+  op am : ~> AdapterMap . 
+  eq bound = 11 . 
+  op srange : ~> Nat .
+  eq srange = srange(ranges, am) .
+  eq cond = GLOBALLY ( 'balancer :: 'avg_cnt < # 1 )  . 
+  eq rawis = ( 
+( 'balancer :: 'gyro_sensor |-> repeat(  [(0/1).Real]  ) ) , 
+( 'obstacle :: 'sonar |-> repeat(  [(0/1).Real]  ) )              ) . 
+  eq am = ( 
+( 'balancer |-> last / 3 ) , 
+( 'obstacle |-> first / 2 ) , 
+( 'backgrond |-> first / 1 )           ) . 
+  eq ranges = genRanges(app, bound) .
+  eq is = genIS(annotateType(rawis, app), ranges) .  
+  eq os = genEmptyStream(setDiff(collectKeySet(cond), streamKeySet(transformISKey(is)))) .
+  eq appExt = app maxTime(bound) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os)) LTLCondition(cond) .
+  var CONST : SemanticValue . 
+  vars IS' OS' : StreamMap . 
+
+--- ceq log(LOG:Log) = log(emptyLog) if LOG:Log =/= emptyLog .
+endm
+
+smod POR is
+  inc MC .
+  var CONST : SemanticValue . 
+  vars IS' OS' : StreamMap . 
+  var REST : KConfig .
+
+  strat porStep @ KConfig .
+  strat local @ KConfig .
+  strat global @ KConfig .
+
+  sd local := arrayAssign | arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .   
+  sd global := globalAssign | globalLookup | schedule | endProgram | preempt | placeJob | placeJob-wait . 
+
+  sd porStep := local ? idle : global .
+
+  strat goalState @ KConfig .
+  sd goalState := match constraints(CONST)
+                        outStream(OS') REST 
+                  s.t. 
+checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) . 
+
+---(
+  op result : checkSATResult -> KConfig . 
+  rl [checkSatAssign] :
+     constraints(CONST) inputCollector(IS') outStream(OS')
+  => constraints(CONST) inputCollector(IS') outStream(OS')
+     result(checkSATwithAssignment((adapt((transformISKey(IS'), OS'), am) |= genFormula(NOT cond, 0, cutSize(OS', am) - 1)) AND CONST)) .
+---)
+endsm
+
+---(
+search [1]
+appExt =>* constraints(CONST) outStream(OS') REST:KConfig
+such that
+false .
+---) 
+---checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) .
+
+---srew appExt using porStep * .
+srew [1] appExt using (porStep * ; goalState) .
+---srew [1] appExt using (porStep * ; (goalState ? checkSatAssign : fail)) .
+

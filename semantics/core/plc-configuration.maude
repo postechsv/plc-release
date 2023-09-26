@@ -133,8 +133,8 @@ fmod STREAM is
   eq adaptSeq(nilStreamList, AD, N) = nilStreamList .
 
   eq take(SEQ, 0) = nilStreamList .
-  eq take(HEAD, s N) = HEAD .
-  eq take(nilStreamList, N) = nilStreamList .
+  eq take(HEAD, 1) = HEAD .
+---  eq take(nilStreamList, s N) = nilStreamList .
   eq take((HEAD, SEQ), s N) = HEAD, take(SEQ, N) .
 
   eq pick(HEAD, AD) = HEAD .

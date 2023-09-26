@@ -814,12 +814,12 @@ mod SCHEDULING-SEMANTICS is
 
   op updateInterval : KConfig JobList ~> KConfig .
 
-  eq updateInterval(globalTime(MINT, MAXT), emptyJobList) = globalTime(0, 100000000) .
+  eq updateInterval(globalTime(MINT, MAXT), emptyJList) = globalTime(0, 100000000) .
 
-  eq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), emptyJobList)) = globalTime(max(ES, MINT), min(DL, MAXT)) .
+  eq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), emptyJList)) = globalTime(max(ES, MINT), min(DL, MAXT)) .
 
- ceq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), SQ)
-   = updateInterval(globalTime(max(ES, MINT), min(DL, MAXT)), SQ) if SQ =/= emptyJobList .
+ ceq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), SQ))
+   = updateInterval(globalTime(max(ES, MINT), min(DL, MAXT)), SQ) if SQ =/= emptyJList .
 
  ceq globalTime(MINT, MAXT) = globalTime(- MINT, - MAXT) if MINT > MAXT .
 
@@ -859,7 +859,7 @@ mod SCHEDULING-SEMANTICS is
      updateInterval(globalTime(MINT, MAXT), add(SQ, @j(PRID, PR, ES, DL)))
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@loadNBlock) REST) .
+     task(id(PRID) k(@loadNBlock) REST) 
   if MINT < DL
   /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
@@ -875,7 +875,7 @@ mod SCHEDULING-SEMANTICS is
      updateInterval(globalTime(MINT, MAXT), add(SQ, @j(PRID, PR, ES, DL)))
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
-     task(id(PRID) k(@block ~> K) REST) .
+     task(id(PRID) k(@block ~> K) REST) 
   if MINT < DL
   /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
@@ -890,15 +890,13 @@ mod SCHEDULING-SEMANTICS is
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(@block ~> K1) REST)
      task(id(PRID2) k(K2) REST2)
-     constraints(CONST)
   => log(LOG (getProgramName(PRID), 'preempt, syn2sem(# ES)))
-     globalTime(if MINT < ES then ES else MCT fi, if MAXT > DL then DL else MAXT)
+     globalTime(if MINT < ES then ES else MINT fi, if MAXT > DL then DL else MAXT fi)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(K1) REST)
      task(id(PRID2) k(@block ~> K2) REST2)
-     constraints(CONST')
   if MINT < DL . 
 
 
