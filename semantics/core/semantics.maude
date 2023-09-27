@@ -811,7 +811,7 @@ mod SCHEDULING-SEMANTICS is
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(@block ~> K) REST)
   => log(LOG (PRID, 'schedule, syn2sem(# ES)))
-     globalTime(if MCT < ES then ES else MCT fi)
+     globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(K) REST)
@@ -884,7 +884,7 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(@block ~> K1) REST)
      task(id(PRID2) k(K2) REST2)
   => log(LOG (PRID, 'preempt, syn2sem(# ES)))
-     globalTime(if MCT < ES then ES else MCT fi)
+     globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
@@ -904,6 +904,9 @@ mod SCHEDULING-SEMANTICS is
   op minDL : JobList ~> Nat .
   op minDL : JobSet ~> Nat .
 
+  eq minDL(emptyJList) = 1000000 .
+  eq minDL(emptyJSet) = 1000000 .
+
   eq minDL(@j(PRID, PR, ES, DL)) = DL .
   eq minDL((@j(PRID, PR, ES, DL), SQ)) = min(DL, minDL(SQ)) .
   eq minDL((@j(PRID, PR, ES, DL) JOBS)) = min(DL, minDL(JOBS)) .
@@ -912,11 +915,13 @@ mod SCHEDULING-SEMANTICS is
      log(LOG)
      globalTime(MCT) interval(IM)
      sQueue(SQ) futureJobs(JOBS)
+     maxTime(M)
   => log(LOG (' , 'tick, placeHolder))
      globalTime(MCT + N) interval(IM)
      sQueue(SQ) futureJobs(JOBS)
-  if N := gcd(IM) /\ MCT + N <= minDL(SQ) /\ MCT + N <= minDL(JOBS) .
-
+     maxTime(M)
+  if N := gcd(IM) /\ MCT + N < minDL(SQ) /\ MCT + N < minDL(JOBS) 
+  /\ MCT + N <= M .
 endm
 
 --- wait semantics
