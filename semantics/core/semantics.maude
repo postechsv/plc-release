@@ -922,6 +922,10 @@ mod SCHEDULING-SEMANTICS is
      maxTime(M)
   if N := gcd(IM) /\ MCT + N < minDL(SQ) /\ MCT + N < minDL(JOBS) 
   /\ MCT + N <= M .
+
+ ceq maxTime(M) futureJobs((JOBS @j(PRID, PR, ES, DL)))
+   = maxTime(M) futureJobs(JOBS)
+  if ES > M .
 endm
 
 --- wait semantics
