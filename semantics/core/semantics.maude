@@ -856,7 +856,7 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(@loadNBlock) REST) 
   if ES <= MCT
   /\ MCT < DL
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS) 
   /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
  crl [placeJob-wait] :
