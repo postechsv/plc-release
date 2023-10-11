@@ -61,8 +61,8 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 --- log(LOG (I , 'globalAssign, V))
      task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
- ceq task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-   = task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
+ crl [localAssign] : task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
+  => task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
   if not in(I, VS) .
 
 ---  eq task(k(InsLoc(INSLOC) . I := V ~> K) REST) inss(INSS) 
@@ -88,8 +88,8 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
      store(STORE)
      task(k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
- ceq task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
-   = task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
+ crl [globalLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
+  => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
    if not in(I, VS) .
   --- _._._._
   eq task(k(InsLoc(INSLOC) . I ~> K)                 REST) inss(INSS) 
@@ -263,8 +263,8 @@ mod CALL-SEMANTICS is
   op @pop : -> KLabel [ctor] .
   op tag : List{FArgElement} VarSecTypePairList -> List{FArgElement} .
 
- ceq task(k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
-   = task(k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
+ crl [fbcall] : task(k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
+  => task(k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
   if InsLoc(INSLOC) := STORE[ENV[FBI]] .
 
  ceq task(k(@call(INSLOC,ARGS) ~> K) REST) inss(INSS)  
