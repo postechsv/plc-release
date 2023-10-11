@@ -857,7 +857,7 @@ mod SCHEDULING-SEMANTICS is
   if ES <= MCT
   /\ MCT < DL
   /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
- --- /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
+  /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
  crl [placeJob-wait] :
      log(LOG)
