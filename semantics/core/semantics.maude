@@ -323,11 +323,11 @@ mod CALL-SEMANTICS is
   eq task(k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV) REST) 
    = task(k(K) callStack(ENV :: RESTENV) REST)  .
 
-  eq task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST) 
+  rl [return] : task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST) 
    = task((k(K)) callStack(RESTENV) REST)  .
 
-  rl [return] : task((k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) REST) 
-  => task((k(K)) callStack(RESTENV) REST)  . 
+  eq task((k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) REST) 
+   = task((k(K)) callStack(RESTENV) REST)  . 
 
   eq task((k(return ~> S ~> K)) REST) 
    = task((k(return ~> K)) REST)  . 
