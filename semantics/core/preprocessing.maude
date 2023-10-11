@@ -199,7 +199,7 @@ fmod PREPROCESSING is
    = makeProgramKConfig(TODOLIST, ML, interval((IM, INSLOC |-> IN)) sQueue(add(SQ, @j(INSLOC, PR, OF, OF + IN))))  .
 
   eq makeProgramKConfig(((PNAME, program[ PNAME ], INSLOC) TODOLIST), (PNAME([# PR, # IN, # 0]) ;; ML), interval(IM) sQueue(SQ) futureJobs(JOBS))   
-   = makeProgramKConfig(TODOLIST, ML, interval((IM, INSLOC |-> IN)) sQueue(add(SQ, @j(INSLOC, PR, 0, IN))) futureJobs(JOBS))  .
+   = makeProgramKConfig(TODOLIST, ML, interval((IM, INSLOC |-> IN)) sQueue(SQ) futureJobs((JOBS @j(INSLOC, PR, 0, IN))))  .
 
   eq makeProgramKConfig(((PNAME, program[ PNAME ], INSLOC) TODOLIST), (PNAME([# PR, # IN, # OF]) ;; ML), interval(IM) sQueue(SQ) futureJobs(JOBS))   
    = makeProgramKConfig(TODOLIST, ML, interval((IM, INSLOC |-> IN)) sQueue(SQ) futureJobs((JOBS @j(INSLOC, PR, OF, OF + IN)))) [owise] .

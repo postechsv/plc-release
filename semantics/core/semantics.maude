@@ -649,11 +649,11 @@ mod SCHEDULING-SEMANTICS is
   op genRanges : KConfig Nat ~> Ranges .
   eq genRanges(inss(ins(fbtype(PNAME) id(PRID) REST) RESTINSS) 
                interval((PRID |-> INTERVAL, IM))
-               sQueue(Q1, @j(PRID, PR, ES, DL), Q2) REST2, MAXTIME)
+               futureJobs(((JOBS @j(PRID, PR, ES, DL)))) REST2, MAXTIME)
              = (PNAME |-> ((MAXTIME - ES) quo INTERVAL + 1)) genRanges(
                inss(RESTINSS) REST2
                interval((PRID |-> INTERVAL, IM))
-               sQueue(Q1, @j(PRID, PR, ES, DL), Q2), MAXTIME) .
+               futureJobs((JOBS @j(PRID, PR, ES, DL))), MAXTIME) .
 
   eq genRanges(REST, MAXTIME) = empty [owise] .
 
@@ -856,8 +856,8 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(@loadNBlock) REST) 
   if ES <= MCT
   /\ MCT < DL
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
-  /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
+ --- /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
  crl [placeJob-wait] :
      log(LOG)
