@@ -324,13 +324,13 @@ mod CALL-SEMANTICS is
    = task(k(K) callStack(ENV :: RESTENV) REST)  .
 
   rl [return] : task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST) 
-   = task((k(K)) callStack(RESTENV) REST)  .
+  => task((k(K)) callStack(RESTENV) REST)  .
 
   eq task((k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) REST) 
    = task((k(K)) callStack(RESTENV) REST)  . 
 
   eq task((k(return ~> S ~> K)) REST) 
-   = task((k(return ~> K)) REST)  . 
+   = task((k(return ~> K)) REST) . 
 endm
 
 fmod STREAM-UPDATE-STREAM-DATA is
@@ -909,6 +909,9 @@ mod SCHEDULING-SEMANTICS is
  ceq futureJobs(JOBS @j(PRID, PR, ES, DL)) maxTime(MAXTIME)
    = futureJobs(JOBS) maxTime(MAXTIME)
   if ES > MAXTIME .
+
+
+  rl [tick] : sQueue(Q1) sQueue(Q1) => sQueue(Q1) sQueue(Q1) .
 endm
 
 --- wait semantics
