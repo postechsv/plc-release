@@ -88,7 +88,7 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
      store(STORE)
      task(k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
- crl [globalLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
+ crl [localLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
   => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
    if not in(I, VS) .
   --- _._._._
@@ -327,8 +327,8 @@ mod CALL-SEMANTICS is
   eq task(k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV) REST) 
    = task(k(K) callStack(ENV :: RESTENV) REST)  .
 
-  eq task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST) 
-   = task((k(K)) callStack(RESTENV) REST)  .
+  rl [return] : task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST) 
+  => task((k(K)) callStack(RESTENV) REST)  .
 
   eq task((k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) REST) 
    = task((k(K)) callStack(RESTENV) REST)  . 
@@ -920,7 +920,7 @@ mod SCHEDULING-SEMANTICS is
      globalTime(MCT + N) interval(IM)
      sQueue(SQ) futureJobs(JOBS)
      maxTime(M)
-  if N := gcd(IM) /\ MCT + N < minDL(SQ) /\ MCT + N < minDL(JOBS) 
+  if N := (gcd(IM) / 2) /\ MCT + N < minDL(SQ) /\ MCT + N < minDL(JOBS) 
   /\ MCT + N <= M .
 
  ceq maxTime(M) futureJobs((JOBS @j(PRID, PR, ES, DL)))
