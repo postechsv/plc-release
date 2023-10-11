@@ -44,8 +44,7 @@ fmod DATA-CONVERSION is
   eq k(ANYTOSTRING([S]) ~> K) = k([S] ~> K) .
 
 
-  eq k(ANYTOBOOL(V) ~> K) = k(ite(V ==== syn2sem(# 0), syn2sem(FALSE), 
-  ite(V ==== syn2sem(T# 0 ms), syn2sem(FALSE), syn2sem(TRUE))) ~> K) [owise] .
+  eq k(ANYTOBOOL(V) ~> K) = k(ite(V ==== syn2sem(# 0), syn2sem(FALSE), syn2sem(TRUE)) ~> K) [owise] .
 
   eq k(ANYTOSINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(256, truncVal(removeTime(V)))) ~> K) [owise] .
   eq k(ANYTOUSINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), usignedConversion(256, truncVal(removeTime(V)))) ~> K) [owise] .
