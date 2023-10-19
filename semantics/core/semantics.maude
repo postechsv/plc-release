@@ -910,7 +910,7 @@ mod SCHEDULING-SEMANTICS is
    = futureJobs(JOBS) maxTime(MAXTIME)
   if ES > MAXTIME .
 
-  rl [tick] : sQueue(Q1) sQueue(Q1) => sQueue(Q1) sQueue(Q1) .
+  rl [tick] : globalTime(MINT, MAXT) => globalTime(MINT, MAXT) .
 
 endm
 
