@@ -911,7 +911,7 @@ mod SCHEDULING-SEMANTICS is
   if ES > MAXTIME .
 
 
-  rl [tick] : sQueue(Q1) sQueue(Q1) => sQueue(Q1) sQueue(Q1) .
+  rl [tick] : globalTime(MINT, MAXT) => globalTime(MINT, MAXT) .
 endm
 
 --- wait semantics
