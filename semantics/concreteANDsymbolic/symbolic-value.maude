@@ -2,15 +2,39 @@ mod PLC-SYMBOLIC-PRIMITIVES is
   inc PLC-PRIMITIVES .
   inc REAL-INTEGER-EXPR .
   inc COMMON-SEMANTIC-VALUE .
-  inc META-LEVEL * 
-      (op _`[_`] to _`[`[`[_`]`]`], 
-       op _`,_ to _`,`,`,_, 
-       op _:=_ to _:::===_, 
-       op _+_ : ModuleExpression ModuleExpression -> ModuleExpression to _+++_,
-       op _::_ to _::::::_,
-       op _;_ to _;;;_,
-       op __ to _qqq_
-) .
+  inc META-LEVEL *
+  (op empty to emptyM,
+    op `[`] to `[`]M,
+    op _`[_`] to _`[`[`[_`]`]`],
+    op _`,_ to _`,`,`,_,
+    op _:=_ to _::=_,
+    op _+_ : ModuleExpression ModuleExpression -> ModuleExpression to _+M_,
+    op _::_ to _::M_,
+    op _;_ to _;;;_,
+    op __ to _MMM_,
+    op append to appendM,
+    op head to headM,
+    op tail to tailM,
+    op last to lastM,
+    op front to frontM,
+    op occurs to occursM,
+    op reverse to reverseM,
+    op $reverse to $reverseM,
+    op size to sizeM,
+    op $size to $sizeM,
+    op insert to insertM,
+    op delete to deleteM,
+    op _in_ to _inM_,
+    op |_| to |_|M,
+    op $card to $cardM,
+    op union to unionM,
+    op intersection to intersectionM,
+    op $intersect to intersectM,
+    op _\_ to _\M_,
+    op $diff to $diffM,
+    op _subset_ to _subsetM_,
+    op _psubset_ to _psubsetM_
+    ) .
   inc QID .
   inc CONVERSION .
   inc FLOAT .

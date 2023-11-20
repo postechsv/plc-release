@@ -1,0 +1,209 @@
+load /home/jlee/plc-release/scripts/../semantics/interpreter/merge
+load /home/jlee/plc-release/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+op projectFile : -> StratonProject .
+eq projectFile =
+(
+BEGINCONFIG
+PROGRAMS
+'obstacle([  # 2 ,  # 6 ,  # 0 ]) ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+'MODE ## ( 'INIT , 'CAL , 'CONTROL ) ; 
+ENDTYPE
+
+
+
+BEGINVAR
+'obstacle_flag : BOOL := ( FALSE ) : ##GLOBAL ; 
+ENDVAR
+
+
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'obstacle 
+BEGINVAR
+'sonar : REAL : ##IN ; 
+ENDVAR
+
+CODE
+IF 'sonar <= (ANYTOREAL(# 100)) THEN 
+'obstacle_flag := (ANYTOBOOL(# 1)) ; 
+ENDIF ; 
+ENDCODE
+ENDPROGRAM
+
+ENDPOUS
+
+) .
+  op linkedFile : -> StratonProject .
+  eq linkedFile = projectFile <-load- lib .
+  op app : -> KConfig .
+  eq app = [[[ linkedFile ]]] .
+endm
+mod MC is 
+  inc APP . 
+  op cond : ~> PExp . 
+  op appExt : ~> KConfig . 
+  op ranges : ~> Ranges .
+  ops rawis is os : ~> StreamMap .  
+  op bound : -> Nat . 
+  op am : ~> AdapterMap . 
+  eq bound = 20 . 
+  op srange : ~> Nat .
+  eq srange = srange(ranges, am) .
+  eq cond = GLOBALLY ( 'balancer :: 'avg_cnt < # 1 )  . 
+  eq rawis = ( 
+( 'obstacle :: 'sonar |-> repeat(  symbolic  ) )              ) . 
+  eq am = ( 
+( 'obstacle |-> first / 1 )    ) . 
+  eq ranges = genRanges(app, bound) .
+  eq is = genIS(annotateType(rawis, app), ranges) .  
+  eq os = genEmptyStream(setDiff(collectKeySet(cond), streamKeySet(transformISKey(is)))) .
+  eq appExt = app maxTime(bound) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os)) LTLCondition(cond) .
+  var CONST : SemanticValue . 
+  vars IS' OS' : StreamMap . 
+
+--- ceq log(LOG:Log) = log(emptyLog) if LOG:Log =/= emptyLog .
+endm
+
+
+smod INTRA is
+  inc MC .
+  inc MERGE .
+  inc META-LEVEL *
+    (op empty to emptyM,
+      op `[`] to `[`]M,
+      op _`[_`] to _`[`[`[_`]`]`],
+      op _`,_ to _`,`,`,_,
+      op _:=_ to _::=_,
+      op _+_ : ModuleExpression ModuleExpression -> ModuleExpression to _+M_,
+      op _::_ to _::M_,
+      op _;_ to _;;;_,
+      op __ to _MMM_,
+      op append to appendM,
+      op head to headM,
+      op tail to tailM,
+      op last to lastM,
+      op front to frontM,
+      op occurs to occursM,
+      op reverse to reverseM,
+      op $reverse to $reverseM,
+      op size to sizeM,
+      op $size to $sizeM,
+      op insert to insertM,
+      op delete to deleteM,
+      op _in_ to _inM_,
+      op |_| to |_|M,
+      op $card to $cardM,
+      op union to unionM,
+      op intersection to intersectionM,
+      op $intersect to intersectM,
+      op _\_ to _\M_,
+      op $diff to $diffM,
+      op _subset_ to _subsetM_,
+      op _psubset_ to _psubsetM_
+      ) .
+
+---  strat invisibleOneStep invisible : Oid Oid Oid @ World .
+  strat intraOnestep @ KConfig .
+  strat intraDeadend @ KConfig . 
+
+  sd intraOnestep := (arrayAssign | arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind) .
+  sd intraDeadend := intraOnestep * ; (intraOnestep ? fail : idle) .
+
+  strat global @ KConfig .
+  sd global := tick | schedule | endProgram . 
+endsm
+
+smod MERGE-SEARCH is
+  inc INTRA .
+
+  op collectDeadEnd : KConfig Nat Strategy ~> KConfigSet .
+  op collectDeadEnd : KConfig Nat ResultPair? Strategy ~> KConfigSet .
+  op error : -> [KConfig] .
+
+  sort World .
+  op !!!_!!! : KConfig -> World [ctor] .
+
+  vars W NW : KConfig .
+  var WS : KConfigSet .
+  var W' : Term .
+  var N : Nat .
+  var IS : Strategy .
+
+  eq collectDeadEnd(W, N, IS)
+   = collectDeadEnd(W, N, metaSrewrite(upModule('INTRA, false), upTerm(W), IS, depthFirst, N), IS) .
+
+  eq collectDeadEnd(W, N, {W', TY:Type}, IS) = (collectDeadEnd(W, s(N), IS) ,, downTerm(W', error)) .
+  eq collectDeadEnd(W, N, failure, IS) = emptyKCSet .
+
+  op nextMergedStep : KConfig Strategy ~> KConfigSet .
+
+---  eq nextMergedStep(W, IS) = (collectDeadEnd(W, 0, IS)) .
+  eq nextMergedStep(W, IS) = symMerge(collectDeadEnd(W, 0, IS)) .
+
+ crl [mergedStep] : !!! W !!! => !!! NW !!! if (NW,, WS) := nextMergedStep(W, 'intraDeadend[[emptyM]]) /\ NW =/= empty .
+endsm
+
+
+ srew !!! appExt !!! using (mergedStep | global) *  .
+
+
+eof
+smod POR is
+  inc MC .
+  var CONST : SemanticValue . 
+  vars IS' OS' : StreamMap . 
+  var REST : KConfig .
+
+  strat porStep @ KConfig .
+  strat local @ KConfig .
+  strat global @ KConfig .
+
+  sd local := tick | localAssign | localLookup | fbcall | return | arrayAssign | arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .   
+  sd global := tick | globalAssign | globalLookup | schedule | endProgram | preempt | placeJob | placeJob-wait . 
+
+  sd porStep := local ? idle : global .
+
+  strat goalState @ KConfig .
+  sd goalState := match constraints(CONST)
+                        outStream(OS') REST 
+                  s.t. 
+checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) . 
+
+---(
+  op result : checkSATResult -> KConfig . 
+  rl [checkSatAssign] :
+     constraints(CONST) inputCollector(IS') outStream(OS')
+  => constraints(CONST) inputCollector(IS') outStream(OS')
+     result(checkSATwithAssignment((adapt((transformISKey(IS'), OS'), am) |= genFormula(NOT cond, 0, cutSize(OS', am) - 1)) AND CONST)) .
+---)
+endsm
+
+---(
+search [1]
+appExt =>* constraints(CONST) outStream(OS') REST:KConfig
+such that
+false .
+---) 
+---checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) .
+
+---srew appExt using porStep * .
+---srew [1] appExt using (porStep * ; goalState) .
+---srew [1] appExt using (porStep * ; (goalState ? checkSatAssign : fail)) .
+---srew appExt using (porStep *) ; fail . 
+---srew appExt using porStep * .
+srew appExt using (local | global) * ; fail .
+---search [1] appExt =>* maxTime(-1) . 
+
+q

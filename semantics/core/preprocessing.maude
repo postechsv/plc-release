@@ -149,7 +149,7 @@ fmod PREPROCESSING is
     pickInss(preprocessPOUs(NEWINSS), inss(empty))
     randomSeed(0) newVarIndex(0) activeJob(None)
     globalVars(makeGVSet(VDC)) globalTime(0) 
-    log(emptyLog)
+    log(emptyLog) mergeGen(0)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))

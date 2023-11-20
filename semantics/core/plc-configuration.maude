@@ -316,6 +316,7 @@ fmod CODE-CONFIG is
   op interval : Map{ProcessId, Nat} -> KConfig [ctor] .
   op futureJobs : JobSet -> KConfig [ctor] .
   op sQueue : JobList -> KConfig [ctor] .
+  op mergeGen : Nat -> KConfig [ctor] .
 
   op task : KConfig -> KConfig [ctor] . --- ProcessId K ProgramStack interval phase priority futureJob
 

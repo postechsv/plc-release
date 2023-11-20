@@ -127,3 +127,124 @@ mod OPERATION-BETWEEN-CONCRETE-SYMBOLIC is
   eq [B1] OR [BE1] = con2sym([B1]) OR [BE1] .
   eq [BE1] OR [B1] = [BE1] OR con2sym([B1]) .
 endm
+
+mod MERGE is
+  inc OPERATION-BETWEEN-CONCRETE-SYMBOLIC .
+
+  sort DataType .
+  ops Real Boolean Integer Time : -> DataType [ctor] .
+
+  --- merge var generation
+  op type : SemanticValue ~> DataType .
+  eq type([BEX:BooleanExpr]) = Boolean .
+  eq type([BEX:Bool]) = Boolean .
+  eq type([REX:RealExpr]) = Real .
+  eq type([REX:Rat]) = Real .
+  eq type([IEX:IntegerExpr]) = Integer .
+  eq type([IEX:Int]) = Integer .
+  eq type(T[IEX:IntegerExpr]) = Time .
+  eq type(T[IEX:Int]) = Time .
+
+  op merge--_ : Nat -> SMTVarId [ctor] .
+
+  op fresh? : SemanticValue Nat ~> Bool .
+  eq fresh?([r(merge-- N1:Nat)], N2:Nat) = N1:Nat >= N2:Nat .
+  eq fresh?([b(merge-- N1:Nat)], N2:Nat) = N1:Nat >= N2:Nat .
+  eq fresh?([i(merge-- N1:Nat)], N2:Nat) = N1:Nat >= N2:Nat .
+  eq fresh?(T[i(merge-- N1:Nat)], N2:Nat) = N1:Nat >= N2:Nat .
+  eq fresh?(E:SemanticValue, N:Nat) = false [owise] .
+  sort ExpGenPair .
+  op @@ : SemanticValue Nat -> ExpGenPair [ctor] .
+  op #gen : Nat DataType ~> ExpGenPair .
+  op mergeVar : -> SMTVarId [ctor] .
+
+  var N : Nat .
+  eq #gen(N, Real) = @@([r(merge-- N)], s(N)) .
+  eq #gen(N, Integer) = @@([i(merge-- N)], s(N)) .
+  eq #gen(N, Time) = @@(T[i(merge-- N)], s(N)) .
+  eq #gen(N, Boolean) = @@([b(merge-- N)], s(N)) .
+
+
+  sorts ResultExpMerge .
+  op {_,_,_,_} : SemanticValue SemanticValue SemanticValue Nat -> ResultExpMerge [ctor] .
+  op symMerge : SemanticValue SemanticValue Nat Nat ~> ResultExpMerge .
+
+  vars E E' E'' V : SemanticValue .
+  vars EL EL' EL'' : SemanticValue .
+  vars B B' B1 B1' : SemanticValue .
+  vars GEN GEN# GEN' GEN'' : Nat .
+
+  eq symMerge(E, E, GEN, GEN#) = {E, [(true).Boolean], [(true).Boolean], GEN} .
+
+ ceq symMerge(V, E, GEN, GEN#) = {V, [(true).Boolean], V ==== E, GEN}
+  if V =/= E /\ fresh?(V, GEN#) /\ type(V) == type(E) .
+   ceq symMerge(E, E', GEN, GEN#) = {V, V ==== E, V ==== E', GEN'}
+  if @@(V, GEN') := #gen(GEN, type(E)) /\ type(E) == type(E') [owise] .
+
+  sort ResultStoreMerge .
+  op {_,_,_,_} : Map{Location, SemanticValue} SemanticValue SemanticValue Nat -> ResultStoreMerge [ctor] .
+  op symMerge : Map{Location, SemanticValue} Map{Location, SemanticValue} Nat Nat ~> ResultStoreMerge .
+  op symMerge : Map{Location, SemanticValue} Map{Location, SemanticValue} Map{Location, SemanticValue} SemanticValue SemanticValue Nat Nat ~> ResultStoreMerge .
+
+  vars ST ST' ST'' : Map{Location, SemanticValue} .
+  var KL : Location .
+
+  eq symMerge(ST, ST', GEN, GEN#) = symMerge(ST, ST', empty, [(true).Boolean], [(true).Boolean], GEN, GEN#) .
+  eq symMerge((KL |-> E, ST), (KL |-> E, ST'), ST'', B, B', GEN, GEN#)
+   = symMerge(ST, ST', (ST'', KL |-> E), B, B', GEN, GEN#) .
+ ceq symMerge((KL |-> E, ST), (KL |-> E', ST'), ST'', B, B', GEN, GEN#)
+   = symMerge(ST, ST', (ST'', KL |-> V), B AND B1, B' AND B1', GEN', GEN#)
+  if {V, B1, B1', GEN'} := symMerge(E, E', GEN, GEN#) [owise] .
+
+  eq symMerge(empty, empty, ST, B, B', GEN, GEN#) = {ST, B, B', GEN} .
+
+  sort ResultConfigurationMerge .
+
+  op symMergeTwo : KConfig KConfig Nat Nat ~> KConfig .
+  op symMergeTwo : KConfig KConfig KConfig SemanticValue SemanticValue Nat Nat ~> KConfig .
+  var CONF CONF' CONF'' : KConfig .
+  var LOG LOG' : Log .
+  vars MVG MVG' : Nat .
+
+  sorts KConfigSet NeKConfigSet .
+  subsort KConfig < NeKConfigSet .
+  subsort NeKConfigSet < KConfigSet .
+  op emptyKCSet : -> KConfigSet [ctor] .
+  op _,,_ : KConfigSet KConfigSet -> KConfigSet [ctor assoc comm id: emptyKCSet] .
+
+  var CCS : KConfigSet .
+
+  op maxGen : NeKConfigSet ~> Nat .
+  op maxGen : KConfigSet Nat ~> Nat .
+
+  eq maxGen(((mergeGen(MVG) CONF),, CCS)) = maxGen(CCS, MVG) .
+  eq maxGen(((mergeGen(MVG) CONF),, CCS), MVG') = maxGen(CCS, max(MVG, MVG')) .
+  eq maxGen(emptyKCSet, MVG) = MVG .
+
+  eq symMergeTwo(CONF, CONF', GEN, GEN#) 
+   = symMergeTwo(CONF, CONF', empty, [(true).Boolean], [(true).Boolean], GEN, GEN#) .
+
+  vars CON CON' : SemanticValue .
+ ceq symMergeTwo(store(ST) constraints(CON) CONF,
+                 store(ST') constraints(CON') CONF', CONF'', B, B', GEN, GEN#)
+   = symMergeTwo(constraints(CON) CONF, constraints(CON') CONF', (CONF'' store(ST'')), B AND B1, B' AND B1', GEN', GEN#)
+     if {ST'', B1, B1', GEN'} := symMerge(ST, ST', GEN, GEN#) .
+
+  eq symMergeTwo(constraints(CON) mergeGen(MVG) log(LOG) CONF'',
+                 constraints(CON') mergeGen(MVG') log(LOG') CONF'', 
+                 CONF, B, B', GEN, GEN#)
+   = constraints((CON AND B) OR (CON' AND B')) mergeGen(GEN) log(LOG') CONF CONF'' .
+
+  op symMerge : KConfigSet ~> KConfigSet . --- sort?
+  op symMerge : KConfig KConfigSet Nat Nat ~> KConfig .
+
+  vars CC CC' CC'' : KConfig .
+  eq symMerge(emptyKCSet) = empty .
+  eq symMerge(CC,, emptyKCSet) = CC .
+ ceq symMerge((CC,, CCS)) = symMerge(CC, CCS, MVG, MVG) if  CCS =/= emptyKCSet /\ MVG := maxGen((CC,, CCS)) .
+  eq symMerge(CC, empty, GEN, GEN#) = CC .
+ ceq symMerge(CC, (CC',, CCS), GEN, GEN#) = symMerge(constraints(CON) mergeGen(GEN') CONF, CCS, GEN', GEN#)
+  if constraints(CON) mergeGen(GEN') CONF := symMergeTwo(CC, CC', GEN, GEN#) .
+
+  eq symMerge(CC, CCS, GEN, GEN#) = (CC,, symMerge(CCS)) [owise] .
+endm

@@ -54,15 +54,15 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   if loc(LOCINDEX, TYPE) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
   --- global
-  rl [globalAssign] :
+  eq [globalAssign] :
 ---     log(LOG)
      task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS)
-  => 
+   = 
 --- log(LOG (I , 'globalAssign, V))
      task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
- crl [localAssign] : task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-  => task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
+ ceq [localAssign] : task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
+   = task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
   if not in(I, VS) .
 
 ---  eq task(k(InsLoc(INSLOC) . I := V ~> K) REST) inss(INSS) 
@@ -79,17 +79,17 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 
   --- Pid
   --- global
-  rl [globalLookup] :
+  eq [globalLookup] :
 ---     log(LOG) 
      store(STORE)
      task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) 
-  => 
+   = 
 --- log(LOG (I , 'globalLookUp, placeHolder)) 
      store(STORE)
      task(k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
- crl [localLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
-  => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
+ ceq [localLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
+   = task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
    if not in(I, VS) .
   --- _._._._
   eq task(k(InsLoc(INSLOC) . I ~> K)                 REST) inss(INSS) 
@@ -263,8 +263,8 @@ mod CALL-SEMANTICS is
   op @pop : -> KLabel [ctor] .
   op tag : List{FArgElement} VarSecTypePairList -> List{FArgElement} .
 
- crl [fbcall] : task(k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
-  => task(k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
+ ceq [fbcall] : task(k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
+   = task(k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
   if InsLoc(INSLOC) := STORE[ENV[FBI]] .
 
  ceq task(k(@call(INSLOC,ARGS) ~> K) REST) inss(INSS)  
@@ -327,8 +327,8 @@ mod CALL-SEMANTICS is
   eq task(k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV) REST) 
    = task(k(K) callStack(ENV :: RESTENV) REST)  .
 
-  rl [return] : task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST) 
-  => task((k(K)) callStack(RESTENV) REST)  .
+  eq [return] : task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST) 
+   = task((k(K)) callStack(RESTENV) REST)  .
 
   eq task((k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) REST) 
    = task((k(K)) callStack(RESTENV) REST)  . 
@@ -648,12 +648,10 @@ mod SCHEDULING-SEMANTICS is
  
   op genRanges : KConfig Nat ~> Ranges .
   eq genRanges(inss(ins(fbtype(PNAME) id(PRID) REST) RESTINSS) 
-               interval((PRID |-> INTERVAL, IM))
-               futureJobs(((JOBS @j(PRID, PR, ES, DL)))) REST2, MAXTIME)
-             = (PNAME |-> ((MAXTIME - ES) quo INTERVAL + 1)) genRanges(
+               interval((PRID |-> INTERVAL, IM)) REST2, MAXTIME)
+             = (PNAME |-> ((MAXTIME) quo INTERVAL + 1)) genRanges(
                inss(RESTINSS) REST2
-               interval((PRID |-> INTERVAL, IM))
-               futureJobs((JOBS @j(PRID, PR, ES, DL))), MAXTIME) .
+               interval((PRID |-> INTERVAL, IM)), MAXTIME) .
 
   eq genRanges(REST, MAXTIME) = empty [owise] .
 
@@ -843,13 +841,13 @@ mod SCHEDULING-SEMANTICS is
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S) .
 
- crl [placeJob] :
+ ceq [placeJob] :
      log(LOG)
      globalTime(MCT)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(.K) REST)
-  => log(LOG (PRID, 'placeJob, syn2sem(# ES)))
+   = log(LOG (PRID, 'placeJob, syn2sem(# ES)))
      globalTime(MCT)
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
@@ -859,13 +857,13 @@ mod SCHEDULING-SEMANTICS is
   /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
  --- /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
- crl [placeJob-wait] :
+ ceq [placeJob-wait] :
      log(LOG)
      globalTime(MCT)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(@block ~> K) REST)
-  => log(LOG (PRID, 'placeJob, syn2sem(# ES)))
+   = log(LOG (PRID, 'placeJob, syn2sem(# ES)))
      globalTime(MCT)
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
