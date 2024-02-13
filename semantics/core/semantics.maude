@@ -816,7 +816,7 @@ mod SCHEDULING-SEMANTICS is
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(K) REST)
   if ES <= MCT
-  /\ MCT < DL . 
+  /\ MCT <= DL . 
 
  crl [endProgram] :
      log(LOG)
@@ -855,7 +855,7 @@ mod SCHEDULING-SEMANTICS is
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
   if ES <= MCT
-  /\ MCT < DL
+  /\ MCT <= DL
   /\ earlist(@j(PRID, PR, ES, DL), JOBS) 
   /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
@@ -871,7 +871,7 @@ mod SCHEDULING-SEMANTICS is
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
   if ES <= MCT
-  /\ MCT < DL
+  /\ MCT <= DL
   /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
@@ -891,7 +891,7 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(K1) REST)
      task(id(PRID2) k(@block ~> K2) REST2)
   if ES <= MCT
-  /\ MCT < DL .
+  /\ MCT <= DL .
 
   op gcd : Map{ProcessId, Nat} ~> Nat .
 
