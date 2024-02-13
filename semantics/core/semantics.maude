@@ -920,7 +920,7 @@ mod SCHEDULING-SEMANTICS is
      globalTime(MCT + N) interval(IM)
      sQueue(SQ) futureJobs(JOBS)
      maxTime(M)
-  if N := gcd(IM) /\ MCT + N < minDL(SQ) /\ MCT + N < minDL(JOBS) 
+  if N := gcd(IM) /\ MCT + N <= minDL(SQ) /\ MCT + N <= minDL(JOBS) 
   /\ MCT + N <= M .
 
  ceq maxTime(M) futureJobs((JOBS @j(PRID, PR, ES, DL)))
