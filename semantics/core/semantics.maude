@@ -860,7 +860,7 @@ mod SCHEDULING-SEMANTICS is
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
-  if MINT < DL
+  if MINT <= DL
   /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
 ---  /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
@@ -876,7 +876,7 @@ mod SCHEDULING-SEMANTICS is
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
-  if MINT < DL
+  if MINT <= DL
   /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
