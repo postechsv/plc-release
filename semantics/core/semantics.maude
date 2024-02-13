@@ -810,7 +810,7 @@ mod SCHEDULING-SEMANTICS is
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(K) REST)
-  if MINT < DL .
+  if MINT <= DL .
 
   op updateInterval : KConfig JobList ~> KConfig .
 
@@ -897,7 +897,7 @@ mod SCHEDULING-SEMANTICS is
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(K1) REST)
      task(id(PRID2) k(@block ~> K2) REST2)
-  if MINT < DL . 
+  if MINT <= DL . 
 
 
   eq log(LOG (getProgramName(PRID), QQ:Qid, SS:SemanticValue) LOG':Log)
