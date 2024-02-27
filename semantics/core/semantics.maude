@@ -844,6 +844,30 @@ mod SCHEDULING-SEMANTICS is
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S) .
 
+
+  op isFirst : JobList Job ~> Bool .
+  eq isFirst((@j(PRID, PR, ES, DL), Q1), @j(PRID, PR, ES, DL)) = true .
+  eq isFirst(Q1, @j(PRID, PR, ES, DL)) = false [owise] .
+
+ crl [placeJob-por] :
+     log(LOG) recentAction(RA)
+     globalTime(MCT)
+     futureJobs((@j(PRID, PR, ES, DL) JOBS))
+     sQueue(SQ)
+     task(id(PRID) k(.K) REST)
+     constraints(CONST)
+  => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob)
+     globalTime(MCT)
+     futureJobs(JOBS)
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@loadNBlock) REST) 
+     constraints(CONST')
+  if earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
+  /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
+  /\ checkSAT(CONST') .
+
+
  crl [placeJob] :
      log(LOG) recentAction(RA)
      globalTime(MCT)
@@ -859,8 +883,26 @@ mod SCHEDULING-SEMANTICS is
      constraints(CONST')
   if earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
+  /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
- --- /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
+
+ crl [placeJob-wait-por] :
+     log(LOG) recentAction(RA)
+     globalTime(MCT)
+     futureJobs((@j(PRID, PR, ES, DL) JOBS))
+     sQueue(SQ)
+     task(id(PRID) k(@block ~> K) REST)
+     constraints(CONST)
+  => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob-wait)
+     globalTime(MCT)
+     futureJobs(JOBS)
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@block ~> K) REST) 
+     constraints(CONST')
+  if earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
+  /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
+  /\ checkSAT(CONST') .
 
  crl [placeJob-wait] :
      log(LOG) recentAction(RA)
@@ -876,8 +918,8 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(@block ~> K) REST) 
      constraints(CONST')
   if earlist(@j(PRID, PR, ES, DL), JOBS)
----  /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL))
   /\ CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
+  /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
 
   rl [preempt] :
