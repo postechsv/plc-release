@@ -835,6 +835,26 @@ mod SCHEDULING-SEMANTICS is
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S) .
 
+  op isFirst : JobList Job ~> Bool .
+  eq isFirst((@j(PRID, PR, ES, DL), Q1), @j(PRID, PR, ES, DL)) = true .
+  eq isFirst(Q1, @j(PRID, PR, ES, DL)) = false [owise] .
+
+ crl [placeJob-por] :
+     log(LOG) recentAction(RA)
+     globalTime(MINT, MAXT)
+     futureJobs((@j(PRID, PR, ES, DL) JOBS))
+     sQueue(SQ)
+     task(id(PRID) k(.K) REST)
+  => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) recentAction('placeJob)
+     globalTime(MINT, MAXT)
+     futureJobs(JOBS)
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@loadNBlock) REST) 
+  if ES < MAXT
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
+
+
  crl [placeJob] :
      log(LOG) recentAction(RA)
      globalTime(MINT, MAXT)
@@ -847,8 +867,23 @@ mod SCHEDULING-SEMANTICS is
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
   if ES < MAXT
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
+ crl [placeJob-wait-por] :
+     log(LOG) recentAction(RA)
+     globalTime(MINT, MAXT)
+     futureJobs((@j(PRID, PR, ES, DL) JOBS))
+     sQueue(SQ)
+     task(id(PRID) k(@block ~> K) REST)
+  => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) recentAction('placeJob-wait)
+     globalTime(MINT, MAXT)
+     futureJobs(JOBS)
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     task(id(PRID) k(@block ~> K) REST) 
+  if ES < MAXT
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
  crl [placeJob-wait] :
      log(LOG) recentAction(RA)
@@ -862,7 +897,8 @@ mod SCHEDULING-SEMANTICS is
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
   if ES < MAXT
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
 
   rl [preempt] :
