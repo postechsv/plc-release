@@ -148,7 +148,7 @@ fmod PREPROCESSING is
     MAINLIST store(STR') 
     pickInss(preprocessPOUs(NEWINSS), inss(empty))
     randomSeed(0) newVarIndex(0) activeJob(None)
-    globalVars(makeGVSet(VDC)) globalTime(0, 10000000000) 
+    globalVars(makeGVSet(VDC)) globalTime(0, 0) recentAction('none) 
     log(emptyLog)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))

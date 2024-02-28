@@ -45,6 +45,7 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   var TYPE : PType .
   var VS : VSet .
   var LOG : Log .
+  var RA : Qid .
 
 --- assignment
 
@@ -55,20 +56,20 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 
   --- global
   rl [globalAssign] :
-     log(LOG)
+     log(LOG) recentAction(RA)
      task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS)
-  => log(LOG (I , 'globalAssign, V))
+  => log(LOG (I , 'globalAssign, V)) recentAction('globalAssign)
      task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
- crl [localAssign] : task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-  => task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
+ crl [localAssign] : task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) recentAction(RA)
+  => task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) recentAction('localAssign)
   if not in(I, VS) .
 
 ---  eq task(k(InsLoc(INSLOC) . I := V ~> K) REST) inss(INSS) 
 ---   = task(k(@store(getInsEnv(INSLOC,INSS)[I],V) ~> K) REST) inss(INSS) .
 
- crl [arrayAssign] : task(k(arrayLoc(ARRAYENV)[VV] := V ~> K) REST) constraints(CONST)
-  => task(k(@store(LOCATION,V) ~> K) REST) constraints(simplify(CONST AND CONST'))
+ crl [arrayAssign] : task(k(arrayLoc(ARRAYENV)[VV] := V ~> K) REST) constraints(CONST) recentAction(RA)
+  => task(k(@store(LOCATION,V) ~> K) REST) constraints(simplify(CONST AND CONST')) recentAction('arrayAssign)
   if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
 
 --- lookup --- get location
@@ -79,21 +80,21 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   --- Pid
   --- global
   rl [globalLookup] :
-     log(LOG) store(STORE)
+     log(LOG) store(STORE) recentAction(RA)
      task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) 
-  => log(LOG (I , 'globalLookUp, placeHolder)) store(STORE)
+  => log(LOG (I , 'globalLookUp, placeHolder)) store(STORE) recentAction('globalLookup)
      task(k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
 
-  crl [localLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
-   => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS) 
+  crl [localLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)  recentAction(RA)
+   => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)  recentAction('localLookup)
    if not in(I, VS) .
   --- _._._._
   eq task(k(InsLoc(INSLOC) . I ~> K)                 REST) inss(INSS) 
    = task(k(@lookup(getInsEnv(INSLOC,INSS)[I]) ~> K) REST) inss(INSS) .
 
   --- array[V]
- crl [arrayLookup] : task(k(arrayLoc(ARRAYENV)[VV] ~> K) REST) constraints(CONST)
-  => task(k(@lookup(LOCATION) ~> K) REST) constraints(simplify(CONST AND CONST'))
+ crl [arrayLookup] : task(k(arrayLoc(ARRAYENV)[VV] ~> K) REST) constraints(CONST) recentAction(RA)
+  => task(k(@lookup(LOCATION) ~> K) REST) constraints(simplify(CONST AND CONST')) recentAction('arrayLookup)
   if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
 
  crl [array]: arrayLookup((ARRAYENV1, (ARRAYINDEX, LOCATION), ARRAYENV2), V, CONST) 
@@ -127,51 +128,52 @@ mod CONDITIONAL-SEMANTICS is
   vars IFSTATEMENT2 WHILESTATEMENT REPEATSTATEMENT PE1 PE2 : PExp .
   var REST : KConfig .  
   var LOG : Log .
+  var RA : Qid .
 
   --- ite
- crl [iteTrue] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST)
- => task((k(PE1 ~> K)) REST ) 
+ crl [iteTrue] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST) recentAction(RA)
+ => task((k(PE1 ~> K)) REST )  recentAction('iteTrue)
     constraints(CONST AND (ITECONDITION))
     if checkSAT(CONST AND (ITECONDITION)) .
   
- crl [iteFalse] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST)
+ crl [iteFalse] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST) recentAction(RA)
  => task((k(PE2 ~> K)) REST ) 
-    constraints(CONST AND (NOT ITECONDITION))
+    constraints(CONST AND (NOT ITECONDITION)) recentAction('iteFalse)
     if checkSAT(CONST AND (NOT ITECONDITION)) .
 
  --- if statement
  crl [IFTRUE] :  
-     log(LOG)
+     log(LOG) recentAction(RA)
      task(k(IF IFSTATEMENT THEN S1 ; BB ENDIF ~> K) REST ) 
      constraints(CONST)
-  => log(LOG (' , 'IFTRUE, placeHolder))
+  => log(LOG (' , 'IFTRUE, placeHolder)) recentAction('IFTRUE)
      task(k(S1 ~> K) REST) 
      constraints(simplify(CONST AND IFSTATEMENT))
   if checkSAT(CONST AND IFSTATEMENT) .
 
  crl [IFFALSE] : 
-     log(LOG)
+     log(LOG) recentAction(RA)
      task(k(IF IFSTATEMENT THEN S1 ; emptyBBranch ENDIF ~> K) REST) 
      constraints(CONST)
-  => log(LOG (' , 'IFFALSE, placeHolder))
+  => log(LOG (' , 'IFFALSE, placeHolder)) recentAction('IFFALSE)
      task(k(K) REST) 
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
  crl [IFFALSE-ELSIF] : 
-     log(LOG)
+     log(LOG) recentAction(RA)
      task(k(IF IFSTATEMENT THEN S1 ; ELSIF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) REST) 
      constraints(CONST)
-  => log(LOG (' , 'IFFALSE-ELSIF, placeHolder))
+  => log(LOG (' , 'IFFALSE-ELSIF, placeHolder)) recentAction('IFFALSE-ELSIF)
      task(k(IF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) REST) 
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
  crl [IFFALSE-ELSE] : 
-     log(LOG) 
+     log(LOG)  recentAction(RA)
      task(k(IF IFSTATEMENT THEN S1 ; ELSE S2 ; ENDIF ~> K) REST) 
      constraints(CONST)
-  => log(LOG (' , 'IFFALSE-ELSE, placeHolder))
+  => log(LOG (' , 'IFFALSE-ELSE, placeHolder)) recentAction('IFFALSE-ELSE)
      task(k(S2 ~> K) REST) 
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
@@ -182,10 +184,10 @@ mod CONDITIONAL-SEMANTICS is
    =  task(k(S1 ~> K) REST)  .
 
  crl [caseMatch] :  
-     log(LOG)
+     log(LOG) recentAction(RA)
      task(k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
      constraints(CONST)
-  => log(LOG (' , 'caseMatch, V))
+  => log(LOG (' , 'caseMatch, V)) recentAction('caseMatch)
      task(k(S1 ~> K) REST)  
      constraints(simplify(CONST AND V ==== syn2sem(PV2)))
   if checkSAT(CONST AND V ==== syn2sem(PV2)) .
@@ -193,22 +195,22 @@ mod CONDITIONAL-SEMANTICS is
 
  crl [caseMatchRanged] :  
      task(k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
-     constraints(CONST)
-  => task(k(S1 ~> K) REST)  
+     constraints(CONST) recentAction(RA)
+  => task(k(S1 ~> K) REST)   recentAction('caseMatchRanged)
      constraints(simplify(CONST AND syn2sem(PV1) <= V  AND V <= syn2sem(PV2)))
   if checkSAT(CONST AND syn2sem(PV1) <= V  AND V <= syn2sem(PV2)) .
 
  crl [caseNotMatch] :  
      task(k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
-     constraints(CONST)
+     constraints(CONST) recentAction(RA)
   => task(k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) REST)  
-     constraints(simplify(CONST AND V <> syn2sem(PV2)))
+     constraints(simplify(CONST AND V <> syn2sem(PV2))) recentAction('caseNotMatch)
   if checkSAT(CONST AND V <> syn2sem(PV2)) .
 
  crl [caseNotMatchRanged] :  
      task(k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
-     constraints(CONST)
-  => task(k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) REST)  
+     constraints(CONST) recentAction(RA)
+  => task(k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) REST)   recentAction('caseNotMatchRanged)
      constraints(simplify(CONST AND (syn2sem(PV1) > V  OR V > syn2sem(PV2))))
   if checkSAT(CONST AND (syn2sem(PV1) > V  OR V > syn2sem(PV2))) .
 
@@ -249,7 +251,7 @@ mod CALL-SEMANTICS is
   vars ONEARG PE1 : PExp .
   var P1 : PProperExp  .
   vars ARRAYENV : ArrayEnv .
-
+  var RA : Qid .
   
 --- udfb call
   op @call : ProcessId List{FArgElement} -> KLabel [ctor] .
@@ -259,8 +261,8 @@ mod CALL-SEMANTICS is
   op @pop : -> KLabel [ctor] .
   op tag : List{FArgElement} VarSecTypePairList -> List{FArgElement} .
 
- crl [fbcall] : task(k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
-  => task(k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE)
+ crl [fbcall] : task(k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE) recentAction(RA)
+  => task(k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE) recentAction('fbcall)
   if InsLoc(INSLOC) := STORE[ENV[FBI]] .
 
  ceq task(k(@call(INSLOC,ARGS) ~> K) REST) inss(INSS)  
@@ -315,16 +317,16 @@ mod CALL-SEMANTICS is
    = task((k(@args(ARGS) ~> @bind(insert(I1, getInsEnv(INSLOC,INSS)[I2], ENV),CPR)  ~> K)) REST)  inss(INSS) .
 
  crl [arrayArgBind] : 
-     task((k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  constraints(CONST)
-  => task((k(@args(ARGS) ~> @bind(insert(I1, LOCATION, ENV),CPR)  ~> K)) REST)  constraints(simplify(CONST AND CONST'))
+     task((k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  constraints(CONST) recentAction(RA)
+  => task((k(@args(ARGS) ~> @bind(insert(I1, LOCATION, ENV),CPR)  ~> K)) REST)  constraints(simplify(CONST AND CONST')) recentAction('arrayArgBind)
   if arrayLookup(ARRAYENV, V2, CONST) => {LOCATION, CONST'} .
 
   --- context switching
   eq task(k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV) REST) 
    = task(k(K) callStack(ENV :: RESTENV) REST)  .
 
-  rl [return] : task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST) 
-  => task((k(K)) callStack(RESTENV) REST)  .
+  rl [return] : task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST)  recentAction(RA)
+  => task((k(K)) callStack(RESTENV) REST)  recentAction('return) .
 
   eq task((k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) REST) 
    = task((k(K)) callStack(RESTENV) REST)  . 
@@ -572,6 +574,7 @@ mod SCHEDULING-SEMANTICS is
   var LOG : Log .
   var ENVSTACK : ProgramStack .
   var TYPE : PType .
+  var RA : Qid .
 
   ops @input @output @timerUpdate : -> KLabel [ctor] .
   ops @takeInput @writeOutput : List{PExp} -> KLabel [ctor] .  
@@ -799,46 +802,29 @@ mod SCHEDULING-SEMANTICS is
 ---)
 
   --- is minimum current time necessary?
- crl [schedule] :
-     log(LOG)
-     globalTime(MINT, MAXT)
+  rl [schedule] :
+     log(LOG) recentAction(RA)
      activeJob(None)
      sQueue((@j(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(@block ~> K) REST)
-  => log(LOG (getProgramName(PRID), 'schedule, syn2sem(# ES)))
-     globalTime(if MINT < ES then ES else MINT fi, if MAXT > DL then DL else MAXT fi)
+  => log(LOG (getProgramName(PRID), 'schedule, syn2sem(# ES))) recentAction('schedule)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), SQ))
-     task(id(PRID) k(K) REST)
-  if MINT <= DL .
+     task(id(PRID) k(K) REST) .
 
-  op updateInterval : KConfig JobList ~> KConfig .
-
-  eq updateInterval(globalTime(MINT, MAXT), emptyJList) = globalTime(0, 100000000) .
-
-  eq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), emptyJList)) = globalTime(max(ES, MINT), min(DL, MAXT)) .
-
- ceq updateInterval(globalTime(MINT, MAXT), (@j(PRID, PR, ES, DL), SQ))
-   = updateInterval(globalTime(max(ES, MINT), min(DL, MAXT)), SQ) if SQ =/= emptyJList .
-
- ceq globalTime(MINT, MAXT) = globalTime(- MINT, - MAXT) if MINT > MAXT .
-
- crl [endProgram] :
-     log(LOG)
-     globalTime(MINT, MAXT)
+  rl [endProgram] :
+     log(LOG) recentAction(RA)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      task(id(PRID) k(.K) REST)
      sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
      futureJobs(JOBS)
      interval((PRID |-> INTERVAL, IM))
-  => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES)))
-     updateInterval(globalTime(MINT, 1000000), (Q1, Q2))
+  => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES))) recentAction('endProgram)
      activeJob(None)
      task(id(PRID) k(.K) REST)
      sQueue((Q1, Q2))
      futureJobs((JOBS @j(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
-     interval((PRID |-> INTERVAL, IM))
-  if MINT <= DL .
+     interval((PRID |-> INTERVAL, IM)) .
 
 
   eq [loadNBlock] :
@@ -850,54 +836,48 @@ mod SCHEDULING-SEMANTICS is
      PARDef(PNAME, PARMETERDATA, S) .
 
  crl [placeJob] :
-     log(LOG)
+     log(LOG) recentAction(RA)
      globalTime(MINT, MAXT)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(.K) REST)
-  => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
-     updateInterval(globalTime(MINT, MAXT), add(SQ, @j(PRID, PR, ES, DL)))
+  => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) recentAction('placeJob)
+     globalTime(MINT, MAXT)
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
-  if MINT <= DL
+  if ES < MAXT
   /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
----  /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
 
 
  crl [placeJob-wait] :
-     log(LOG)
+     log(LOG) recentAction(RA)
      globalTime(MINT, MAXT)
      futureJobs((@j(PRID, PR, ES, DL) JOBS))
      sQueue(SQ)
      task(id(PRID) k(@block ~> K) REST)
-  => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
-     updateInterval(globalTime(MINT, MAXT), add(SQ, @j(PRID, PR, ES, DL)))
+  => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) recentAction('placeJob-wait)
+     globalTime(MINT, MAXT)
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
-  if MINT <= DL
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
-  /\ (@j(PRID, PR, ES, DL), Q1) := add(SQ, @j(PRID, PR, ES, DL)) . --- por
+  if ES < MAXT
+  /\ earlist(@j(PRID, PR, ES, DL), JOBS) .
 
 
-
- crl [preempt] :
-     log(LOG)
-     globalTime(MINT, MAXT)
+  rl [preempt] :
+     log(LOG) recentAction(RA)
      activeJob(Some(@j(PRID2, PR2, ES2, DL2)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(@block ~> K1) REST)
      task(id(PRID2) k(K2) REST2)
-  => log(LOG (getProgramName(PRID), 'preempt, syn2sem(# ES)))
-     globalTime(if MINT < ES then ES else MINT fi, if MAXT > DL then DL else MAXT fi)
+  => log(LOG (getProgramName(PRID), 'preempt, syn2sem(# ES))) recentAction('preempt)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), Q1,
              @j(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(K1) REST)
-     task(id(PRID2) k(@block ~> K2) REST2)
-  if MINT <= DL . 
+     task(id(PRID2) k(@block ~> K2) REST2) .
 
 
   eq log(LOG (getProgramName(PRID), QQ:Qid, SS:SemanticValue) LOG':Log)
@@ -910,8 +890,26 @@ mod SCHEDULING-SEMANTICS is
    = futureJobs(JOBS) maxTime(MAXTIME)
   if ES > MAXTIME .
 
+  op maxES : JobList ~> Nat .
+  op minDL : JobList ~> Nat .
+  op minDL : JobSet ~> Nat .
 
-  rl [tick] : globalTime(MINT, MAXT) => globalTime(MINT, MAXT) .
+  eq maxES(emptyJList) = 0 .
+  eq maxES((@j(PRID, PR, ES, DL), SQ)) = max(ES, maxES(SQ)) .
+
+  eq minDL(emptyJList) = 1000000 .
+  eq minDL(emptyJSet) = 1000000 .
+
+  eq minDL((@j(PRID, PR, ES, DL), SQ)) = min(DL, minDL(SQ)) .
+  eq minDL((@j(PRID, PR, ES, DL) JOBS)) = min(DL, minDL(JOBS)) .
+
+
+ crl [tick] : 
+     globalTime(MINT, MAXT) recentAction(RA) 
+     sQueue(SQ) futureJobs(JOBS) maxTime(M)
+  => globalTime(if SQ == emptyJList then MINT else maxES(SQ) fi, min(minDL(SQ), minDL(JOBS))) recentAction('tick)
+     sQueue(SQ) futureJobs(JOBS)
+  if RA =/= 'tick /\ maxES(SQ) < M .
 endm
 
 --- wait semantics

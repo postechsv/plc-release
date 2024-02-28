@@ -311,6 +311,7 @@ fmod CODE-CONFIG is
   op inss : KConfig -> KConfig [ctor] . 
   op cycleTime : Nat -> KConfig [ctor] .
   op constraints : BoolSemanticVal -> KConfig [ctor] .
+  op recentAction : Qid -> KConfig [ctor] .
 
   op interval : Map{ProcessId, Nat} -> KConfig [ctor] .
   op futureJobs : JobSet -> KConfig [ctor] .
