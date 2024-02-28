@@ -969,7 +969,7 @@ mod SCHEDULING-SEMANTICS is
      constraints(CONST') recentAction('tick)
   if MCT' := tv(G) 
   /\ RA =/= 'tick
-  /\ CONST' := CONST AND MCT < MCT' AND MCT' < syn2sem(# minDL(JOBS)) AND MCT' < syn2sem(# minDL(SQ)) AND MCT' <= syn2sem(# M)
+  /\ CONST' := CONST AND MCT <= MCT' AND MCT' < syn2sem(# minDL(JOBS)) AND MCT' < syn2sem(# minDL(SQ)) AND MCT' < syn2sem(# M)
   /\ checkSAT(CONST') .
 endm
 
