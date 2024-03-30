@@ -859,11 +859,10 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob)
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
      constraints(CONST')
-  if earlist(@j(PRID, PR, ES, DL), JOBS)
-  /\ CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
+  if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
   /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
 
@@ -878,11 +877,10 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob)
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
      constraints(CONST')
-  if earlist(@j(PRID, PR, ES, DL), JOBS)
-  /\ CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
+  if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
   /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
 
@@ -896,11 +894,10 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob-wait)
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
      task(id(PRID) k(@block ~> K) REST) 
      constraints(CONST')
-  if earlist(@j(PRID, PR, ES, DL), JOBS)
-  /\ CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
+  if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
   /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
 
@@ -914,11 +911,10 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob-wait)
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
      task(id(PRID) k(@block ~> K) REST) 
      constraints(CONST')
-  if earlist(@j(PRID, PR, ES, DL), JOBS)
-  /\ CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
+  if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
   /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
 
