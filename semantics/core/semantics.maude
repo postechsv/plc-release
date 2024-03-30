@@ -814,9 +814,7 @@ mod SCHEDULING-SEMANTICS is
      globalTime(MCT)
      activeJob(Some(@j(PRID, PR, ES, DL)))
      sQueue((@j(PRID, PR, ES, DL), SQ))
-     task(id(PRID) k(K) REST)
-  if ES <= MCT
-  /\ MCT <= DL . 
+     task(id(PRID) k(K) REST) .
 
  crl [endProgram] :
      log(LOG)
@@ -833,7 +831,7 @@ mod SCHEDULING-SEMANTICS is
      sQueue((Q1, Q2))
      futureJobs((JOBS @j(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
      interval((PRID |-> INTERVAL, IM))
-  if MCT <= DL .
+  if DL < MCT .
 
   eq [loadNBlock] :
      task(id(PRID) k(@loadNBlock) REST)
@@ -857,11 +855,10 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES)))
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
   if ES <= MCT
-  /\ MCT <= DL
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS) 
+  /\ MCT < DL
   /\  not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
  crl [placeJob] :
@@ -873,11 +870,10 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES)))
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
      task(id(PRID) k(@loadNBlock) REST)
   if ES <= MCT
-  /\ MCT <= DL
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ MCT < DL
   /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
  crl [placeJob-wait-por] :
@@ -889,11 +885,10 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES)))
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
      task(id(PRID) k(@block ~> K) REST) 
   if ES <= MCT
-  /\ MCT <= DL
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ MCT < DL
   /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
  crl [placeJob-wait] :
@@ -905,11 +900,10 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES)))
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
      task(id(PRID) k(@block ~> K) REST) 
   if ES <= MCT
-  /\ MCT <= DL
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
+  /\ MCT < DL
   /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
  crl [preempt] :
