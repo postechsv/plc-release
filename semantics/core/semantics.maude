@@ -851,7 +851,6 @@ mod SCHEDULING-SEMANTICS is
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
   if ES < MAXT
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
 
@@ -867,7 +866,6 @@ mod SCHEDULING-SEMANTICS is
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
   if ES < MAXT
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
  crl [placeJob-wait-por] :
@@ -882,7 +880,6 @@ mod SCHEDULING-SEMANTICS is
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
   if ES < MAXT
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
  crl [placeJob-wait] :
@@ -897,7 +894,6 @@ mod SCHEDULING-SEMANTICS is
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
   if ES < MAXT
-  /\ earlist(@j(PRID, PR, ES, DL), JOBS)
   /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
 
 
