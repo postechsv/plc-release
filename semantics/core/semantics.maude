@@ -137,12 +137,12 @@ mod CONDITIONAL-SEMANTICS is
   --- ite
  crl [iteTrue] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST) recentAction(RA)
  => task((k(PE1 ~> K)) REST ) recentAction('iteTrue)
-    constraints(CONST AND (ITECONDITION))
+    constraints(simplify(CONST AND (ITECONDITION)))
     if checkSAT(CONST AND (ITECONDITION)) .
   
  crl [iteFalse] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST) recentAction(RA)
  => task((k(PE2 ~> K)) REST ) recentAction('iteFalse)
-    constraints(CONST AND (NOT ITECONDITION))
+    constraints(simplify(CONST AND (NOT ITECONDITION)))
     if checkSAT(CONST AND (NOT ITECONDITION)) .
 
  --- if statement
@@ -861,7 +861,7 @@ mod SCHEDULING-SEMANTICS is
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
-     constraints(CONST')
+     constraints(simplify(CONST'))
   if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
   /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
@@ -879,7 +879,7 @@ mod SCHEDULING-SEMANTICS is
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
-     constraints(CONST')
+     constraints(simplify(CONST'))
   if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
   /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
@@ -896,7 +896,7 @@ mod SCHEDULING-SEMANTICS is
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
-     constraints(CONST')
+     constraints(simplify(CONST'))
   if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
   /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
@@ -913,7 +913,7 @@ mod SCHEDULING-SEMANTICS is
      futureJobs(JOBS)
      sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
-     constraints(CONST')
+     constraints(simplify(CONST'))
   if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
   /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) --- por
   /\ checkSAT(CONST') .
@@ -962,7 +962,7 @@ mod SCHEDULING-SEMANTICS is
      globalTime(MCT') interval(IM)
      sQueue(SQ) futureJobs(JOBS) tindex(s G)
      maxTime(M)
-     constraints(CONST') recentAction('tick)
+     constraints(simplify(CONST')) recentAction('tick)
   if MCT' := tv(G) 
   /\ RA =/= 'tick
   /\ CONST' := CONST AND MCT < MCT' AND MCT' < syn2sem(# minDL(JOBS)) AND MCT' < syn2sem(# minDL(SQ)) AND MCT' < syn2sem(# M)
