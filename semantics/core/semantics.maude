@@ -859,7 +859,7 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob)
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
      constraints(CONST')
   if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
@@ -877,7 +877,7 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob)
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
      constraints(CONST')
   if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
@@ -894,7 +894,7 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob-wait)
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
      constraints(CONST')
   if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
@@ -911,7 +911,7 @@ mod SCHEDULING-SEMANTICS is
   => log(LOG (PRID, 'placeJob, syn2sem(# ES))) recentAction('placeJob-wait)
      globalTime(MCT)
      futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, MCT, DL)))
+     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
      constraints(CONST')
   if CONST' := CONST AND syn2sem(# ES) <= MCT AND MCT < syn2sem(# DL)
@@ -965,7 +965,7 @@ mod SCHEDULING-SEMANTICS is
      constraints(CONST') recentAction('tick)
   if MCT' := tv(G) 
   /\ RA =/= 'tick
-  /\ CONST' := CONST AND MCT <= MCT' AND MCT' < syn2sem(# minDL(JOBS)) AND MCT' < syn2sem(# minDL(SQ)) AND MCT' < syn2sem(# M)
+  /\ CONST' := CONST AND MCT < MCT' AND MCT' < syn2sem(# minDL(JOBS)) AND MCT' < syn2sem(# minDL(SQ)) AND MCT' < syn2sem(# M)
   /\ checkSAT(CONST') .
 endm
 
