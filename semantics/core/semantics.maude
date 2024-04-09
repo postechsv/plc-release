@@ -803,8 +803,7 @@ mod SCHEDULING-SEMANTICS is
   if DL2 < MCT .
 ---)
 
-  --- is minimum current time necessary?
- crl [schedule] :
+  rl [schedule] :
      log(LOG)
      globalTime(MCT)
      activeJob(None)
