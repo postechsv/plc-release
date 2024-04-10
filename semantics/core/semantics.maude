@@ -830,7 +830,7 @@ mod SCHEDULING-SEMANTICS is
      sQueue((Q1, Q2))
      futureJobs((JOBS @j(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
      interval((PRID |-> INTERVAL, IM))
-  if DL < MCT .
+  if ES < MCT /\ DL < MCT .
 
   eq [loadNBlock] :
      task(id(PRID) k(@loadNBlock) REST)
