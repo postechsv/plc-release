@@ -830,7 +830,7 @@ mod SCHEDULING-SEMANTICS is
      sQueue((Q1, Q2))
      futureJobs((JOBS @j(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
      interval((PRID |-> INTERVAL, IM))
-  if ES < MCT /\ DL < MCT .
+  if ES < MCT /\ MCT < DL .
 
   eq [loadNBlock] :
      task(id(PRID) k(@loadNBlock) REST)
@@ -947,11 +947,23 @@ mod SCHEDULING-SEMANTICS is
      sQueue(SQ) futureJobs(JOBS)
      maxTime(M)
   => log(LOG (' , 'tick, placeHolder))
-     globalTime(MCT + N) interval(IM)
+     globalTime(MCT + 1) interval(IM)
      sQueue(SQ) futureJobs(JOBS)
      maxTime(M)
-  if N := gcd(IM) /\ MCT + N <= minDL(SQ) /\ MCT + N <= minDL(JOBS) 
-  /\ MCT + N <= M .
+  if N := gcd(IM) /\ MCT rem N == 0 /\ MCT + 1 < minDL(SQ) /\ MCT + 1 < minDL(JOBS) 
+  /\ MCT + 1 < M .
+
+ crl [tick] :
+     log(LOG)
+     globalTime(MCT) interval(IM)
+     sQueue(SQ) futureJobs(JOBS)
+     maxTime(M)
+  => log(LOG (' , 'tick, placeHolder))
+     globalTime(MCT + (N - 1)) interval(IM)
+     sQueue(SQ) futureJobs(JOBS)
+     maxTime(M)
+  if N := gcd(IM) /\ MCT rem N =/= 0 /\ MCT + (N - 1) < minDL(SQ) /\ MCT + (N - 1) < minDL(JOBS) 
+  /\ MCT + (N - 1) < M .
 
  ceq maxTime(M) futureJobs((JOBS @j(PRID, PR, ES, DL)))
    = maxTime(M) futureJobs(JOBS)
