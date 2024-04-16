@@ -920,7 +920,7 @@ mod SCHEDULING-SEMANTICS is
 
  ceq futureJobs(JOBS @j(PRID, PR, ES, DL)) maxTime(MAXTIME)
    = futureJobs(JOBS) maxTime(MAXTIME)
-  if ES > MAXTIME .
+  if ES >= MAXTIME .
 
   op maxES : JobList ~> Nat .
   op minDL : JobList ~> Nat .
