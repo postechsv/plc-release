@@ -938,12 +938,12 @@ mod SCHEDULING-SEMANTICS is
 
  crl [tick] : 
      log(LOG)
-     globalTime(MINT, MAXT) recentAction(RA) 
+     globalTime(MINT, MAXT)
      sQueue(SQ) futureJobs(JOBS) maxTime(M)
   => log(LOG (' , 'tick, placeHolder))
-     globalTime(if SQ == emptyJList then MINT else maxES(SQ) fi, min(minDL(SQ), minDL(JOBS))) recentAction('tick)
+     globalTime(if SQ == emptyJList then MINT else maxES(SQ) fi, min(minDL(SQ), minDL(JOBS)))
      sQueue(SQ) futureJobs(JOBS) maxTime(M)
-  if RA =/= 'tick /\ maxES(SQ) < M .
+  if maxES(SQ) < M .
 endm
 
 --- wait semantics
