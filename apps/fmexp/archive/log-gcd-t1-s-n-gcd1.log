@@ -1,0 +1,14 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar 15 2020 23:55:47
+	     Copyright 1997-2019 SRI International
+		   Mon Apr 15 22:27:16 2024
+==========================================
+srewrite in REPORTER : appExt using noPor ; fail .
+
+No solution.
+rewrites: 51617186 in 7797488ms cpu (7797488ms real) (6619 rewrites/second)
+Bye.
+7775.22user 24.26system 2:09:59elapsed 99%CPU (0avgtext+0avgdata 1109648maxresident)k
+16inputs+16outputs (0major+279715minor)pagefaults 0swaps

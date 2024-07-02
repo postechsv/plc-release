@@ -1,0 +1,14 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar 15 2020 23:55:47
+	     Copyright 1997-2019 SRI International
+		   Sat Apr 20 20:13:33 2024
+==========================================
+srewrite in REPORTER : appExt using ample ; fail .
+
+No solution.
+rewrites: 2396498 in 735024ms cpu (735022ms real) (3260 rewrites/second)
+Bye.
+736.83user 0.08system 12:16.92elapsed 99%CPU (0avgtext+0avgdata 162740maxresident)k
+16inputs+16outputs (0major+39643minor)pagefaults 0swaps

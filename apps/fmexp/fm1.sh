@@ -1,0 +1,25 @@
+timeout 1h time maude-se-yices2 r-c-n.maude &> log-abs-r-c-n-gcd1.log &
+timeout 1h time maude-se-yices2 r-c-a.maude &> log-abs-r-c-a-gcd1.log &
+timeout 1h time maude-se-yices2 r-c-i.maude &> log-abs-r-c-i-gcd1.log &
+timeout 1h time maude-se-yices2 r-c-p.maude &> log-abs-r-c-p-gcd1.log &
+timeout 1h time maude-se-yices2 r-c-n-gcd2.maude &> log-abs-r-c-n-gcd2.log &
+timeout 1h time maude-se-yices2 r-c-a-gcd2.maude &> log-abs-r-c-a-gcd2.log &
+timeout 1h time maude-se-yices2 r-c-i-gcd2.maude &> log-abs-r-c-i-gcd2.log &
+timeout 1h time maude-se-yices2 r-c-p-gcd2.maude &> log-abs-r-c-p-gcd2.log &
+timeout 1h time maude-se-yices2 r-c-n-gcd3.maude &> log-abs-r-c-n-gcd3.log &
+timeout 1h time maude-se-yices2 r-c-a-gcd3.maude &> log-abs-r-c-a-gcd3.log &
+timeout 1h time maude-se-yices2 r-c-i-gcd3.maude &> log-abs-r-c-i-gcd3.log &
+timeout 1h time maude-se-yices2 r-c-p-gcd3.maude &> log-abs-r-c-p-gcd3.log &
+
+timeout 1h time maude-se-yices2 r-s-n.maude &> log-abs-r-s-n-gcd1.log &
+timeout 1h time maude-se-yices2 r-s-a.maude &> log-abs-r-s-a-gcd1.log &
+timeout 1h time maude-se-yices2 r-s-i.maude &> log-abs-r-s-i-gcd1.log &
+timeout 1h time maude-se-yices2 r-s-p.maude &> log-abs-r-s-p-gcd1.log &
+timeout 1h time maude-se-yices2 r-s-n-gcd2.maude &> log-abs-r-s-n-gcd2.log &
+timeout 1h time maude-se-yices2 r-s-a-gcd2.maude &> log-abs-r-s-a-gcd2.log &
+timeout 1h time maude-se-yices2 r-s-i-gcd2.maude &> log-abs-r-s-i-gcd2.log &
+timeout 1h time maude-se-yices2 r-s-p-gcd2.maude &> log-abs-r-s-p-gcd2.log &
+timeout 1h time maude-se-yices2 r-s-n-gcd3.maude &> log-abs-r-s-n-gcd3.log &
+timeout 1h time maude-se-yices2 r-s-a-gcd3.maude &> log-abs-r-s-a-gcd3.log &
+timeout 1h time maude-se-yices2 r-s-i-gcd3.maude &> log-abs-r-s-i-gcd3.log &
+timeout 1h time maude-se-yices2 r-s-p-gcd3.maude &> log-abs-r-s-p-gcd3.log &

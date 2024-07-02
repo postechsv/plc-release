@@ -1,0 +1,8 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar 15 2020 23:55:47
+	     Copyright 1997-2019 SRI International
+		   Wed Apr 10 17:14:56 2024
+==========================================
+srewrite in REPORTER : appExt using ample ; fail .

@@ -1,0 +1,218 @@
+load /home/jlee/plc-release/scripts/../semantics/interpreter/merge 
+load /home/jlee/plc-release/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+op projectFile : -> StratonProject .
+eq projectFile =
+(
+BEGINCONFIG
+PROGRAMS
+'timer([  # 1 ,  # 250 ,  # 0 ]) ;; 
+'nsCar([  # 2 ,  # 500 ,  # 0 ]) ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+'COLOR ## ( 'GREEN , 'RED , 'YELLOW , 'BLINKING ) ; 
+ENDTYPE
+
+
+
+BEGINVAR
+'nsTime : TIME : ##GLOBAL ; 
+'ewTime : TIME : ##GLOBAL ; 
+'nsContRed : BOOL := ( FALSE ) : ##GLOBAL ; 
+'ewContRed : BOOL := ( FALSE ) : ##GLOBAL ; 
+'nsColor : enumtype [ 'COLOR ] := ( 'COLOR # 'RED ) : ##GLOBAL ; 
+'ewColor : enumtype [ 'COLOR ] := ( 'COLOR # 'GREEN ) : ##GLOBAL ; 
+ENDVAR
+
+
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'timer 
+BEGINVAR
+'timer : fbtype [ 'TON ] : ##PRIV ; 
+ENDVAR
+
+CODE
+'timer ( TRUE , T# 3500 ms ) ; 
+'nsTime := 'timer . 'ET ; 
+IF 'timer . 'Q THEN 
+'timer ( FALSE , T# 3500 ms ) ; 
+'timer ( TRUE , T# 3500 ms ) ; 
+'nsTime := T# 0 ms ; 
+ENDIF ; 
+'ewTime := 'timer . 'ET + T# 2 s ; 
+IF 'ewTime >= T# 3500 ms THEN 
+'ewTime := 'ewTime - T# 3500 ms ; 
+ENDIF ; 
+
+ENDCODE
+ENDPROGRAM
+
+PROGRAM 'nsCar 
+BEGINVAR
+'controller : fbtype [ 'carLight ] : ##PRIV ; 
+'present : BOOL := ( FALSE ) : ##PRIV ; 
+'incoming : BOOL : ##IN ; 
+'color : enumtype [ 'COLOR ] : ##OUT ; 
+'green : BOOL : ##OUT ; 
+ENDVAR
+
+CODE
+'present := 'present OR 'incoming ; 
+'controller ( 'nsTime , 'present , 'nsContRed , 'ewContRed ) ; 
+'color := 'controller . 'color ; 
+IF 'nsContRed AND 'ewContRed THEN 
+'color := 'COLOR # 'RED ; 
+ENDIF ; 
+'nsColor := 'color ; 
+'green := 'color ==== 'COLOR # 'GREEN ; 
+
+ENDCODE
+ENDPROGRAM
+FUNCTIONBLOCK 'carLight 
+BEGINVAR
+'currTime : TIME : ##IN ; 
+'present : BOOL : ##INOUT ; 
+'continueRed : BOOL : ##INOUT ; 
+'continueGreen : BOOL : ##INOUT ; 
+'color : enumtype [ 'COLOR ] : ##OUT ; 
+ENDVAR
+
+CODE
+IF 'continueGreen THEN 
+'color := 'COLOR # 'GREEN ; 
+WAIT (  NOT 'continueGreen ) ; 
+ELSE 
+skip ; 
+ENDIF ; 
+IF 'currTime < T# 2 s THEN 
+'continueRed := 'color <> 'COLOR # 'RED ; 
+'color := 'COLOR # 'RED ; 
+ELSE 
+IF 'currTime < T# 3000 ms THEN 
+'color := 'COLOR # 'GREEN ; 
+ELSE 
+'color := 'COLOR # 'YELLOW ; 
+ENDIF ; 
+ENDIF ; 
+IF 'continueRed THEN 
+'color := 'COLOR # 'RED ; 
+ELSE 
+skip ; 
+ENDIF ; 
+'continueRed := 'continueRed AND  NOT  ( 'currTime <= T# 500 ms AND 'present )  ; 
+'present := 'present AND  NOT 'color ==== 'COLOR # 'GREEN ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+ENDPOUS
+
+) .
+  op linkedFile : -> StratonProject .
+  eq linkedFile = projectFile <-load- lib .
+  op app : -> KConfig .
+  eq app = [[[ linkedFile ]]] .
+endm
+
+
+mod MC is 
+  inc APP . 
+  op cond : ~> PExp . 
+  op appExt : ~> KConfig . 
+  op ranges : ~> Ranges .
+  ops rawis is os : ~> StreamMap .  
+  op bound : -> Nat . 
+  op am : ~> AdapterMap . 
+  eq bound = 250 .
+  op srange : ~> Nat .
+  eq srange = srange(ranges, am) .
+  eq cond = GLOBALLY (NOT ('nsCar :: 'green AND 'ewCar :: 'green )  )  . 
+  eq rawis = ( 
+( 'nsCar :: 'incoming |-> repeat(  [(false).Bool]  ) ) ) . 
+  eq am = ( 
+( 'nsCar |-> first / 1 ) ) . 
+  eq ranges = genRanges(app, bound) .
+  eq is = genIS(annotateType(rawis, app), ranges) .  
+  eq os = genEmptyStream(setDiff(collectKeySet(cond), streamKeySet(transformISKey(is)))) .
+  eq appExt = app maxTime(bound) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os)) LTLCondition(cond) .
+
+  var CONST : SemanticValue . 
+  vars IS' OS' : StreamMap . 
+
+ ceq log(LOG:Log) = log(emptyLog) if LOG:Log =/= emptyLog .
+endm
+
+smod POR is
+  inc MC .
+  var CONST : SemanticValue . 
+  vars IS' OS' : StreamMap . 
+  var REST : KConfig .
+
+  strat porStep @ KConfig .
+  strat noMem @ KConfig .
+  strat pjRed @ KConfig .
+  strat rest @ KConfig .
+
+
+  sd noMem := localLookup | globalLookup | fbcall | return | arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .
+  sd pjRed := placeJob-por | placeJob-wait-por .
+  sd rest := localAssign | globalAssign | globalLookup | schedule | endProgram | preempt | placeJob | placeJob-wait . 
+  
+
+  sd porStep := (noMem ? idle : ((pjRed ? idle : rest) | tick)) .
+
+  strat goalState @ KConfig .
+  sd goalState := match constraints(CONST)
+                        outStream(OS') REST 
+                  s.t. 
+checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) . 
+
+  strat porStar @ KConfig .
+  sd porStar := (porStep *) .
+
+  strat noPor @ KConfig .
+  sd noPor := (noMem | pjRed | rest | tick)* .
+
+  strat ample @ KConfig .
+  sd ample := ((pjRed | tick) ? idle : (rest | noMem))* .
+  strat internal @ KConfig .
+ sd internal := (noMem ? idle : (rest | tick | pjRed))* .
+ ---(  rl [checkSatAssign] :
+     constraints(CONST) inputCollector(IS') outStream(OS')
+  => constraints(CONST) inputCollector(IS') outStream(OS')
+     result(checkSATwithAssignment((adapt((transformISKey(IS'), OS'), am) |= genFormula(NOT cond, 0, cutSize(OS', am) - 1)) AND CONST)) .
+---)
+endsm
+smod REPORTER is
+   inc POR .
+   var N : Nat .
+    op counter : Nat ResultPair? ~> Nat [ctor] .
+    eq counter(N, failure) = N .
+    eq counter(N, {TERM:Term, TYPE:Type})
+     = counter(s N, metaSrewrite(upModule('POR, false), upTerm(appExt), ('internal)[[empty]], breadthFirst, s N)) .
+ endsm
+---(
+search [1]
+appExt =>* constraints(CONST) outStream(OS') REST:KConfig
+such that
+false .
+---) 
+---checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) .
+
+---srew appExt using porStep * .
+---srew [1] appExt using (porStep * ; goalState) .
+---srew [1] appExt using (porStep * ; (goalState ? checkSatAssign : fail)) .
+srew appExt using internal ; fail .
+---srew appExt using porStep * .
+---srew appExt using (local | global) * ; fail .
+---search [1] appExt =>* maxTime(-1) . 
+q

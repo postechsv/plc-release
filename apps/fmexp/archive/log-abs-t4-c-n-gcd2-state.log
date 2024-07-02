@@ -1,0 +1,28 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar 15 2020 23:55:47
+	     Copyright 1997-2019 SRI International
+		   Sat Apr 20 15:12:18 2024
+Advisory: redefining module BOOLEAN.
+Advisory: redefining module INTEGER.
+Advisory: redefining module REAL.
+Advisory: redefining module REAL-INTEGER.
+==========================================
+reduce in SMT-CHECK : smtCheck(1/1 < 1/1, false) .
+rewrites: 1 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: (false).Bool
+==========================================
+reduce in REPORTER : counter(0, metaSrewrite(upModule('POR, false), upTerm(
+    appExt), 'noPor[[empty]], breadthFirst, 0)) .
+rewrites: 440723360 in 5616304ms cpu (5616306ms real) (78472 rewrites/second)
+result NzNat: (146079).NzNat
+Warning: "t4-c-n-gcd2.maude", line 257: skipped unexpected token: .---srew
+Warning: "t4-c-n-gcd2.maude", line 257: skipped unexpected token: appExt
+Warning: "t4-c-n-gcd2.maude", line 257: skipped unexpected token: using
+Warning: "t4-c-n-gcd2.maude", line 257: skipped unexpected token: porStep
+Warning: "t4-c-n-gcd2.maude", line 257: skipped unexpected token: *
+Warning: "t4-c-n-gcd2.maude", line 257: syntax error
+Bye.
+5617.47user 0.69system 1:33:38elapsed 99%CPU (0avgtext+0avgdata 453616maxresident)k
+16inputs+16outputs (0major+118902minor)pagefaults 0swaps

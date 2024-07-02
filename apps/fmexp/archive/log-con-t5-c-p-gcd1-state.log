@@ -1,0 +1,14 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar 15 2020 23:55:47
+	     Copyright 1997-2019 SRI International
+		   Fri Apr  5 17:49:42 2024
+==========================================
+reduce in REPORTER : counter(0, metaSrewrite(upModule('POR, false), upTerm(
+    appExt), 'porStar[[empty]], breadthFirst, 0)) .
+rewrites: 575992649 in 7262988ms cpu (7262990ms real) (79305 rewrites/second)
+result NzNat: (244998).NzNat
+Bye.
+7254.88user 9.85system 2:01:04elapsed 99%CPU (0avgtext+0avgdata 2313464maxresident)k
+16inputs+16outputs (0major+735812minor)pagefaults 0swaps

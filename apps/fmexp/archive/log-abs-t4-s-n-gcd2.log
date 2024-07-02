@@ -1,0 +1,22 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar 15 2020 23:55:47
+	     Copyright 1997-2019 SRI International
+		   Sat Apr 20 20:13:48 2024
+Advisory: redefining module BOOLEAN.
+Advisory: redefining module INTEGER.
+Advisory: redefining module REAL.
+Advisory: redefining module REAL-INTEGER.
+==========================================
+reduce in SMT-CHECK : smtCheck(1/1 < 1/1, false) .
+rewrites: 1 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: (false).Bool
+==========================================
+srewrite in REPORTER : appExt using noPor ; fail .
+
+No solution.
+rewrites: 1324707 in 258708ms cpu (258706ms real) (5120 rewrites/second)
+Bye.
+260.48user 0.07system 4:20.57elapsed 99%CPU (0avgtext+0avgdata 108324maxresident)k
+16inputs+16outputs (0major+32586minor)pagefaults 0swaps
