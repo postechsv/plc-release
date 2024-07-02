@@ -1,3 +1,7 @@
+This repository includes the supplementary materials and the [technical report](techrep.pdf) for the paper 
+'Formal Semantics and Analysis of Multitask PLC ST Programs with Preemption'
+
+
 STbmc
 ==========
 STbmc is a bounded LTL model checking tool for PLC ST language.
