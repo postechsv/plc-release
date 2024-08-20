@@ -133,6 +133,10 @@ view StreamValue from TRIV to STREAM-VALUE is
   sort Elt to StreamValue .
 endv
 
+view PExp from TRIV to BASIC-PEXP is
+  sort Elt to PExp .
+endv
+
 --- Below builds list of functions.
 fmod PLC-EXP-LIST is
   including LIST{FArgElement} * (op __ to _`,_, op nil to nilPExpList,
@@ -163,6 +167,13 @@ op $size to $sizey
   op _,_ : List{PExp} List{PExp} -> List{PExp} [ctor ditto] .
   op _,_ : NeList{PExp} List{PExp} -> NeList{PExp} [ctor ditto] .
   op _,_ : List{PExp} NeList{PExp} -> NeList{PExp} [ctor ditto] .
+
+
+  vars E E' : PExp .
+  var L : List{PExp} .
+  op isIn : PExp List{PExp} ~> Bool .
+  eq isIn(E, nilPExpList) = false .
+  eq isIn(E, (E', L)) = if E == E' then true else isIn(E, L) fi .
 endfm
 
  --- Below handles variables in variable declaration section.
@@ -320,6 +331,12 @@ fmod STATEMENT is
   op WAITTIME(_) : PExp -> Stmt [ctor] .
   op @#timerSetValue(_) : PExp -> Stmt [ctor] .
   op @release : -> Stmt [ctor] .
+
+  op connectRequest : PExp -> Stmt [ctor] .
+  op disconnect : PExp -> Stmt [ctor] .
+  op sendData : PExp PExp PExp PExp -> Stmt [ctor] . --- Oid SenderBlock ReceiverBlock Data
+  op rcvData : PExp PExp PExp -> Stmt [ctor] . --- Oid SenderBlock ReceiverBlock
+  op rcvError : -> PExp [ctor] .
 endfm
 
 

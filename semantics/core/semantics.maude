@@ -831,7 +831,7 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(@loadNBlock) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S)
-   = task(id(PRID) k(@block ~> @input ~> @timerUpdate ~> S ~> @output) REST)
+   = task(id(PRID) k(@block ~> @output ~> @input ~> @timerUpdate ~> S) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S) .
 
