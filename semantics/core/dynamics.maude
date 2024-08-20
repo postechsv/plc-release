@@ -1,0 +1,86 @@
+fmod COMMON-DYNAMICS is
+  sort Dynamics .
+endfm
+
+mod DEXP is
+  inc COMMON-SEMANTIC-VALUE .
+  sorts Var DExp .
+  subsort Var < DExp .
+
+  op c[_] : SemanticValue -> DExp . --- constant
+endm
+
+mod EQUATION is
+  inc DEXP .
+  ops _-_ _+_ : DExp DExp -> DExp [ctor assoc prec 9] .
+  ops _*_ _/_ : DExp DExp -> DExp [ctor assoc prec 8] .
+endm
+
+mod SOLUTION-FUNCTION is
+  inc DEXP .
+  inc COMMON-DYNAMICS .
+  inc BASIC-PEXP .
+
+  sorts SFunction SFunctionList .
+
+  op s[_] : PExp -> DExp [ctor] .
+  op v[_] : Var -> DExp [ctor] .
+
+  subsort SFunction < SFunctionList .
+  subsort SFunctionList < Dynamics .
+
+  op _(_)=_ : PExp Var DExp -> SFunction [ctor prec 10] .
+  op _;;_ : SFunctionList SFunctionList -> SFunctionList [ctor assoc comm prec 20] .
+endm
+
+mod DYNAMICS-EVALUATION is
+  inc SOLUTION-FUNCTION .
+  inc EQUATION .
+
+  sort Map{PExp, SemanticValue} .
+  op emptyMap : -> Map{PExp, SemanticValue} [ctor] .
+  op _,_ : Map{PExp, SemanticValue} Map{PExp, SemanticValue} -> Map{PExp, SemanticValue} [ctor assoc comm id: emptyMap] .
+  op _||->_ : PExp SemanticValue -> Map{PExp, SemanticValue} [ctor] .
+
+  sort UpdateResult .
+  --- updateResult: state constraints gen
+  op none : -> UpdateResult [ctor] .
+
+  --- updateState : equation sensor acutator time gen
+  op updateState : Dynamics Map{PExp, SemanticValue} Nat ~> Map{PExp, SemanticValue} .
+  op updateItem : Dynamics Map{PExp, SemanticValue} Nat ~> Map{PExp, SemanticValue} .
+  op evalExp : DExp Map{PExp, SemanticValue} Nat ~> SemanticValue .
+
+  var EQ : SFunction .
+  var EQS : SFunctionList .
+  var ODE : SFunction .
+  var ODES : SFunctionList .
+  var X : PExp .
+  var T : Var .
+  var N : Nat .
+  vars C V : SemanticValue .
+  var STATE STATE' STATE'' : Map{PExp, SemanticValue} .
+  vars E E1 E2 : DExp .
+  vars CONST CONST' : SemanticValue .
+  var ER : UpdateResult .
+
+  --- solution function
+  eq updateState(EQ, STATE, N) = updateItem(EQ, STATE, N) .
+ ceq updateState(EQ ;; EQS, STATE, N) = STATE''
+     if STATE' := updateItem(EQ, STATE, N)
+     /\ STATE'' := updateState(EQS, STATE, N) .
+  eq updateItem(X(T) = E, ((X ||-> V), STATE), N)
+   = (STATE, (X ||-> evalExp(E, ((X ||-> V), STATE), N))) .
+
+  eq evalExp(c[C], STATE, N) = C .
+  eq evalExp(v[T], STATE, N) = syn2sem(# N) .
+  eq evalExp(s[X], ((X ||-> V), STATE), N) = V .
+  eq evalExp(E1 + E2, STATE, N) = evalExp(E1, STATE, N) + evalExp(E2, STATE, N) .
+  eq evalExp(E1 * E2, STATE, N) = evalExp(E1, STATE, N) * evalExp(E2, STATE, N) .
+  eq evalExp(E1 - E2, STATE, N) = evalExp(E1, STATE, N) - evalExp(E2, STATE, N) .
+  eq evalExp(E1 / E2, STATE, N) = evalExp(E1, STATE, N) / evalExp(E2, STATE, N) .
+endm
+
+
+
+
