@@ -56,9 +56,6 @@ class stTranslate(STVisitor):
     def visitAProgram(self, ctx:STParser.AProgramContext):
         return "'" + ctx.name.text + " ;; \n"
 
-    def visitCycleTime(self, ctx:STParser.CycletimeContext):
-        return "CycleTime: #  " + ctx.cycle.text + "\n"
-
     def visitPros(self, ctx:STParser.ProsContext): return ctx.name.text, ctx.program()
     def visitSubs(self, ctx:STParser.SubsContext): return ctx.name.text, ctx.program()
     def visitUdfbs(self, ctx:STParser.UdfbsContext): return ctx.name.text, ctx.program()

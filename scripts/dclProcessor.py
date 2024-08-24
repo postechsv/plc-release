@@ -204,6 +204,7 @@ class dclStappMaker:
     def makeStapp(self):
         programConfig = ""
         programConfig += "PROGRAMS\n" + self.makeStPrograms() + "PROGRAMSEND\n"
+        programConfig += "CycleTime: " + str(self.visitor.cycletime) + "\n"
 
         typeConfig = self.makeStENUMS() + "\n" + self.makeStBITFIELDS() + "\n"
 
