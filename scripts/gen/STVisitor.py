@@ -29,6 +29,11 @@ class STVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by STParser#cycletime.
+    def visitCycletime(self, ctx:STParser.CycletimeContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by STParser#typeSection.
     def visitTypeSection(self, ctx:STParser.TypeSectionContext):
         return self.visitChildren(ctx)

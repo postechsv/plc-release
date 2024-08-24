@@ -4,10 +4,11 @@ import COMMON ;
 
 stapp : config (pros|subs|udfbs|funcs)* ;
 
-config : programSection typeSection (var_global)? ;
+config : programSection cycletime typeSection (var_global)? ;
 
 programSection : PROGRAMS  (aProgram)+ PROGRAMSEND ;
-aProgram : name=ID '(' '[' interval=INT ',' phase=INT ',' priority=INT ']' ')' ';;' ;
+aProgram : name=ID ';;' ;
+cycletime : CycleTime ':' cycle=INT ;
 
 typeSection : TYPESTART enum* bitfield* structure* ENDTYPE ;
 enum : name=ID ':' enumVar=idList ';' ;
@@ -43,7 +44,7 @@ statement : assign | functioncall | iteration | selection | opwithequal | exitst
 
 assign : expr ':=' expr ;
 functioncall : (varname) '(' argumentlist ')' # USERDEFINEFUNCALL
-             | funcall=(SPECIALTIMEFUN|SPECIALTIMEFUNWAIT|SPECIALTIMEFUNWAITTIME) '(' argumentlist ')' # STANDARDFUNCALL ;
+             | funcall=(SPECIALTIMEFUN|SPECIALTIMEFUNWAIT|SPECIALTIMEFUNWAITTIME|SPECIALCOMMFUN) '(' argumentlist ')' # STANDARDFUNCALL ;
 
 iteration : FOR assign TO expr BY expr DO statementList ENDFOR # FORSTATEMENTWITHBY
           | FOR assign TO expr DO statementList ENDFOR # FORSTATEMENT
@@ -70,7 +71,7 @@ returnstatement : RETURN;
 emptystatement : ;
 
 expr : '(' expr ')' # PARENTHESIS
-     | op=(ARITHMETICBUILTINFUNCTIONS|DATACONVERSIONBUILTINFUNCTIONS) '(' argumentlist ')' # FUNCTIONCALL
+     | op=(ARITHMETICBUILTINFUNCTIONS|DATACONVERSIONBUILTINFUNCTIONS|'isConnected'|'sendData'|'rcvData') '(' argumentlist ')' # FUNCTIONCALL
      | SUB expr # NEGATIVEOPERATION
      | NOT expr # NOTOPERATION
      | <assoc=right> expr op=EXPO expr # EXPONENTIAL
@@ -97,7 +98,7 @@ primary : number # NUMPRIMARY
         | FALSE # BOOLFALSE
         | varname # VARPRIMARY
         | ID '#' ID # ENUMPRIMARY
-        | (SPECIALTIMEKEYWORD | SPECIALCYCLEKEYWORD) # SPECIALTOKEN
+        | (SPECIALTIMEKEYWORD | SPECIALCYCLEKEYWORD | SPECIALCOMMKEYWORD) # SPECIALTOKEN
         ;
 
 varname : ID ('.' (ID|INT))+  | ID ;
@@ -115,6 +116,7 @@ idList : ID (',' ID)* ;
 
 PROGRAMS : 'PROGRAMS' ;
 PROGRAMSEND : 'PROGRAMSEND' ;
+CycleTime : 'CycleTime' ;
 TYPESTART : 'TYPE' ;
 ENDTYPE : 'END_TYPE' ;
 STRUCT : 'STRUCT' ;
@@ -139,6 +141,8 @@ END_VAR : 'END_VAR' ;
 SPECIALTIMEFUN : '@#timerSetValue' ;
 SPECIALTIMEKEYWORD : '@#timerValue' ;
 SPECIALCYCLEKEYWORD : '@#cycleValue' ;
+SPECIALCOMMFUN : 'connectRequest' | 'disconnect' ; 
+SPECIALCOMMKEYWORD : 'rcvError' | 'thisBlock' ; 
 SPECIALTIMEFUNWAIT : 'WAIT' ;
 SPECIALTIMEFUNWAITTIME : 'WAIT_TIME' ;
 

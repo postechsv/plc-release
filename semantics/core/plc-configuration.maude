@@ -1,202 +1,3 @@
-fmod JOBS is
-  inc PROCESS-ID .
-
-  sort Job .
-  op @j : ProcessId Nat Nat Nat -> Job [ctor] .
-       --- (processId, priority, interval, earliest starting time, deadline)
-  sort JobSet .
-  subsort Job < JobSet .
-  op emptyJSet : -> JobSet [ctor] .
-  op __ : JobSet JobSet -> JobSet [ctor assoc comm id: emptyJSet] . 
-
-  sort JobList .
-  subsort Job < JobList .
-  op emptyJList : -> JobList [ctor] .
-  op _,_ : JobList JobList -> JobList [ctor assoc id: emptyJList] .
-
-  op add : JobList Job ~> JobList .
-
-  vars TID1 TID2 : ProcessId .
-  vars PR1 PR2 ES1 ES2 DL1 DL2 : Nat .
-  var JL : JobList .
-  var JS : JobSet .
-  eq add(emptyJList, J:Job) = J:Job .
- ceq add((@j(TID1, PR1, ES1, DL1), JL), @j(TID2, PR2, ES2, DL2))
-   = (@j(TID2, PR2, ES2, DL2), @j(TID1, PR1, ES1, DL1), JL)
-  if DL2 <= ES1 . 
- ceq add((@j(TID1, PR1, ES1, DL1), JL), @j(TID2, PR2, ES2, DL2))
-   = (@j(TID1, PR1, ES1, DL1), add(JL, @j(TID2, PR2, ES2, DL2)))
-  if DL1 <= ES2 . 
-
-  eq add((@j(TID1, PR1, ES1, DL1), JL), @j(TID2, PR2, ES2, DL2))
-   = if PR1 <= PR2 then
-       (@j(TID1, PR1, ES1, DL1), add(JL, @j(TID2, PR2, ES2, DL2)))
-     else
-       (@j(TID2, PR2, ES2, DL2), @j(TID1, PR1, ES1, DL1), JL)
-     fi [owise] .
-
-  op earlist : Job JobSet ~> Bool .
-
- ceq earlist(@j(TID1, PR1, ES1, DL1), (@j(TID2, PR2, ES2, DL2) JS)) = false
-  if ES1 > ES2 or (ES1 == ES2 and PR1 > PR2) .
-
-  eq earlist(@j(TID1, PR1, ES1, DL1), JS) = true [owise] .
-
-  sort JobOption .
-  op Some : Job -> JobOption [ctor] .
-  op None : -> JobOption [ctor] .
-endfm
-
-fmod STREAM is
-  inc BASIC-PEXP .
-  inc PLC-EXP-LIST .
-  inc SEMANTIC-LIST .
-
-  sort StreamKey .
-  op _::_ : Pid PExp -> StreamKey [ctor prec 0] .   
-  op I[_::_] : Pid PExp -> StreamKey [ctor prec 0] .              
-  subsort StreamKey < PExp .
-  op _{_} : StreamKey Nat -> PExp [prec 1] .
-
-  sorts StreamMapEntry StreamMap .
-  subsort StreamMapEntry < StreamMap .
-  op empty : -> StreamMap [ctor] .
-  op _,_ : StreamMap StreamMap -> StreamMap [ctor assoc comm id: empty] .   
-  op _|->_ : StreamKey List{StreamValue} -> StreamMapEntry [ctor] . 
-
-  op minSize : StreamMap ~> Nat .
-
-  sort SKSet .
-  subsort StreamKey < SKSet . 
-  op emptySKSet : -> SKSet [ctor] .
-  op _nnn_ : SKSet SKSet -> SKSet [ctor assoc comm id: emptySKSet] .
-  op setDiff : SKSet SKSet ~> SKSet .
-  op streamKeySet : StreamMap ~> SKSet .
-  op genEmptyStream : SKSet ~> StreamMap .
-
-  vars SKS1 SKS2 : SKSet .
-  var KEY : StreamKey .
-  var SEQ : List{StreamValue} .
-  var RESTMAP : StreamMap .
-
-  eq KEY nnn KEY = KEY .
-
-  eq minSize(KEY |-> SEQ) = len(SEQ) .
-  eq minSize((KEY |-> SEQ), RESTMAP) = min(len(SEQ), minSize(RESTMAP)) .
-
-  eq setDiff(SKS1, emptySKSet) = SKS1 .
-  eq setDiff((KEY nnn SKS1), (KEY nnn SKS2)) = setDiff(SKS1, SKS2) .
-  eq setDiff(SKS1, (KEY nnn SKS2)) = setDiff(SKS1, SKS2) [owise] .
-
-  eq streamKeySet(empty) = emptySKSet .
-  eq streamKeySet((KEY |-> SEQ), RESTMAP) = (KEY nnn streamKeySet(RESTMAP)) . 
-
-  eq genEmptyStream(emptySKSet) = empty .
-  eq genEmptyStream((KEY nnn SKS1)) = ((KEY |-> nilSemanticList), genEmptyStream(SKS1)) .
-
-  --- adapter
-  sort Adapter .
-  ops min max first last : -> Adapter [ctor] . 
-
-  sorts AdapterMap AdapterMapEntry .
-  subsort AdapterMapEntry < AdapterMap .
-  op emptyAMap : -> AdapterMap [ctor] .
-  op _|->_/_ : Pid Adapter Nat -> AdapterMapEntry [ctor] .
-  op _,_ : AdapterMap AdapterMap -> AdapterMap [ctor assoc comm id: emptyAMap] .
-
-  op adapt : StreamMap AdapterMap ~> StreamMap . 
-  op adaptSeq : List{StreamValue} Adapter Nat ~> List{StreamValue} .
-  op take : List{StreamValue} Nat ~> List{StreamValue} .
-  op pick : List{StreamValue} Adapter ~> StreamValue .
-  op erase : List{StreamValue} Nat ~> List{StreamValue} .
-
-  op cutSize : StreamMap AdapterMap ~> Nat .
-
-  var P : Pid .
-  var V : PExp .
-  var N : Nat .
-  var AM : AdapterMap . 
-  var AD : Adapter .
-  var HEAD : StreamValue .
-  eq adapt(empty, AM) = empty .
-  eq adapt(((P :: V |-> SEQ), RESTMAP), ((P |-> AD / N), AM))
-   = (P :: V |-> adaptSeq(SEQ, AD, N)), adapt(RESTMAP, ((P |-> AD / N), AM)) .
-  eq adapt(((I[P :: V] |-> SEQ), RESTMAP), ((P |-> AD / N), AM))
-   = (I[P :: V] |-> adaptSeq(SEQ, AD, N)), adapt(RESTMAP, ((P |-> AD / N), AM)) .
-
-  eq erase(nilStreamList, N) = nilStreamList .
-  eq erase(HEAD, s N) = nilStreamList .
-  eq erase(SEQ, 0) = SEQ .
-  eq erase((HEAD, SEQ), s N) = erase(SEQ, N) .
-
-  eq adaptSeq(SEQ, AD, N) = pick(take(SEQ, N), AD), adaptSeq(erase(SEQ, N), AD, N) [owise] . 
-  eq adaptSeq(nilStreamList, AD, N) = nilStreamList .
-
-  eq take(SEQ, 0) = nilStreamList .
-  eq take(HEAD, 1) = HEAD .
----  eq take(nilStreamList, s N) = nilStreamList .
-  eq take((HEAD, SEQ), s N) = HEAD, take(SEQ, N) .
-
-  eq pick(HEAD, AD) = HEAD .
-  eq pick((HEAD, SEQ), first) = HEAD .
-  eq pick((SEQ, HEAD), last) = HEAD .
-
-  --- min ???
-  --- max ???
-
-  eq cutSize(((P :: V |-> SEQ), RESTMAP), ((P |-> AD / N), AM))
-   = len(SEQ) / N .
-endfm
-
-fmod LTLFORMULA is
-  inc STREAM .
-
-  sort LTLFormula .
-  subsort PExp < LTLFormula .
-
-  op emptyLTLFormula : -> LTLFormula [ctor] .
-
-  op NOT_ : LTLFormula -> LTLFormula [ditto] .
-  ops _AND_ _OR_ : LTLFormula LTLFormula -> LTLFormula [ditto] .
-  ops _====_ _<>_ _<>_ _>_ _<_ _>=_ _<=_ : LTLFormula LTLFormula -> LTLFormula [ditto] .
-
-  ops FINALLY GLOBALLY NEXT WNEXT : LTLFormula -> LTLFormula [ctor] .
-  ops _UNTIL_ _==>_ : LTLFormula LTLFormula -> LTLFormula [ctor] .
-
-  sorts FreshVarMapEntry FreshVarMap .
-  subsort FreshVarMapEntry < FreshVarMap .
-  op emptyFreshVarMap : -> FreshVarMap [ctor] .
-  op _,_ : FreshVarMap FreshVarMap -> FreshVarMap [ctor assoc comm id: emptyFreshVarMap] .   
-  op _<-|_ : SemanticValue LTLFormula -> FreshVarMapEntry [ctor] . 
-
-  op collectKeySet : LTLFormula ~> SKSet .
-
-  vars COND COND2 OP1 OP2 : LTLFormula .
-  var KEY : StreamKey .
-  var N : Nat .
-
-  eq collectKeySet(GLOBALLY(COND)) = collectKeySet(COND) .
-  eq collectKeySet(FINALLY(COND)) = collectKeySet(COND) .
-  eq collectKeySet(NEXT(COND)) = collectKeySet(COND) .
-  eq collectKeySet(WNEXT(COND)) = collectKeySet(COND) .
-
-  eq collectKeySet(NOT COND) = collectKeySet(COND) .
-  eq collectKeySet(COND AND COND2) = ((collectKeySet(COND) nnn collectKeySet(COND2))) .
-  eq collectKeySet(COND OR COND2) = ((collectKeySet(COND) nnn collectKeySet(COND2))) .
-  eq collectKeySet(COND ==> COND2) = ((collectKeySet(COND) nnn collectKeySet(COND2))) .
-  eq collectKeySet(COND UNTIL COND2) = ((collectKeySet(COND) nnn collectKeySet(COND2))) .
-  eq collectKeySet(OP1 > OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 >= OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 < OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 <= OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 ==== OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 <> OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 <> OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(KEY{N}) = KEY . --- concrete base case
-  eq collectKeySet(KEY) = KEY . --- symbolic base case
-  eq collectKeySet(OP1) = emptySKSet [owise] .
-endfm
-
 fmod PROGRAMSTACK is
   inc ENV .
   inc PROCESS-ID .
@@ -265,6 +66,7 @@ op $size to $sizex
 
   op id : ProcessId -> KConfig [ctor] .
   op fbtype : Pid -> KConfig [ctor] .
+  op iname : Pid -> KConfig [ctor] .
   op timer : Timer -> KConfig [ctor] .
   op mem : Env -> KConfig [ctor] .
   op callStack : ProgramStack -> KConfig [ctor] .
@@ -289,19 +91,14 @@ fmod CODE-CONFIG is
   inc MAP{Location, SemanticValue} .
   inc MAP{ProcessId, Nat} .
   inc POU-DEF .
-  inc JOBS .
-  inc STREAM .
   inc COMPONENT .
-  inc LTLFORMULA .
   inc VSET .
   inc LOG .
 
   op log : Log -> KConfig [ctor] .
   op tindex : Nat -> KConfig [ctor] .
-  ops inVars outVars : SKSet -> KConfig [ctor] . 
-  op activeJob : JobOption -> KConfig [ctor] .
   op randomSeed : Nat -> KConfig [ctor] .
-  op globalTime : Nat Nat -> KConfig [ctor] .
+  op globalTime : Nat -> KConfig [ctor] .
   op globalVars : VSet -> KConfig [ctor] .
   op env : Env -> KConfig [ctor] .
   op store : Map{Location, SemanticValue} -> KConfig [ctor] .  
@@ -313,20 +110,9 @@ fmod CODE-CONFIG is
   op constraints : BoolSemanticVal -> KConfig [ctor] .
   op recentAction : Qid -> KConfig [ctor] .
 
-  op interval : Map{ProcessId, Nat} -> KConfig [ctor] .
-  op futureJobs : JobSet -> KConfig [ctor] .
-  op sQueue : JobList -> KConfig [ctor] .
-
   op task : KConfig -> KConfig [ctor] . --- ProcessId K ProgramStack interval phase priority futureJob
 
-  ops inStream outStream : StreamMap -> KConfig [ctor] .
-
   op enumTypes : TypeDeclSet -> KConfig [ctor] .
-
-  op maxTime : Nat -> KConfig [ctor] .
-  op newVarIndex : Nat -> KConfig [ctor] .
-  
-  op LTLCondition : LTLFormula -> KConfig [ctor] .
 
   var LOC : ProcessId .
   var ENV : Env .
@@ -341,6 +127,4 @@ fmod CODE-CONFIG is
 
   op initCond : ~> SemanticValue .
   op tv : Nat ~> SemanticValue .
-  op botSpace : PExp ~> PExp .
-  op botWrite : PExp SemanticValue ~> K .
 endfm

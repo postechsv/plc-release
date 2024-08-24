@@ -44,6 +44,15 @@ class STListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by STParser#cycletime.
+    def enterCycletime(self, ctx:STParser.CycletimeContext):
+        pass
+
+    # Exit a parse tree produced by STParser#cycletime.
+    def exitCycletime(self, ctx:STParser.CycletimeContext):
+        pass
+
+
     # Enter a parse tree produced by STParser#typeSection.
     def enterTypeSection(self, ctx:STParser.TypeSectionContext):
         pass

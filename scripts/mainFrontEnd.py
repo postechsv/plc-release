@@ -20,7 +20,7 @@ def returnAfterMergingWithAppFormat(loadFormat, content):
                                      + "endm\n"
 
 class MAINTRANSLATOR:
-    def __init__(self, projectPath, concretORsymbolic, projectName, reqName, complete=True):
+    def __init__(self, projectPath, concretORsymbolic, projectName, complete=True):
         self.returnMaudeFile = ""
         self.workingDir = os.path.abspath(str(sys.argv[0]))
         self.switch = True
@@ -53,7 +53,7 @@ class MAINTRANSLATOR:
             exit()
 
         if self.switch:
-            fileWriter = open(os.path.dirname(projectPath) + "/" + projectName + "-" + reqName + ".maude", "w")
+            fileWriter = open(os.path.dirname(projectPath) + "/" + projectName + ".maude", "w")
             loadFormat = ""
             if concretORsymbolic == "concrete":
                 loadFormat += "load " + os.path.dirname(self.workingDir) + "/../semantics/interpreter/merge \n"
@@ -65,7 +65,7 @@ class MAINTRANSLATOR:
             fileWriter.write(preprocessed)
             fileWriter.close()
             print("Compile Succeeded")
-            self.returnMaudeFile = os.path.dirname(projectPath) + "/" + projectName + "-" + reqName + ".maude"
+            self.returnMaudeFile = os.path.dirname(projectPath) + "/" + projectName + ".maude"
         else:
             print("Compile Failed")
             exit()

@@ -1,0 +1,9 @@
+load merge
+load ../core/dynamics
+load ../core/environment
+
+mod ENVIRONMENT is
+  inc PLC-CORE .
+  inc DYNAMICS-EVALUATION .
+  inc NECONFIGURATION .
+endm

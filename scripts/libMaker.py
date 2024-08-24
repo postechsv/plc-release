@@ -53,6 +53,7 @@ class libDBmaker:
         self.libDirectory = libDirectory
         stlibs = libDirectory + "/library.stlib"
         listlibs = open(stlibs, "r").read().split("\n")
+        listlibs.remove('')
         libFBEnv = dict()
 
         for aLib in listlibs:

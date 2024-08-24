@@ -57,14 +57,11 @@ class typeCheck(STVisitor):
     def visitConfig(self, ctx:STParser.ConfigContext):
         self.visit(ctx.programSection())
         self.visit(ctx.typeSection())
-
+        self.visit(ctx.cycletime())
         try:
             self.globalVarEnv = deepcopy(Helperfunctions.makevarListTovarDict(self.visit(ctx.var_global())))
         except:
             pass
-
-    def visitAProgram(self, ctx:STParser.AProgramContext):
-        self.programs.append(ctx.name.text)
 
     def visitEnum(self, ctx:STParser.EnumContext):
         self.enumDict[ctx.name.text] = Enumformat(ctx.name.text, self.visit(ctx.idList()))
@@ -148,7 +145,12 @@ class typeCheck(STVisitor):
     def visitBOOLTRUE(self, ctx: STParser.BOOLTRUEContext): self.FBEnvDict[self.nowPou].type[ctx.getText()] = "BOOL"
     def visitBOOLFALSE(self, ctx: STParser.BOOLFALSEContext): self.FBEnvDict[self.nowPou].type[ctx.getText()] = "BOOL"
     def visitTIMEPRIMARY(self, ctx: STParser.TIMEPRIMARYContext): self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"
-    def visitSPECIALTOKEN(self, ctx:STParser.SPECIALTOKENContext): self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"
+    def visitSPECIALTOKEN(self, ctx:STParser.SPECIALTOKENContext): 
+        if ctx.getText() == "@#timerValue": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"
+        if ctx.getText() == "@#cycleValue": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"
+        if ctx.getText() == "thisBlock": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "STRING"
+        if ctx.getText() == "rcvError": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "ANY"
+ 
 
     def visitENUMPRIMARY(self, ctx:STParser.ENUMPRIMARYContext):
         isCorrectEnumType = ctx.ID(0).getText() in list(self.enumDict.keys())
@@ -372,9 +374,10 @@ class typeCheck(STVisitor):
         else:
             if ctx.funcall.text == '@#timerSetValue' or ctx.funcall.text == "WAIT_TIME":
                 Helperfunctions.checkFunctionBlockCallArgument(self, ["TIME"], arguments, ctx.getText())
+            elif ctx.funcall.text == 'isConnected' or ctx.funcall.text == "connectRequest" or ctx.funcall.text == "disconnect":
+                Helperfunctions.checkFunctionBlockCallArgument(self, ["STRING"], arguments, ctx.getText())
             else:
                 Helperfunctions.checkFunctionBlockCallArgument(self, ["BOOL"], arguments, ctx.getText())
-
 
 
     def visitUSERDEFINEFUNCALL(self, ctx:STParser.USERDEFINEFUNCALLContext):

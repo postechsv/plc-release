@@ -41,18 +41,15 @@ builtinFunMap["DINT_TO_UDINT"] = [(1, "DINT", "UDINT")]
 builtinFunMap["BOOL_TO_UDINT"] = [(1, "BOOL", "UDINT")]
 builtinFunMap["BOOL_TO_DINT"] = [(1, "BOOL", "DINT")]
 builtinFunMap["DINT_TO_DINT"] = [(1, "DINT", "DINT")]
+builtinFunMap["isConnected"] = [(1, "STRING", "BOOL")]
+builtinFunMap["sendData"] = [(4, "STRING", "STRING", "STRING", "ANY", "BOOL")]
+builtinFunMap["rcvData"] = [(3, "STRING", "STRING", "STRING", "ANY")]
 
-totalTYPES = ['BOOL' , 'DINT' , 'INT' , 'SINT','UDINT', 'UINT' , 'USINT', 'TIME', 'REAL']
+totalTYPES = ['BOOL' , 'DINT' , 'INT' , 'SINT','UDINT', 'UINT' , 'USINT', 'TIME', 'REAL', 'STRING']
 
 def getBuiltinFun(funName):
     rawData = builtinFunMap[funName]
-    processedData = list()
-    if len(rawData) == 1 and "ANY" in rawData[0]:
-        for realType in totalTYPES:
-            processedData.append(tuple(map(lambda x: realType if x == "ANY" else x, list(rawData[0]))))
-    else:
-        return rawData
-    return processedData
+    return rawData
 
 def getQOR(numOfArgument):
     data = [numOfArgument]

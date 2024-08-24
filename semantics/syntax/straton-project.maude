@@ -20,7 +20,7 @@ fmod APPLICATION-CONFIG is
   subsort Pid < ProgramItem .
 
 --- priority interval offset
-  op _([#_,#_,#_]) : Pid Nat Nat Nat -> MainProgramItem [ctor prec 1] . --- This line fetchs cycles and phases of main programs.
+  op _ : Pid -> MainProgramItem [ctor] . --- This line fetchs cycles and phases of main programs.
   op _;;_ : ProgramList ProgramList -> ProgramList [ctor prec 2 assoc id: emptyProgramList] .
   op _;; : ProgramList -> ProgramList [ctor prec 1] .
   eq PL:ProgramList ;; = PL:ProgramList .
@@ -50,6 +50,8 @@ fmod APPLICATION-CONFIG is
 
   op __ : ProgramDecl ProgramDecl -> ProgramDecl [ctor assoc prec 50] .
 
+  sort CycleTime .
+  op CycleTime:`#_ : Nat -> CycleTime .
 
   ---(  AppConfig is the whole list of programs, global variables, and cycle time are declared between BEGINCONFIG and ENDCONFIG.
 	ex in test2-linear-inc.maude,
@@ -76,7 +78,7 @@ fmod APPLICATION-CONFIG is
 	ENDCONFIG
   ---) 
   sort AppConfig .
-  op BEGINCONFIG___ENDCONFIG : ProgramDecl TypeSection VarSection -> AppConfig [ctor prec 60] .
+  op BEGINCONFIG____ENDCONFIG : ProgramDecl TypeSection VarSection CycleTime -> AppConfig [ctor prec 60] .
 
 endfm
 
@@ -136,10 +138,10 @@ fmod STRATON-PROJECT is
   op __ : AppConfig POUSection -> StratonProject [ctor prec 70] .
 
   op _<-load-_ : StratonProject List{POUDefinition} ~> StratonProject [ctor prec 80] .
-  eq BEGINCONFIG PD:ProgramDecl GTS:TypeSection GVS:VarSection ENDCONFIG
+  eq BEGINCONFIG PD:ProgramDecl GTS:TypeSection GVS:VarSection CT:CycleTime ENDCONFIG
      BEGINPOUS OPOUS:List{POUDefinition} ENDPOUS
        <-load-
      LPOUS:List{POUDefinition}
-   = BEGINCONFIG PD:ProgramDecl GTS:TypeSection GVS:VarSection ENDCONFIG
+   = BEGINCONFIG PD:ProgramDecl GTS:TypeSection GVS:VarSection CT:CycleTime ENDCONFIG
      BEGINPOUS (OPOUS:List{POUDefinition} LPOUS:List{POUDefinition}) ENDPOUS .
 endfm

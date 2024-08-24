@@ -174,6 +174,10 @@ op $size to $sizey
   op isIn : PExp List{PExp} ~> Bool .
   eq isIn(E, nilPExpList) = false .
   eq isIn(E, (E', L)) = if E == E' then true else isIn(E, L) fi .
+
+  op remove : List{PExp} PExp ~> List{PExp} .
+  eq remove((E', L), E) = if E == E' then L else (E', remove(L, E)) fi .
+  eq remove(nilPExpList, E) = nilPExpList .
 endfm
 
  --- Below handles variables in variable declaration section.
@@ -332,6 +336,8 @@ fmod STATEMENT is
   op @#timerSetValue(_) : PExp -> Stmt [ctor] .
   op @release : -> Stmt [ctor] .
 
+  op thisBlock() : -> Stmt [ctor] .
+  op isConnected : PExp -> Stmt [ctor] .
   op connectRequest : PExp -> Stmt [ctor] .
   op disconnect : PExp -> Stmt [ctor] .
   op sendData : PExp PExp PExp PExp -> Stmt [ctor] . --- Oid SenderBlock ReceiverBlock Data

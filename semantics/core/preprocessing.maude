@@ -118,8 +118,6 @@ fmod PREPROCESSING is
   var RESTENUM : List{PExp} .
   var VARDECL : VarDecl .
   var IM : Map{ProcessId, Nat} .
-  var SQ : JobList .
-  var JOBS : JobSet .
 
   var TDS : TypeDeclSet .
   vars ENUM1 ENUM2 : TypeDeclSet .
@@ -145,15 +143,13 @@ fmod PREPROCESSING is
 
   ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR) ENDCONFIG) POUs]]]
   = constraints(initCond) 
-    MAINLIST store(STR') 
+    store(STR') 
     pickInss(preprocessPOUs(NEWINSS), inss(empty))
-    randomSeed(0) newVarIndex(0) activeJob(None)
-    globalVars(makeGVSet(VDC)) globalTime(0, 0) recentAction('none) 
+    randomSeed(0) globalVars(makeGVSet(VDC)) globalTime(0) recentAction('none) 
     log(emptyLog)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))
-    /\ MAINLIST := makeProgramKConfig(TODOLIST', ML, interval(empty) sQueue(emptyJList) futureJobs(emptyJSet)) 
     /\ {ENV', STR', nil, NEWINSS} := buildIns(TODOLIST TODOLIST' SUBPROTODOLIST , GENV, STR, (getPOUs(POUs) enumTypes(TDS)),  countVarDecl(VDC) + countTODOLIST(TODOLIST') + countTODOLIST(SUBPROTODOLIST)) 
      .
   
@@ -188,21 +184,11 @@ fmod PREPROCESSING is
   eq makeGVSet(emptyVarDecl) = emptyVSet .
 
   eq makeProgramList(emptyProgramList, INSLOC) = nil .
-  eq makeProgramList(PNAME([# PR, # IN, # OF]) ;; ML, INSLOC) = (PNAME, program[ PNAME ], INSLOC) makeProgramList(ML, INSLOC + 1) . 
+  eq makeProgramList(PNAME ;; ML, INSLOC) = (PNAME, program[ PNAME ], INSLOC) makeProgramList(ML, INSLOC + 1) . 
 
   eq makeSubProgramList(emptyProgramList, INSLOC) = nil .
   eq makeSubProgramList(PNAME ;; ML, INSLOC) = (PNAME, fbtype[ PNAME ], INSLOC) makeSubProgramList(ML, INSLOC + 1) . 
 
-
-  eq makeProgramKConfig(nil, emptyProgramList, KCF) = KCF .
-  eq makeProgramKConfig(((PNAME, program[ PNAME ], INSLOC) TODOLIST), (PNAME([# PR, # IN, # OF]) ;; ML), interval(IM) sQueue(SQ))   
-   = makeProgramKConfig(TODOLIST, ML, interval((IM, INSLOC |-> IN)) sQueue(add(SQ, @j(INSLOC, PR, OF, OF + IN))))  .
-
-  eq makeProgramKConfig(((PNAME, program[ PNAME ], INSLOC) TODOLIST), (PNAME([# PR, # IN, # 0]) ;; ML), interval(IM) sQueue(SQ) futureJobs(JOBS))   
-   = makeProgramKConfig(TODOLIST, ML, interval((IM, INSLOC |-> IN)) sQueue(SQ) futureJobs((@j(INSLOC, PR, 0, IN) JOBS)))  .
-
-  eq makeProgramKConfig(((PNAME, program[ PNAME ], INSLOC) TODOLIST), (PNAME([# PR, # IN, # OF]) ;; ML), interval(IM) sQueue(SQ) futureJobs(JOBS))   
-   = makeProgramKConfig(TODOLIST, ML, interval((IM, INSLOC |-> IN)) sQueue(SQ) futureJobs((JOBS @j(INSLOC, PR, OF, OF + IN)))) [owise] .
 
   eq getDataForbuildSingleIns((PNAME, program[ PNAME ], INSLOC) , (POUDef(PROGRAM PNAME VSC CSC ENDPROGRAM) KCF )) 
   = {(PNAME, program[ PNAME ], INSLOC), POUDef(PROGRAM PNAME VSC CSC ENDPROGRAM)}  .
@@ -218,7 +204,7 @@ fmod PREPROCESSING is
   eq makeInsAndProc((PNAME, program[ PNAME ],  INSLOC), POUDef(PROGRAM PNAME VSC CODE S ENDCODE ENDPROGRAM), ENV) 
   = (ins(id(INSLOC) fbtype(PNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) task(id(INSLOC) k(@loadNBlock) callStack(ENV))) .
   eq makeInsAndProc((VARNAME, fbtype[ FBNAME ], INSLOC), POUDef(FUNCTIONBLOCK FBNAME VSC CSC ENDFUNCTIONBLOCK), ENV) 
-  = ins(id(INSLOC) fbtype(FBNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
+  = ins(id(INSLOC) fbtype(FBNAME) iname(VARNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
   eq makeInsAndProc((VARNAME, structype[ FBNAME ], INSLOC), POUDef(STRUCT FBNAME VSC ENDSTRUCT), ENV) 
   = ins(id(INSLOC) fbtype(FBNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
 

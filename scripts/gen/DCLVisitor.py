@@ -1,4 +1,4 @@
-# Generated from D:/plc/scripts\DCL.g4 by ANTLR 4.9.2
+# Generated from DCL.g4 by ANTLR 4.9.1
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .DCLParser import DCLParser

@@ -1,44 +1,7 @@
 
-fmod CHECKSAT-RESULT is
-  inc SMT-CHECK .
-  inc STREAM .
-
-  op _--_ : StreamKey Nat -> SMTVarId . 
-  op time : Nat -> SMTVarId .
-
-  op emptyAssignment : -> checkSATResult [ctor] .
-  op _||-->_ : SMTVarId Integer -> checkSATResult [ctor prec 40 format (cn o g o)] .  
-  op _||-->_ : SMTVarId Real -> checkSATResult [ctor prec 40 format (cn o g o)] .  
-  op _||-->_ : SMTVarId Boolean -> checkSATResult [ctor prec 40 format (cn o g o)] .  
-
-  op _///_ : checkSATResult checkSATResult -> checkSATResult [ctor assoc comm prec 50 id: emptyAssignment] .
-
-  var KEY : StreamKey .
-  var N : Nat .
-  var SA : SatAssignment .
-  var SAS SAS2 : SatAssignmentSet .
-  var II : Integer .
-  var RI : Real .
-  var BI : Boolean .
-  vars RESULT REST : checkSATResult .
-  var SVAR : SMTVarId .
-
-  --- translator
-  op interpret : SmtCheckResult ~> checkSATResult .
-
-  eq interpret(false) = UNSAT .
-  eq interpret(unknown) = UNSAT .
-
-  eq interpret({empty}) = emptyAssignment .
-  eq interpret({(i(SVAR) |-> II), SAS}) = (SVAR ||--> II) /// interpret({SAS}) . 
-  eq interpret({(r(SVAR) |-> RI), SAS}) = (SVAR ||--> RI) /// interpret({SAS}) . 
-  eq interpret({(b(SVAR) |-> BI), SAS}) = (SVAR ||--> BI) /// interpret({SAS}) . 
-endfm
-
 mod PLC-SYMBOLIC-CHECKSAT is
   inc SMT-CHECK . 
   inc PLC-SYMBOLIC-PRIMITIVES .
-  inc CHECKSAT-RESULT .
 
   subsort Nat < SMTVarId .
 
@@ -57,11 +20,6 @@ mod PLC-SYMBOLIC-CHECKSAT is
   eq notFALSE(P1) = not (simplify(P1) == [false]) [owise] .
 
   eq checkSAT([BE1]) = if smtCheck(BE1) == true then true else false fi .
-
-  op checkSATInterpret : SemanticValue ~> checkSATResult .
-
-  eq checkSATInterpret([BE1]) = interpret(smtCheck(BE1, (true).Bool)) .
-  eq checkSATwithAssignment([BE1]) = checkSATInterpret([BE1]) .
 endm
 
 mod PLC-SYMBOLIC-ARITHMETIC is
@@ -181,30 +139,6 @@ mod SYMBOLIC-ARITHMETIC-FUNCTIONS is
     if checkSAT(CONST AND ([I1] ==== syn2sem(# 0))) .
 ---) 
 endm
-
-mod SYMBOLIC-UTIL is
-  inc SCHEDULING-SEMANTICS .
-  inc PLC-SYMBOLIC-PRIMITIVES .
-  inc PLC-SYMBOLIC-CHECKSAT .
-
-  var N : Nat .
-  var K : StreamKey .
-  var T : PType .
-
-  eq tv(N) = [i(time(N))] .
-  eq initCond = tv(0) ==== [0] .
-
-  eq @genSym(K, BOOL, N) = [b(K -- N)] . 
-  eq @genSym(K, INT, N) = [i(K -- N)] . 
-  eq @genSym(K, DINT, N) = [i(K -- N)] . 
-  eq @genSym(K, SINT, N) = [i(K -- N)] . 
-  eq @genSym(K, UINT, N) = [i(K -- N)] . 
-  eq @genSym(K, USINT, N) = [i(K -- N)] . 
-  eq @genSym(K, UDINT, N) = [i(K -- N)] . 
-  eq @genSym(K, REAL, N) = [r(K -- N)] . 
-  eq @genSym(K, TIME, N) = T[i(K -- N)] . 
-endm
-
 
 mod SYMBOLIC-SEMANTIC-CONVERSION is 
   inc CONVERSION-SEMANTICVAL .

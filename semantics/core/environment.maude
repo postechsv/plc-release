@@ -33,69 +33,38 @@ mod OBJ-STRUCTURE is
   sort PLCMachine .
   subsort PLCMachine < NEConfiguration .
 
-  sorts eVar eVars .
-  subsort eVar < eVars .
-
-  op emptyEVars : -> eVars [ctor] .  
-  op _--_ : Pid PExp -> eVar [ctor] .
-  op _,_ : eVars eVars -> eVars [ctor assoc comm id: emptyEVars] .
-
-
   subsort PLCMachine < Cid .
   op PLCMachine : -> PLCMachine [ctor format(! o)] .
   op proc   :_ : KConfig -> Attribute [ctor gather(&) format(nm o d d)] .
   op state :_ : Map{PExp, SemanticValue} -> Attribute [ctor gather(&) format(nm o d d)] .
-  op timers :_ : Map{PExp, Nat} -> Attribute [ctor gather(&) format(nm o d d)] .
-  op actList :_ : eVars -> Attribute [ctor gather(&) format(nm o d d)] .
-  op senList :_ : eVars -> Attribute [ctor gather(&) format(nm o d d)] .
+  op timer :_ : Nat -> Attribute [ctor gather(&) format(nm o d d)] .
+  op actList :_ : List{PExp} -> Attribute [ctor gather(&) format(nm o d d)] .
+  op senList :_ : List{PExp} -> Attribute [ctor gather(&) format(nm o d d)] .
   op flow :_ : Dynamics -> Attribute [ctor gather(&) format(nm o d d)] .
-  op disabled :_ : Map{PExp, Bool} -> Attribute [ctor gather(&) format(nm o d d)] .
 endm
 
 mod UTIL is
   including DYNAMICS-EVALUATION .
   including OBJ-STRUCTURE .
 
-  op minTimer : Map{PExp, Nat} ~> Nat .
-  op minTimer : NEConfiguration ~> Nat .
-  op tMinus : Map{PExp, Nat} Nat ~> Map{PExp, Nat} .
-  op disableDue : NEConfiguration ~> NEConfiguration .
-  op disableDue : Map{PExp, Bool} Map{PExp, Nat} ~> Map{PExp, Bool} .
+  op mte : NEConfiguration ~> Nat .
+  op monus : Nat Nat ~> Nat .
   op enable : NEConfiguration ~> NEConfiguration .
-  op enable : Map{PExp, Bool} Map{PExp, Nat} ~> Map{PExp, Bool} .
 
   var PLC : Object .
   var CONF : NEConfiguration .
   var ATTRS : AttributeSet .
-  var TIMERS : Map{PExp, Nat} .
+  var TIMER : Nat .
   var DISABLED : Map{PExp, Bool} .
   var PNAME : Pid .
   vars T T' : Nat .
   var CONF' : Configuration .
  
-  eq minTimer(PLC CONF) = min(minTimer(PLC), minTimer(CONF)) .
-  eq minTimer(< O:Oid : PLCMachine | timers : TIMERS, ATTRS >)
-   = minTimer(TIMERS) .
+  eq mte(PLC CONF) = min(mte(PLC), mte(CONF)) .
+  eq mte(< O:Oid : PLCMachine | timer : TIMER, ATTRS >)
+   = TIMER .
 
-  eq minTimer(PNAME |-> T) = T .
-  eq minTimer((PNAME |-> T, TIMERS)) = min(T, minTimer(TIMERS)) .
-
-  eq tMinus(empty, T) = empty .
-  eq tMinus((PNAME |-> T', TIMERS), T) = (PNAME |-> T' - T, tMinus(TIMERS, T)) .
-
-  eq disableDue(empty, empty) = empty .
-  eq disableDue(((PNAME |-> false), DISABLED), ((PNAME |-> 0), TIMERS))
-   = ((PNAME |-> true), disableDue(DISABLED, TIMERS)) .
-  eq disableDue(< O:Oid : PLCMachine | disabled : DISABLED, timers : TIMERS, ATTRS > CONF')
-   = < O:Oid : PLCMachine | disabled : disableDue(DISABLED, TIMERS), timers : TIMERS, ATTRS > disableDue(CONF') .
-  eq disableDue(CONF) = CONF [owise] . 
-
-  eq enable(empty, empty) = empty .
-  eq enable(((PNAME |-> true), DISABLED), ((PNAME |-> 0), TIMERS))
-   = ((PNAME |-> false), enable(DISABLED, TIMERS)) .
-  eq enable(< O:Oid : PLCMachine | disabled : DISABLED, timers : TIMERS, ATTRS > CONF)
-   = < O:Oid : PLCMachine | disabled : enable(DISABLED, TIMERS), timers : TIMERS, ATTRS > enable(CONF) .
-  eq disableDue(CONF) = CONF [owise] . 
+  eq monus(T, T') = T - T' .
 endm
 
 mod TIMEEFFECT is
@@ -110,19 +79,19 @@ mod TIMEEFFECT is
   vars STATE STATE' : Map{PExp, SemanticValue} .
   var FLOW : Dynamics .
   vars T MINT MAXT : Nat .
-  var TIMERS : Map{PExp, Nat} .
+  var TIMER : Nat .
   var CC : SemanticValue .
   var CONF : NEConfiguration .
   var CONF' : Configuration .
 
   eq timeEffect(none, T) = none .
   eq timeEffect(
-     < O:Oid : PLCMachine | timers : TIMERS, 
+     < O:Oid : PLCMachine | timer : TIMER, 
                             flow : FLOW,
                             state : STATE, ATTRS >, T)
-   = < O:Oid : PLCMachine | timers : tMinus(TIMERS, T),
+   = < O:Oid : PLCMachine | timer : monus(TIMER, T),
                             flow : FLOW,
-                            state : updateState(FLOW, STATE, T),
+                            state : timeEffect(FLOW, STATE, T),
                             ATTRS > .
   
   eq timeEffect(CONF CONF', T) = timeEffect(CONF, T) timeEffect(CONF', T) .
@@ -133,131 +102,144 @@ mod EXECUTE is
   including CODE-CONFIG .
 
   ops sense actuate : Configuration ~> Configuration .
-  op saList : Map{PExp, Bool} Map{PExp, Nat} ~> List{PExp} .
-  op actuate : Map{PExp, SemanticValue} KConfig eVars List{PExp} ~> Map{PExp, SemanticValue} .
-  op sense : KConfig Map{PExp, SemanticValue} eVars List{PExp} ~> KConfig .
+  op actuate : Map{PExp, SemanticValue} KConfig List{PExp} ~> Map{PExp, SemanticValue} .
+  op sense : KConfig Map{PExp, SemanticValue} List{PExp} ~> KConfig .
+  op isAllReadyFrozen : Configuration ~> Bool . 
 
   var CONF : Configuration .
-  vars T PR ES DL INTERVAL : Nat .
+  vars T : Nat .
   var IM : Map{ProcessId, Nat} .
-  var TIMERS : Map{PExp, Nat} .
-  var PLIST : List{PExp} .
+  var TIMER : Nat .
   vars X PNAME : Pid .
   var PRID : ProcessId .
-  var SQ : JobList .
   vars KC RESTI RESTT INSS : KConfig .
   var ATTRS : AttributeSet .
   var K : K .
-  var DISABLED : Map{PExp, Bool} .
-  vars SENLIST ACTLIST : eVars .
+  vars SENLIST ACTLIST : List{PExp} .
   var STATE : Map{PExp, SemanticValue} .
   vars V V' : SemanticValue .
   var MEM : Env .
   var STORE : Map{Location, SemanticValue} .
   var L : Location .
+  var ENV : Env .
+  var STACK : ProgramStack .
 
+  eq task(id(PRID) k(thisBlock() ~> K) callStack(ENV :: STACK) RESTT)
+     inss(ins(mem(ENV) iname(PNAME) RESTI) INSS)
+   = task(id(PRID) k(thisBlock() ~> K) callStack(ENV :: STACK) RESTT)
+     inss(ins(mem(ENV) iname(PNAME) RESTI) INSS) .
 
  crl [envTick] :
-     {CONF} => {enable(sense(actuate(timeEffect(CONF, T))))}
-  if T := minTimer(CONF) .
+     {CONF} => {timeEffect(CONF, T)}
+  if T := mte(CONF) /\ T > 0 .
 
-  rl [execute] :
-     < O:Oid : PLCMachine | timers : ((PNAME |-> 0), TIMERS),
-                            disabled : ((PNAME |-> false), DISABLED),
-                            proc : activeJob(None)
-                                   sQueue((@j(PRID, PR, ES, DL), SQ))
-                                   task(id(PRID) k(@block ~> K) RESTT) KC
-                                   inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS)
-                                   interval((PRID |-> INTERVAL, IM)),
-                            ATTRS >
-  => < O:Oid : PLCMachine | timers : ((PNAME |-> INTERVAL), TIMERS),
-                            disabled : ((PNAME |-> true), DISABLED),
-                            proc : activeJob(Some(@j(PRID, PR, ES, DL)))
-                                   sQueue((@j(PRID, PR, ES, DL), SQ))
-                                   task(id(PRID) k(K) RESTT) KC
-                                   inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS)
-                                   interval((PRID |-> INTERVAL, IM)),
-                            ATTRS > .
+ crl [start] :
+     {CONF} => {enable(sense(actuate(CONF)))}
+  if isAllReadyFrozen(CONF) .
 
-  eq saList(empty, empty) = nilPExpList .
-  eq saList(((PNAME |-> true), DISABLED), ((PNAME |-> 0), TIMERS))
-   = (PNAME, saList(DISABLED, TIMERS)) .
+  eq isAllReadyFrozen(
+     < O:Oid : PLCMachine | timer : 0, proc : [KC], ATTRS > CONF)
+   = isAllReadyFrozen(CONF) .
+
+  eq isAllReadyFrozen(
+     < O:Oid : PLCMachine | timer : 0, proc : KC, ATTRS > CONF)
+   = false .
+
+  eq isAllReadyFrozen(CONF) = true [owise] .
 
   eq actuate(
-     < O:Oid : PLCMachine | timers : TIMERS,
-                            disabled : DISABLED,
-                            proc : task(id(PRID) RESTT)
+     < O:Oid : PLCMachine | timer : 0,
+                            proc : [task(id(PRID) RESTT)]
                                    inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC,
                             state : STATE,
                             actList : ACTLIST,
                             ATTRS > CONF) 
-   = < O:Oid : PLCMachine | timers : TIMERS,
-                            disabled : DISABLED,
-                            proc : task(id(PRID) RESTT)
+   = < O:Oid : PLCMachine | timer : 0,
+                            proc : [task(id(PRID) RESTT)]
                                    inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC,
                             state : actuate(STATE, task(id(PRID) RESTT)
                                     inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC, 
-                                    ACTLIST, saList(DISABLED, TIMERS)),
+                                    ACTLIST),
                             actList : ACTLIST,
                             ATTRS > actuate(CONF) .
   eq sense(
-     < O:Oid : PLCMachine | timers : TIMERS,
-                            disabled : DISABLED,
-                            proc : task(id(PRID) RESTT)
+     < O:Oid : PLCMachine | timer : 0,
+                            proc : [task(id(PRID) RESTT)]
                                    inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC,
                             state : STATE,
                             senList : SENLIST,
                             ATTRS > CONF) 
-   = < O:Oid : PLCMachine | timers : TIMERS,
-                            disabled : DISABLED,
-                            proc : sense(task(id(PRID) RESTT)
+   = < O:Oid : PLCMachine | timer : 0,
+                            proc : [sense(task(id(PRID) RESTT)
                                          inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC,
-                                         STATE, SENLIST, saList(DISABLED, TIMERS)),
+                                         STATE, SENLIST)],
                             state : STATE,
                             senList : SENLIST,
                             ATTRS > sense(CONF) .
 
-  eq actuate(CONF) = none [owise] .
-  eq sense(CONF) = none [owise] .
+  eq enable(
+     < O:Oid : PLCMachine | timer : 0, proc : [task(RESTT)] cycleTime(T) KC, ATTRS > CONF)
+   = < O:Oid : PLCMachine | timer : T, proc : task(RESTT) cycleTime(T) KC, ATTRS >
+     enable(CONF) .
 
- ceq actuate(((X ||-> V), STATE), 
+  eq actuate(CONF) = CONF [owise] .
+  eq sense(CONF) = CONF [owise] .
+  eq enable(CONF) = CONF [owise] .
+
+  eq actuate(((X ||-> V), STATE), 
              store(((L |-> V'), STORE))
              inss(ins(id(PRID) fbtype(PNAME) mem(((X |-> L), MEM)) RESTI) INSS) KC,
-             ((PNAME -- X), ACTLIST), PLIST)
+             (X, ACTLIST))
    = ((X ||-> V'), actuate(STATE, store(((L |-> V'), STORE))
              inss(ins(id(PRID) fbtype(PNAME) mem(((X |-> L), MEM)) RESTI) INSS) KC,
-             ACTLIST, PLIST)) 
-  if isIn(PNAME, PLIST) .
+             ACTLIST)) .
 
-  eq actuate(STATE, KC, emptyEVars, PLIST) = STATE .
-  eq actuate(STATE, KC, ((PNAME -- X), ACTLIST), PLIST) = actuate(STATE, KC, ACTLIST, PLIST) [owise] .
+  eq actuate(STATE, KC, nilPExpList) = STATE .
 
- ceq sense(store(((L |-> V'), STORE))
+  eq sense(store(((L |-> V'), STORE))
            inss(ins(id(PRID) fbtype(PNAME) mem(((X |-> L), MEM)) RESTI) INSS) KC,
-           ((X ||-> V), STATE), ((PNAME -- X), SENLIST), PLIST)
+           ((X ||-> V), STATE), (X, SENLIST))
    =  sense(store(((L |-> V), STORE))
            inss(ins(id(PRID) fbtype(PNAME) mem(((X |-> L), MEM)) RESTI) INSS) KC,
-           ((X ||-> V), STATE), SENLIST, PLIST)
-  if isIn(PNAME, PLIST) .
+           ((X ||-> V), STATE), SENLIST) .
 
-  eq sense(KC, STATE, emptyEVars, PLIST) = KC .
-  eq sense(KC, STATE, ((PNAME -- X), SENLIST), PLIST) = sense(KC, STATE, SENLIST, PLIST) [owise] . 
+  eq sense(KC, STATE, nilPExpList) = KC .
 endm
 
-
-mod COMMUNICATION
+mod COMMUNICATION is
   including UTIL .
 
-  subsort Oid < PExp .
   sort Channel .
   subsort Channel < NEConfiguration .
   subsort Channel < Cid .
-  op Channel : -> Channel [ctor] .
+  sorts CMsg CMsgs .
+  subsort CMsg < CMsgs .
 
-  vars O O' : Oid .
+  op Channel : -> Channel [ctor] .
   op Channel : -> Cid .
   op link : Oid Oid -> Oid [ctor comm] .
   op mwrapper : Oid Oid PExp PExp PExp -> CMsg [ctor] .
+  op emptyBuffer : -> CMsgs [ctor] .
+  op __ : CMsgs CMsgs -> CMsgs [ctor assoc comm id: emptyBuffer] .
+  op insert : CMsgs CMsg ~> CMsgs .
+  op checkMsg : CMsgs Oid PExp PExp ~> Bool .
+  op validity :_ : Bool -> Attribute [ctor] .
+  op buffer :_ : CMsgs -> Attribute [ctor] .
+
+  vars O O' : PExp .
+  var K : K .
+  vars RESTT KC : KConfig .
+  vars ATTRS ATTRS' : AttributeSet .
+  var BUFFER : CMsgs .
+  var NEWM : CMsg .
+  vars DATA DATA' SFBID RFBID : PExp .
+  var B : Bool .
+
+  eq insert(BUFFER mwrapper(O, O', SFBID, RFBID, DATA'), mwrapper(O, O', SFBID, RFBID, DATA))
+   = BUFFER mwrapper(O, O', SFBID, RFBID, DATA) .
+  eq insert(BUFFER, NEWM) = BUFFER NEWM [owise] .
+  eq checkMsg(BUFFER mwrapper(O, O', SFBID, RFBID, DATA), O, SFBID, RFBID) = true .
+  eq checkMsg(BUFFER, O, SFBID, RFBID) = false [owise] .
 
   rl [con-succ] :
      < O : PLCMachine | proc : task(k(connectRequest(O') ~> K) RESTT) KC, ATTRS >
@@ -271,56 +253,60 @@ mod COMMUNICATION
   => < O : PLCMachine | proc : task(k(K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' > .
 
+---(
   rl [con-fail] : --- failure, denial, abort 
      < O : PLCMachine | proc : task(k(connectRequest(O') ~> K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : false, ATTRS' >
   => < O : PLCMachine | proc : task(k(K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' > .
+---)
 
-  rl [discon-vol] :
+  rl [discon-vol]:
      < O : PLCMachine | proc : task(k(disconnect(O') ~> K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
   => < O : PLCMachine | proc : task(k(K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : false, ATTRS' > .
 
+  rl [isConnected]:
+     < O : PLCMachine | proc : task(k(isConnected(O') ~> K) RESTT) KC, ATTRS >
+     < link(O, O') : Channel | validity : B, ATTRS' >
+  => < O : PLCMachine | proc : task(k(if B then TRUE else FALSE fi ~> K) RESTT) KC, ATTRS >
+     < link(O, O') : Channel | validity : B, ATTRS' > .
+
+---(
   rl [discon-unvol] :
      < link(O, O') : Channel | validity : true, ATTRS' >
   => < link(O, O') : Channel | validity : false, ATTRS' > .
-
+---)
   rl [sendData] :
      < O : PLCMachine | proc : task(k(sendData(O', SFBID, RFBID, DATA) ~> K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
   => < O : PLCMachine | proc : task(k(TRUE ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O, O', SFDID, RFDID, DATA)) > .
+     < link(O, O') : Channel | validity : true, buffer : insert(BUFFER, mwrapper(O, O', SFBID, RFBID, DATA)), ATTRS' > .
 
   rl [sendData-fail] :
      < O : PLCMachine | proc : task(k(sendData(O', SFBID, RFBID, DATA) ~> K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
   => < O : PLCMachine | proc : task(k(FALSE ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : false, buffer : BUFFER > .
-
-  rl [sendData-overwrite] :
-     < O : PLCMachine | proc : task(k(sendData(O', SFBID, RFBID, DATA) ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O, O', SFDID, RFDID, DATA'), ATTRS' >
-  => < O : PLCMachine | proc : task(k(TRUE ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O, O', SFDID, RFDID, DATA)) > .
+     < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' > .
 
   rl [rcvData] :
-     < O : PLCMachine | proc : task(k(rcvData(O', SFDID, RFDID) ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFDID, RFDID, DATA), ATTRS' >
+     < O : PLCMachine | proc : task(k(rcvData(O', SFBID, RFBID) ~> K) RESTT) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFBID, RFBID, DATA)), ATTRS' >
   => < O : PLCMachine | proc : task(k(DATA ~> K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' > .
 
   rl [rcv-fail] :
-     < O : PLCMachine | proc : task(k(rcvData(O', SFDID, RFDID) ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
-  => < O : PLCMachine | proc : task(k(rcvError ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' > [owise] .
-
-  rl [rcv-fail] :
-     < O : PLCMachine | proc : task(k(rcvData(O', SFDID, RFDID) ~> K) RESTT) KC, ATTRS >
+     < O : PLCMachine | proc : task(k(rcvData(O', SFBID, RFBID) ~> K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
   => < O : PLCMachine | proc : task(k(rcvError ~> K) RESTT) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' > .
+
+ crl [rcv-noMsg] :
+     < O : PLCMachine | proc : task(k(rcvData(O', SFBID, RFBID) ~> K) RESTT) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
+  => < O : PLCMachine | proc : task(k(rcvError ~> K) RESTT) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' > 
+  if not checkMsg(BUFFER, O', SFBID, RFBID) .
 endm
 

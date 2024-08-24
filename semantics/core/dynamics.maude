@@ -47,7 +47,7 @@ mod DYNAMICS-EVALUATION is
   op none : -> UpdateResult [ctor] .
 
   --- updateState : equation sensor acutator time gen
-  op updateState : Dynamics Map{PExp, SemanticValue} Nat ~> Map{PExp, SemanticValue} .
+  op timeEffect : Dynamics Map{PExp, SemanticValue} Nat ~> Map{PExp, SemanticValue} .
   op updateItem : Dynamics Map{PExp, SemanticValue} Nat ~> Map{PExp, SemanticValue} .
   op evalExp : DExp Map{PExp, SemanticValue} Nat ~> SemanticValue .
 
@@ -65,10 +65,10 @@ mod DYNAMICS-EVALUATION is
   var ER : UpdateResult .
 
   --- solution function
-  eq updateState(EQ, STATE, N) = updateItem(EQ, STATE, N) .
- ceq updateState(EQ ;; EQS, STATE, N) = STATE''
+  eq timeEffect(EQ, STATE, N) = updateItem(EQ, STATE, N) .
+ ceq timeEffect(EQ ;; EQS, STATE, N) = STATE''
      if STATE' := updateItem(EQ, STATE, N)
-     /\ STATE'' := updateState(EQS, STATE, N) .
+     /\ STATE'' := timeEffect(EQS, STATE, N) .
   eq updateItem(X(T) = E, ((X ||-> V), STATE), N)
    = (STATE, (X ||-> evalExp(E, ((X ||-> V), STATE), N))) .
 

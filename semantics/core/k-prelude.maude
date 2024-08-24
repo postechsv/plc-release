@@ -39,8 +39,11 @@ fmod K-CONFIG is
   op k : K -> KConfig [ctor] .
   op nextLoc : Location -> KConfig [ctor] .
 
-  sort FrozenKConfig .
-  op freeze : KConfig -> KConfig [ctor frozen] .
+  sort KConfig? .
+  subsort KConfig < KConfig? .
+  op [_] : KConfig -> KConfig? [ctor frozen] .
+
+
 endfm
 
 view KConfig from TRIV to K-CONFIG is
