@@ -118,6 +118,7 @@ fmod PREPROCESSING is
   var RESTENUM : List{PExp} .
   var VARDECL : VarDecl .
   var IM : Map{ProcessId, Nat} .
+  var CT : CycleTime .
 
   var TDS : TypeDeclSet .
   vars ENUM1 ENUM2 : TypeDeclSet .
@@ -127,7 +128,7 @@ fmod PREPROCESSING is
   op buildEnvStore : VarDeclSet KConfig Nat  ->  preprocessingQuarter .
   op makeProgramList : ProgramList Nat -> List{Triple} .
   op makeSubProgramList : ProgramList Nat -> List{Triple} .
-
+  op makeCycleTime : CycleTime -> KConfig . 
   op makeProgramKConfig : List{Triple} ProgramList KConfig -> KConfig .
   op getPOUs : POUSection -> KConfig .
   op preprocessPOUs : KConfig -> KConfig .
@@ -141,9 +142,9 @@ fmod PREPROCESSING is
   op makeGVSet : VarDeclSet ~> VSet .
   op initCond : ~> SemanticValue . 
 
-  ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR) ENDCONFIG) POUs]]]
+  ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR) CT ENDCONFIG) POUs]]]
   = constraints(initCond) 
-    store(STR') 
+    store(STR') makeCycleTime(CT) 
     pickInss(preprocessPOUs(NEWINSS), inss(empty))
     randomSeed(0) globalVars(makeGVSet(VDC)) globalTime(0) recentAction('none) 
     log(emptyLog)
@@ -158,7 +159,7 @@ fmod PREPROCESSING is
 
   eq getPOUs(BEGINPOUS nil ENDPOUS) = empty . 
   eq getPOUs(BEGINPOUS POUDEF POUDEFS ENDPOUS) = POUDef(POUDEF) getPOUs(BEGINPOUS POUDEFS ENDPOUS) .
-
+  eq makeCycleTime(CycleTime: # CT:Nat) = cycleTime(CT:Nat) .
   eq preprocessPOUs(KCF) = KCF [owise] . 
   eq preprocessPOUs(POUDef(POUDEF) KCF) = makeSinglePOU(POUDEF) preprocessPOUs(KCF) .
 

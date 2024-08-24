@@ -35,7 +35,8 @@ class typeCheck(STVisitor):
         self.FBEnvDict = deepcopy(libFBs)
 
         self.switch = True
-
+ 
+        self.cycleTime = ""
         self.nowPou = ""
 
         self.libBackup = deepcopy(libFBs)
@@ -62,6 +63,10 @@ class typeCheck(STVisitor):
             self.globalVarEnv = deepcopy(Helperfunctions.makevarListTovarDict(self.visit(ctx.var_global())))
         except:
             pass
+
+
+    def visitCycletime(self, ctx: STParser.CycletimeContext):
+        self.cycleTime = ctx.cycle.text
 
     def visitEnum(self, ctx:STParser.EnumContext):
         self.enumDict[ctx.name.text] = Enumformat(ctx.name.text, self.visit(ctx.idList()))
