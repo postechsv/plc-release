@@ -39,6 +39,9 @@ class totalEnv:
         self.enumDict, self.bitDict = deepcopy(enums), deepcopy(bits)
     def setFBenv(self, fbenv):
         self.FBEnvDict = deepcopy(fbenv)
+    def setCycleTime(self, cycleTime): self.cycleTime = cycleTime
+
+    def returnCycleTimeMaude(self): return "CycleTime: # " + str(self.cycleTime)
 
     def returnConfigMaude(self):
         result = ""
@@ -66,6 +69,8 @@ class totalEnv:
         else: globalVarResult = "\n\nBEGINVAR\n" + "emptyVarDecl\n" + "ENDVAR\n\n"
 
         result += subproPart + typePart + globalVarResult + "\n"
+
+        result += self.returnCycleTimeMaude() + "\n"
 
         return result
 
