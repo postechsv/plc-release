@@ -44,7 +44,6 @@ class typeCheck(STVisitor):
     def visitStapp(self, ctx:STParser.StappContext):
         self.visit(ctx.config())
         todolist = list()
-
         for i in range(len(ctx.pros())): todolist.append(self.visit(ctx.pros(i)))
         for i in range(len(ctx.subs())): todolist.append(self.visit(ctx.subs(i)))
         for i in range(len(ctx.udfbs())): todolist.append(self.visit(ctx.udfbs(i)))
@@ -128,6 +127,7 @@ class typeCheck(STVisitor):
 
     # Visit a parse tree produced by STParser#pros.
     def visitPros(self, ctx:STParser.ProsContext):
+        self.programs.append(ctx.name.text)
         self.FBEnvDict[ctx.name.text] = Helperfunctions.makeFBformat("PROGRAM", ctx.name.text, lambda x: self.visit(x), ctx, self.globalVarEnv)
         return (ctx.name.text, ctx.program())
 
@@ -150,6 +150,7 @@ class typeCheck(STVisitor):
     def visitBOOLTRUE(self, ctx: STParser.BOOLTRUEContext): self.FBEnvDict[self.nowPou].type[ctx.getText()] = "BOOL"
     def visitBOOLFALSE(self, ctx: STParser.BOOLFALSEContext): self.FBEnvDict[self.nowPou].type[ctx.getText()] = "BOOL"
     def visitTIMEPRIMARY(self, ctx: STParser.TIMEPRIMARYContext): self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"
+    def visitSTRINGPRIMARY(self, ctx: STParser.STRINGPRIMARYContext): self.FBEnvDict[self.nowPou].type[ctx.getText()] = "STRING"
     def visitSPECIALTOKEN(self, ctx:STParser.SPECIALTOKENContext): 
         if ctx.getText() == "@#timerValue": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"
         if ctx.getText() == "@#cycleValue": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"

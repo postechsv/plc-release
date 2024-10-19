@@ -56,7 +56,7 @@ def makeErrorMessage(instance, errorType, content, code):
 
 
 def checkWhetherTwoTypeSame(instance, left, right, code, switch=True):
-    if left == right:
+    if left == right or left == "ANY" or right == "ANY":
         if switch: return left, right
         else: return True
 

@@ -305,6 +305,9 @@ class stTranslate(STVisitor):
     def visitNumber(self, ctx:STParser.NumberContext):
         return "# " + ctx.getText()
 
+    def visitSTRINGPRIMARY(self, ctx:STParser.STRINGPRIMARYContext):
+        return "# " + ctx.getText()
+
     def visitENUMPRIMARY(self, ctx: STParser.ENUMPRIMARYContext):
         return "'" + ctx.ID(0).getText() + " # " + "'" + ctx.ID(1).getText()
 

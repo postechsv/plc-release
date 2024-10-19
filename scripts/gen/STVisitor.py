@@ -319,6 +319,11 @@ class STVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by STParser#STRINGPRIMARY.
+    def visitSTRINGPRIMARY(self, ctx:STParser.STRINGPRIMARYContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by STParser#SPECIALTOKEN.
     def visitSPECIALTOKEN(self, ctx:STParser.SPECIALTOKENContext):
         return self.visitChildren(ctx)
@@ -336,6 +341,11 @@ class STVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by STParser#timeval.
     def visitTimeval(self, ctx:STParser.TimevalContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by STParser#string.
+    def visitString(self, ctx:STParser.StringContext):
         return self.visitChildren(ctx)
 
 

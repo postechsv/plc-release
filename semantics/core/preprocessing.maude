@@ -153,7 +153,9 @@ fmod PREPROCESSING is
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))
     /\ {ENV', STR', nil, NEWINSS} := buildIns(TODOLIST TODOLIST' SUBPROTODOLIST , GENV, STR, (getPOUs(POUs) enumTypes(TDS)),  countVarDecl(VDC) + countTODOLIST(TODOLIST') + countTODOLIST(SUBPROTODOLIST)) 
      .
-  
+
+  eq initCond = syn2sem(TRUE) . 
+ 
   eq pickInss(KCF, inss(AUX)) = KCF inss(AUX) [owise] . 
   eq pickInss((ins(COM) KCF), inss(AUX)) = pickInss(KCF, inss(AUX ins(COM) )) . 
 

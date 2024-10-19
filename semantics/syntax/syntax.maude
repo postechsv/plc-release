@@ -337,6 +337,7 @@ fmod STATEMENT is
   op @release : -> Stmt [ctor] .
 
   op thisBlock() : -> Stmt [ctor] .
+  op boolUserInput() : -> Stmt [ctor] .
   op isConnected : PExp -> Stmt [ctor] .
   op connectRequest : PExp -> Stmt [ctor] .
   op disconnect : PExp -> Stmt [ctor] .

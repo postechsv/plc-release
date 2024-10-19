@@ -566,6 +566,15 @@ class STListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by STParser#STRINGPRIMARY.
+    def enterSTRINGPRIMARY(self, ctx:STParser.STRINGPRIMARYContext):
+        pass
+
+    # Exit a parse tree produced by STParser#STRINGPRIMARY.
+    def exitSTRINGPRIMARY(self, ctx:STParser.STRINGPRIMARYContext):
+        pass
+
+
     # Enter a parse tree produced by STParser#SPECIALTOKEN.
     def enterSPECIALTOKEN(self, ctx:STParser.SPECIALTOKENContext):
         pass
@@ -599,6 +608,15 @@ class STListener(ParseTreeListener):
 
     # Exit a parse tree produced by STParser#timeval.
     def exitTimeval(self, ctx:STParser.TimevalContext):
+        pass
+
+
+    # Enter a parse tree produced by STParser#string.
+    def enterString(self, ctx:STParser.StringContext):
+        pass
+
+    # Exit a parse tree produced by STParser#string.
+    def exitString(self, ctx:STParser.StringContext):
         pass
 
 

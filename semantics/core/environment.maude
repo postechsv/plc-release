@@ -41,6 +41,7 @@ mod OBJ-STRUCTURE is
   op actList :_ : List{PExp} -> Attribute [ctor gather(&) format(nm o d d)] .
   op senList :_ : List{PExp} -> Attribute [ctor gather(&) format(nm o d d)] .
   op flow :_ : Dynamics -> Attribute [ctor gather(&) format(nm o d d)] .
+  op gen :_ : Nat -> Attribute [ctor gather(&) format(nm o d d)] .
 endm
 
 mod UTIL is
@@ -100,6 +101,7 @@ endm
 mod EXECUTE is
   including TIMEEFFECT .
   including CODE-CONFIG .
+  including BOOLEAN-EXPR .
 
   ops sense actuate : Configuration ~> Configuration .
   op actuate : Map{PExp, SemanticValue} KConfig List{PExp} ~> Map{PExp, SemanticValue} .
@@ -123,11 +125,16 @@ mod EXECUTE is
   var L : Location .
   var ENV : Env .
   var STACK : ProgramStack .
+  var N : Nat .
 
+--- string conversion
   eq task(id(PRID) k(thisBlock() ~> K) callStack(ENV :: STACK) RESTT)
      inss(ins(mem(ENV) iname(PNAME) RESTI) INSS)
-   = task(id(PRID) k(thisBlock() ~> K) callStack(ENV :: STACK) RESTT)
+   = task(id(PRID) k(PNAME ~> K) callStack(ENV :: STACK) RESTT)
      inss(ins(mem(ENV) iname(PNAME) RESTI) INSS) .
+
+  eq < O:Oid : PLCMachine | gen : N, proc : task(k(boolUserInput() ~> K) RESTT) KC >
+   = < O:Oid : PLCMachine | gen : s N, proc : task(k(b(smtv(O, N)) ~> K) RESTTT) KC > .
 
  crl [envTick] :
      {CONF} => {timeEffect(CONF, T)}

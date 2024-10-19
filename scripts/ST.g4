@@ -98,6 +98,7 @@ primary : number # NUMPRIMARY
         | FALSE # BOOLFALSE
         | varname # VARPRIMARY
         | ID '#' ID # ENUMPRIMARY
+        | string # STRINGPRIMARY
         | (SPECIALTIMEKEYWORD | SPECIALCYCLEKEYWORD | SPECIALCOMMKEYWORD) # SPECIALTOKEN
         ;
 
@@ -105,6 +106,7 @@ varname : ID ('.' (ID|INT))+  | ID ;
 
 number : (INT|FLOAT|FRACTION) ;
 timeval : ('t#' timesize=INT ms=ID | 'T#' INT ms=ID) ;
+string : '"'ID'"' ;
 
 listInitVar : number (',' number)*
             | (TRUE|FALSE) (',' (TRUE|FALSE))*

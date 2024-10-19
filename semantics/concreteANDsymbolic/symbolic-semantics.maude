@@ -127,6 +127,8 @@ mod SYMBOLIC-ARITHMETIC-FUNCTIONS is
 
   op RANDOM--_ : Nat -> SMTVarId [ctor] .
 
+  op smtv : PExp Nat -> SMTVarId [ctor] . 
+
 ---(
  crl [randomNotZero] : procs(proc(procSwitch(true) (k(RAND([I1]) ~> K)) RESTCOMPONENTPROC ) RESTPROCS) constraints(CONST) newVarIndex(NVI)
   => procs(proc(procSwitch(true) (k([i(RANDOM-- NVI)] ~> K)) RESTCOMPONENTPROC) RESTPROCS) 
