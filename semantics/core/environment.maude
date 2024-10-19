@@ -27,8 +27,9 @@ mod OBJ-STRUCTURE is
   including MAP{PExp, Nat} * (op undefined to undefinedTimer) .
   including MAP{PExp, Bool} * (op undefined to undefinedDisable) .
   including DYNAMICS-EVALUATION .
+  including PLC-CORE .
 
-  subsort PExp < Oid .
+  subsort Oid < PExp .
 
   sort PLCMachine .
   subsort PLCMachine < NEConfiguration .
@@ -134,7 +135,7 @@ mod EXECUTE is
      inss(ins(mem(ENV) iname(PNAME) RESTI) INSS) .
 
   eq < O:Oid : PLCMachine | gen : N, proc : task(k(boolUserInput() ~> K) RESTT) KC >
-   = < O:Oid : PLCMachine | gen : s N, proc : task(k(b(smtv(O, N)) ~> K) RESTTT) KC > .
+   = < O:Oid : PLCMachine | gen : s N, proc : task(k(# b(smtv(O:Oid, N)) ~> K) RESTT) KC > .
 
  crl [envTick] :
      {CONF} => {timeEffect(CONF, T)}
