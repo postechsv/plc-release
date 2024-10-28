@@ -1,15 +1,15 @@
 FUNCTION_BLOCK URCV
 VAR_INPUT
 ENR : BOOL;
-ID : STRING;
-RID : STRING;
+ID : STRING := "";
+RID : STRING := "";
 END_VAR
 
 VAR_OUTPUT
 NDR : BOOL := FALSE ;
 ERROR : BOOL := FALSE ;
 STATUS : DINT := 0 ;
-DATA : ANY;
+DATA : ANY := 0;
 END_VAR
 
 VAR
@@ -22,11 +22,11 @@ END_VAR
     ERROR := FALSE ;
     STATUS := 0 ;
   END_IF ;
-  RETURN ;
 
   IF isConnected(ID) = FALSE THEN
     ERROR := TRUE ;
     STATUS := 1 ;
+    RETURN ;
   END_IF ;
 
 

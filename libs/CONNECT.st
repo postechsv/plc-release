@@ -8,15 +8,19 @@ VAR_OUTPUT
 VALID : BOOL := FALSE ;
 ERROR : BOOL := FALSE ;
 STATUS : DINT := 0 ;
-ID : STRING;
+ID : STRING := "";
+END_VAR
+
+VAR
+TEMP : BOOL := FALSE ;
 END_VAR
 
   IF ENC = TRUE THEN
-    connectRequest(PARTNER);
+    TEMP := connectRequest(PARTNER);
   END_IF ;
 
   IF VALID = TRUE AND ENC = FALSE THEN
-    disconnect(PARTNER);
+    TEMP := disconnect(PARTNER);
   END_IF ;
 
   IF isConnected(PARTNER) THEN

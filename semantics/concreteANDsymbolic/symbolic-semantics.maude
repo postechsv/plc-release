@@ -77,6 +77,12 @@ mod PLC-SYMBOLIC-ARITHMETIC is
   eq [BE1] OR [BE2] = [(BE1 or BE2)] .
   eq NOT [BE1] = [(not BE1)] .
 
+  eq rcvErrorSem ==== rcvErrorSem = [true] . 
+  eq rcvErrorSem ==== S:SemanticValue = [false] [owise] .
+  eq S:SemanticValue ==== rcvErrorSem = [false] [owise] .
+  eq rcvErrorSem <> rcvErrorSem = [false] . 
+  eq rcvErrorSem <> S:SemanticValue = [true] [owise] .
+  eq S:SemanticValue <> rcvErrorSem = [true] [owise] .
 endm
 
 mod SYMBOLIC-DATA-CONVERSION is

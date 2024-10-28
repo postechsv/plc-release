@@ -155,6 +155,7 @@ class typeCheck(STVisitor):
         if ctx.getText() == "@#timerValue": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"
         if ctx.getText() == "@#cycleValue": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "TIME"
         if ctx.getText() == "thisBlock": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "STRING"
+        if ctx.getText() == "boolUserInput": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "BOOL"
         if ctx.getText() == "rcvError": self.FBEnvDict[self.nowPou].type[ctx.getText()] = "ANY"
  
 

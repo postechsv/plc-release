@@ -17,6 +17,8 @@ fmod ALU-SEMANTICS is
   eq k(T# T1 ms  ~> K) = k(syn2sem(T# T1 ms) ~> K) .
   eq k(ENUMTYPE # ENUMVAL  ~> K) = k([enumVal(ENUMTYPE, ENUMVAL)] ~> K) .
 
+  eq k(rcvError ~> K) = k(syn2sem(rcvError) ~> K) . 
+
   ---bitfield
   eq k(V1 . # T1  ~> K) = k(V1 . syn2sem(# T1) ~> K) .
 endfm
@@ -50,51 +52,51 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 --- assignment
 
   op @store : Location SemanticValue -> KLabel [ctor] .
- ceq task(k(@store(LOCATION,V) ~> K) REST) store(STORE) 
-   = task(k(K) REST) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
+ ceq k(@store(LOCATION,V) ~> K) store(STORE) 
+   = k(K) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
   if loc(LOCINDEX, TYPE) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
   --- global
   rl [globalAssign] :
      log(LOG)
-     task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS)
+     k(I := V ~> K) callStack(ENV :: ENVSTACK) globalVars(@(I) VS)
   => log(LOG (I , 'globalAssign, V))
-     task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
+     k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) globalVars(@(I) VS) .
 
- crl [localAssign] : task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-  => task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
+ crl [localAssign] : k(I := V ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
+  => k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
   if not in(I, VS) .
 
----  eq task(k(InsLoc(INSLOC) . I := V ~> K) REST) inss(INSS) 
----   = task(k(@store(getInsEnv(INSLOC,INSS)[I],V) ~> K) REST) inss(INSS) .
+---  eq task(k(InsLoc(INSLOC) . I := V ~> K) inss(INSS) 
+---   = task(k(@store(getInsEnv(INSLOC,INSS)[I],V) ~> K) inss(INSS) .
 
- crl [arrayAssign] : task(k(arrayLoc(ARRAYENV)[VV] := V ~> K) REST) constraints(CONST)
-  => task(k(@store(LOCATION,V) ~> K) REST) constraints(simplify(CONST AND CONST'))
+ crl [arrayAssign] : k(arrayLoc(ARRAYENV)[VV] := V ~> K) constraints(CONST)
+  => k(@store(LOCATION,V) ~> K) constraints(simplify(CONST AND CONST'))
   if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
 
 --- lookup --- get location
   op @lookup : Location -> KLabel [ctor] .
-  eq task(k(@lookup(LOCATION) ~> K) REST) store(STORE) 
-   = task(k(STORE[LOCATION] ~> K) REST) store(STORE) .
+  eq k(@lookup(LOCATION) ~> K) store(STORE) 
+   = k(STORE[LOCATION] ~> K) store(STORE) .
 
   --- Pid
   --- global
   rl [globalLookup] :
      log(LOG) store(STORE)
-     task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) 
+     k(I ~> K) callStack(ENV :: ENVSTACK) globalVars(@(I) VS) 
   => log(LOG (I , 'globalLookUp, placeHolder)) store(STORE)
-     task(k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
+     k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) globalVars(@(I) VS) .
 
-  crl [localLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-   => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
+  crl [localLookup] : k(I ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
+   => k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
    if not in(I, VS) .
   --- _._._._
-  eq task(k(InsLoc(INSLOC) . I ~> K)                 REST) inss(INSS) 
-   = task(k(@lookup(getInsEnv(INSLOC,INSS)[I]) ~> K) REST) inss(INSS) .
+  eq k(InsLoc(INSLOC) . I ~> K)                 inss(INSS) 
+   = k(@lookup(getInsEnv(INSLOC,INSS)[I]) ~> K) inss(INSS) .
 
   --- array[V]
- crl [arrayLookup] : task(k(arrayLoc(ARRAYENV)[VV] ~> K) REST) constraints(CONST)
-  => task(k(@lookup(LOCATION) ~> K) REST) constraints(simplify(CONST AND CONST'))
+ crl [arrayLookup] : k(arrayLoc(ARRAYENV)[VV] ~> K) constraints(CONST)
+  => k(@lookup(LOCATION) ~> K) constraints(simplify(CONST AND CONST'))
   if arrayLookup(ARRAYENV, VV, CONST) => {LOCATION, CONST'} .
 
  crl [array]: arrayLookup((ARRAYENV1, (ARRAYINDEX, LOCATION), ARRAYENV2), V, CONST) 
@@ -121,100 +123,100 @@ mod CONDITIONAL-SEMANTICS is
   var RA : Qid .
 
   --- ite
- crl [iteTrue] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST) 
- => task((k(PE1 ~> K)) REST )  
+ crl [iteTrue] : (k(ite(ITECONDITION, PE1, PE2) ~> K)) constraints(CONST) 
+ => (k(PE1 ~> K))  
     constraints(CONST AND (ITECONDITION))
     if checkSAT(CONST AND (ITECONDITION)) .
   
- crl [iteFalse] : task((k(ite(ITECONDITION, PE1, PE2) ~> K)) REST ) constraints(CONST) 
- => task((k(PE2 ~> K)) REST ) 
+ crl [iteFalse] : (k(ite(ITECONDITION, PE1, PE2) ~> K)) constraints(CONST) 
+ => (k(PE2 ~> K)) 
     constraints(CONST AND (NOT ITECONDITION)) 
     if checkSAT(CONST AND (NOT ITECONDITION)) .
 
  --- if statement
  crl [IFTRUE] :  
      log(LOG) 
-     task(k(IF IFSTATEMENT THEN S1 ; BB ENDIF ~> K) REST ) 
+     k(IF IFSTATEMENT THEN S1 ; BB ENDIF ~> K) 
      constraints(CONST)
   => log(LOG (' , 'IFTRUE, placeHolder)) 
-     task(k(S1 ~> K) REST) 
+     k(S1 ~> K)  
      constraints(simplify(CONST AND IFSTATEMENT))
   if checkSAT(CONST AND IFSTATEMENT) .
 
  crl [IFFALSE] : 
      log(LOG) 
-     task(k(IF IFSTATEMENT THEN S1 ; emptyBBranch ENDIF ~> K) REST) 
+     k(IF IFSTATEMENT THEN S1 ; emptyBBranch ENDIF ~> K)  
      constraints(CONST)
   => log(LOG (' , 'IFFALSE, placeHolder)) 
-     task(k(K) REST) 
+     k(K)  
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
  crl [IFFALSE-ELSIF] : 
      log(LOG) 
-     task(k(IF IFSTATEMENT THEN S1 ; ELSIF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) REST) 
+     k(IF IFSTATEMENT THEN S1 ; ELSIF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K)  
      constraints(CONST)
   => log(LOG (' , 'IFFALSE-ELSIF, placeHolder)) 
-     task(k(IF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K) REST) 
+     k(IF IFSTATEMENT2 THEN S2 ; BB ENDIF ~> K)  
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
  crl [IFFALSE-ELSE] : 
      log(LOG)  
-     task(k(IF IFSTATEMENT THEN S1 ; ELSE S2 ; ENDIF ~> K) REST) 
+     k(IF IFSTATEMENT THEN S1 ; ELSE S2 ; ENDIF ~> K)  
      constraints(CONST)
   => log(LOG (' , 'IFFALSE-ELSE, placeHolder)) 
-     task(k(S2 ~> K) REST) 
+     k(S2 ~> K)  
      constraints(simplify(CONST AND (NOT IFSTATEMENT)))
   if checkSAT(CONST AND (NOT IFSTATEMENT)) .
 
 
   --- case statement
-  eq  task(k(CASE V OF emptyCBranch ELSE S1 ENDCASE ~> K) REST) 
-   =  task(k(S1 ~> K) REST)  .
+  eq  k(CASE V OF emptyCBranch ELSE S1 ENDCASE ~> K)  
+   =  k(S1 ~> K)   .
 
  crl [caseMatch] :  
      log(LOG) 
-     task(k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
+     k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K)   
      constraints(CONST)
   => log(LOG (' , 'caseMatch, V)) 
-     task(k(S1 ~> K) REST)  
+     k(S1 ~> K)   
      constraints(simplify(CONST AND V ==== syn2sem(PV2)))
   if checkSAT(CONST AND V ==== syn2sem(PV2)) .
   
 
  crl [caseMatchRanged] :  
-     task(k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
+     k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K)   
      constraints(CONST) 
-  => task(k(S1 ~> K) REST)   
+  => k(S1 ~> K)    
      constraints(simplify(CONST AND syn2sem(PV1) <= V  AND V <= syn2sem(PV2)))
   if checkSAT(CONST AND syn2sem(PV1) <= V  AND V <= syn2sem(PV2)) .
 
  crl [caseNotMatch] :  
-     task(k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
+     k(CASE (V)  OF (@ PV2 : S1) CB ELSE S2 ENDCASE ~> K)   
      constraints(CONST) 
-  => task(k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) REST)  
+  => k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K)   
      constraints(simplify(CONST AND V <> syn2sem(PV2))) 
   if checkSAT(CONST AND V <> syn2sem(PV2)) .
 
  crl [caseNotMatchRanged] :  
-     task(k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K) REST)  
+     k(CASE (V)  OF (@ PV1 .. PV2 : S1) CB ELSE S2 ENDCASE ~> K)   
      constraints(CONST) 
-  => task(k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K) REST)   
+  => k(CASE (V)  OF CB ELSE S2 ENDCASE ~> K)    
      constraints(simplify(CONST AND (syn2sem(PV1) > V  OR V > syn2sem(PV2))))
   if checkSAT(CONST AND (syn2sem(PV1) > V  OR V > syn2sem(PV2))) .
 
   --- while statement
-  eq task(k(WHILE WHILESTATEMENT DO S1 ENDWHILE ~> K) REST) 
-   = task(k(IF WHILESTATEMENT THEN S1 ; WHILE WHILESTATEMENT DO S1 ENDWHILE ; ENDIF ~> K) REST)  .
+  eq k(WHILE WHILESTATEMENT DO S1 ENDWHILE ~> K)  
+   = k(IF WHILESTATEMENT THEN S1 ; WHILE WHILESTATEMENT DO S1 ENDWHILE ; ENDIF ~> K)   .
 
   --- repeat statement
-  eq task(k(REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ~> K) REST) 
-   = task(k(IF NOT REPEATSTATEMENT THEN S1 ; REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ; ENDIF ~> K) REST)  .
+  eq k(REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ~> K)  
+   = k(IF NOT REPEATSTATEMENT THEN S1 ; REPEAT S1 UNTIL REPEATSTATEMENT ENDREPEAT ; ENDIF ~> K)   .
 
   --- for statement
-  eq task(k(FOR I := V TO PV1 BY PV2 DO S1 ENDFOR ~> K) REST)  
-   = task(k(I := V ~> WHILE I <= PV1 DO S1 ; I := I + PV2 ; ENDWHILE ~> K) REST)  .
+  eq k(FOR I := V TO PV1 BY PV2 DO S1 ENDFOR ~> K)   
+   = k(I := V ~> WHILE I <= PV1 DO S1 ; I := I + PV2 ; ENDWHILE ~> K)   .
 endm
 
 
@@ -251,18 +253,18 @@ mod CALL-SEMANTICS is
   op @pop : -> KLabel [ctor] .
   op tag : List{FArgElement} VarSecTypePairList -> List{FArgElement} .
 
- crl [fbcall] : task(k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE) 
-  => task(k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV) REST) store(STORE) 
+ crl [fbcall] : k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV)  store(STORE) 
+  => k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV)  store(STORE) 
   if InsLoc(INSLOC) := STORE[ENV[FBI]] .
 
- ceq task(k(@call(INSLOC,ARGS) ~> K) REST) inss(INSS)  
-   = task(k(@call(INSLOC,ARGS,INSENV,FBNAME) ~> K) REST) inss(INSS) 
+ ceq k(@call(INSLOC,ARGS) ~> K)  inss(INSS)  
+   = k(@call(INSLOC,ARGS,INSENV,FBNAME) ~> K)  inss(INSS) 
   if INSENV := getInsEnv(INSLOC,INSS)
   /\ FBNAME := getInsType(INSLOC,INSS) .
 
-  eq task(k(@call(INSLOC,ARGS,INSENV,FBNAME) ~> K) REST) 
+  eq k(@call(INSLOC,ARGS,INSENV,FBNAME) ~> K)  
      PARDef(FBNAME, PARMETERDATA, S) 
-   = task(k(@args(tag(ARGS,PARMETERDATA)) ~> @bind(INSENV,INSLOC) ~> S ~> @pop ~> K) REST) 
+   = k(@args(tag(ARGS,PARMETERDATA)) ~> @bind(INSENV,INSLOC) ~> S ~> @pop ~> K)  
      PARDef(FBNAME, PARMETERDATA, S) .
 
   op @ALTERNATIVE : -> PExp [ctor] .
@@ -296,33 +298,33 @@ mod CALL-SEMANTICS is
   --- parameter binding
 
   ---in parameter
-  eq task(k(@args((INPAR(I1) <:= V1) , ARGS) ~> @bind(ENV,CPR)  ~> K) REST)
-   = task(k(@args(ARGS) ~> @bind(ENV,CPR) ~> I1 := V1  ~> K) REST) .
+  eq k(@args((INPAR(I1) <:= V1) , ARGS) ~> @bind(ENV,CPR)  ~> K) 
+   = k(@args(ARGS) ~> @bind(ENV,CPR) ~> I1 := V1  ~> K)  .
 
   --- inout parameter
-  eq task((k(@args((INOUTPAR(I1) <:= I2) , ARGS) ~> @bind(ENV',CPR)  ~> K)) callStack(ENV :: RESTENV) REST) 
-   = task((k(@args(ARGS) ~> @bind(insert(I1, ENV[I2], ENV'),CPR)  ~> K)) callStack(ENV :: RESTENV) REST)  .
+  eq (k(@args((INOUTPAR(I1) <:= I2) , ARGS) ~> @bind(ENV',CPR)  ~> K)) callStack(ENV :: RESTENV)  
+   = (k(@args(ARGS) ~> @bind(insert(I1, ENV[I2], ENV'),CPR)  ~> K)) callStack(ENV :: RESTENV)   .
 
-  eq task((k(@args((INOUTPAR(I1) <:= InsLoc(INSLOC) . I2) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  inss(INSS)
-   = task((k(@args(ARGS) ~> @bind(insert(I1, getInsEnv(INSLOC,INSS)[I2], ENV),CPR)  ~> K)) REST)  inss(INSS) .
+  eq (k(@args((INOUTPAR(I1) <:= InsLoc(INSLOC) . I2) , ARGS) ~> @bind(ENV,CPR)  ~> K))   inss(INSS)
+   = (k(@args(ARGS) ~> @bind(insert(I1, getInsEnv(INSLOC,INSS)[I2], ENV),CPR)  ~> K))   inss(INSS) .
 
  crl [arrayArgBind] : 
-     task((k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K)) REST)  constraints(CONST) 
-  => task((k(@args(ARGS) ~> @bind(insert(I1, LOCATION, ENV),CPR)  ~> K)) REST)  constraints(simplify(CONST AND CONST')) 
+     (k(@args((INOUTPAR(I1) <:= arrayLoc(ARRAYENV)[V2]) , ARGS) ~> @bind(ENV,CPR)  ~> K))   constraints(CONST) 
+  => (k(@args(ARGS) ~> @bind(insert(I1, LOCATION, ENV),CPR)  ~> K))   constraints(simplify(CONST AND CONST')) 
   if arrayLookup(ARRAYENV, V2, CONST) => {LOCATION, CONST'} .
 
   --- context switching
-  eq task(k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV) REST) 
-   = task(k(K) callStack(ENV :: RESTENV) REST)  .
+  eq k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV)  
+   = k(K) callStack(ENV :: RESTENV)   .
 
-  rl [return] : task((k(@pop ~> K)) callStack(ENV :: RESTENV) REST)  
-  => task((k(K)) callStack(RESTENV) REST)   .
+  rl [return] : (k(@pop ~> K)) callStack(ENV :: RESTENV)   
+  => (k(K)) callStack(RESTENV)    .
 
-  eq task((k(return ~> @pop ~> K)) callStack(ENV :: RESTENV) REST) 
-   = task((k(K)) callStack(RESTENV) REST)  . 
+  eq (k(return ~> @pop ~> K)) callStack(ENV :: RESTENV)  
+   = (k(K)) callStack(RESTENV)   . 
 
-  eq task((k(return ~> S ~> K)) REST) 
-   = task((k(return ~> K)) REST) . 
+  eq (k(return ~> S ~> K))  
+   = (k(return ~> K))  . 
 endm
 
 --- starting new cycle
@@ -340,23 +342,37 @@ mod CYCLE-SEMANTICS is
   var ENV : Env .
   var PRID : ProcessId .  
   var TNAT : SemanticValue .
+  vars PL PL2 : List{ProcessId} .
 
   eq timerUpdate(CT, empty) = empty .
-  eq timerUpdate(CT, (ins(timer(@timer(TNAT)) REST) KCF)) 
-  = ins(timer(@timer(simplify(TNAT + syn2sem(T# CT ms)))) REST) timerUpdate(CT,  KCF) .
+  eq timerUpdate(CT, ins(timer(@timer(TNAT)) KCF) RESTINS) 
+  = ins(timer(@timer(simplify(TNAT + syn2sem(T# CT ms)))) KCF) timerUpdate(CT, RESTINS) .
 
-  eq [endProgram] :
-     task(k(.K) REST) = [task(k(@end) REST)] .
-
-  rl [scExec] :
-     task(k(@end) id(PRID) REST)
+  eq [prCall] :
+     k(.K)
+     callStack(PS:ProgramStack)
+     pList(PRID :: PL)
+     done(PL2)
      inss(ins(id(PRID) fbtype(PNAME) mem(ENV) RESTINS) RESTINSS)
      PARDef(PNAME, PARAM, S)
+   = k(S)
+     callStack(ENV)
+     pList(PL)
+     done(PL2 :: PRID)
+     inss(ins(id(PRID) fbtype(PNAME) mem(ENV) RESTINS) RESTINSS)
+     PARDef(PNAME, PARAM, S) .
+
+  eq [scExec] :
+     k(@end) 
+     inss(RESTINSS)
      cycleTime(CT)
-  => task(k(@call(PRID, nilPExpList, ENV, PNAME)) REST) 
-     inss(timerUpdate(CT, ins(id(PRID) fbtype(PNAME) mem(ENV) RESTINS) RESTINSS))
-     PARDef(PNAME, PARAM, S)
-     cycleTime(CT) .
+     pList(nilProcIds)
+     done(PL) 
+   = k(.K)  
+     inss(timerUpdate(CT, RESTINSS))
+     cycleTime(CT)
+     pList(PL)
+     done(nilProcIds) .
 endm
 
 --- semantics for time-related FBs (TON, ...)
@@ -372,16 +388,18 @@ fmod TIMER-SEMANTICS is
   vars REST REST2 : KConfig .
   var TVAL : SemanticValue .
 
-  eq task(id(CPR) (k(@#timerValue ~> K)) REST) 
+---(
+  eq id(CPR) (k(@#timerValue ~> K))  
      inss(ins(id(CPR) timer(@timer(TVAL)) REST2) RESTINSS)
    =
-     task(id(CPR) (k(TVAL ~> K)) REST) 
+     id(CPR) (k(TVAL ~> K))  
      inss(ins(id(CPR) timer(@timer(TVAL)) REST2) RESTINSS) .
 
-  eq task(id(CPR) k(@#timerSetValue(T# PTIME ms) ~> K) REST) 
+  eq id(CPR) k(@#timerSetValue(T# PTIME ms) ~> K)  
      inss(ins(id(CPR) timer(@timer(TVAL)) REST2) RESTINSS)
    =
-     task(id(CPR) k(K) REST) 
+     id(CPR) k(K)  
      inss(ins(id(CPR) timer(@timer(syn2sem(T# PTIME ms))) REST2) RESTINSS) .
+---)
 endfm
 

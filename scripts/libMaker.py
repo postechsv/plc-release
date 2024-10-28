@@ -67,6 +67,8 @@ class libDBmaker:
             listlibs = open(self.libDirectory + "/library.stlib", "r").read().split("\n")
             libResult = ""
             for aLib in listlibs:
+                if aLib == "":
+                    continue
                 self.makeLibMaudeCode(self.libDirectory + "/" + aLib + ".st")
                 libResult += libMaudeFormat(aLib, self.totalFBEnv.FBEnvDict[aLib].returnMaude())
             libFile = open(self.libDirectory + "/libcollection.maude", "w")
@@ -88,13 +90,11 @@ class libDBmaker:
         self.totalFBEnv.FBEnvDict =deepcopy(visitor.FBEnv)
         return
 
-"""
 libInstance = libDBmaker()
 libFB = libInstance.makeBuiltINLibTypeFile("./libs")
 libMaude = libInstance.makeLibMaudeFile(True)
 print(libInstance.visitorType.FBEnvDict.keys())
 print(libInstance.visitorType.FBEnvDict['PLS'].varEnv.keys())
-"""
 
 
 

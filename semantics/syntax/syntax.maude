@@ -68,7 +68,7 @@ fmod PLC-TYPES is
   subsort FBName < PType .
 
 
-  ops BOOL REAL UINT DINT SINT USINT UDINT TIME INT : -> Primitive .
+  ops BOOL REAL UINT DINT SINT USINT UDINT TIME INT STRING ANY : -> Primitive .
   ops NUMERIC INTTYPES : -> Set{PType} .
   eq NUMERIC = DINT , SINT , USINT , UINT , UDINT , INT , REAL .
   eq INTTYPES = DINT , SINT , USINT , UINT , UDINT , INT .
@@ -336,14 +336,14 @@ fmod STATEMENT is
   op @#timerSetValue(_) : PExp -> Stmt [ctor] .
   op @release : -> Stmt [ctor] .
 
-  op thisBlock() : -> Stmt [ctor] .
-  op boolUserInput() : -> Stmt [ctor] .
-  op isConnected : PExp -> Stmt [ctor] .
-  op connectRequest : PExp -> Stmt [ctor] .
-  op disconnect : PExp -> Stmt [ctor] .
-  op sendData : PExp PExp PExp PExp -> Stmt [ctor] . --- Oid SenderBlock ReceiverBlock Data
-  op rcvData : PExp PExp PExp -> Stmt [ctor] . --- Oid SenderBlock ReceiverBlock
-  op rcvError : -> PExp [ctor] .
+  op thisBlock : -> PExp [ctor] .
+  op boolUserInput : -> PExp [ctor] .
+  op isConnected : -> FunId [ctor] .
+  op connectRequest : -> FunId [ctor] .
+  op disconnect : -> FunId [ctor] .
+  op sendData : -> FunId [ctor] . --- Oid SenderBlock ReceiverBlock Data
+  op rcvData : -> FunId [ctor] . --- Oid SenderBlock ReceiverBlock
+  op rcvError : -> PValue [ctor] .
 endfm
 
 

@@ -42,6 +42,8 @@ builtinFunMap["BOOL_TO_UDINT"] = [(1, "BOOL", "UDINT")]
 builtinFunMap["BOOL_TO_DINT"] = [(1, "BOOL", "DINT")]
 builtinFunMap["DINT_TO_DINT"] = [(1, "DINT", "DINT")]
 builtinFunMap["isConnected"] = [(1, "STRING", "BOOL")]
+builtinFunMap["connectRequest"] = [(1, "STRING", "BOOL")]
+builtinFunMap["disconnect"] = [(1, "STRING", "BOOL")]
 builtinFunMap["sendData"] = [(4, "STRING", "STRING", "STRING", "ANY", "BOOL")]
 builtinFunMap["rcvData"] = [(3, "STRING", "STRING", "STRING", "ANY")]
 

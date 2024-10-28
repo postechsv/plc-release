@@ -9,7 +9,8 @@ mod PLC-SYMBOLIC-PRIMITIVES is
        op _+_ : ModuleExpression ModuleExpression -> ModuleExpression to _+++_,
        op _::_ to _::::::_,
        op _;_ to _;;;_,
-       op __ to _qqq_
+       op __ to _qqq_,
+       op `[`] to `[`[`[`]`]`]
 ) .
   inc QID .
   inc CONVERSION .
@@ -23,7 +24,8 @@ mod PLC-SYMBOLIC-PRIMITIVES is
   op [_] : IntegerExpr -> RatSemanticVal [ctor prec 0] .
   op [_] : BooleanExpr -> BoolSemanticVal [ctor prec 0] .
   op T[_] : IntegerExpr -> TimeSemanticVal [ctor prec 0] .
- 
+
+  op rcvErrorSem : -> SemanticValue [ctor] . 
 
 endm
 
@@ -71,6 +73,7 @@ mod PLC-SYMBOLIC-SYN2SEM-SEM2SYN is
   eq syn2sem( # I1 , REAL ) = [ toReal(convertIntToInteger(I1)) ] .
   eq syn2sem( # R1 , REAL ) = [ convertRatToReal(R1) ] [owise] .
   eq syn2sem( T# I1 ms , TIME ) = T[convertIntToInteger(I1)] .
+  eq syn2sem(rcvError) = rcvErrorSem .
 
   eq sem2syn([RE1]) = # convertRealToRat(RE1) .
   eq sem2syn([IE1]) = # convertIntegerToInt(IE1) .

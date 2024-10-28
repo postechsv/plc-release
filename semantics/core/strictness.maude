@@ -332,4 +332,7 @@ fmod PLC-STRICTNESS-RULES is
   ---waittime
   eq k(WAITTIME(P1) ~> K) = k(P1 ~> WAITTIME([]) ~> K) .
   eq k(V1 ~> WAITTIME([]) ~> K) = k(WAITTIME(V1) ~> K) .
+
+  eq k(PE1 := thisBlock ~> K) = k(thisBlock ~> PE1 :=[] ~> K) .
+  eq k(PE1 := boolUserInput ~> K) = k(boolUserInput ~> PE1 :=[] ~> K) .
 endfm

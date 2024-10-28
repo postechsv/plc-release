@@ -309,6 +309,149 @@ ENDFUNCTIONBLOCK
  ) .
 endfm
 
+fmod CONNECT is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op CONNECT : -> [POUDefinition] . 
+  eq CONNECT = 
+(
+FUNCTIONBLOCK 'CONNECT 
+BEGINVAR
+'TEMP : BOOL := ( FALSE ) : ##PRIV ; 
+'ENC : BOOL : ##IN ; 
+'PARTNER : STRING := # "" : ##IN ; 
+'VALID : BOOL := ( FALSE ) : ##OUT ; 
+'ERROR : BOOL := ( FALSE ) : ##OUT ; 
+'STATUS : DINT := ( # 0 ) : ##OUT ; 
+'ID : STRING := # "" : ##OUT ; 
+ENDVAR
+
+CODE
+IF 'ENC ==== TRUE THEN 
+'TEMP :=  connectRequest( 'PARTNER )  ; 
+ENDIF ; 
+IF 'VALID ==== TRUE AND 'ENC ==== FALSE THEN 
+'TEMP :=  disconnect( 'PARTNER )  ; 
+ENDIF ; 
+IF isConnected ( 'PARTNER )  THEN 
+'VALID := TRUE ; 
+'ERROR := FALSE ; 
+'STATUS := (ANYTODINT(# 0)) ; 
+'ID := 'PARTNER ; 
+ELSE 
+'VALID := FALSE ; 
+'ERROR := TRUE ; 
+'STATUS := (ANYTODINT(# 1)) ; 
+ENDIF ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod USEND is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op USEND : -> [POUDefinition] . 
+  eq USEND = 
+(
+FUNCTIONBLOCK 'USEND 
+BEGINVAR
+'THIS : STRING := # "" : ##PRIV ; 
+'RESULT : BOOL := ( FALSE ) : ##PRIV ; 
+'REQ : BOOL : ##IN ; 
+'COMMCHANNEL : STRING := # "" : ##IN ; 
+'RID : STRING := # "" : ##IN ; 
+'DATA : ANY := # 0 : ##IN ; 
+'DONE : BOOL := ( FALSE ) : ##OUT ; 
+'ERROR : BOOL := ( FALSE ) : ##OUT ; 
+'STATUS : DINT := ( # 0 ) : ##OUT ; 
+ENDVAR
+
+CODE
+IF 'RESULT THEN 
+'DONE := FALSE ; 
+'ERROR := FALSE ; 
+'STATUS := (ANYTODINT(# 0)) ; 
+ENDIF ; 
+IF isConnected ( 'COMMCHANNEL )  ==== FALSE THEN 
+'DONE := FALSE ; 
+'ERROR := TRUE ; 
+'STATUS := (ANYTODINT(# 1)) ; 
+ENDIF ; 
+'THIS := thisBlock ; 
+'RESULT := sendData ( 'COMMCHANNEL , 'THIS , 'RID , 'DATA )  ; 
+IF 'RESULT THEN 
+'DONE := TRUE ; 
+'ERROR := FALSE ; 
+'STATUS := (ANYTODINT(# 0)) ; 
+ENDIF ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
+fmod URCV is
+  inc POU-DEF . 
+  inc DATA-CONVERSION .
+  inc PLC-PRIMITIVES .
+  inc TIMER-SEMANTICS .
+  op URCV : -> [POUDefinition] . 
+  eq URCV = 
+(
+FUNCTIONBLOCK 'URCV 
+BEGINVAR
+'THIS : STRING := # "" : ##PRIV ; 
+'RESULT : ANY := # 0 : ##PRIV ; 
+'ENR : BOOL : ##IN ; 
+'ID : STRING := # "" : ##IN ; 
+'RID : STRING := # "" : ##IN ; 
+'NDR : BOOL := ( FALSE ) : ##OUT ; 
+'ERROR : BOOL := ( FALSE ) : ##OUT ; 
+'STATUS : DINT := ( # 0 ) : ##OUT ; 
+'DATA : ANY := # 0 : ##OUT ; 
+ENDVAR
+
+CODE
+IF 'NDR THEN 
+'NDR := FALSE ; 
+'ERROR := FALSE ; 
+'STATUS := (ANYTODINT(# 0)) ; 
+ENDIF ; 
+IF isConnected ( 'ID )  ==== FALSE THEN 
+'ERROR := TRUE ; 
+'STATUS := (ANYTODINT(# 1)) ; 
+return ;
+ENDIF ; 
+'THIS := thisBlock ; 
+'RESULT := rcvData ( 'ID , 'RID , 'THIS )  ; 
+IF 'RESULT <> rcvError THEN 
+'NDR := TRUE ; 
+'ERROR := FALSE ; 
+'STATUS := (ANYTODINT(# 0)) ; 
+'DATA := 'RESULT ; 
+ELSE 
+'NDR := FALSE ; 
+'ERROR := TRUE ; 
+'STATUS := (ANYTODINT(# 1)) ; 
+ENDIF ; 
+
+ENDCODE
+ENDFUNCTIONBLOCK
+
+
+ ) .
+endfm
+
 fmod PLC-LIB is
   inc LIST{POUDefinition} .
   op lib : -> List{POUDefinition} .
@@ -321,6 +464,9 @@ fmod PLC-LIB is
   inc PLS .
   inc TON .
   inc TP .
-  eq lib = CMP CTD CTU CTUD FTRIG RTRIG PLS TON TP .
+  inc CONNECT .
+  inc USEND .
+  inc URCV .
+  eq lib = CMP CTD CTU CTUD FTRIG RTRIG PLS TON TP CONNECT USEND URCV  .
 endfm
 

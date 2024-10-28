@@ -144,7 +144,7 @@ SPECIALTIMEFUN : '@#timerSetValue' ;
 SPECIALTIMEKEYWORD : '@#timerValue' ;
 SPECIALCYCLEKEYWORD : '@#cycleValue' ;
 SPECIALCOMMFUN : 'connectRequest' | 'disconnect' ; 
-SPECIALCOMMKEYWORD : 'rcvError' | 'thisBlock' ; 
+SPECIALCOMMKEYWORD : 'rcvError' | 'thisBlock' | 'boolUserInput' ; 
 SPECIALTIMEFUNWAIT : 'WAIT' ;
 SPECIALTIMEFUNWAITTIME : 'WAIT_TIME' ;
 

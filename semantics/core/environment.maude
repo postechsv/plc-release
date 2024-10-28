@@ -29,14 +29,14 @@ mod OBJ-STRUCTURE is
   including DYNAMICS-EVALUATION .
   including PLC-CORE .
 
-  subsort Oid < PExp .
+  subsort PExp < Oid .
 
   sort PLCMachine .
   subsort PLCMachine < NEConfiguration .
 
   subsort PLCMachine < Cid .
   op PLCMachine : -> PLCMachine [ctor format(! o)] .
-  op proc   :_ : KConfig -> Attribute [ctor gather(&) format(nm o d d)] .
+  op proc   :_ : KConfig? -> Attribute [ctor gather(&) format(nm o d d)] .
   op state :_ : Map{PExp, SemanticValue} -> Attribute [ctor gather(&) format(nm o d d)] .
   op timer :_ : Nat -> Attribute [ctor gather(&) format(nm o d d)] .
   op actList :_ : List{PExp} -> Attribute [ctor gather(&) format(nm o d d)] .
@@ -84,7 +84,7 @@ mod TIMEEFFECT is
   var TIMER : Nat .
   var CC : SemanticValue .
   var CONF : NEConfiguration .
-  var CONF' : Configuration .
+  var CONF' : NEConfiguration .
 
   eq timeEffect(none, T) = none .
   eq timeEffect(
@@ -127,15 +127,16 @@ mod EXECUTE is
   var ENV : Env .
   var STACK : ProgramStack .
   var N : Nat .
+  var PL : List{ProcessId} .
 
 --- string conversion
-  eq task(id(PRID) k(thisBlock() ~> K) callStack(ENV :: STACK) RESTT)
+  eq k(thisBlock ~> K) callStack(ENV :: STACK)
      inss(ins(mem(ENV) iname(PNAME) RESTI) INSS)
-   = task(id(PRID) k(PNAME ~> K) callStack(ENV :: STACK) RESTT)
+   = k([string(PNAME)] ~> K) callStack(ENV :: STACK)
      inss(ins(mem(ENV) iname(PNAME) RESTI) INSS) .
 
-  eq < O:Oid : PLCMachine | gen : N, proc : task(k(boolUserInput() ~> K) RESTT) KC >
-   = < O:Oid : PLCMachine | gen : s N, proc : task(k(# b(smtv(O:Oid, N)) ~> K) RESTT) KC > .
+  eq < O:PExp : PLCMachine | gen : N, proc : k(boolUserInput ~> K) KC, ATTRS >
+   = < O:PExp : PLCMachine | gen : s N, proc : k([b(smtv(O:PExp, N))] ~> K) KC, ATTRS > .
 
  crl [envTick] :
      {CONF} => {timeEffect(CONF, T)}
@@ -144,6 +145,11 @@ mod EXECUTE is
  crl [start] :
      {CONF} => {enable(sense(actuate(CONF)))}
   if isAllReadyFrozen(CONF) .
+
+  eq [end] :
+     < O:Oid : PLCMachine | proc : k(.K) pList(nilProcIds) KC, ATTRS > 
+   = < O:Oid : PLCMachine | proc : [k(@end) pList(nilProcIds) KC], ATTRS > .
+
 
   eq isAllReadyFrozen(
      < O:Oid : PLCMachine | timer : 0, proc : [KC], ATTRS > CONF)
@@ -157,37 +163,30 @@ mod EXECUTE is
 
   eq actuate(
      < O:Oid : PLCMachine | timer : 0,
-                            proc : [task(id(PRID) RESTT)]
-                                   inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC,
+                            proc : [KC],
                             state : STATE,
                             actList : ACTLIST,
                             ATTRS > CONF) 
    = < O:Oid : PLCMachine | timer : 0,
-                            proc : [task(id(PRID) RESTT)]
-                                   inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC,
-                            state : actuate(STATE, task(id(PRID) RESTT)
-                                    inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC, 
-                                    ACTLIST),
+                            proc : [KC],
+                            state : actuate(STATE, KC, ACTLIST),
                             actList : ACTLIST,
                             ATTRS > actuate(CONF) .
   eq sense(
      < O:Oid : PLCMachine | timer : 0,
-                            proc : [task(id(PRID) RESTT)]
-                                   inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC,
+                            proc : [KC],
                             state : STATE,
                             senList : SENLIST,
                             ATTRS > CONF) 
    = < O:Oid : PLCMachine | timer : 0,
-                            proc : [sense(task(id(PRID) RESTT)
-                                         inss(ins(id(PRID) fbtype(PNAME) RESTI) INSS) KC,
-                                         STATE, SENLIST)],
+                            proc : [sense(KC, STATE, SENLIST)],
                             state : STATE,
                             senList : SENLIST,
                             ATTRS > sense(CONF) .
 
   eq enable(
-     < O:Oid : PLCMachine | timer : 0, proc : [task(RESTT)] cycleTime(T) KC, ATTRS > CONF)
-   = < O:Oid : PLCMachine | timer : T, proc : task(RESTT) cycleTime(T) KC, ATTRS >
+     < O:Oid : PLCMachine | timer : 0, proc : [cycleTime(T) KC], ATTRS > CONF)
+   = < O:Oid : PLCMachine | timer : T, proc : cycleTime(T) KC, ATTRS >
      enable(CONF) .
 
   eq actuate(CONF) = CONF [owise] .
@@ -216,6 +215,7 @@ endm
 
 mod COMMUNICATION is
   including UTIL .
+  including EXECUTE .
 
   sort Channel .
   subsort Channel < NEConfiguration .
@@ -224,9 +224,8 @@ mod COMMUNICATION is
   subsort CMsg < CMsgs .
 
   op Channel : -> Channel [ctor] .
-  op Channel : -> Cid .
   op link : Oid Oid -> Oid [ctor comm] .
-  op mwrapper : Oid Oid PExp PExp PExp -> CMsg [ctor] .
+  op mwrapper : Oid Oid SemanticValue SemanticValue SemanticValue -> CMsg [ctor] .
   op emptyBuffer : -> CMsgs [ctor] .
   op __ : CMsgs CMsgs -> CMsgs [ctor assoc comm id: emptyBuffer] .
   op insert : CMsgs CMsg ~> CMsgs .
@@ -235,13 +234,18 @@ mod COMMUNICATION is
   op buffer :_ : CMsgs -> Attribute [ctor] .
 
   vars O O' : PExp .
+  var TARGET : SemanticValue .
   var K : K .
   vars RESTT KC : KConfig .
   vars ATTRS ATTRS' : AttributeSet .
   var BUFFER : CMsgs .
   var NEWM : CMsg .
-  vars DATA DATA' SFBID RFBID : PExp .
+  vars DATA DATA' SFBID RFBID : SemanticValue .
   var B : Bool .
+
+  eq mte(< L:Oid : Channel | ATTRS >) = 1000000 .
+  eq timeEffect(< L:Oid : Channel | ATTRS >, T:Nat)
+   = < L:Oid : Channel | ATTRS > .
 
   eq insert(BUFFER mwrapper(O, O', SFBID, RFBID, DATA'), mwrapper(O, O', SFBID, RFBID, DATA))
    = BUFFER mwrapper(O, O', SFBID, RFBID, DATA) .
@@ -249,72 +253,81 @@ mod COMMUNICATION is
   eq checkMsg(BUFFER mwrapper(O, O', SFBID, RFBID, DATA), O, SFBID, RFBID) = true .
   eq checkMsg(BUFFER, O, SFBID, RFBID) = false [owise] .
 
-  rl [con-succ] :
-     < O : PLCMachine | proc : task(k(connectRequest(O') ~> K) RESTT) KC, ATTRS >
+ crl [con-succ] :
+     < O : PLCMachine | proc : k(connectRequest(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, ATTRS' >
-  => < O : PLCMachine | proc : task(k(K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, ATTRS' > .
-
-  rl [con-back] :
-     < O : PLCMachine | proc : task(k(connectRequest(O') ~> K) RESTT) KC, ATTRS >
+  => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
-  => < O : PLCMachine | proc : task(k(K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, ATTRS' > .
+  if O' == sem2syn(TARGET) .
+
+ crl [con-back] :
+     < O : PLCMachine | proc : k(connectRequest(TARGET) ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, ATTRS' >
+  => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, ATTRS' >
+  if O' == sem2syn(TARGET) .
 
 ---(
   rl [con-fail] : --- failure, denial, abort 
-     < O : PLCMachine | proc : task(k(connectRequest(O') ~> K) RESTT) KC, ATTRS >
+     < O : PLCMachine | proc : k(connectRequest(O') ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, ATTRS' >
-  => < O : PLCMachine | proc : task(k(K) RESTT) KC, ATTRS >
+  => < O : PLCMachine | proc : k(K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' > .
 ---)
 
-  rl [discon-vol]:
-     < O : PLCMachine | proc : task(k(disconnect(O') ~> K) RESTT) KC, ATTRS >
+ crl [discon-vol]:
+     < O : PLCMachine | proc : k(disconnect(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
-  => < O : PLCMachine | proc : task(k(K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : false, ATTRS' > .
+  => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : false, ATTRS' >
+  if O' == sem2syn(TARGET) .
 
-  rl [isConnected]:
-     < O : PLCMachine | proc : task(k(isConnected(O') ~> K) RESTT) KC, ATTRS >
+
+ crl [isConnected]:
+     < O : PLCMachine | proc : k(isConnected(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : B, ATTRS' >
-  => < O : PLCMachine | proc : task(k(if B then TRUE else FALSE fi ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : B, ATTRS' > .
+  => < O : PLCMachine | proc : k(if B then TRUE else FALSE fi ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : B, ATTRS' >
+  if O' == sem2syn(TARGET) .
 
 ---(
   rl [discon-unvol] :
      < link(O, O') : Channel | validity : true, ATTRS' >
   => < link(O, O') : Channel | validity : false, ATTRS' > .
 ---)
-  rl [sendData] :
-     < O : PLCMachine | proc : task(k(sendData(O', SFBID, RFBID, DATA) ~> K) RESTT) KC, ATTRS >
+ crl [sendData] :
+     < O : PLCMachine | proc : k(sendData(TARGET, SFBID, RFBID, DATA) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
-  => < O : PLCMachine | proc : task(k(TRUE ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : insert(BUFFER, mwrapper(O, O', SFBID, RFBID, DATA)), ATTRS' > .
+  => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, buffer : insert(BUFFER, mwrapper(O, O', SFBID, RFBID, DATA)), ATTRS' >
+     if O' == sem2syn(TARGET) .
 
-  rl [sendData-fail] :
-     < O : PLCMachine | proc : task(k(sendData(O', SFBID, RFBID, DATA) ~> K) RESTT) KC, ATTRS >
+ crl [sendData-fail] :
+     < O : PLCMachine | proc : k(sendData(TARGET, SFBID, RFBID, DATA) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
-  => < O : PLCMachine | proc : task(k(FALSE ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' > .
+  => < O : PLCMachine | proc : k(FALSE ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
+     if O' == sem2syn(TARGET) .
 
-  rl [rcvData] :
-     < O : PLCMachine | proc : task(k(rcvData(O', SFBID, RFBID) ~> K) RESTT) KC, ATTRS >
+ crl [rcvData] :
+     < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFBID, RFBID, DATA)), ATTRS' >
-  => < O : PLCMachine | proc : task(k(DATA ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' > .
+  => < O : PLCMachine | proc : k(sem2syn(DATA) ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
+     if O' == sem2syn(TARGET) .
 
-  rl [rcv-fail] :
-     < O : PLCMachine | proc : task(k(rcvData(O', SFBID, RFBID) ~> K) RESTT) KC, ATTRS >
+ crl [rcv-fail] :
+     < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
-  => < O : PLCMachine | proc : task(k(rcvError ~> K) RESTT) KC, ATTRS >
-     < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' > .
+  => < O : PLCMachine | proc : k(rcvError ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
+     if O' == sem2syn(TARGET) .
 
  crl [rcv-noMsg] :
-     < O : PLCMachine | proc : task(k(rcvData(O', SFBID, RFBID) ~> K) RESTT) KC, ATTRS >
+     < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
-  => < O : PLCMachine | proc : task(k(rcvError ~> K) RESTT) KC, ATTRS >
+  => < O : PLCMachine | proc : k(rcvError ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' > 
-  if not checkMsg(BUFFER, O', SFBID, RFBID) .
+  if O' == sem2syn(TARGET) /\ not checkMsg(BUFFER, O', SFBID, RFBID) .
 endm
 

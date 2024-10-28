@@ -56,9 +56,9 @@ class MAINTRANSLATOR:
             fileWriter = open(os.path.dirname(projectPath) + "/" + projectName + ".maude", "w")
             loadFormat = ""
             if concretORsymbolic == "concrete":
-                loadFormat += "load " + os.path.dirname(self.workingDir) + "/../semantics/interpreter/merge \n"
+                loadFormat += "load " + os.path.dirname(self.workingDir) + "/../semantics/interpreter/environment \n"
             else:
-                loadFormat += "load " + os.path.dirname(self.workingDir) + "/../semantics/interpreter/merge \n"
+                loadFormat += "load " + os.path.dirname(self.workingDir) + "/../semantics/interpreter/environment \n"
             loadFormat += "load " + libMaudeFilePath + "\n"
 
             preprocessed = returnAfterMergingWithAppFormat(loadFormat, stTranslatorInstance.returnMaude(libFB))

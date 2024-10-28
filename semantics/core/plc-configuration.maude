@@ -110,7 +110,11 @@ fmod CODE-CONFIG is
   op constraints : BoolSemanticVal -> KConfig [ctor] .
   op recentAction : Qid -> KConfig [ctor] .
 
-  op task : KConfig -> KConfig [ctor] . --- ProcessId K ProgramStack interval phase priority futureJob
+  op done : List{ProcessId} -> KConfig [ctor] .
+  op pList : List{ProcessId} -> KConfig [ctor] .
+
+
+ --- op task : KConfig -> KConfig [ctor] . --- ProcessId K ProgramStack interval phase priority futureJob
 
   op enumTypes : TypeDeclSet -> KConfig [ctor] .
 

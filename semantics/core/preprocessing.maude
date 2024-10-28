@@ -126,6 +126,7 @@ fmod PREPROCESSING is
   op buildIns : List{Triple} Env Map{Location, SemanticValue} KConfig Nat -> preprocessingQuarter .
   op buildSingleInsEnvStore : Triple Env Map{Location, SemanticValue} KConfig VarSection Nat -> preprocessingQuarter .
   op buildEnvStore : VarDeclSet KConfig Nat  ->  preprocessingQuarter .
+  op takePids : List{Triple} ~> List{ProcessId} .
   op makeProgramList : ProgramList Nat -> List{Triple} .
   op makeSubProgramList : ProgramList Nat -> List{Triple} .
   op makeCycleTime : CycleTime -> KConfig . 
@@ -147,7 +148,8 @@ fmod PREPROCESSING is
     store(STR') makeCycleTime(CT) 
     pickInss(preprocessPOUs(NEWINSS), inss(empty))
     randomSeed(0) globalVars(makeGVSet(VDC)) globalTime(0) recentAction('none) 
-    log(emptyLog)
+    log(emptyLog) k(.K) callStack(nilProgramStack)
+    pList(nilProcIds) done(takePids(TODOLIST'))
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))
@@ -188,6 +190,8 @@ fmod PREPROCESSING is
 
   eq makeProgramList(emptyProgramList, INSLOC) = nil .
   eq makeProgramList(PNAME ;; ML, INSLOC) = (PNAME, program[ PNAME ], INSLOC) makeProgramList(ML, INSLOC + 1) . 
+  eq takePids((PNAME, program[ PNAME ], INSLOC) RT:List{Triple}) = INSLOC :: takePids(RT:List{Triple}) .
+  eq takePids(nil) = nilProcIds .
 
   eq makeSubProgramList(emptyProgramList, INSLOC) = nil .
   eq makeSubProgramList(PNAME ;; ML, INSLOC) = (PNAME, fbtype[ PNAME ], INSLOC) makeSubProgramList(ML, INSLOC + 1) . 
@@ -205,7 +209,7 @@ fmod PREPROCESSING is
   eq getVarSection(POUDef(STRUCT PNAME VSC ENDSTRUCT)) = VSC .
   
   eq makeInsAndProc((PNAME, program[ PNAME ],  INSLOC), POUDef(PROGRAM PNAME VSC CODE S ENDCODE ENDPROGRAM), ENV) 
-  = (ins(id(INSLOC) fbtype(PNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) task(id(INSLOC) k(@loadNBlock) callStack(ENV))) .
+  = (ins(id(INSLOC) fbtype(PNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV))) .
   eq makeInsAndProc((VARNAME, fbtype[ FBNAME ], INSLOC), POUDef(FUNCTIONBLOCK FBNAME VSC CSC ENDFUNCTIONBLOCK), ENV) 
   = ins(id(INSLOC) fbtype(FBNAME) iname(VARNAME) timer(@timer(syn2sem(T# 0 ms))) mem(ENV)) .
   eq makeInsAndProc((VARNAME, structype[ FBNAME ], INSLOC), POUDef(STRUCT FBNAME VSC ENDSTRUCT), ENV) 
