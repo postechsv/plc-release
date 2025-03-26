@@ -57,14 +57,14 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   if loc(LOCINDEX, TYPE) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
   --- global
-  rl [globalAssign] :
+  eq [globalAssign] :
      log(LOG)
      k(I := V ~> K) callStack(ENV :: ENVSTACK) globalVars(@(I) VS)
-  => log(LOG (I , 'globalAssign, V))
+   = log(LOG (I , 'globalAssign, V))
      k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) globalVars(@(I) VS) .
 
- crl [localAssign] : k(I := V ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
-  => k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
+ ceq [localAssign] : k(I := V ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
+   = k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
   if not in(I, VS) .
 
 ---  eq task(k(InsLoc(INSLOC) . I := V ~> K) inss(INSS) 
@@ -81,14 +81,14 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 
   --- Pid
   --- global
-  rl [globalLookup] :
+  eq [globalLookup] :
      log(LOG) store(STORE)
      k(I ~> K) callStack(ENV :: ENVSTACK) globalVars(@(I) VS) 
-  => log(LOG (I , 'globalLookUp, placeHolder)) store(STORE)
+   = log(LOG (I , 'globalLookUp, placeHolder)) store(STORE)
      k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) globalVars(@(I) VS) .
 
-  crl [localLookup] : k(I ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
-   => k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
+  ceq [localLookup] : k(I ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
+    = k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) globalVars(VS)
    if not in(I, VS) .
   --- _._._._
   eq k(InsLoc(INSLOC) . I ~> K)                 inss(INSS) 
@@ -253,8 +253,8 @@ mod CALL-SEMANTICS is
   op @pop : -> KLabel [ctor] .
   op tag : List{FArgElement} VarSecTypePairList -> List{FArgElement} .
 
- crl [fbcall] : k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV)  store(STORE) 
-  => k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV)  store(STORE) 
+ ceq [fbcall] : k(FBI(ARGS) ~> K) callStack(ENV :: RESTENV)  store(STORE) 
+   = k(@call(INSLOC,ARGS) ~> K) callStack(ENV :: RESTENV)  store(STORE) 
   if InsLoc(INSLOC) := STORE[ENV[FBI]] .
 
  ceq k(@call(INSLOC,ARGS) ~> K)  inss(INSS)  
@@ -317,8 +317,8 @@ mod CALL-SEMANTICS is
   eq k(@args(nilPExpList) ~> @bind(ENV,CPR) ~> K) callStack(RESTENV)  
    = k(K) callStack(ENV :: RESTENV)   .
 
-  rl [return] : (k(@pop ~> K)) callStack(ENV :: RESTENV)   
-  => (k(K)) callStack(RESTENV)    .
+  eq [return] : (k(@pop ~> K)) callStack(ENV :: RESTENV)   
+   = (k(K)) callStack(RESTENV)    .
 
   eq (k(return ~> @pop ~> K)) callStack(ENV :: RESTENV)  
    = (k(K)) callStack(RESTENV)   . 

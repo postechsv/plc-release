@@ -71,7 +71,7 @@ returnstatement : RETURN;
 emptystatement : ;
 
 expr : '(' expr ')' # PARENTHESIS
-     | op=(ARITHMETICBUILTINFUNCTIONS|DATACONVERSIONBUILTINFUNCTIONS|'isConnected'|'sendData'|'rcvData') '(' argumentlist ')' # FUNCTIONCALL
+     | op=(ARITHMETICBUILTINFUNCTIONS|DATACONVERSIONBUILTINFUNCTIONS|'isConnected'|'sendData'|'rcvData'|'wrcvData') '(' argumentlist ')' # FUNCTIONCALL
      | SUB expr # NEGATIVEOPERATION
      | NOT expr # NOTOPERATION
      | <assoc=right> expr op=EXPO expr # EXPONENTIAL

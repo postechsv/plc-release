@@ -46,6 +46,7 @@ builtinFunMap["connectRequest"] = [(1, "STRING", "BOOL")]
 builtinFunMap["disconnect"] = [(1, "STRING", "BOOL")]
 builtinFunMap["sendData"] = [(4, "STRING", "STRING", "STRING", "ANY", "BOOL")]
 builtinFunMap["rcvData"] = [(3, "STRING", "STRING", "STRING", "ANY")]
+builtinFunMap["wrcvData"] = [(3, "STRING", "STRING", "STRING", "ANY")]
 
 totalTYPES = ['BOOL' , 'DINT' , 'INT' , 'SINT','UDINT', 'UINT' , 'USINT', 'TIME', 'REAL', 'STRING']
 

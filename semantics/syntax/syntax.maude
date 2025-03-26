@@ -343,6 +343,7 @@ fmod STATEMENT is
   op disconnect : -> FunId [ctor] .
   op sendData : -> FunId [ctor] . --- Oid SenderBlock ReceiverBlock Data
   op rcvData : -> FunId [ctor] . --- Oid SenderBlock ReceiverBlock
+  op wrcvData : -> FunId [ctor] . --- Oid SenderBlock ReceiverBlock
   op rcvError : -> PValue [ctor] .
 endfm
 

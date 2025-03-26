@@ -130,5 +130,4 @@ fmod CODE-CONFIG is
   eq getInsType(LOC, ins(id(LOC) fbtype(FBNAME) REST) INSS) = FBNAME .
 
   op initCond : ~> SemanticValue .
-  op tv : Nat ~> SemanticValue .
 endfm

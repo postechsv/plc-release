@@ -44,8 +44,17 @@ fmod DATA-CONVERSION is
   eq k(ANYTOSTRING([S]) ~> K) = k([S] ~> K) .
 
 
-  eq k(ANYTOBOOL(V) ~> K) = k(ite(V ==== syn2sem(# 0), syn2sem(FALSE), syn2sem(TRUE)) ~> K) [owise] .
 
+  eq k(ANYTOBOOL(V) ~> K) = k(V ~> K) [owise] .
+  eq k(ANYTOSINT(V) ~> K) = k(V ~> K) [owise] .
+  eq k(ANYTOUSINT(V) ~> K) = k(V ~> K) [owise] .
+  eq k(ANYTOINT(V) ~> K) = k(V ~> K) [owise] .
+  eq k(ANYTOUINT(V) ~> K) = k(V ~> K) [owise] .
+  eq k(ANYTODINT(V) ~> K) = k(V ~> K) [owise] .
+  eq k(ANYTOUDINT(V) ~> K) = k(V ~> K) [owise] .
+  eq k(ANYTOLINT(V) ~> K) = k(V ~> K) [owise] .
+---(
+  eq k(ANYTOBOOL(V) ~> K) = k(ite(V ==== syn2sem(# 0), syn2sem(FALSE), syn2sem(TRUE)) ~> K) [owise] .
   eq k(ANYTOSINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(256, truncVal(removeTime(V)))) ~> K) [owise] .
   eq k(ANYTOUSINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), usignedConversion(256, truncVal(removeTime(V)))) ~> K) [owise] .
   eq k(ANYTOINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(65536, truncVal(removeTime(V)))) ~> K) [owise] .
@@ -53,7 +62,7 @@ fmod DATA-CONVERSION is
   eq k(ANYTODINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(4294967296, truncVal(removeTime(V)))) ~> K) [owise] .
   eq k(ANYTOUDINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), usignedConversion(4294967296, truncVal(removeTime(V)))) ~> K) [owise] .
   eq k(ANYTOLINT(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), signedConversion(2 ^ 64, truncVal(removeTime(V)))) ~> K) [owise] .
-
+---)
   eq k(ANYTOREAL(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), convertToREAL(removeTime(V))) ~> K) [owise] .
   eq k(ANYTOLREAL(V) ~> K) = k(ite(checkBOOL(V), convertBOOL(V), convertToREAL(removeTime(V))) ~> K) [owise] .
 

@@ -38,33 +38,43 @@ mod OBJ-STRUCTURE is
   op PLCMachine : -> PLCMachine [ctor format(! o)] .
   op proc   :_ : KConfig? -> Attribute [ctor gather(&) format(nm o d d)] .
   op state :_ : Map{PExp, SemanticValue} -> Attribute [ctor gather(&) format(nm o d d)] .
-  op timer :_ : Nat -> Attribute [ctor gather(&) format(nm o d d)] .
+  op timer :_ : SemanticValue -> Attribute [ctor gather(&) format(nm o d d)] .
   op actList :_ : List{PExp} -> Attribute [ctor gather(&) format(nm o d d)] .
   op senList :_ : List{PExp} -> Attribute [ctor gather(&) format(nm o d d)] .
   op flow :_ : Dynamics -> Attribute [ctor gather(&) format(nm o d d)] .
   op gen :_ : Nat -> Attribute [ctor gather(&) format(nm o d d)] .
+  op clock :_ : Nat -> Attribute [ctor gather(&) format(nm o d d)] .
+  op envTimer :_ : Nat -> Attribute [ctor gather(&) format(nm o d d)] .
+
+  op tgen : Nat -> NEConfiguration [ctor] .
+  op tickTurn : Bool -> NEConfiguration [ctor] .
+  op cconst : SemanticValue -> NEConfiguration [ctor] . 
+  op dconst : SemanticValue -> NEConfiguration [ctor] . 
+  op tconst : SemanticValue -> NEConfiguration [ctor] . 
 endm
 
 mod UTIL is
   including DYNAMICS-EVALUATION .
   including OBJ-STRUCTURE .
 
-  op mte : NEConfiguration ~> Nat .
+  op mte : NEConfiguration SemanticValue ~> SemanticValue .
   op monus : Nat Nat ~> Nat .
   op enable : NEConfiguration ~> NEConfiguration .
 
   var PLC : Object .
   var CONF : NEConfiguration .
   var ATTRS : AttributeSet .
-  var TIMER : Nat .
+  var TIMER : SemanticValue .
+  var TE : SemanticValue .
   var DISABLED : Map{PExp, Bool} .
   var PNAME : Pid .
   vars T T' : Nat .
   var CONF' : Configuration .
  
-  eq mte(PLC CONF) = min(mte(PLC), mte(CONF)) .
-  eq mte(< O:Oid : PLCMachine | timer : TIMER, ATTRS >)
-   = TIMER .
+  eq mte(PLC CONF, TE) = mte(PLC, TE) AND mte(CONF, TE) .
+  eq mte(< O:Oid : PLCMachine | timer : TIMER, ATTRS >, TE)
+   = TE <= TIMER .
+  eq mte(CONF, TE) = [(true).Boolean] [owise] .
 
   eq monus(T, T') = T - T' .
 endm
@@ -74,29 +84,41 @@ mod TIMEEFFECT is
   including UTIL .
 
 
-  op timeEffect : Configuration Nat ~> Configuration .
+  op envTimeEffect : Configuration Nat ~> Configuration .
+  op timeEffect : Configuration SemanticValue ~> Configuration .
 
   var KC : KConfig .
   var ATTRS : AttributeSet .
   vars STATE STATE' : Map{PExp, SemanticValue} .
   var FLOW : Dynamics .
   vars T MINT MAXT : Nat .
-  var TIMER : Nat .
+  vars TIMER CLOCK : Nat .
   var CC : SemanticValue .
   var CONF : NEConfiguration .
   var CONF' : NEConfiguration .
 
-  eq timeEffect(none, T) = none .
-  eq timeEffect(
-     < O:Oid : PLCMachine | timer : TIMER, 
+  eq envTimeEffect(none, T) = none .
+  eq envTimeEffect(
+     < O:Oid : PLCMachine | envTimer : TIMER,
+                            clock : CLOCK, 
                             flow : FLOW,
                             state : STATE, ATTRS >, T)
-   = < O:Oid : PLCMachine | timer : monus(TIMER, T),
+   = < O:Oid : PLCMachine | envTimer : monus(TIMER, T),
+                            clock : CLOCK + T,
                             flow : FLOW,
-                            state : timeEffect(FLOW, STATE, T),
+                            state : envTimeEffect(FLOW, STATE, T),
                             ATTRS > .
   
-  eq timeEffect(CONF CONF', T) = timeEffect(CONF, T) timeEffect(CONF', T) .
+  eq envTimeEffect(CONF CONF', T) = envTimeEffect(CONF, T) envTimeEffect(CONF', T) .
+  eq envTimeEffect(CONF, T) = CONF [owise] .
+
+  op minEnv : Configuration ~> Nat .
+
+  eq minEnv(< O:Oid : PLCMachine | envTimer : TIMER,
+                                   clock : CLOCK, 
+                                   flow : FLOW,
+                                   state : STATE, ATTRS > CONF) = min(TIMER, minEnv(CONF)) .
+  eq minEnv(CONF) = 10000000 [owise] .
 endm 
 
 mod EXECUTE is
@@ -108,6 +130,7 @@ mod EXECUTE is
   op actuate : Map{PExp, SemanticValue} KConfig List{PExp} ~> Map{PExp, SemanticValue} .
   op sense : KConfig Map{PExp, SemanticValue} List{PExp} ~> KConfig .
   op isAllReadyFrozen : Configuration ~> Bool . 
+  op isAnyReady : Configuration ~> Bool .
 
   var CONF : Configuration .
   vars T : Nat .
@@ -128,65 +151,86 @@ mod EXECUTE is
   var STACK : ProgramStack .
   var N : Nat .
   var PL : List{ProcessId} .
+  vars TIME' TIME : SemanticValue .
+  var CONST : SemanticValue .
 
+  op collectTimerZero : Configuration ~> SemanticValue .
 --- string conversion
   eq k(thisBlock ~> K) callStack(ENV :: STACK)
      inss(ins(mem(ENV) iname(PNAME) RESTI) INSS)
    = k([string(PNAME)] ~> K) callStack(ENV :: STACK)
      inss(ins(mem(ENV) iname(PNAME) RESTI) INSS) .
 
-  eq < O:PExp : PLCMachine | gen : N, proc : k(boolUserInput ~> K) KC, ATTRS >
-   = < O:PExp : PLCMachine | gen : s N, proc : k([b(smtv(O:PExp, N))] ~> K) KC, ATTRS > .
+  eq < O:PExp : PLCMachine | gen : N, proc : k(boolUserInput ~> K) constraints(CONST) KC, ATTRS >
+   = < O:PExp : PLCMachine | gen : s N, proc : k([i(smtv(O:PExp, N))] ~> K) constraints(CONST AND (([i(smtv(O:PExp, N))] ==== [(1).Integer]) OR ([i(smtv(O:PExp, N))] ==== [(0).Integer]))) KC, ATTRS > .
 
- crl [envTick] :
-     {CONF} => {timeEffect(CONF, T)}
-  if T := mte(CONF) /\ T > 0 .
+  rl [tick] :
+     {tconst(CONST) CONF tickTurn(true) tgen(N)} 
+  => {tconst(CONST AND mte(CONF, [r(tv(N))])) timeEffect(CONF, [r(tv(N))]) tickTurn(false) tgen(s N)} .
+
+  eq timeEffect(< O:Oid : PLCMachine | timer : TIME', ATTRS > CONF, TIME)
+   = < O:Oid : PLCMachine | timer : TIME' - TIME, ATTRS > timeEffect(CONF, TIME) .
+
+ ceq [envTick] :
+     {CONF} = {envTimeEffect(CONF, minEnv(CONF))}
+  if minEnv(CONF) > 0 .
 
  crl [start] :
-     {CONF} => {enable(sense(actuate(CONF)))}
-  if isAllReadyFrozen(CONF) .
+     {tconst(CONST) CONF tickTurn(false)} 
+  => {tconst(CONST AND collectTimerZero(CONF)) enable(sense(actuate(CONF))) tickTurn(true)}
+  if isAnyReady(CONF) /\ isAllReadyFrozen(CONF) /\ checkSAT(CONST AND collectTimerZero(CONF)) .
 
   eq [end] :
      < O:Oid : PLCMachine | proc : k(.K) pList(nilProcIds) KC, ATTRS > 
    = < O:Oid : PLCMachine | proc : [k(@end) pList(nilProcIds) KC], ATTRS > .
 
+  eq isAnyReady(< O:Oid : PLCMachine | envTimer : 0, ATTRS > CONF)
+   = true .
+
+  eq isAnyReady(CONF) = false [owise] .
 
   eq isAllReadyFrozen(
-     < O:Oid : PLCMachine | timer : 0, proc : [KC], ATTRS > CONF)
+     < O:Oid : PLCMachine | envTimer : 0, proc : [KC], ATTRS > CONF)
    = isAllReadyFrozen(CONF) .
 
   eq isAllReadyFrozen(
-     < O:Oid : PLCMachine | timer : 0, proc : KC, ATTRS > CONF)
+     < O:Oid : PLCMachine | envTimer : 0, proc : KC, ATTRS > CONF)
    = false .
 
   eq isAllReadyFrozen(CONF) = true [owise] .
 
+
+  eq collectTimerZero(< O:Oid : PLCMachine | timer : TIME, ATTRS > CONF)
+   = TIME ==== [(0).Nat] AND collectTimerZero(CONF) .
+
+  eq collectTimerZero(CONF) = [(true).Boolean] [owise] .
+
   eq actuate(
-     < O:Oid : PLCMachine | timer : 0,
+     < O:Oid : PLCMachine | envTimer : 0,
                             proc : [KC],
                             state : STATE,
                             actList : ACTLIST,
                             ATTRS > CONF) 
-   = < O:Oid : PLCMachine | timer : 0,
+   = < O:Oid : PLCMachine | envTimer : 0,
                             proc : [KC],
                             state : actuate(STATE, KC, ACTLIST),
                             actList : ACTLIST,
                             ATTRS > actuate(CONF) .
   eq sense(
-     < O:Oid : PLCMachine | timer : 0,
+     < O:Oid : PLCMachine | envTimer : 0,
                             proc : [KC],
                             state : STATE,
                             senList : SENLIST,
                             ATTRS > CONF) 
-   = < O:Oid : PLCMachine | timer : 0,
+   = < O:Oid : PLCMachine | envTimer : 0,
                             proc : [sense(KC, STATE, SENLIST)],
                             state : STATE,
                             senList : SENLIST,
                             ATTRS > sense(CONF) .
 
   eq enable(
-     < O:Oid : PLCMachine | timer : 0, proc : [cycleTime(T) KC], ATTRS > CONF)
-   = < O:Oid : PLCMachine | timer : T, proc : cycleTime(T) KC, ATTRS >
+     < O:Oid : PLCMachine | envTimer : 0, timer : TT:SemanticValue, proc : [cycleTime(T) KC], ATTRS > CONF)
+   = < O:Oid : PLCMachine | envTimer : T, timer : [T], proc : cycleTime(T) KC, ATTRS >
      enable(CONF) .
 
   eq actuate(CONF) = CONF [owise] .
@@ -225,13 +269,16 @@ mod COMMUNICATION is
 
   op Channel : -> Channel [ctor] .
   op link : Oid Oid -> Oid [ctor comm] .
-  op mwrapper : Oid Oid SemanticValue SemanticValue SemanticValue -> CMsg [ctor] .
+  op mwrapper : Oid Oid SemanticValue SemanticValue SemanticValue SemanticValue -> CMsg [ctor] .
+  --- senderID receiverID sendFBID rcvFBID data minimumDelay
   op emptyBuffer : -> CMsgs [ctor] .
   op __ : CMsgs CMsgs -> CMsgs [ctor assoc comm id: emptyBuffer] .
   op insert : CMsgs CMsg ~> CMsgs .
   op checkMsg : CMsgs Oid PExp PExp ~> Bool .
   op validity :_ : Bool -> Attribute [ctor] .
   op buffer :_ : CMsgs -> Attribute [ctor] .
+
+  op minDelay : ~> SemanticValue . 
 
   vars O O' : PExp .
   var TARGET : SemanticValue .
@@ -242,29 +289,45 @@ mod COMMUNICATION is
   var NEWM : CMsg .
   vars DATA DATA' SFBID RFBID : SemanticValue .
   var B : Bool .
+  vars T D D' CONST : SemanticValue .
 
-  eq mte(< L:Oid : Channel | ATTRS >) = 1000000 .
-  eq timeEffect(< L:Oid : Channel | ATTRS >, T:Nat)
+  eq mte(< L:Oid : Channel | ATTRS >, T) = [(true).Boolean] .
+  eq envTimeEffect(< L:Oid : Channel | ATTRS >, T:Nat)
    = < L:Oid : Channel | ATTRS > .
 
-  eq insert(BUFFER mwrapper(O, O', SFBID, RFBID, DATA'), mwrapper(O, O', SFBID, RFBID, DATA))
-   = BUFFER mwrapper(O, O', SFBID, RFBID, DATA) .
+  eq insert(BUFFER mwrapper(O, O', SFBID, RFBID, DATA', D'), mwrapper(O, O', SFBID, RFBID, DATA, D))
+   = BUFFER mwrapper(O, O', SFBID, RFBID, DATA, D) .
   eq insert(BUFFER, NEWM) = BUFFER NEWM [owise] .
-  eq checkMsg(BUFFER mwrapper(O, O', SFBID, RFBID, DATA), O, SFBID, RFBID) = true .
+  eq checkMsg(BUFFER mwrapper(O, O', SFBID, RFBID, DATA, D), O, SFBID, RFBID) = true .
   eq checkMsg(BUFFER, O, SFBID, RFBID) = false [owise] .
 
- crl [con-succ] :
+  op timeEffect : CMsgs SemanticValue ~> CMsgs .
+
+  eq timeEffect(emptyBuffer, T) = emptyBuffer .
+  eq timeEffect((mwrapper(O, O', SFBID, RFBID, DATA, D) BUFFER), T)
+   = mwrapper(O, O', SFBID, RFBID, DATA, D - T) timeEffect(BUFFER, T) .
+
+  eq timeEffect(< link(O, O') : Channel | buffer : BUFFER, ATTRS > CONF:Configuration, T)
+   = < link(O, O') : Channel | buffer : timeEffect(BUFFER, T), ATTRS > timeEffect(CONF:Configuration, T) .
+
+  eq timeEffect(CONF:Configuration, T) = CONF:Configuration [owise] .
+
+ ceq [con-succ] :
      < O : PLCMachine | proc : k(connectRequest(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, ATTRS' >
-  => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
+     tickTurn(false)
+   = < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
+     tickTurn(true)
   if O' == sem2syn(TARGET) .
 
- crl [con-back] :
+ ceq [con-back] :
      < O : PLCMachine | proc : k(connectRequest(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
-  => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
+     tickTurn(false)
+   = < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
+     tickTurn(true)
   if O' == sem2syn(TARGET) .
 
 ---(
@@ -278,16 +341,20 @@ mod COMMUNICATION is
  crl [discon-vol]:
      < O : PLCMachine | proc : k(disconnect(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
+     tickTurn(false)
   => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, ATTRS' >
+     tickTurn(true)
   if O' == sem2syn(TARGET) .
 
 
- crl [isConnected]:
+ ceq [isConnected]:
      < O : PLCMachine | proc : k(isConnected(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : B, ATTRS' >
-  => < O : PLCMachine | proc : k(if B then TRUE else FALSE fi ~> K) KC, ATTRS >
+     tickTurn(false)
+   = < O : PLCMachine | proc : k(if B then TRUE else FALSE fi ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : B, ATTRS' >
+     tickTurn(true)
   if O' == sem2syn(TARGET) .
 
 ---(
@@ -298,36 +365,59 @@ mod COMMUNICATION is
  crl [sendData] :
      < O : PLCMachine | proc : k(sendData(TARGET, SFBID, RFBID, DATA) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
+     tickTurn(false)
   => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : insert(BUFFER, mwrapper(O, O', SFBID, RFBID, DATA)), ATTRS' >
+     < link(O, O') : Channel | validity : true, buffer : insert(BUFFER, mwrapper(O, O', SFBID, RFBID, DATA, minDelay)), ATTRS' >
+     tickTurn(true)
      if O' == sem2syn(TARGET) .
 
  crl [sendData-fail] :
      < O : PLCMachine | proc : k(sendData(TARGET, SFBID, RFBID, DATA) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
+     tickTurn(false)
   => < O : PLCMachine | proc : k(FALSE ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
+     tickTurn(true)
      if O' == sem2syn(TARGET) .
 
  crl [rcvData] :
      < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFBID, RFBID, DATA)), ATTRS' >
-  => < O : PLCMachine | proc : k(sem2syn(DATA) ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFBID, RFBID, DATA, D)), ATTRS' >
+     tickTurn(false)
+     tconst(CONST)
+  => < O : PLCMachine | proc : k(DATA ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
-     if O' == sem2syn(TARGET) .
+     tickTurn(true)
+     tconst(CONST AND (D < [(0/1).Real]))
+     if O' == sem2syn(TARGET) /\ checkSAT(CONST AND D < [(0/1).Real]) .
 
  crl [rcv-fail] :
      < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
+     tickTurn(false)
   => < O : PLCMachine | proc : k(rcvError ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, buffer : BUFFER, ATTRS' >
+     tickTurn(true)
      if O' == sem2syn(TARGET) .
 
+ crl [wrcvData] :
+     < O : PLCMachine | proc : k(wrcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFBID, RFBID, DATA, D)), ATTRS' >
+     tickTurn(false)
+     tconst(CONST)
+  => < O : PLCMachine | proc : k(DATA ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
+     tickTurn(true)
+     tconst(CONST AND D < [(0/1).Real])
+     if O' == sem2syn(TARGET) /\ checkSAT(CONST AND D < [(0/1).Real]) .
+
+---(
  crl [rcv-noMsg] :
      < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
   => < O : PLCMachine | proc : k(rcvError ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' > 
   if O' == sem2syn(TARGET) /\ not checkMsg(BUFFER, O', SFBID, RFBID) .
+---)
 endm
 

@@ -29,8 +29,9 @@ mod SOLUTION-FUNCTION is
   subsort SFunction < SFunctionList .
   subsort SFunctionList < Dynamics .
 
+  op noDynamics : -> SFunctionList [ctor] .
   op _(_)=_ : PExp Var DExp -> SFunction [ctor prec 10] .
-  op _;;_ : SFunctionList SFunctionList -> SFunctionList [ctor assoc comm prec 20] .
+  op _;;_ : SFunctionList SFunctionList -> SFunctionList [ctor assoc comm id: noDynamics prec 20] .
 endm
 
 mod DYNAMICS-EVALUATION is
@@ -47,7 +48,7 @@ mod DYNAMICS-EVALUATION is
   op none : -> UpdateResult [ctor] .
 
   --- updateState : equation sensor acutator time gen
-  op timeEffect : Dynamics Map{PExp, SemanticValue} Nat ~> Map{PExp, SemanticValue} .
+  op envTimeEffect : Dynamics Map{PExp, SemanticValue} Nat ~> Map{PExp, SemanticValue} .
   op updateItem : Dynamics Map{PExp, SemanticValue} Nat ~> Map{PExp, SemanticValue} .
   op evalExp : DExp Map{PExp, SemanticValue} Nat ~> SemanticValue .
 
@@ -65,10 +66,12 @@ mod DYNAMICS-EVALUATION is
   var ER : UpdateResult .
 
   --- solution function
-  eq timeEffect(EQ, STATE, N) = updateItem(EQ, STATE, N) .
- ceq timeEffect(EQ ;; EQS, STATE, N) = STATE''
-     if STATE' := updateItem(EQ, STATE, N)
-     /\ STATE'' := timeEffect(EQS, STATE', N) .
+  eq envTimeEffect(noDynamics, STATE, N) = STATE .
+  eq envTimeEffect(EQ, STATE, N) = updateItem(EQ, STATE, N) .
+ ceq envTimeEffect(EQ ;; EQS, STATE, N) = STATE''
+     if EQS =/= noDynamics
+     /\ STATE' := updateItem(EQ, STATE, N)
+     /\ STATE'' := envTimeEffect(EQS, STATE', N) .
   eq updateItem(X(T) = E, ((X ||-> V), STATE), N)
    = (STATE, (X ||-> evalExp(E, ((X ||-> V), STATE), N))) .
 
