@@ -176,26 +176,30 @@ class ReqFileTranslator:
 "  inc APP . \n" \
 "  op cond : ~> PExp . \n" \
 "  op appExt : ~> KConfig . \n" \
+"  op ranges : ~> Ranges . \n" \
 "  ops rawis is os : ~> StreamMap .  \n" \
 "  op bound : -> Nat . \n" \
 "  op am : ~> AdapterMap . \n" \
 "  eq bound = " + visitor.bound + " . \n" \
+"  op srange : ~> Nat . \n" \
+"  eq srange = srange(ranges, am) . \n" \
 "  eq cond = " + visitor.CONDITION + " . \n" \
 "  eq rawis = ( \n" + visitor.INPUTSTREAM + \
 "              ) . \n" \
-"  eq is = genEmptyStream(streamKeySet(rawis)) .  \n" \
+"  eq ranges = genRanges(app, bound) . \n"\
+"  eq is = genIS(annotateType(rawis, app), ranges) .  \n" \
 "  eq os = genEmptyStream(setDiff(collectKeySet(cond), streamKeySet(transformISKey(is)))) .\n" \
 "  eq am = ( \n" + visitor.AMAP + \
 "           ) . \n" \
-"  eq appExt = replaceStreams(app, maxTime(bound) inputCollector(is) inputPattern(rawis) LTLCondition(cond) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os))) .\n" \
+"  eq appExt = app maxTime(bound) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os)) LTLCondition(cond). \n" \
 "  var CONST : SemanticValue . \n" \
 "  vars IS' OS' : StreamMap . \n" \
 "endm\n" \
 "search [1] \n" \
-"appExt =>* constraints(CONST) inputCollector(IS') \n" \
+"appExt =>* constraints(CONST) \n" \
 "           outStream(OS') REST:KConfig \n" \
 "such that \n" \
-"checkSAT((adapt((transformISKey(IS'), OS'), am) |= genFormula(NOT cond, 0, cutSize(OS', am) - 1)) AND CONST) . "
+"checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) . "
         if "symbolic" in visitor.INPUTSTREAM:
             self.symbolicOrconcrete = "symbolic"
         else:

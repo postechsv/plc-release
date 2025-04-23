@@ -411,13 +411,11 @@ mod COMMUNICATION is
      tconst(CONST AND D < [(0/1).Real])
      if O' == sem2syn(TARGET) /\ checkSAT(CONST AND D < [(0/1).Real]) .
 
----(
  crl [rcv-noMsg] :
      < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
   => < O : PLCMachine | proc : k(rcvError ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' > 
   if O' == sem2syn(TARGET) /\ not checkMsg(BUFFER, O', SFBID, RFBID) .
----)
 endm
 
