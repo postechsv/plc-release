@@ -176,26 +176,62 @@ class ReqFileTranslator:
 "  inc APP . \n" \
 "  op cond : ~> PExp . \n" \
 "  op appExt : ~> KConfig . \n" \
+"  op ranges : ~> Ranges . \n" \
 "  ops rawis is os : ~> StreamMap .  \n" \
 "  op bound : -> Nat . \n" \
 "  op am : ~> AdapterMap . \n" \
 "  eq bound = " + visitor.bound + " . \n" \
+"  op srange : ~> Nat . \n" \
+"  eq srange = srange(ranges, am) . \n" \
 "  eq cond = " + visitor.CONDITION + " . \n" \
 "  eq rawis = ( \n" + visitor.INPUTSTREAM + \
 "              ) . \n" \
-"  eq is = genEmptyStream(streamKeySet(rawis)) .  \n" \
+"  eq ranges = genRanges(app, bound) . \n"\
+"  eq is = genIS(annotateType(rawis, app), ranges) .  \n" \
 "  eq os = genEmptyStream(setDiff(collectKeySet(cond), streamKeySet(transformISKey(is)))) .\n" \
 "  eq am = ( \n" + visitor.AMAP + \
 "           ) . \n" \
-"  eq appExt = replaceStreams(app, maxTime(bound) inputCollector(is) inputPattern(rawis) LTLCondition(cond) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os))) .\n" \
+"  eq appExt = app maxTime(bound) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os)) LTLCondition(cond). \n" \
 "  var CONST : SemanticValue . \n" \
 "  vars IS' OS' : StreamMap . \n" \
+" ceq log(LOG:Log) = log(emptyLog) if LOG:Log =/= emptyLog . \n" \
 "endm\n" \
-"search [1] \n" \
-"appExt =>* constraints(CONST) inputCollector(IS') \n" \
-"           outStream(OS') REST:KConfig \n" \
-"such that \n" \
-"checkSAT((adapt((transformISKey(IS'), OS'), am) |= genFormula(NOT cond, 0, cutSize(OS', am) - 1)) AND CONST) . "
+"smod POR is\n" \
+"  inc MC .\n" \
+"  var CONST : SemanticValue . \n" \
+"  vars IS' OS' : StreamMap . \n" \
+"  var REST : KConfig .\n" \
+"  strat porStep @ KConfig .\n" \
+"  strat noMem @ KConfig .\n" \
+"  strat pjRed @ KConfig .\n" \
+"  strat rest @ KConfig .\n" \
+"  sd noMem := localLookup | globalLookup | fbcall | return | arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .\n" \
+"  sd pjRed := placeJob-por | placeJob-wait-por .\n" \
+"  sd rest := localAssign | globalAssign | globalLookup | schedule | endProgram | preempt | placeJob | placeJob-wait . \n" \
+"  sd porStep := (noMem ? idle : ((pjRed ? idle : rest) | tick)) .\n" \
+"  strat goalState @ KConfig .\n" \
+"  sd goalState := match constraints(CONST)\n" \
+"                        outStream(OS') REST \n" \
+"                  s.t. \n" \
+"checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) . \n" \
+"  strat porStar @ KConfig .\n" \
+"  sd porStar := (porStep *) .\n" \
+"  strat noPor @ KConfig .\n" \
+"  sd noPor := (noMem | pjRed | rest | tick)* .\n" \
+"  strat ample @ KConfig .\n" \
+"  sd ample := ((pjRed | tick) ? idle : (rest | noMem))* .\n" \
+"  strat internal @ KConfig .\n" \
+" sd internal := (noMem ? idle : (rest | tick | pjRed))* .\n" \
+"endsm\n" \
+"smod REPORTER is\n" \
+"   inc POR .\n" \
+"   var N : Nat .\n" \
+"    op counter : Nat ResultPair? ~> Nat [ctor] .\n" \
+"    eq counter(N, failure) = N .\n" \
+"    eq counter(N, {TERM:Term, TYPE:Type})\n" \
+"     = counter(s N, metaSrewrite(upModule('POR, false), upTerm(appExt), ('porStar)[[empty]], breadthFirst, s N)) .\n" \
+" endsm\n" \
+"srew appExt using porStar ; fail ."
         if "symbolic" in visitor.INPUTSTREAM:
             self.symbolicOrconcrete = "symbolic"
         else:

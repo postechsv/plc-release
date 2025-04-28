@@ -736,23 +736,23 @@ mod SCHEDULING-SEMANTICS is
   if M < N .
 
  ceq repSeq(PNAME :: VAR, (VAL, SSEQ), M, N)
-   = VAL, repSeq(PNAME :: VAR, (SSEQ, VAL), M, N)
+   = VAL, repSeq(PNAME :: VAR, (SSEQ, VAL), s M, N)
   if M < N .
   
  ceq repSeq(PNAME :: VAR, (symB, SSEQ), M, N)
-   = @genSym(PNAME :: VAR, BOOL, M), repSeq(PNAME :: VAR, (SSEQ, symB), M, N)
+   = @genSym(PNAME :: VAR, BOOL, M), repSeq(PNAME :: VAR, (SSEQ, symB), s M, N)
   if M < N .
 
  ceq repSeq(PNAME :: VAR, (symI, SSEQ), M, N)
-   = @genSym(PNAME :: VAR, INT, M), repSeq(PNAME :: VAR, (SSEQ, symB), M, N)
+   = @genSym(PNAME :: VAR, INT, M), repSeq(PNAME :: VAR, (SSEQ, symB), s M, N)
   if M < N .
 
  ceq repSeq(PNAME :: VAR, (symR, SSEQ), M, N)
-   = @genSym(PNAME :: VAR, REAL, M), repSeq(PNAME :: VAR, (SSEQ, symB), M, N)
+   = @genSym(PNAME :: VAR, REAL, M), repSeq(PNAME :: VAR, (SSEQ, symB), s M, N)
   if M < N .
 
  ceq repSeq(PNAME :: VAR, (symT, SSEQ), M, N)
-   = @genSym(PNAME :: VAR, TIME, M), repSeq(PNAME :: VAR, (SSEQ, symB), M, N)
+   = @genSym(PNAME :: VAR, TIME, M), repSeq(PNAME :: VAR, (SSEQ, symB), s M, N)
   if M < N .
 
   eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
