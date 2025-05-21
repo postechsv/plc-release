@@ -1,0 +1,359 @@
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+Arguments: benchmark/plcverif/cmd/workspace2/benchmark14/req2.vc3
+Program directory: /home/jlee/plc-release/benchmark/plcverif/cmd
+Warning: Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program. [CBMC output parsing]
+
+Requirement: *(instance.outState > 0)* is always true at the end of the PLC cycle.
+             (AG (EoC --> (instance/outState > 0)))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/flagDelay = -2147467264 (instance.flagDelay = -2147467264)
+  - instance/dropPosTurn = 71 (instance.dropPosTurn = 71)
+  - instance/pickPosClaw = 19 (instance.pickPosClaw = 19)
+  - instance/stateWaitForCompressor2 = 5 (instance.stateWaitForCompressor2 = 5)
+  - instance/vertCurrPos = 0 (instance.vertCurrPos = 0)
+  - instance/flagState = 8 (instance.flagState = 8)
+  - instance/stateWaitForCompressor1 = 3 (instance.stateWaitForCompressor1 = 3)
+  - instance/clawCurrPos = 0 (instance.clawCurrPos = 0)
+  - instance/moveThreshold = 36 (instance.moveThreshold = 36)
+  - instance/armCurrPos = 0 (instance.armCurrPos = 0)
+  - instance/puncherButton = 0 (instance.puncherButton = 0)
+  - instance/stateAfterBoot = 0 (instance.stateAfterBoot = 0)
+  - instance/stateTakeItem = 18 (instance.stateTakeItem = 18)
+  - instance/compressor = 0 (instance.compressor = 0)
+  - EoC = true (EoC = true)
+  - instance/stateMoveToConveyer1 = 12 (instance.stateMoveToConveyer1 = 12)
+  - instance/magazinLed = 0 (instance.magazinLed = 0)
+  - instance/conveyerPusherOff = 0 (instance.conveyerPusherOff = 0)
+  - instance/stateTurnToItem = 17 (instance.stateTurnToItem = 17)
+  - instance/turnDestPos = 0 (instance.turnDestPos = 0)
+  - instance/conveyerMotPow = 0 (instance.conveyerMotPow = 0)
+  - instance/dropPosArm = 37 (instance.dropPosArm = 37)
+  - instance/stateExtractItem1 = 4 (instance.stateExtractItem1 = 4)
+  - instance/pickPosVert = 80 (instance.pickPosVert = 80)
+  - instance/stateRunConveyer = 15 (instance.stateRunConveyer = 15)
+  - instance/stateWaitForCompressor5 = 13 (instance.stateWaitForCompressor5 = 13)
+  - instance/conveyerButton = 0 (instance.conveyerButton = 0)
+  - instance/conveyerLed = 0 (instance.conveyerLed = 0)
+  - instance/stateTurnToMagazin = 19 (instance.stateTurnToMagazin = 19)
+  - instance/clawDestPos = 0 (instance.clawDestPos = 0)
+  - instance/puncher = 1 (instance.puncher = 1)
+  - instance/pickPosTurn = 111 (instance.pickPosTurn = 111)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+  - instance/extractionDelay = 15000 (instance.extractionDelay = 15000)
+  - instance/conveyerMotDir = 0 (instance.conveyerMotDir = 0)
+  - instance/stateWaitForItem = 2 (instance.stateWaitForItem = 2)
+  - instance/magazinPusherOff = 0 (instance.magazinPusherOff = 0)
+  - instance/outState = 8 (instance.outState = 8)
+  - instance/vertDestPos = 0 (instance.vertDestPos = 0)
+  - instance/magazinPhoto = 0 (instance.magazinPhoto = 0)
+  - instance/conveyerDelay = 42200 (instance.conveyerDelay = 42200)
+  - instance/tableMotDir = 0 (instance.tableMotDir = 0)
+  - instance/stateMoveToConveyer2 = 14 (instance.stateMoveToConveyer2 = 14)
+  - instance/conveyerPhoto = 0 (instance.conveyerPhoto = 0)
+  - instance/magazinPusherOn = 0 (instance.magazinPusherOn = 0)
+  - instance/armDestPos = 0 (instance.armDestPos = 0)
+  - instance/conveyerPusherOn = 0 (instance.conveyerPusherOn = 0)
+  - instance/stateWaitForCompressor4 = 11 (instance.stateWaitForCompressor4 = 11)
+  - instance/stateMoveToRobot = 16 (instance.stateMoveToRobot = 16)
+  - instance/outError = false (instance.outError = false)
+  - instance/stateExtractItem2 = 6 (instance.stateExtractItem2 = 6)
+  - instance/stateWaitForCompressor3 = 9 (instance.stateWaitForCompressor3 = 9)
+  - instance/stateRotateTable1 = 7 (instance.stateRotateTable1 = 7)
+  - instance/turnCurrPos = 0 (instance.turnCurrPos = 0)
+  - instance/stateRotateTable2 = 10 (instance.stateRotateTable2 = 10)
+  - instance/pickPosArm = 28 (instance.pickPosArm = 28)
+  - instance/compressorDelay = 60000 (instance.compressorDelay = 60000)
+  - instance/stateInit = 1 (instance.stateInit = 1)
+  - instance/statePunchItem = 8 (instance.statePunchItem = 8)
+  - instance/tableMotPow = 0 (instance.tableMotPow = 0)
+Step 2
+  - instance/dropPosArm = 37 (instance.dropPosArm = 37)
+  - instance/magazinLed = 0 (instance.magazinLed = 0)
+  - instance/flagState = 14 (instance.flagState = 14)
+  - instance/armCurrPos = 0 (instance.armCurrPos = 0)
+  - instance/conveyerMotPow = 0 (instance.conveyerMotPow = 0)
+  - instance/moveThreshold = 36 (instance.moveThreshold = 36)
+  - instance/conveyerLed = 0 (instance.conveyerLed = 0)
+  - instance/tableMotDir = 0 (instance.tableMotDir = 0)
+  - instance/stateMoveToConveyer1 = 12 (instance.stateMoveToConveyer1 = 12)
+  - instance/conveyerPusherOff = 0 (instance.conveyerPusherOff = 0)
+  - instance/pickPosTurn = 111 (instance.pickPosTurn = 111)
+  - instance/stateRotateTable2 = 10 (instance.stateRotateTable2 = 10)
+  - instance/conveyerPusherOn = 0 (instance.conveyerPusherOn = 0)
+  - instance/flagDelay = 0 (instance.flagDelay = 0)
+  - instance/magazinPhoto = 0 (instance.magazinPhoto = 0)
+  - instance/stateWaitForItem = 2 (instance.stateWaitForItem = 2)
+  - instance/clawDestPos = 0 (instance.clawDestPos = 0)
+  - instance/CYCLE = 2 (instance.CYCLE = 2)
+  - instance/stateWaitForCompressor1 = 3 (instance.stateWaitForCompressor1 = 3)
+  - instance/stateExtractItem2 = 6 (instance.stateExtractItem2 = 6)
+  - instance/magazinPusherOn = 0 (instance.magazinPusherOn = 0)
+  - instance/tableMotPow = 0 (instance.tableMotPow = 0)
+  - instance/compressorDelay = 60000 (instance.compressorDelay = 60000)
+  - instance/stateTurnToItem = 17 (instance.stateTurnToItem = 17)
+  - instance/puncher = 1 (instance.puncher = 1)
+  - instance/stateRunConveyer = 15 (instance.stateRunConveyer = 15)
+  - instance/conveyerButton = 0 (instance.conveyerButton = 0)
+  - instance/stateTurnToMagazin = 19 (instance.stateTurnToMagazin = 19)
+  - instance/extractionDelay = 15000 (instance.extractionDelay = 15000)
+  - instance/outState = 14 (instance.outState = 14)
+  - instance/stateInit = 1 (instance.stateInit = 1)
+  - instance/turnDestPos = 0 (instance.turnDestPos = 0)
+  - instance/stateAfterBoot = 0 (instance.stateAfterBoot = 0)
+  - instance/pickPosArm = 28 (instance.pickPosArm = 28)
+  - instance/stateExtractItem1 = 4 (instance.stateExtractItem1 = 4)
+  - EoC = true (EoC = true)
+  - instance/conveyerMotDir = 0 (instance.conveyerMotDir = 0)
+  - instance/pickPosClaw = 19 (instance.pickPosClaw = 19)
+  - instance/turnCurrPos = 0 (instance.turnCurrPos = 0)
+  - instance/armDestPos = 0 (instance.armDestPos = 0)
+  - instance/stateWaitForCompressor2 = 5 (instance.stateWaitForCompressor2 = 5)
+  - instance/stateWaitForCompressor5 = 13 (instance.stateWaitForCompressor5 = 13)
+  - instance/vertCurrPos = 0 (instance.vertCurrPos = 0)
+  - instance/magazinPusherOff = 0 (instance.magazinPusherOff = 0)
+  - instance/compressor = 0 (instance.compressor = 0)
+  - instance/puncherButton = 0 (instance.puncherButton = 0)
+  - instance/stateMoveToConveyer2 = 14 (instance.stateMoveToConveyer2 = 14)
+  - instance/stateWaitForCompressor3 = 9 (instance.stateWaitForCompressor3 = 9)
+  - instance/conveyerPhoto = 0 (instance.conveyerPhoto = 0)
+  - instance/stateTakeItem = 18 (instance.stateTakeItem = 18)
+  - instance/stateMoveToRobot = 16 (instance.stateMoveToRobot = 16)
+  - instance/vertDestPos = 0 (instance.vertDestPos = 0)
+  - instance/conveyerDelay = 42200 (instance.conveyerDelay = 42200)
+  - instance/outError = false (instance.outError = false)
+  - instance/statePunchItem = 8 (instance.statePunchItem = 8)
+  - instance/stateRotateTable1 = 7 (instance.stateRotateTable1 = 7)
+  - instance/clawCurrPos = 0 (instance.clawCurrPos = 0)
+  - instance/dropPosTurn = 71 (instance.dropPosTurn = 71)
+  - instance/stateWaitForCompressor4 = 11 (instance.stateWaitForCompressor4 = 11)
+  - instance/pickPosVert = 80 (instance.pickPosVert = 80)
+Step 3
+  - instance/magazinPusherOff = 0 (instance.magazinPusherOff = 0)
+  - instance/pickPosTurn = 111 (instance.pickPosTurn = 111)
+  - instance/conveyerPusherOff = 0 (instance.conveyerPusherOff = 0)
+  - EoC = true (EoC = true)
+  - instance/stateWaitForCompressor4 = 11 (instance.stateWaitForCompressor4 = 11)
+  - instance/conveyerPhoto = 0 (instance.conveyerPhoto = 0)
+  - instance/extractionDelay = 15000 (instance.extractionDelay = 15000)
+  - instance/flagDelay = -402653184 (instance.flagDelay = -402653184)
+  - instance/tableMotPow = 0 (instance.tableMotPow = 0)
+  - instance/compressor = 0 (instance.compressor = 0)
+  - instance/armCurrPos = 0 (instance.armCurrPos = 0)
+  - instance/flagState = 8 (instance.flagState = 8)
+  - instance/stateWaitForCompressor2 = 5 (instance.stateWaitForCompressor2 = 5)
+  - instance/conveyerLed = 0 (instance.conveyerLed = 0)
+  - instance/stateWaitForCompressor5 = 13 (instance.stateWaitForCompressor5 = 13)
+  - instance/pickPosClaw = 19 (instance.pickPosClaw = 19)
+  - instance/stateTurnToMagazin = 19 (instance.stateTurnToMagazin = 19)
+  - instance/stateMoveToConveyer2 = 14 (instance.stateMoveToConveyer2 = 14)
+  - instance/conveyerMotDir = 0 (instance.conveyerMotDir = 0)
+  - instance/stateWaitForCompressor3 = 9 (instance.stateWaitForCompressor3 = 9)
+  - instance/dropPosArm = 37 (instance.dropPosArm = 37)
+  - instance/CYCLE = 3 (instance.CYCLE = 3)
+  - instance/conveyerPusherOn = 0 (instance.conveyerPusherOn = 0)
+  - instance/stateTakeItem = 18 (instance.stateTakeItem = 18)
+  - instance/stateTurnToItem = 17 (instance.stateTurnToItem = 17)
+  - instance/conveyerMotPow = 0 (instance.conveyerMotPow = 0)
+  - instance/stateExtractItem2 = 6 (instance.stateExtractItem2 = 6)
+  - instance/compressorDelay = 60000 (instance.compressorDelay = 60000)
+  - instance/armDestPos = 0 (instance.armDestPos = 0)
+  - instance/stateExtractItem1 = 4 (instance.stateExtractItem1 = 4)
+  - instance/stateWaitForCompressor1 = 3 (instance.stateWaitForCompressor1 = 3)
+  - instance/magazinPhoto = 0 (instance.magazinPhoto = 0)
+  - instance/turnCurrPos = 0 (instance.turnCurrPos = 0)
+  - instance/turnDestPos = 0 (instance.turnDestPos = 0)
+  - instance/outState = 8 (instance.outState = 8)
+  - instance/conveyerDelay = 42200 (instance.conveyerDelay = 42200)
+  - instance/stateMoveToRobot = 16 (instance.stateMoveToRobot = 16)
+  - instance/puncherButton = 0 (instance.puncherButton = 0)
+  - instance/conveyerButton = 0 (instance.conveyerButton = 0)
+  - instance/vertDestPos = 0 (instance.vertDestPos = 0)
+  - instance/clawDestPos = 0 (instance.clawDestPos = 0)
+  - instance/stateInit = 1 (instance.stateInit = 1)
+  - instance/pickPosArm = 28 (instance.pickPosArm = 28)
+  - instance/puncher = 1 (instance.puncher = 1)
+  - instance/stateRotateTable2 = 10 (instance.stateRotateTable2 = 10)
+  - instance/pickPosVert = 80 (instance.pickPosVert = 80)
+  - instance/tableMotDir = 0 (instance.tableMotDir = 0)
+  - instance/clawCurrPos = 0 (instance.clawCurrPos = 0)
+  - instance/stateRotateTable1 = 7 (instance.stateRotateTable1 = 7)
+  - instance/magazinPusherOn = 0 (instance.magazinPusherOn = 0)
+  - instance/vertCurrPos = 0 (instance.vertCurrPos = 0)
+  - instance/magazinLed = 0 (instance.magazinLed = 0)
+  - instance/statePunchItem = 8 (instance.statePunchItem = 8)
+  - instance/stateRunConveyer = 15 (instance.stateRunConveyer = 15)
+  - instance/dropPosTurn = 71 (instance.dropPosTurn = 71)
+  - instance/moveThreshold = 36 (instance.moveThreshold = 36)
+  - instance/stateWaitForItem = 2 (instance.stateWaitForItem = 2)
+  - instance/stateAfterBoot = 0 (instance.stateAfterBoot = 0)
+  - instance/outError = false (instance.outError = false)
+  - instance/stateMoveToConveyer1 = 12 (instance.stateMoveToConveyer1 = 12)
+Step 4
+  - instance/armCurrPos = 0 (instance.armCurrPos = 0)
+  - instance/conveyerPhoto = 0 (instance.conveyerPhoto = 0)
+  - instance/pickPosArm = 28 (instance.pickPosArm = 28)
+  - instance/conveyerPusherOff = 0 (instance.conveyerPusherOff = 0)
+  - instance/puncher = 0 (instance.puncher = 0)
+  - instance/stateMoveToRobot = 16 (instance.stateMoveToRobot = 16)
+  - instance/flagDelay = -2147385345 (instance.flagDelay = -2147385345)
+  - instance/stateRunConveyer = 15 (instance.stateRunConveyer = 15)
+  - instance/compressorDelay = 60000 (instance.compressorDelay = 60000)
+  - instance/conveyerMotDir = 2 (instance.conveyerMotDir = 2)
+  - instance/stateWaitForCompressor2 = 5 (instance.stateWaitForCompressor2 = 5)
+  - instance/magazinPusherOff = 0 (instance.magazinPusherOff = 0)
+  - instance/conveyerMotPow = 0 (instance.conveyerMotPow = 0)
+  - instance/conveyerLed = 0 (instance.conveyerLed = 0)
+  - instance/stateMoveToConveyer2 = 14 (instance.stateMoveToConveyer2 = 14)
+  - instance/vertCurrPos = 0 (instance.vertCurrPos = 0)
+  - instance/extractionDelay = 15000 (instance.extractionDelay = 15000)
+  - instance/turnDestPos = 0 (instance.turnDestPos = 0)
+  - instance/pickPosClaw = 19 (instance.pickPosClaw = 19)
+  - instance/stateWaitForCompressor4 = 11 (instance.stateWaitForCompressor4 = 11)
+  - instance/stateAfterBoot = 0 (instance.stateAfterBoot = 0)
+  - instance/pickPosVert = 80 (instance.pickPosVert = 80)
+  - EoC = true (EoC = true)
+  - instance/stateWaitForCompressor5 = 13 (instance.stateWaitForCompressor5 = 13)
+  - instance/dropPosTurn = 71 (instance.dropPosTurn = 71)
+  - instance/clawCurrPos = 0 (instance.clawCurrPos = 0)
+  - instance/moveThreshold = 36 (instance.moveThreshold = 36)
+  - instance/magazinPhoto = 0 (instance.magazinPhoto = 0)
+  - instance/clawDestPos = 0 (instance.clawDestPos = 0)
+  - instance/stateMoveToConveyer1 = 12 (instance.stateMoveToConveyer1 = 12)
+  - instance/outState = -2147483646 (instance.outState = -2147483646)
+  - instance/turnCurrPos = 0 (instance.turnCurrPos = 0)
+  - instance/pickPosTurn = 111 (instance.pickPosTurn = 111)
+  - instance/compressor = 0 (instance.compressor = 0)
+  - instance/conveyerPusherOn = 0 (instance.conveyerPusherOn = 0)
+  - instance/magazinPusherOn = 0 (instance.magazinPusherOn = 0)
+  - instance/stateTurnToMagazin = 19 (instance.stateTurnToMagazin = 19)
+  - instance/stateWaitForCompressor1 = 3 (instance.stateWaitForCompressor1 = 3)
+  - instance/magazinLed = 0 (instance.magazinLed = 0)
+  - instance/outError = true (instance.outError = true)
+  - instance/stateWaitForItem = 2 (instance.stateWaitForItem = 2)
+  - instance/stateExtractItem1 = 4 (instance.stateExtractItem1 = 4)
+  - instance/dropPosArm = 37 (instance.dropPosArm = 37)
+  - instance/conveyerButton = 0 (instance.conveyerButton = 0)
+  - instance/tableMotPow = 0 (instance.tableMotPow = 0)
+  - instance/CYCLE = 4 (instance.CYCLE = 4)
+  - instance/stateExtractItem2 = 6 (instance.stateExtractItem2 = 6)
+  - instance/stateRotateTable2 = 10 (instance.stateRotateTable2 = 10)
+  - instance/stateTakeItem = 18 (instance.stateTakeItem = 18)
+  - instance/tableMotDir = 2 (instance.tableMotDir = 2)
+  - instance/vertDestPos = 0 (instance.vertDestPos = 0)
+  - instance/stateTurnToItem = 17 (instance.stateTurnToItem = 17)
+  - instance/armDestPos = 0 (instance.armDestPos = 0)
+  - instance/statePunchItem = 8 (instance.statePunchItem = 8)
+  - instance/stateRotateTable1 = 7 (instance.stateRotateTable1 = 7)
+  - instance/conveyerDelay = 42200 (instance.conveyerDelay = 42200)
+  - instance/flagState = -2147483646 (instance.flagState = -2147483646)
+  - instance/stateWaitForCompressor3 = 9 (instance.stateWaitForCompressor3 = 9)
+  - instance/puncherButton = 0 (instance.puncherButton = 0)
+  - instance/stateInit = 1 (instance.stateInit = 1)
+
+Stages
+------
+* Parsing source code (8 ms): Successful
+* Control-flow declaration generation (1603 ms): Successful
+* Requirement representation (104 ms): Successful
+* Reductions (CFD) (161 ms): Successful
+* Model preparation (404 ms): Successful
+* CBMC model building (235 ms): Successful
+* CBMC execution (193234 ms): Successful
+* CBMC output parsing (22 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (0 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req2
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 5
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.flagDelay
+  -job.req.inputs.1 = instance.flagState
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.outState > 0)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark14/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark14/benchmark14.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark14/output/req2.c
+Converting
+Type-checking req2
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+80168 variables, 422248 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 11.9238s
+
+** Results:
+/home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark14/output/req2.c function VerificationLoop
+[VerificationLoop.assertion.1] line 593 assertion (!(EoC) || (instance.outState > 0)): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark14/output/req2.c function main line 608 thread 0
+---------------[...]
+
+
+205.76user 0.95system 3:19.43elapsed 103%CPU (0avgtext+0avgdata 496448maxresident)k
+104inputs+1560outputs (0major+276848minor)pagefaults 0swaps

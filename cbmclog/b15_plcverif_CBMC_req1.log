@@ -1,0 +1,402 @@
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+Arguments: benchmark/plcverif/cmd/workspace2/benchmark15/req1.vc3
+Program directory: /home/jlee/plc-release/benchmark/plcverif/cmd
+Warning: Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program. [CBMC output parsing]
+
+Requirement: *( 	NOT instance.Error_Equiv1  )* is always true at the end of the PLC cycle.
+             (AG (EoC --> (! instance/Error_Equiv1)))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/Diag_SafeStop1 = 0 (instance.Diag_SafeStop1 = 0)
+  - instance/SF_SafeStop1_1/Acknowledge = false (instance.SF_SafeStop1_1.Acknowledge = false)
+  - instance/Error_Equiv1 = false (instance.Error_Equiv1 = false)
+  - instance/SF_ESPE_1/Error = false (instance.SF_ESPE_1.Error = false)
+  - instance/SF_SafeStop1_1/AxisID = 0 (instance.SF_SafeStop1_1.AxisID = 0)
+  - instance/SF_ESPE_1/S_ESPE_In = false (instance.SF_ESPE_1.S_ESPE_In = false)
+  - instance/SF_EmergencyStop_1/Activate = false (instance.SF_EmergencyStop_1.Activate = false)
+  - instance/Diag_Equiv1 = 0 (instance.Diag_Equiv1 = 0)
+  - instance/SF_SafeStop1_1/Ready = false (instance.SF_SafeStop1_1.Ready = false)
+  - instance/SF_SafeStop1_1/S_Stopped = false (instance.SF_SafeStop1_1.S_Stopped = false)
+  - instance/S1_S_EStopIn_2 = true (instance.S1_S_EStopIn_2 = true)
+  - instance/SF_ESPE_1/S_StartReset = false (instance.SF_ESPE_1.S_StartReset = false)
+  - instance/SF_ESPE_1/S_AutoReset = false (instance.SF_ESPE_1.S_AutoReset = false)
+  - instance/SF_SafeStop1_1/Error = false (instance.SF_SafeStop1_1.Error = false)
+  - instance/Diag_ESPE1 = 0 (instance.Diag_ESPE1 = 0)
+  - instance/SF_Equivalent_1/DiagCode = 0 (instance.SF_Equivalent_1.DiagCode = 0)
+  - instance/SF_EmergencyStop_1/S_EStopIn = false (instance.SF_EmergencyStop_1.S_EStopIn = false)
+  - instance/SF_EmergencyStop_1/S_AutoReset = false (instance.SF_EmergencyStop_1.S_AutoReset = false)
+  - instance/SF_SafeStop1_1/Reset = false (instance.SF_SafeStop1_1.Reset = false)
+  - instance/InputDevice1_active = false (instance.InputDevice1_active = false)
+  - instance/SF_SafeStop1_1/S_StopIn = false (instance.SF_SafeStop1_1.S_StopIn = false)
+  - instance/SF_ESPE_1/S_ESPE_Out = false (instance.SF_ESPE_1.S_ESPE_Out = false)
+  - instance/SF_EmergencyStop_1/S_EStopOut = false (instance.SF_EmergencyStop_1.S_EStopOut = false)
+  - instance/S2_S_ESPE_In = false (instance.S2_S_ESPE_In = false)
+  - instance/SF_Equivalent_1/S_EquivalentOut = false (instance.SF_Equivalent_1.S_EquivalentOut = false)
+  - instance/Error_ESPE1 = false (instance.Error_ESPE1 = false)
+  - instance/Diag_EStop1 = 0 (instance.Diag_EStop1 = 0)
+  - instance/SF_Equivalent_1/S_ChannelB = true (instance.SF_Equivalent_1.S_ChannelB = true)
+  - instance/SF_EmergencyStop_1/DiagCode = 0 (instance.SF_EmergencyStop_1.DiagCode = 0)
+  - instance/SF_SafeStop1_1/DiagCode = 0 (instance.SF_SafeStop1_1.DiagCode = 0)
+  - instance/SF_ESPE_1/Reset = false (instance.SF_ESPE_1.Reset = false)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+  - instance/InputDevice2_active = false (instance.InputDevice2_active = false)
+  - instance/S_EStopOut = false (instance.S_EStopOut = false)
+  - instance/SF_ESPE_1/Ready = false (instance.SF_ESPE_1.Ready = false)
+  - instance/S1_S_EStopIn_1 = true (instance.S1_S_EStopIn_1 = true)
+  - instance/Internal_Acknowledge = false (instance.Internal_Acknowledge = false)
+  - instance/Error_EStop1 = false (instance.Error_EStop1 = false)
+  - instance/SF_EmergencyStop_1/Error = false (instance.SF_EmergencyStop_1.Error = false)
+  - instance/SF_ESPE_1/Activate = false (instance.SF_ESPE_1.Activate = false)
+  - instance/S3_Drive_Reset = false (instance.S3_Drive_Reset = false)
+  - instance/SF_SafeStop1_1/Activate = false (instance.SF_SafeStop1_1.Activate = false)
+  - instance/SF_Equivalent_1/Ready = false (instance.SF_Equivalent_1.Ready = false)
+  - instance/SF_Equivalent_1/Activate = false (instance.SF_Equivalent_1.Activate = false)
+  - instance/SF_SafeStop1_1/MonitoringTime = 100 (instance.SF_SafeStop1_1.MonitoringTime = 100)
+  - instance/Error_SafeStop1 = false (instance.Error_SafeStop1 = false)
+  - instance/SF_EmergencyStop_1/Reset = false (instance.SF_EmergencyStop_1.Reset = false)
+  - instance/S0_Reset = false (instance.S0_Reset = false)
+  - instance/SF_ESPE_1/DiagCode = 0 (instance.SF_ESPE_1.DiagCode = 0)
+  - instance/SF_Equivalent_1/S_ChannelA = true (instance.SF_Equivalent_1.S_ChannelA = true)
+  - instance/AxisD_1 = 0 (instance.AxisD_1 = 0)
+  - instance/SF_EmergencyStop_1/Ready = false (instance.SF_EmergencyStop_1.Ready = false)
+  - instance/SF_Equivalent_1/Error = false (instance.SF_Equivalent_1.Error = false)
+  - instance/SF_EmergencyStop_1/S_StartReset = false (instance.SF_EmergencyStop_1.S_StartReset = false)
+  - instance/S_Stopped = false (instance.S_Stopped = false)
+  - EoC = true (EoC = true)
+Step 2
+  - instance/SF_EmergencyStop_1/S_EStopIn = false (instance.SF_EmergencyStop_1.S_EStopIn = false)
+  - instance/SF_ESPE_1/Activate = false (instance.SF_ESPE_1.Activate = false)
+  - instance/SF_ESPE_1/S_ESPE_In = false (instance.SF_ESPE_1.S_ESPE_In = false)
+  - instance/SF_SafeStop1_1/Ready = false (instance.SF_SafeStop1_1.Ready = false)
+  - instance/Diag_ESPE1 = 0 (instance.Diag_ESPE1 = 0)
+  - instance/Error_ESPE1 = false (instance.Error_ESPE1 = false)
+  - instance/S3_Drive_Reset = false (instance.S3_Drive_Reset = false)
+  - instance/SF_SafeStop1_1/MonitoringTime = 100 (instance.SF_SafeStop1_1.MonitoringTime = 100)
+  - instance/SF_EmergencyStop_1/Activate = false (instance.SF_EmergencyStop_1.Activate = false)
+  - instance/Internal_Acknowledge = false (instance.Internal_Acknowledge = false)
+  - EoC = true (EoC = true)
+  - instance/SF_EmergencyStop_1/S_StartReset = false (instance.SF_EmergencyStop_1.S_StartReset = false)
+  - instance/SF_Equivalent_1/S_ChannelA = true (instance.SF_Equivalent_1.S_ChannelA = true)
+  - instance/Error_SafeStop1 = false (instance.Error_SafeStop1 = false)
+  - instance/InputDevice1_active = false (instance.InputDevice1_active = false)
+  - instance/SF_EmergencyStop_1/Ready = false (instance.SF_EmergencyStop_1.Ready = false)
+  - instance/Diag_EStop1 = 0 (instance.Diag_EStop1 = 0)
+  - instance/SF_Equivalent_1/S_ChannelB = true (instance.SF_Equivalent_1.S_ChannelB = true)
+  - instance/SF_SafeStop1_1/DiagCode = 0 (instance.SF_SafeStop1_1.DiagCode = 0)
+  - instance/Diag_Equiv1 = 0 (instance.Diag_Equiv1 = 0)
+  - instance/SF_EmergencyStop_1/S_EStopOut = false (instance.SF_EmergencyStop_1.S_EStopOut = false)
+  - instance/SF_Equivalent_1/Ready = false (instance.SF_Equivalent_1.Ready = false)
+  - instance/SF_ESPE_1/DiagCode = 0 (instance.SF_ESPE_1.DiagCode = 0)
+  - instance/S1_S_EStopIn_1 = true (instance.S1_S_EStopIn_1 = true)
+  - instance/AxisD_1 = 0 (instance.AxisD_1 = 0)
+  - instance/CYCLE = 2 (instance.CYCLE = 2)
+  - instance/Error_EStop1 = false (instance.Error_EStop1 = false)
+  - instance/SF_ESPE_1/Error = false (instance.SF_ESPE_1.Error = false)
+  - instance/SF_EmergencyStop_1/S_AutoReset = false (instance.SF_EmergencyStop_1.S_AutoReset = false)
+  - instance/SF_SafeStop1_1/S_Stopped = false (instance.SF_SafeStop1_1.S_Stopped = false)
+  - instance/SF_ESPE_1/Ready = false (instance.SF_ESPE_1.Ready = false)
+  - instance/SF_SafeStop1_1/Reset = false (instance.SF_SafeStop1_1.Reset = false)
+  - instance/InputDevice2_active = false (instance.InputDevice2_active = false)
+  - instance/S1_S_EStopIn_2 = true (instance.S1_S_EStopIn_2 = true)
+  - instance/Diag_SafeStop1 = 0 (instance.Diag_SafeStop1 = 0)
+  - instance/S2_S_ESPE_In = false (instance.S2_S_ESPE_In = false)
+  - instance/SF_Equivalent_1/Error = false (instance.SF_Equivalent_1.Error = false)
+  - instance/SF_ESPE_1/S_ESPE_Out = false (instance.SF_ESPE_1.S_ESPE_Out = false)
+  - instance/SF_SafeStop1_1/AxisID = 0 (instance.SF_SafeStop1_1.AxisID = 0)
+  - instance/S0_Reset = false (instance.S0_Reset = false)
+  - instance/SF_SafeStop1_1/Acknowledge = false (instance.SF_SafeStop1_1.Acknowledge = false)
+  - instance/SF_Equivalent_1/S_EquivalentOut = false (instance.SF_Equivalent_1.S_EquivalentOut = false)
+  - instance/SF_Equivalent_1/Activate = false (instance.SF_Equivalent_1.Activate = false)
+  - instance/SF_EmergencyStop_1/DiagCode = 0 (instance.SF_EmergencyStop_1.DiagCode = 0)
+  - instance/SF_ESPE_1/S_AutoReset = false (instance.SF_ESPE_1.S_AutoReset = false)
+  - instance/SF_SafeStop1_1/Activate = false (instance.SF_SafeStop1_1.Activate = false)
+  - instance/SF_EmergencyStop_1/Error = false (instance.SF_EmergencyStop_1.Error = false)
+  - instance/SF_ESPE_1/Reset = false (instance.SF_ESPE_1.Reset = false)
+  - instance/S_EStopOut = false (instance.S_EStopOut = false)
+  - instance/S_Stopped = false (instance.S_Stopped = false)
+  - instance/SF_EmergencyStop_1/Reset = false (instance.SF_EmergencyStop_1.Reset = false)
+  - instance/SF_SafeStop1_1/Error = false (instance.SF_SafeStop1_1.Error = false)
+  - instance/Error_Equiv1 = false (instance.Error_Equiv1 = false)
+  - instance/SF_ESPE_1/S_StartReset = false (instance.SF_ESPE_1.S_StartReset = false)
+  - instance/SF_SafeStop1_1/S_StopIn = false (instance.SF_SafeStop1_1.S_StopIn = false)
+  - instance/SF_Equivalent_1/DiagCode = 0 (instance.SF_Equivalent_1.DiagCode = 0)
+Step 3
+  - instance/Diag_EStop1 = 32769 (instance.Diag_EStop1 = 32769)
+  - instance/SF_ESPE_1/S_AutoReset = false (instance.SF_ESPE_1.S_AutoReset = false)
+  - instance/InputDevice1_active = true (instance.InputDevice1_active = true)
+  - instance/SF_ESPE_1/S_ESPE_Out = false (instance.SF_ESPE_1.S_ESPE_Out = false)
+  - instance/SF_Equivalent_1/Ready = true (instance.SF_Equivalent_1.Ready = true)
+  - instance/SF_ESPE_1/Reset = false (instance.SF_ESPE_1.Reset = false)
+  - instance/SF_EmergencyStop_1/Reset = false (instance.SF_EmergencyStop_1.Reset = false)
+  - instance/SF_ESPE_1/S_ESPE_In = false (instance.SF_ESPE_1.S_ESPE_In = false)
+  - instance/SF_SafeStop1_1/Reset = false (instance.SF_SafeStop1_1.Reset = false)
+  - instance/Diag_ESPE1 = 0 (instance.Diag_ESPE1 = 0)
+  - instance/SF_ESPE_1/Error = false (instance.SF_ESPE_1.Error = false)
+  - instance/SF_EmergencyStop_1/Error = false (instance.SF_EmergencyStop_1.Error = false)
+  - instance/S1_S_EStopIn_2 = true (instance.S1_S_EStopIn_2 = true)
+  - instance/SF_SafeStop1_1/Activate = false (instance.SF_SafeStop1_1.Activate = false)
+  - instance/S1_S_EStopIn_1 = true (instance.S1_S_EStopIn_1 = true)
+  - instance/Error_ESPE1 = false (instance.Error_ESPE1 = false)
+  - instance/Error_EStop1 = false (instance.Error_EStop1 = false)
+  - instance/SF_Equivalent_1/S_EquivalentOut = false (instance.SF_Equivalent_1.S_EquivalentOut = false)
+  - instance/SF_EmergencyStop_1/S_AutoReset = false (instance.SF_EmergencyStop_1.S_AutoReset = false)
+  - instance/SF_EmergencyStop_1/S_EStopIn = false (instance.SF_EmergencyStop_1.S_EStopIn = false)
+  - instance/SF_EmergencyStop_1/S_StartReset = false (instance.SF_EmergencyStop_1.S_StartReset = false)
+  - instance/InputDevice2_active = false (instance.InputDevice2_active = false)
+  - instance/SF_EmergencyStop_1/DiagCode = 32769 (instance.SF_EmergencyStop_1.DiagCode = 32769)
+  - EoC = true (EoC = true)
+  - instance/SF_SafeStop1_1/Ready = false (instance.SF_SafeStop1_1.Ready = false)
+  - instance/Internal_Acknowledge = false (instance.Internal_Acknowledge = false)
+  - instance/SF_SafeStop1_1/DiagCode = 0 (instance.SF_SafeStop1_1.DiagCode = 0)
+  - instance/SF_Equivalent_1/S_ChannelA = true (instance.SF_Equivalent_1.S_ChannelA = true)
+  - instance/SF_SafeStop1_1/S_Stopped = false (instance.SF_SafeStop1_1.S_Stopped = false)
+  - instance/SF_EmergencyStop_1/Ready = true (instance.SF_EmergencyStop_1.Ready = true)
+  - instance/SF_Equivalent_1/DiagCode = 32769 (instance.SF_Equivalent_1.DiagCode = 32769)
+  - instance/S_EStopOut = false (instance.S_EStopOut = false)
+  - instance/SF_Equivalent_1/S_ChannelB = true (instance.SF_Equivalent_1.S_ChannelB = true)
+  - instance/SF_ESPE_1/DiagCode = 0 (instance.SF_ESPE_1.DiagCode = 0)
+  - instance/AxisD_1 = 0 (instance.AxisD_1 = 0)
+  - instance/SF_ESPE_1/Activate = false (instance.SF_ESPE_1.Activate = false)
+  - instance/SF_EmergencyStop_1/S_EStopOut = false (instance.SF_EmergencyStop_1.S_EStopOut = false)
+  - instance/Error_Equiv1 = false (instance.Error_Equiv1 = false)
+  - instance/S2_S_ESPE_In = false (instance.S2_S_ESPE_In = false)
+  - instance/SF_SafeStop1_1/S_StopIn = false (instance.SF_SafeStop1_1.S_StopIn = false)
+  - instance/SF_SafeStop1_1/Error = false (instance.SF_SafeStop1_1.Error = false)
+  - instance/SF_ESPE_1/Ready = false (instance.SF_ESPE_1.Ready = false)
+  - instance/SF_Equivalent_1/Activate = true (instance.SF_Equivalent_1.Activate = true)
+  - instance/SF_Equivalent_1/Error = false (instance.SF_Equivalent_1.Error = false)
+  - instance/Error_SafeStop1 = false (instance.Error_SafeStop1 = false)
+  - instance/CYCLE = 3 (instance.CYCLE = 3)
+  - instance/S0_Reset = false (instance.S0_Reset = false)
+  - instance/S_Stopped = false (instance.S_Stopped = false)
+  - instance/SF_SafeStop1_1/Acknowledge = false (instance.SF_SafeStop1_1.Acknowledge = false)
+  - instance/SF_SafeStop1_1/MonitoringTime = 100 (instance.SF_SafeStop1_1.MonitoringTime = 100)
+  - instance/SF_ESPE_1/S_StartReset = false (instance.SF_ESPE_1.S_StartReset = false)
+  - instance/Diag_Equiv1 = 32769 (instance.Diag_Equiv1 = 32769)
+  - instance/S3_Drive_Reset = false (instance.S3_Drive_Reset = false)
+  - instance/SF_EmergencyStop_1/Activate = true (instance.SF_EmergencyStop_1.Activate = true)
+  - instance/Diag_SafeStop1 = 0 (instance.Diag_SafeStop1 = 0)
+  - instance/SF_SafeStop1_1/AxisID = 0 (instance.SF_SafeStop1_1.AxisID = 0)
+Step 4
+  - EoC = true (EoC = true)
+  - instance/SF_SafeStop1_1/Activate = false (instance.SF_SafeStop1_1.Activate = false)
+  - instance/SF_SafeStop1_1/S_StopIn = false (instance.SF_SafeStop1_1.S_StopIn = false)
+  - instance/SF_Equivalent_1/S_ChannelB = false (instance.SF_Equivalent_1.S_ChannelB = false)
+  - instance/SF_ESPE_1/DiagCode = 0 (instance.SF_ESPE_1.DiagCode = 0)
+  - instance/SF_EmergencyStop_1/S_AutoReset = false (instance.SF_EmergencyStop_1.S_AutoReset = false)
+  - instance/S_EStopOut = false (instance.S_EStopOut = false)
+  - instance/AxisD_1 = 0 (instance.AxisD_1 = 0)
+  - instance/SF_ESPE_1/Error = false (instance.SF_ESPE_1.Error = false)
+  - instance/S0_Reset = false (instance.S0_Reset = false)
+  - instance/S1_S_EStopIn_2 = false (instance.S1_S_EStopIn_2 = false)
+  - instance/SF_Equivalent_1/Activate = true (instance.SF_Equivalent_1.Activate = true)
+  - instance/SF_EmergencyStop_1/S_StartReset = false (instance.SF_EmergencyStop_1.S_StartReset = false)
+  - instance/SF_ESPE_1/Ready = false (instance.SF_ESPE_1.Ready = false)
+  - instance/Error_EStop1 = false (instance.Error_EStop1 = false)
+  - instance/S_Stopped = false (instance.S_Stopped = false)
+  - instance/Diag_EStop1 = 32770 (instance.Diag_EStop1 = 32770)
+  - instance/SF_SafeStop1_1/Error = false (instance.SF_SafeStop1_1.Error = false)
+  - instance/S2_S_ESPE_In = false (instance.S2_S_ESPE_In = false)
+  - instance/SF_EmergencyStop_1/S_EStopOut = false (instance.SF_EmergencyStop_1.S_EStopOut = false)
+  - instance/SF_ESPE_1/S_StartReset = false (instance.SF_ESPE_1.S_StartReset = false)
+  - instance/InputDevice1_active = true (instance.InputDevice1_active = true)
+  - instance/SF_EmergencyStop_1/Activate = true (instance.SF_EmergencyStop_1.Activate = true)
+  - instance/SF_ESPE_1/Activate = false (instance.SF_ESPE_1.Activate = false)
+  - instance/SF_SafeStop1_1/Acknowledge = false (instance.SF_SafeStop1_1.Acknowledge = false)
+  - instance/SF_Equivalent_1/S_ChannelA = true (instance.SF_Equivalent_1.S_ChannelA = true)
+  - instance/SF_SafeStop1_1/Ready = false (instance.SF_SafeStop1_1.Ready = false)
+  - instance/SF_SafeStop1_1/DiagCode = 0 (instance.SF_SafeStop1_1.DiagCode = 0)
+  - instance/SF_EmergencyStop_1/Reset = false (instance.SF_EmergencyStop_1.Reset = false)
+  - instance/Internal_Acknowledge = false (instance.Internal_Acknowledge = false)
+  - instance/Diag_SafeStop1 = 0 (instance.Diag_SafeStop1 = 0)
+  - instance/SF_Equivalent_1/Error = false (instance.SF_Equivalent_1.Error = false)
+  - instance/SF_ESPE_1/S_ESPE_Out = false (instance.SF_ESPE_1.S_ESPE_Out = false)
+  - instance/SF_EmergencyStop_1/DiagCode = 32770 (instance.SF_EmergencyStop_1.DiagCode = 32770)
+  - instance/SF_SafeStop1_1/S_Stopped = false (instance.SF_SafeStop1_1.S_Stopped = false)
+  - instance/SF_Equivalent_1/Ready = true (instance.SF_Equivalent_1.Ready = true)
+  - instance/SF_ESPE_1/S_AutoReset = false (instance.SF_ESPE_1.S_AutoReset = false)
+  - instance/SF_SafeStop1_1/MonitoringTime = 100 (instance.SF_SafeStop1_1.MonitoringTime = 100)
+  - instance/Error_SafeStop1 = false (instance.Error_SafeStop1 = false)
+  - instance/Diag_Equiv1 = 32772 (instance.Diag_Equiv1 = 32772)
+  - instance/SF_EmergencyStop_1/S_EStopIn = false (instance.SF_EmergencyStop_1.S_EStopIn = false)
+  - instance/Diag_ESPE1 = 0 (instance.Diag_ESPE1 = 0)
+  - instance/InputDevice2_active = false (instance.InputDevice2_active = false)
+  - instance/SF_SafeStop1_1/Reset = false (instance.SF_SafeStop1_1.Reset = false)
+  - instance/S3_Drive_Reset = false (instance.S3_Drive_Reset = false)
+  - instance/SF_Equivalent_1/S_EquivalentOut = false (instance.SF_Equivalent_1.S_EquivalentOut = false)
+  - instance/SF_Equivalent_1/DiagCode = 32772 (instance.SF_Equivalent_1.DiagCode = 32772)
+  - instance/Error_ESPE1 = false (instance.Error_ESPE1 = false)
+  - instance/SF_ESPE_1/Reset = false (instance.SF_ESPE_1.Reset = false)
+  - instance/SF_SafeStop1_1/AxisID = 0 (instance.SF_SafeStop1_1.AxisID = 0)
+  - instance/SF_EmergencyStop_1/Ready = true (instance.SF_EmergencyStop_1.Ready = true)
+  - instance/Error_Equiv1 = false (instance.Error_Equiv1 = false)
+  - instance/CYCLE = 4 (instance.CYCLE = 4)
+  - instance/SF_EmergencyStop_1/Error = false (instance.SF_EmergencyStop_1.Error = false)
+  - instance/S1_S_EStopIn_1 = true (instance.S1_S_EStopIn_1 = true)
+  - instance/SF_ESPE_1/S_ESPE_In = false (instance.SF_ESPE_1.S_ESPE_In = false)
+Step 5
+  - instance/SF_Equivalent_1/S_ChannelA = true (instance.SF_Equivalent_1.S_ChannelA = true)
+  - instance/S_EStopOut = false (instance.S_EStopOut = false)
+  - instance/SF_EmergencyStop_1/S_StartReset = false (instance.SF_EmergencyStop_1.S_StartReset = false)
+  - instance/SF_EmergencyStop_1/S_EStopOut = false (instance.SF_EmergencyStop_1.S_EStopOut = false)
+  - instance/SF_EmergencyStop_1/Error = false (instance.SF_EmergencyStop_1.Error = false)
+  - instance/SF_EmergencyStop_1/S_EStopIn = false (instance.SF_EmergencyStop_1.S_EStopIn = false)
+  - instance/Diag_ESPE1 = 0 (instance.Diag_ESPE1 = 0)
+  - instance/InputDevice2_active = false (instance.InputDevice2_active = false)
+  - instance/SF_EmergencyStop_1/Ready = true (instance.SF_EmergencyStop_1.Ready = true)
+  - instance/SF_ESPE_1/Activate = false (instance.SF_ESPE_1.Activate = false)
+  - instance/SF_Equivalent_1/S_ChannelB = true (instance.SF_Equivalent_1.S_ChannelB = true)
+  - instance/Error_EStop1 = false (instance.Error_EStop1 = false)
+  - instance/SF_ESPE_1/DiagCode = 0 (instance.SF_ESPE_1.DiagCode = 0)
+  - instance/S1_S_EStopIn_1 = true (instance.S1_S_EStopIn_1 = true)
+  - instance/SF_Equivalent_1/Activate = true (instance.SF_Equivalent_1.Activate = true)
+  - instance/SF_ESPE_1/S_AutoReset = false (instance.SF_ESPE_1.S_AutoReset = false)
+  - instance/SF_SafeStop1_1/Error = false (instance.SF_SafeStop1_1.Error = false)
+  - instance/SF_SafeStop1_1/Activate = false (instance.SF_SafeStop1_1.Activate = false)
+  - instance/SF_EmergencyStop_1/DiagCode = 32770 (instance.SF_EmergencyStop_1.DiagCode = 32770)
+  - instance/SF_ESPE_1/S_StartReset = false (instance.SF_ESPE_1.S_StartReset = false)
+  - instance/SF_SafeStop1_1/Reset = false (instance.SF_SafeStop1_1.Reset = false)
+  - instance/SF_EmergencyStop_1/Reset = false (instance.SF_EmergencyStop_1.Reset = false)
+  - instance/AxisD_1 = 0 (instance.AxisD_1 = 0)
+  - instance/S1_S_EStopIn_2 = true (instance.S1_S_EStopIn_2 = true)
+  - instance/SF_SafeStop1_1/Ready = false (instance.SF_SafeStop1_1.Ready = false)
+  - instance/SF_ESPE_1/Ready = false (instance.SF_ESPE_1.Ready = false)
+  - instance/SF_Equivalent_1/DiagCode = 49153 (instance.SF_Equivalent_1.DiagCode = 49153)
+  - instance/SF_SafeStop1_1/S_StopIn = false (instance.SF_SafeStop1_1.S_StopIn = false)
+  - instance/SF_SafeStop1_1/MonitoringTime = 100 (instance.SF_SafeStop1_1.MonitoringTime = 100)
+  - instance/SF_Equivalent_1/S_EquivalentOut = false (instance.SF_Equivalent_1.S_EquivalentOut = false)
+  - instance/SF_EmergencyStop_1/Activate = true (instance.SF_EmergencyStop_1.Activate = true)
+  - instance/SF_Equivalent_1/Error = true (instance.SF_Equivalent_1.Error = true)
+  - instance/S3_Drive_Reset = false (instance.S3_Drive_Reset = false)
+  - instance/Diag_SafeStop1 = 0 (instance.Diag_SafeStop1 = 0)
+  - instance/SF_Equivalent_1/Ready = true (instance.SF_Equivalent_1.Ready = true)
+  - instance/CYCLE = 5 (instance.CYCLE = 5)
+  - instance/SF_SafeStop1_1/DiagCode = 0 (instance.SF_SafeStop1_1.DiagCode = 0)
+  - instance/S_Stopped = false (instance.S_Stopped = false)
+  - instance/S2_S_ESPE_In = false (instance.S2_S_ESPE_In = false)
+  - instance/InputDevice1_active = true (instance.InputDevice1_active = true)
+  - instance/Diag_EStop1 = 32770 (instance.Diag_EStop1 = 32770)
+  - instance/Error_Equiv1 = true (instance.Error_Equiv1 = true)
+  - instance/SF_SafeStop1_1/Acknowledge = false (instance.SF_SafeStop1_1.Acknowledge = false)
+  - instance/S0_Reset = false (instance.S0_Reset = false)
+  - instance/SF_ESPE_1/S_ESPE_In = false (instance.SF_ESPE_1.S_ESPE_In = false)
+  - instance/Error_SafeStop1 = false (instance.Error_SafeStop1 = false)
+  - instance/Internal_Acknowledge = false (instance.Internal_Acknowledge = false)
+  - instance/SF_ESPE_1/S_ESPE_Out = false (instance.SF_ESPE_1.S_ESPE_Out = false)
+  - EoC = true (EoC = true)
+  - instance/SF_SafeStop1_1/S_Stopped = false (instance.SF_SafeStop1_1.S_Stopped = false)
+  - instance/SF_ESPE_1/Reset = false (instance.SF_ESPE_1.Reset = false)
+  - instance/Diag_Equiv1 = 49153 (instance.Diag_Equiv1 = 49153)
+  - instance/SF_EmergencyStop_1/S_AutoReset = false (instance.SF_EmergencyStop_1.S_AutoReset = false)
+  - instance/SF_SafeStop1_1/AxisID = 0 (instance.SF_SafeStop1_1.AxisID = 0)
+  - instance/SF_ESPE_1/Error = false (instance.SF_ESPE_1.Error = false)
+  - instance/Error_ESPE1 = false (instance.Error_ESPE1 = false)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (2628 ms): Successful
+* Requirement representation (84 ms): Successful
+* Reductions (CFD) (173 ms): Successful
+* Model preparation (148 ms): Successful
+* CBMC model building (131 ms): Successful
+* CBMC execution (84030 ms): Successful
+* CBMC output parsing (16 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (1 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req1
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 5
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.S1_S_EStopIn_1
+  -job.req.inputs.1 = instance.S1_S_EStopIn_2
+  -job.req.inputs.2 = instance.InputDevice1_active
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "( 	NOT instance.Error_Equiv1  )"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark15/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark15/plcopen.scl
+  -sourcefiles.1 = benchmark/plcverif/cmd/workspace2/benchmark15/benchmark15.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark15/output/req1.c
+Converting
+Type-checking req1
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+26152 variables, 136229 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 6.73397s
+
+** Results:
+/home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark15/output/req1.c function VerificationLoop
+[VerificationLoop.assertion.1] line 1757 assertion (!(EoC) || (! instance.Error_Equiv1)): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark15/output/req1.c function main line 1772 thread 0
+-----------[...]
+
+
+104.59user 0.91system 1:32.16elapsed 114%CPU (0avgtext+0avgdata 570996maxresident)k
+96inputs+1696outputs (0major+259898minor)pagefaults 0swaps

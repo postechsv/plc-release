@@ -1,0 +1,80 @@
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+Arguments: benchmark/plcverif/cmd/workspace2/benchmark18/req1.vc3
+Program directory: /home/jlee/plc-release/benchmark/plcverif/cmd
+Error: Problem occurred during the pattern-based requirement representation: Unable to parse the expression 'AG({PLC_END} --> ((instance.Error == instance.Error)))', as it contains syntax errors. '=' at 35: SyntaxErrorMessage [message=no viable alternative at input '=', issueCode=org.eclipse.xtext.diagnostics.Diagnostic.Syntax, issueData=null] [Requirement representation]
+
+
+**Result: the requirement is ERROR**
+
+Backend: unknown
+Parameters: 
+Input bindings: 
+
+
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (2399 ms): Successful
+* Requirement representation (55 ms): Unsuccessful
+    - [Error] Problem occurred during the pattern-based requirement representation: Unable to parse the expression 'AG({PLC_END} --> ((instance.Error == instance.Error)))', as it contains syntax errors. '=' at 35: SyntaxErrorMessage [message=no viable alternative at input '=', issueCode=org.eclipse.xtext.diagnostics.Diagnostic.Syntax, issueData=null]
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req1
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 5
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.Activate
+  -job.req.inputs.1 = instance.Ready
+  -job.req.inputs.2 = instance.AutoSetMode
+  -job.req.inputs.3 = instance.ModeMonitorTime
+  -job.req.inputs.4 = instance.Reset
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.Error == instance.Error)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark18/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark18/benchmark18.scl
+  -sourcefiles.1 = benchmark/plcverif/cmd/workspace2/benchmark18/plcopen.scl
+
+
+16.17user 0.55system 0:07.81elapsed 214%CPU (0avgtext+0avgdata 538316maxresident)k
+16inputs+1032outputs (0major+209448minor)pagefaults 0swaps

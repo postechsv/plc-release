@@ -1,0 +1,76 @@
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+Arguments: benchmark/plcverif/cmd/workspace2/benchmark2/req1.vc3
+Program directory: /home/jlee/plc-release/benchmark/plcverif/cmd
+Error: Problem occurred during the pattern-based requirement representation: Unable to parse the expression 'AG({PLC_END} --> ((instance.M = 3 > instance.N = 1)))', as it contains syntax errors. '=' at 47: SyntaxErrorMessage [message=missing ')' at '=', issueCode=org.eclipse.xtext.diagnostics.Diagnostic.Syntax, issueData=null] [Requirement representation]
+Warning: The settings element 'job.backend.algorithm' (value: Classic) has not been used. Maybe its name has a typo? [Reporting]
+
+
+**Result: the requirement is ERROR**
+
+Backend: unknown
+Parameters: 
+Input bindings: 
+
+
+
+Stages
+------
+* Parsing source code (2 ms): Successful
+* Control-flow declaration generation (1227 ms): Successful
+* Requirement representation (62 ms): Unsuccessful
+    - [Error] Problem occurred during the pattern-based requirement representation: Unable to parse the expression 'AG({PLC_END} --> ((instance.M = 3 > instance.N = 1)))', as it contains syntax errors. '=' at 47: SyntaxErrorMessage [message=missing ')' at '=', issueCode=org.eclipse.xtext.diagnostics.Diagnostic.Syntax, issueData=null]
+* Reporting (0 ms): Unknown
+    - [Warning] The settings element 'job.backend.algorithm' (value: Classic) has not been used. Maybe its name has a typo?
+
+Settings
+--------
+  -description = ""
+  -id = req1
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 5
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.M = 3 > instance.N = 1)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark2/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark2/benchmark2.scl
+
+
+9.12user 0.45system 0:04.86elapsed 197%CPU (0avgtext+0avgdata 390848maxresident)k
+16inputs+960outputs (0major+157635minor)pagefaults 0swaps

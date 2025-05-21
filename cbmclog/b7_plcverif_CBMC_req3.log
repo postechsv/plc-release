@@ -1,0 +1,304 @@
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+Arguments: benchmark/plcverif/cmd/workspace2/benchmark7/req3.vc3
+Program directory: /home/jlee/plc-release/benchmark/plcverif/cmd
+Warning: Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program. [CBMC output parsing]
+
+Requirement: *(NOT instance.OUT)* is always true at the end of the PLC cycle.
+             (AG (EoC --> (! instance/OUT)))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/CMP7/QT = true (instance.CMP7.QT = true)
+  - instance/CMP2/EQ = false (instance.CMP2.EQ = false)
+  - instance/CMP7/LT = false (instance.CMP7.LT = false)
+  - instance/CMP1/IN1 = 8554254 (instance.CMP1.IN1 = 8554254)
+  - instance/CMP6/LT = false (instance.CMP6.LT = false)
+  - instance/CMP7/IN2 = 8520576 (instance.CMP7.IN2 = 8520576)
+  - instance/CMP4/LT = false (instance.CMP4.LT = false)
+  - instance/CMP1/EQ = false (instance.CMP1.EQ = false)
+  - instance/CMP6/IN1 = 8554278 (instance.CMP6.IN1 = 8554278)
+  - instance/CMP7/IN1 = 8554278 (instance.CMP7.IN1 = 8554278)
+  - instance/CMP3/IN1 = 8520576 (instance.CMP3.IN1 = 8520576)
+  - instance/CMP2/IN1 = 136651812 (instance.CMP2.IN1 = 136651812)
+  - instance/CMP2/QT = true (instance.CMP2.QT = true)
+  - instance/INPUT3 = 67576836 (instance.INPUT3 = 67576836)
+  - instance/CMP6/EQ = false (instance.CMP6.EQ = false)
+  - instance/CMP3/EQ = false (instance.CMP3.EQ = false)
+  - instance/CMP4/IN1 = 8554278 (instance.CMP4.IN1 = 8554278)
+  - instance/CMP4/IN2 = 1281 (instance.CMP4.IN2 = 1281)
+  - instance/CMP1/LT = true (instance.CMP1.LT = true)
+  - instance/CMP3/LT = false (instance.CMP3.LT = false)
+  - instance/INPUT6 = 1280 (instance.INPUT6 = 1280)
+  - instance/CMP2/LT = false (instance.CMP2.LT = false)
+  - instance/CMP4/EQ = false (instance.CMP4.EQ = false)
+  - instance/CMP5/LT = true (instance.CMP5.LT = true)
+  - instance/INPUT2 = 8520576 (instance.INPUT2 = 8520576)
+  - EoC = true (EoC = true)
+  - instance/CMP5/QT = false (instance.CMP5.QT = false)
+  - instance/OUT = false (instance.OUT = false)
+  - instance/CMP2/IN2 = 67576836 (instance.CMP2.IN2 = 67576836)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+  - instance/INPUT4 = 8554278 (instance.INPUT4 = 8554278)
+  - instance/CMP4/QT = true (instance.CMP4.QT = true)
+  - instance/CMP7/EQ = false (instance.CMP7.EQ = false)
+  - instance/INPUT1 = 8554254 (instance.INPUT1 = 8554254)
+  - instance/CMP5/IN2 = 1281 (instance.CMP5.IN2 = 1281)
+  - instance/CMP5/EQ = false (instance.CMP5.EQ = false)
+  - instance/CMP6/QT = true (instance.CMP6.QT = true)
+  - instance/CMP6/IN2 = 8554254 (instance.CMP6.IN2 = 8554254)
+  - instance/INPUT7 = 1281 (instance.INPUT7 = 1281)
+  - instance/INPUT5 = 136651812 (instance.INPUT5 = 136651812)
+  - instance/CMP5/IN1 = 1280 (instance.CMP5.IN1 = 1280)
+  - instance/CMP1/QT = false (instance.CMP1.QT = false)
+  - instance/CMP3/QT = true (instance.CMP3.QT = true)
+  - instance/CMP3/IN2 = 1281 (instance.CMP3.IN2 = 1281)
+  - instance/CMP1/IN2 = 67576836 (instance.CMP1.IN2 = 67576836)
+Step 2
+  - instance/CMP1/LT = true (instance.CMP1.LT = true)
+  - instance/INPUT5 = -1610610687 (instance.INPUT5 = -1610610687)
+  - instance/INPUT2 = -469762046 (instance.INPUT2 = -469762046)
+  - instance/CYCLE = 2 (instance.CYCLE = 2)
+  - instance/CMP6/QT = true (instance.CMP6.QT = true)
+  - instance/CMP2/IN2 = -1610612735 (instance.CMP2.IN2 = -1610612735)
+  - instance/CMP2/LT = false (instance.CMP2.LT = false)
+  - instance/CMP7/IN2 = -469762046 (instance.CMP7.IN2 = -469762046)
+  - instance/CMP7/QT = true (instance.CMP7.QT = true)
+  - instance/INPUT4 = -2080374781 (instance.INPUT4 = -2080374781)
+  - instance/CMP6/IN2 = -1610612734 (instance.CMP6.IN2 = -1610612734)
+  - instance/CMP3/EQ = false (instance.CMP3.EQ = false)
+  - instance/CMP2/IN1 = -1610610687 (instance.CMP2.IN1 = -1610610687)
+  - instance/CMP3/QT = true (instance.CMP3.QT = true)
+  - instance/CMP4/EQ = false (instance.CMP4.EQ = false)
+  - instance/CMP5/EQ = false (instance.CMP5.EQ = false)
+  - instance/CMP3/LT = false (instance.CMP3.LT = false)
+  - instance/CMP1/IN1 = -1610612734 (instance.CMP1.IN1 = -1610612734)
+  - instance/CMP5/LT = true (instance.CMP5.LT = true)
+  - instance/OUT = false (instance.OUT = false)
+  - EoC = true (EoC = true)
+  - instance/CMP2/EQ = false (instance.CMP2.EQ = false)
+  - instance/CMP4/IN1 = -2080374781 (instance.CMP4.IN1 = -2080374781)
+  - instance/CMP7/EQ = false (instance.CMP7.EQ = false)
+  - instance/CMP5/IN1 = -973078525 (instance.CMP5.IN1 = -973078525)
+  - instance/CMP3/IN2 = -973078526 (instance.CMP3.IN2 = -973078526)
+  - instance/CMP4/LT = true (instance.CMP4.LT = true)
+  - instance/CMP1/QT = true (instance.CMP1.QT = true)
+  - instance/CMP7/IN1 = -2080374781 (instance.CMP7.IN1 = -2080374781)
+  - instance/CMP1/EQ = false (instance.CMP1.EQ = false)
+  - instance/CMP6/LT = true (instance.CMP6.LT = true)
+  - instance/CMP1/IN2 = -1610612735 (instance.CMP1.IN2 = -1610612735)
+  - instance/CMP3/IN1 = -469762046 (instance.CMP3.IN1 = -469762046)
+  - instance/INPUT6 = -973078525 (instance.INPUT6 = -973078525)
+  - instance/CMP5/QT = true (instance.CMP5.QT = true)
+  - instance/CMP4/IN2 = -973078526 (instance.CMP4.IN2 = -973078526)
+  - instance/CMP7/LT = true (instance.CMP7.LT = true)
+  - instance/CMP2/QT = true (instance.CMP2.QT = true)
+  - instance/CMP6/IN1 = -2080374781 (instance.CMP6.IN1 = -2080374781)
+  - instance/INPUT3 = -1610612735 (instance.INPUT3 = -1610612735)
+  - instance/INPUT1 = -1610612734 (instance.INPUT1 = -1610612734)
+  - instance/CMP4/QT = true (instance.CMP4.QT = true)
+  - instance/CMP6/EQ = false (instance.CMP6.EQ = false)
+  - instance/CMP5/IN2 = -973078526 (instance.CMP5.IN2 = -973078526)
+  - instance/INPUT7 = -973078526 (instance.INPUT7 = -973078526)
+Step 3
+  - instance/CMP5/EQ = false (instance.CMP5.EQ = false)
+  - instance/CMP6/LT = true (instance.CMP6.LT = true)
+  - instance/CMP5/IN1 = 3 (instance.CMP5.IN1 = 3)
+  - instance/INPUT5 = 1 (instance.INPUT5 = 1)
+  - instance/CMP3/QT = true (instance.CMP3.QT = true)
+  - instance/CMP5/LT = true (instance.CMP5.LT = true)
+  - instance/CMP2/LT = false (instance.CMP2.LT = false)
+  - instance/CMP1/QT = true (instance.CMP1.QT = true)
+  - instance/INPUT4 = 3 (instance.INPUT4 = 3)
+  - instance/CMP5/IN2 = 2 (instance.CMP5.IN2 = 2)
+  - instance/OUT = false (instance.OUT = false)
+  - instance/INPUT2 = 2 (instance.INPUT2 = 2)
+  - instance/CMP4/IN1 = 3 (instance.CMP4.IN1 = 3)
+  - instance/CMP1/IN2 = 0 (instance.CMP1.IN2 = 0)
+  - instance/CMP7/QT = true (instance.CMP7.QT = true)
+  - instance/CMP6/QT = true (instance.CMP6.QT = true)
+  - instance/INPUT6 = 3 (instance.INPUT6 = 3)
+  - instance/INPUT7 = 2 (instance.INPUT7 = 2)
+  - instance/CMP4/LT = true (instance.CMP4.LT = true)
+  - instance/CMP2/IN2 = 0 (instance.CMP2.IN2 = 0)
+  - instance/CMP7/IN2 = 2 (instance.CMP7.IN2 = 2)
+  - instance/CMP3/LT = false (instance.CMP3.LT = false)
+  - instance/CMP4/EQ = false (instance.CMP4.EQ = false)
+  - instance/INPUT3 = 0 (instance.INPUT3 = 0)
+  - EoC = true (EoC = true)
+  - instance/CMP6/IN1 = 3 (instance.CMP6.IN1 = 3)
+  - instance/CMP1/EQ = false (instance.CMP1.EQ = false)
+  - instance/CYCLE = 3 (instance.CYCLE = 3)
+  - instance/CMP5/QT = true (instance.CMP5.QT = true)
+  - instance/CMP1/IN1 = 2 (instance.CMP1.IN1 = 2)
+  - instance/CMP7/IN1 = 3 (instance.CMP7.IN1 = 3)
+  - instance/INPUT1 = 2 (instance.INPUT1 = 2)
+  - instance/CMP4/QT = true (instance.CMP4.QT = true)
+  - instance/CMP4/IN2 = 2 (instance.CMP4.IN2 = 2)
+  - instance/CMP6/IN2 = 2 (instance.CMP6.IN2 = 2)
+  - instance/CMP7/EQ = false (instance.CMP7.EQ = false)
+  - instance/CMP3/EQ = true (instance.CMP3.EQ = true)
+  - instance/CMP2/EQ = false (instance.CMP2.EQ = false)
+  - instance/CMP3/IN2 = 2 (instance.CMP3.IN2 = 2)
+  - instance/CMP1/LT = true (instance.CMP1.LT = true)
+  - instance/CMP7/LT = true (instance.CMP7.LT = true)
+  - instance/CMP3/IN1 = 2 (instance.CMP3.IN1 = 2)
+  - instance/CMP2/IN1 = 1 (instance.CMP2.IN1 = 1)
+  - instance/CMP2/QT = true (instance.CMP2.QT = true)
+  - instance/CMP6/EQ = false (instance.CMP6.EQ = false)
+Step 4
+  - instance/CMP2/IN1 = 0 (instance.CMP2.IN1 = 0)
+  - instance/CMP3/IN1 = 2 (instance.CMP3.IN1 = 2)
+  - instance/CMP4/LT = true (instance.CMP4.LT = true)
+  - instance/CMP6/LT = true (instance.CMP6.LT = true)
+  - instance/CMP3/QT = true (instance.CMP3.QT = true)
+  - instance/CMP4/EQ = false (instance.CMP4.EQ = false)
+  - instance/CMP1/EQ = false (instance.CMP1.EQ = false)
+  - instance/CMP2/IN2 = 0 (instance.CMP2.IN2 = 0)
+  - instance/CMP4/QT = true (instance.CMP4.QT = true)
+  - instance/INPUT2 = 2 (instance.INPUT2 = 2)
+  - instance/INPUT3 = 0 (instance.INPUT3 = 0)
+  - instance/CMP5/IN1 = 3 (instance.CMP5.IN1 = 3)
+  - instance/CMP1/QT = true (instance.CMP1.QT = true)
+  - instance/CMP6/IN2 = 2 (instance.CMP6.IN2 = 2)
+  - instance/CMP5/LT = true (instance.CMP5.LT = true)
+  - instance/CMP5/QT = true (instance.CMP5.QT = true)
+  - instance/CMP1/IN2 = 0 (instance.CMP1.IN2 = 0)
+  - instance/CYCLE = 4 (instance.CYCLE = 4)
+  - instance/CMP6/QT = true (instance.CMP6.QT = true)
+  - instance/CMP7/QT = true (instance.CMP7.QT = true)
+  - instance/CMP4/IN2 = 2 (instance.CMP4.IN2 = 2)
+  - instance/OUT = true (instance.OUT = true)
+  - instance/INPUT7 = 2 (instance.INPUT7 = 2)
+  - EoC = true (EoC = true)
+  - instance/CMP5/EQ = false (instance.CMP5.EQ = false)
+  - instance/CMP1/IN1 = 2 (instance.CMP1.IN1 = 2)
+  - instance/INPUT6 = 3 (instance.INPUT6 = 3)
+  - instance/CMP4/IN1 = 3 (instance.CMP4.IN1 = 3)
+  - instance/CMP3/LT = false (instance.CMP3.LT = false)
+  - instance/CMP7/IN1 = 3 (instance.CMP7.IN1 = 3)
+  - instance/CMP6/IN1 = 3 (instance.CMP6.IN1 = 3)
+  - instance/CMP2/LT = false (instance.CMP2.LT = false)
+  - instance/CMP1/LT = true (instance.CMP1.LT = true)
+  - instance/INPUT1 = 2 (instance.INPUT1 = 2)
+  - instance/INPUT5 = 0 (instance.INPUT5 = 0)
+  - instance/CMP6/EQ = false (instance.CMP6.EQ = false)
+  - instance/CMP7/EQ = false (instance.CMP7.EQ = false)
+  - instance/CMP7/IN2 = 2 (instance.CMP7.IN2 = 2)
+  - instance/CMP7/LT = true (instance.CMP7.LT = true)
+  - instance/CMP3/IN2 = 2 (instance.CMP3.IN2 = 2)
+  - instance/CMP2/EQ = true (instance.CMP2.EQ = true)
+  - instance/CMP5/IN2 = 2 (instance.CMP5.IN2 = 2)
+  - instance/CMP3/EQ = true (instance.CMP3.EQ = true)
+  - instance/INPUT4 = 3 (instance.INPUT4 = 3)
+  - instance/CMP2/QT = true (instance.CMP2.QT = true)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (1118 ms): Successful
+* Requirement representation (48 ms): Successful
+* Reductions (CFD) (25 ms): Successful
+* Model preparation (31 ms): Successful
+* CBMC model building (52 ms): Successful
+* CBMC execution (1034 ms): Successful
+* CBMC output parsing (22 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (0 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req3
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 5
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.INPUT1
+  -job.req.inputs.1 = instance.INPUT2
+  -job.req.inputs.2 = instance.INPUT3
+  -job.req.inputs.3 = instance.INPUT4
+  -job.req.inputs.4 = instance.INPUT5
+  -job.req.inputs.5 = instance.INPUT6
+  -job.req.inputs.6 = instance.INPUT7
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(NOT instance.OUT)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark7/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark7/benchmark7.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark7/output/req3.c
+Converting
+Type-checking req3
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+17442 variables, 78867 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 0.173284s
+
+** Results:
+/home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark7/output/req3.c function VerificationLoop
+[VerificationLoop.assertion.1] line 226 assertion (!(EoC) || (! instance.OUT)): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark7/output/req3.c function main line 241 thread 0
+-------------------------[...]
+
+
+12.08user 0.66system 0:06.64elapsed 191%CPU (0avgtext+0avgdata 431268maxresident)k
+8inputs+1232outputs (0major+169008minor)pagefaults 0swaps

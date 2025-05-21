@@ -1,0 +1,128 @@
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+Arguments: benchmark/plcverif/cmd/workspace2/benchmark3/req2.vc3
+Program directory: /home/jlee/plc-release/benchmark/plcverif/cmd
+Warning: The 'instance/INDEX=1' binding restricts the value of a non-input variable. Therefore assignments to 'instance/INDEX' (1 assignments) have been removed from the complete model, however, this may result in an incorrect model. Check the model and your assumptions. [Requirement representation]
+Warning: Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program. [CBMC output parsing]
+
+Requirement: *(instance.OUT1 &lt; instance.OUT3 AND instance.OUT2 &lt;instance.OUT3)* is always true at the end of the PLC cycle.
+             (AG (EoC --> ((instance/OUT1 < instance/OUT3) && (instance/OUT2 < instance/OUT3))))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: instance/INDEX = 1
+
+
+Counterexample/witness:
+Step 1
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+  - instance/OUT3 = 1 (instance.OUT3 = 1)
+  - instance/OUT1 = 1 (instance.OUT1 = 1)
+  - instance/INDEX = 1 (instance.INDEX = 1)
+  - instance/FIB/F1 = 1 (instance.FIB.F1 = 1)
+  - instance/FIB/O = 1 (instance.FIB.O = 1)
+  - instance/FIB/F2 = 1 (instance.FIB.F2 = 1)
+  - instance/FIB/N = -1 (instance.FIB.N = -1)
+  - instance/OUT2 = 1 (instance.OUT2 = 1)
+  - EoC = true (EoC = true)
+  - instance/FIB/CNT = 2 (instance.FIB.CNT = 2)
+
+Stages
+------
+* Parsing source code (1 ms): Successful
+* Control-flow declaration generation (889 ms): Successful
+* Requirement representation (99 ms): Successful
+    - [Warning] The 'instance/INDEX=1' binding restricts the value of a non-input variable. Therefore assignments to 'instance/INDEX' (1 assignments) have been removed from the complete model, however, this may result in an incorrect model. Check the model and your assumptions.
+* Reductions (CFD) (23 ms): Successful
+* Model preparation (22 ms): Successful
+* CBMC model building (113 ms): Successful
+* CBMC execution (273 ms): Successful
+* CBMC output parsing (4 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (4 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req2
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 5
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.bindings.value.0 = DINT#1
+  -job.req.bindings.variable.0 = instance.INDEX
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.OUT1 < instance.OUT3 AND instance.OUT2 <instance.OUT3)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark3/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark3/benchmark3.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark3/output/req2.c
+Converting
+Type-checking req2
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+1308 variables, 1311 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 0.00409399s
+
+** Results:
+/home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark3/output/req2.c function VerificationLoop
+[VerificationLoop.assertion.1] line 189 assertion (!(EoC) || ((instance.OUT1 < instance.OUT3) && (instance.OUT2 < instance.OUT3))): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark3/output/req2.c funct[...]
+
+
+9.84user 0.54system 0:05.41elapsed 191%CPU (0avgtext+0avgdata 381892maxresident)k
+24inputs+1040outputs (0major+159128minor)pagefaults 0swaps

@@ -1,0 +1,156 @@
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+Arguments: benchmark/plcverif/cmd/workspace2/benchmark13/req3.vc3
+Program directory: /home/jlee/plc-release/benchmark/plcverif/cmd
+Warning: Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program. [CBMC output parsing]
+
+Requirement: *(instance.ERROR = FALSE)* is always true at the end of the PLC cycle.
+             (AG (EoC --> (instance/Error = false)))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/Ready = true (instance.Ready = true)
+  - instance/Activate = true (instance.Activate = true)
+  - EoC = true (EoC = true)
+  - instance/S_AntivalentOut = false (instance.S_AntivalentOut = false)
+  - instance/S_ChannelNO = false (instance.S_ChannelNO = false)
+  - instance/Error = false (instance.Error = false)
+  - instance/S_ChannelNC = true (instance.S_ChannelNC = true)
+  - instance/DiagCode = 32769 (instance.DiagCode = 32769)
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+Step 2
+  - instance/Activate = true (instance.Activate = true)
+  - EoC = true (EoC = true)
+  - instance/S_AntivalentOut = false (instance.S_AntivalentOut = false)
+  - instance/S_ChannelNC = false (instance.S_ChannelNC = false)
+  - instance/DiagCode = 32769 (instance.DiagCode = 32769)
+  - instance/CYCLE = 2 (instance.CYCLE = 2)
+  - instance/S_ChannelNO = true (instance.S_ChannelNO = true)
+  - instance/Ready = true (instance.Ready = true)
+  - instance/Error = false (instance.Error = false)
+Step 3
+  - instance/DiagCode = 32788 (instance.DiagCode = 32788)
+  - instance/CYCLE = 3 (instance.CYCLE = 3)
+  - instance/Error = false (instance.Error = false)
+  - instance/Activate = true (instance.Activate = true)
+  - EoC = true (EoC = true)
+  - instance/S_ChannelNC = false (instance.S_ChannelNC = false)
+  - instance/S_AntivalentOut = false (instance.S_AntivalentOut = false)
+  - instance/Ready = true (instance.Ready = true)
+  - instance/S_ChannelNO = false (instance.S_ChannelNO = false)
+Step 4
+  - instance/Activate = true (instance.Activate = true)
+  - instance/S_ChannelNC = true (instance.S_ChannelNC = true)
+  - EoC = true (EoC = true)
+  - instance/Error = true (instance.Error = true)
+  - instance/S_AntivalentOut = false (instance.S_AntivalentOut = false)
+  - instance/S_ChannelNO = false (instance.S_ChannelNO = false)
+  - instance/CYCLE = 4 (instance.CYCLE = 4)
+  - instance/Ready = true (instance.Ready = true)
+  - instance/DiagCode = 49154 (instance.DiagCode = 49154)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (1478 ms): Successful
+* Requirement representation (86 ms): Successful
+* Reductions (CFD) (79 ms): Successful
+* Model preparation (51 ms): Successful
+* CBMC model building (86 ms): Successful
+* CBMC execution (102514 ms): Successful
+* CBMC output parsing (10 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (1 ms): Successful
+* Reporting (0 ms): Unknown
+
+Settings
+--------
+  -description = ""
+  -id = req3
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 20
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.Activate
+  -job.req.inputs.1 = instance.S_ChannelNC
+  -job.req.inputs.2 = instance.S_ChannelNO
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.ERROR = FALSE)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark13/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark13/benchmark13.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark13/output/req3.c
+Converting
+Type-checking req3
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+33448 variables, 200013 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 8.13883s
+
+** Results:
+/home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark13/output/req3.c function VerificationLoop
+[VerificationLoop.assertion.1] line 456 assertion (!(EoC) || (instance.Error == false)): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark13/output/req3.c function main line 471 thread 0
+-------------[...]
+
+
+111.08user 0.73system 1:47.88elapsed 103%CPU (0avgtext+0avgdata 381896maxresident)k
+40inputs+1272outputs (0major+194732minor)pagefaults 0swaps

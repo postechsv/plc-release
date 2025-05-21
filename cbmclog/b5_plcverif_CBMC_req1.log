@@ -1,0 +1,159 @@
+PLCverif    by CERN BE-ICS-AP, (c) 2013-2019
+   CLI version: 1.0.0.202012152221
+--------------------------------------------
+Arguments: benchmark/plcverif/cmd/workspace2/benchmark5/req1.vc3
+Program directory: /home/jlee/plc-release/benchmark/plcverif/cmd
+Warning: Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program. [CBMC output parsing]
+Warning: The settings element 'job.backend.dynamic' (value: true) has not been used. Maybe its name has a typo? [Reporting]
+
+Requirement: *(instance.PIDOUT = 1)* is always true at the end of the PLC cycle.
+             (AG (EoC --> (instance/PIDOUT = 1)))
+
+**Result: the requirement is VIOLATED**
+
+Backend: CbmcBackend
+Parameters: 
+Input bindings: 
+
+
+Counterexample/witness:
+Step 1
+  - instance/CYCLE = 1 (instance.CYCLE = 1)
+  - instance/PIDHANDLER/DTERM/XIN = Infinity (instance.PIDHANDLER.DTERM.XIN = Infinity)
+  - instance/R7 = -6.070979E36 (instance.R7 = -6.070979E36)
+  - instance/PIDOUT = NaN (instance.PIDOUT = NaN)
+  - instance/PIDHANDLER/DTERM/X1 = Infinity (instance.PIDHANDLER.DTERM.X1 = Infinity)
+  - instance/PIDHANDLER/X0 = Infinity (instance.PIDHANDLER.X0 = Infinity)
+  - instance/R3 = Infinity (instance.R3 = Infinity)
+  - instance/PIDHANDLER/ITERM/XIN = Infinity (instance.PIDHANDLER.ITERM.XIN = Infinity)
+  - instance/PIDHANDLER/ITERM/X0 = NaN (instance.PIDHANDLER.ITERM.X0 = NaN)
+  - instance/R4 = 0.500008 (instance.R4 = 0.500008)
+  - instance/PIDHANDLER/TD = 1.099512E12 (instance.PIDHANDLER.TD = 1.099512E12)
+  - instance/PIDHANDLER/ITERM/R1 = false (instance.PIDHANDLER.ITERM.R1 = false)
+  - instance/PIDHANDLER/KP = 0.500008 (instance.PIDHANDLER.KP = 0.500008)
+  - instance/PIDHANDLER/AUTO = true (instance.PIDHANDLER.AUTO = true)
+  - instance/PIDHANDLER/ITERM/Q = true (instance.PIDHANDLER.ITERM.Q = true)
+  - instance/R5 = -0.003507 (instance.R5 = -0.003507)
+  - instance/R6 = 1.099512E12 (instance.R6 = 1.099512E12)
+  - instance/PIDHANDLER/ERROR = Infinity (instance.PIDHANDLER.ERROR = Infinity)
+  - instance/PIDHANDLER/DTERM/XOUT = -Infinity (instance.PIDHANDLER.DTERM.XOUT = -Infinity)
+  - instance/PIDHANDLER/XOUT = NaN (instance.PIDHANDLER.XOUT = NaN)
+  - instance/PIDHANDLER/CYCLE = -6.070979E36 (instance.PIDHANDLER.CYCLE = -6.070979E36)
+  - instance/PIDHANDLER/DTERM/CYCLE = -6.070979E36 (instance.PIDHANDLER.DTERM.CYCLE = -6.070979E36)
+  - instance/PIDHANDLER/TR = -0.003507 (instance.PIDHANDLER.TR = -0.003507)
+  - instance/R2 = -1.973419E33 (instance.R2 = -1.973419E33)
+  - instance/PIDHANDLER/DTERM/RUN = true (instance.PIDHANDLER.DTERM.RUN = true)
+  - instance/PIDHANDLER/SP = -1.973419E33 (instance.PIDHANDLER.SP = -1.973419E33)
+  - instance/B1 = true (instance.B1 = true)
+  - instance/R1 = 3.402811E38 (instance.R1 = 3.402811E38)
+  - instance/PIDHANDLER/ITERM/RUN = true (instance.PIDHANDLER.ITERM.RUN = true)
+  - instance/PIDHANDLER/ITERM/CYCLE = -6.070979E36 (instance.PIDHANDLER.ITERM.CYCLE = -6.070979E36)
+  - instance/PIDHANDLER/PV = 3.402811E38 (instance.PIDHANDLER.PV = 3.402811E38)
+  - instance/PIDHANDLER/DTERM/X2 = 0.0 (instance.PIDHANDLER.DTERM.X2 = 0.0)
+  - EoC = true (EoC = true)
+  - instance/PIDHANDLER/DTERM/X3 = 0.0 (instance.PIDHANDLER.DTERM.X3 = 0.0)
+  - instance/PIDHANDLER/ITERM/XOUT = -Infinity (instance.PIDHANDLER.ITERM.XOUT = -Infinity)
+
+Stages
+------
+* Parsing source code (0 ms): Successful
+* Control-flow declaration generation (1364 ms): Successful
+* Requirement representation (69 ms): Successful
+* Reductions (CFD) (31 ms): Successful
+* Model preparation (33 ms): Successful
+* CBMC model building (70 ms): Successful
+* CBMC execution (111154 ms): Successful
+* CBMC output parsing (13 ms): Successful
+    - [Warning] Make sure to check whether the counterexample is valid. In rare cases, due to the partial loop unfolding in CBMC, the reported counterexample may not be realizable in the original program.
+* Result diagnosis (0 ms): Successful
+* Reporting (0 ms): Unknown
+    - [Warning] The settings element 'job.backend.dynamic' (value: true) has not been used. Maybe its name has a typo?
+
+Settings
+--------
+  -description = ""
+  -id = req1
+  -job = verif
+  -job.backend = cbmc
+  -job.backend.binary_path = tools/cbmc-5-11-linux-64/cbmc
+  -job.backend.exec_output_to_console = false
+  -job.backend.exec_output_to_file = false
+  -job.backend.model_variant = CFD
+  -job.backend.timeout = 7200
+  -job.backend.timeout_executor_path = ""
+  -job.backend.unwind = 5
+  -job.backend.verbosity = 7
+  -job.reporters.0 = summary
+  -job.reporters.1 = html
+  -job.reporters.1.hide_internal_variables = true
+  -job.reporters.1.include_settings = true
+  -job.reporters.1.include_stack_trace = false
+  -job.reporters.1.min_log_level = Warning
+  -job.reporters.1.show_logitem_timestapms = false
+  -job.reporters.1.show_verification_console_output = true
+  -job.reporters.1.use_lf_value_representation = false
+  -job.reporters.2 = plaintext
+  -job.reporters.2.include_settings = true
+  -job.reporters.2.max_output_length = 1000
+  -job.reporters.2.min_log_level = Warning
+  -job.reporters.2.show_logitem_timestapms = false
+  -job.reporters.2.write_to_console = true
+  -job.reporters.2.write_to_file = true
+  -job.req = pattern
+  -job.req.inputs.0 = instance.B1
+  -job.req.inputs.1 = instance.R1
+  -job.req.inputs.2 = instance.R2
+  -job.req.inputs.3 = instance.R3
+  -job.req.inputs.4 = instance.R4
+  -job.req.inputs.5 = instance.R5
+  -job.req.inputs.6 = instance.R6
+  -job.req.inputs.7 = instance.R7
+  -job.req.pattern_id = pattern-invariant
+  -job.req.pattern_params.1 = "(instance.PIDOUT = 1)"
+  -lf = step7
+  -lf.compiler = Step7v55
+  -lf.entry = Main
+  -name = ""
+  -output = benchmark/plcverif/cmd/workspace2/benchmark5/output
+  -reductions.0 = basic_reductions
+  -reductions.0.ExpressionPropagation_maxage = 50
+  -reductions.0.ExpressionPropagation_maxexprsize = 100
+  -reductions.0.ExpressionPropagation_maxlocations = 50000
+  -reductions.0.fine_logging = false
+  -reductions.0.print_vardep_graph = false
+  -reductions.0.show_progress = false
+  -sourcefiles.0 = benchmark/plcverif/cmd/workspace2/benchmark5/benchmark5.scl
+
+Console output
+--------------
+STDOUT
+
+CBMC version 5.11 (cbmc-5.11) 64-bit x86_64 linux
+Parsing /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark5/output/req1.c
+Converting
+Type-checking req1
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (default)
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+318472 variables, 1423290 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 110.689s
+
+** Results:
+/home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark5/output/req1.c function VerificationLoop
+[VerificationLoop.assertion.1] line 277 assertion (!(EoC) || (instance.PIDOUT == 1)): FAILURE
+
+Trace for VerificationLoop.assertion.1:
+
+State 20 file /home/jlee/plc-release/benchmark/plcverif/cmd/workspace2/benchmark5/output/req1.c function main line 292 thread 0
+-----------------[...]
+
+
+121.53user 1.23system 1:56.76elapsed 105%CPU (0avgtext+0avgdata 531572maxresident)k
+16inputs+1352outputs (0major+320607minor)pagefaults 0swaps
