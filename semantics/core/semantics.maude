@@ -648,7 +648,7 @@ mod SCHEDULING-SEMANTICS is
   eq genRanges(inss(ins(fbtype(PNAME) id(PRID) REST) RESTINSS) 
                interval((PRID |-> INTERVAL, IM))
                futureJobs((JS1 @j(PRID, PR, ES, DL))) REST2, MAXTIME)
-             = (PNAME |-> ((MAXTIME - ES) quo INTERVAL + 1)) genRanges(
+             = (PNAME |-> ((MAXTIME - ES) quo INTERVAL)) genRanges(
                inss(RESTINSS) REST2
                interval((PRID |-> INTERVAL, IM))
                futureJobs((JS1 @j(PRID, PR, ES, DL))), MAXTIME) .
