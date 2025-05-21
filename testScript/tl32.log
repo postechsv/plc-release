@@ -1,0 +1,8 @@
+Warning: "tl3-c3-2.maude", line 290: syntax error
+symbolic
+Compiling tl3.st ... 
+Compile Succeeded
+analyzing tl3 using c3-2
+test failed
+Result will be located in  /home/jlee/plc-release/apps
+running time :  1244.1211593151093 sec

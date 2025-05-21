@@ -1,0 +1,8 @@
+Warning: "benchmark13-req1_INF.maude", line 282: syntax error
+symbolic
+Compiling benchmark13.st ... 
+Compile Succeeded
+analyzing benchmark13 using req1_INF
+test succeeded
+Result will be located in  /home/jlee/plc-release/benchmark/straton/benchmark13
+running time :  102.57853245735168 sec

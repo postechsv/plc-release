@@ -1,0 +1,7 @@
+symbolic
+Compiling benchmark17.st ... 
+Compile Succeeded
+analyzing benchmark17 using req1_INF
+test succeeded
+Result will be located in  /home/jlee/plc-release/benchmark/straton/benchmark17
+running time :  75.72505140304565 sec

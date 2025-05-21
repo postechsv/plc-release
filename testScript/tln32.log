@@ -1,0 +1,7 @@
+symbolic
+Compiling tl3.st ... 
+Compile Succeeded
+analyzing tl3 using c3-2
+test failed
+Result will be located in  /home/jlee/plc-release/apps
+running time :  2021.9029326438904 sec

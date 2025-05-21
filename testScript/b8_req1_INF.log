@@ -1,0 +1,7 @@
+concrete
+Compiling benchmark8.st ... 
+Compile Succeeded
+analyzing benchmark8 using req1_INF
+test succeeded
+Result will be located in  /home/jlee/plc-release/benchmark/straton/benchmark8
+running time :  2.5610604286193848 sec

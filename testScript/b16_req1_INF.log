@@ -1,0 +1,8 @@
+Warning: "benchmark16-req1_INF.maude", line 2188: syntax error
+symbolic
+Compiling benchmark16.st ... 
+Compile Succeeded
+analyzing benchmark16 using req1_INF
+test succeeded
+Result will be located in  /home/jlee/plc-release/benchmark/straton/benchmark16
+running time :  92.70598816871643 sec

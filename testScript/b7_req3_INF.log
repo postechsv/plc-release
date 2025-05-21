@@ -1,0 +1,8 @@
+Warning: "benchmark7-req3_INF.maude", line 229: syntax error
+symbolic
+Compiling benchmark7.st ... 
+Compile Succeeded
+analyzing benchmark7 using req3_INF
+test failed
+Result will be located in  /home/jlee/plc-release/benchmark/straton/benchmark7
+running time :  160.91472053527832 sec

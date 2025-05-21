@@ -1,0 +1,8 @@
+Warning: "tl2-c2-1.maude", line 299: syntax error
+symbolic
+Compiling tl2.st ... 
+Compile Succeeded
+analyzing tl2 using c2-1
+test succeeded
+Result will be located in  /home/jlee/plc-release/apps
+running time :  1005.3724112510681 sec

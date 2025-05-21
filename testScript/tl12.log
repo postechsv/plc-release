@@ -1,0 +1,8 @@
+Warning: "trafficLight-caseStudy-2.maude", line 308: syntax error
+symbolic
+Compiling trafficLight.st ... 
+Compile Succeeded
+analyzing trafficLight using caseStudy-2
+test failed
+Result will be located in  /home/jlee/plc-release/apps
+running time :  2807.634886264801 sec

@@ -1,0 +1,7 @@
+symbolic
+Compiling trafficLight.st ... 
+Compile Succeeded
+analyzing trafficLight using caseStudy-2
+test failed
+Result will be located in  /home/jlee/plc-release/apps
+running time :  4833.098858594894 sec

@@ -1,0 +1,7 @@
+concrete
+Compiling benchmark3.st ... 
+Compile Succeeded
+analyzing benchmark3 using req2_INF
+test failed
+Result will be located in  /home/jlee/plc-release/benchmark/straton/benchmark3
+running time :  1.9161477088928223 sec

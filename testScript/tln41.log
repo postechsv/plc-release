@@ -1,0 +1,7 @@
+symbolic
+Compiling tl4.st ... 
+Compile Succeeded
+analyzing tl4 using c4-1
+test succeeded
+Result will be located in  /home/jlee/plc-release/apps
+running time :  6.2208826541900635 sec

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/jlee/plc-release/scripts/stverifNM.py", line 90, in <module>
+    searchCommandTranslator = reqTranslatorNM.ReqFileTranslator(fullPathOfVerifFile)
+  File "/home/jlee/plc-release/scripts/reqTranslatorNM.py", line 163, in __init__
+    input_stream = FileStream(fullPathOfVerifFile)
+  File "/home/jlee/.local/lib/python3.8/site-packages/antlr4/FileStream.py", line 19, in __init__
+    super().__init__(self.readDataFrom(fileName, encoding, errors))
+  File "/home/jlee/.local/lib/python3.8/site-packages/antlr4/FileStream.py", line 24, in readDataFrom
+    with open(fileName, 'rb') as file:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/jlee/plc-release/benchmark/stverif/benchmark2/req3_INF.req'

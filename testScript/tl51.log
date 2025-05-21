@@ -1,0 +1,8 @@
+Warning: "tl5-c5-1.maude", line 270: syntax error
+symbolic
+Compiling tl5.st ... 
+Compile Succeeded
+analyzing tl5 using c5-1
+test succeeded
+Result will be located in  /home/jlee/plc-release/apps
+running time :  4.1981494426727295 sec

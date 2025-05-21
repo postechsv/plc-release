@@ -1,0 +1,7 @@
+symbolic
+Compiling tl2.st ... 
+Compile Succeeded
+analyzing tl2 using c2-2
+test failed
+Result will be located in  /home/jlee/plc-release/apps
+running time :  3327.671578168869 sec

@@ -1,0 +1,8 @@
+Warning: "benchmark17-req1_INF.maude", line 2175: syntax error
+symbolic
+Compiling benchmark17.st ... 
+Compile Succeeded
+analyzing benchmark17 using req1_INF
+test succeeded
+Result will be located in  /home/jlee/plc-release/benchmark/straton/benchmark17
+running time :  61.12814807891846 sec

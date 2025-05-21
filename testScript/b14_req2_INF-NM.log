@@ -1,0 +1,7 @@
+symbolic
+Compiling benchmark14.st ... 
+Compile Succeeded
+analyzing benchmark14 using req2_INF
+test failed
+Result will be located in  /home/jlee/plc-release/benchmark/straton/benchmark14
+running time :  150.59070253372192 sec
