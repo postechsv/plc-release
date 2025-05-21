@@ -260,6 +260,8 @@ fmod STATEMENT is
   sort Stmt .
   op _(_) : FunId List{PExp} -> PExp [ctor prec 18] . 
   op _(_) : Pid List{FArgElement} -> Stmt .
+  op @assertTime : PExp PExp -> Stmt .
+  op @delay : PExp PExp PExp PExp -> Stmt .
   op _:=_ : PExp PExp -> Stmt [ctor prec 59] .
 
   ops _+=_ _-=_ : PExp PExp -> Stmt [ctor prec 59] .

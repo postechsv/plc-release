@@ -166,7 +166,7 @@ mod EXECUTE is
 
   rl [tick] :
      {tconst(CONST) CONF tickTurn(true) tgen(N)} 
-  => {tconst(CONST AND mte(CONF, [r(tv(N))])) timeEffect(CONF, [r(tv(N))]) tickTurn(false) tgen(s N)} .
+  => {tconst(CONST AND mte(CONF, [r(tv(N))]) AND ([r(tv(N))] >= [(0/1).Real])) timeEffect(CONF, [r(tv(N))]) tickTurn(false) tgen(s N)} .
 
   eq timeEffect(< O:Oid : PLCMachine | timer : TIME', ATTRS > CONF, TIME)
    = < O:Oid : PLCMachine | timer : TIME' - TIME, ATTRS > timeEffect(CONF, TIME) .
@@ -269,7 +269,7 @@ mod COMMUNICATION is
 
   op Channel : -> Channel [ctor] .
   op link : Oid Oid -> Oid [ctor comm] .
-  op mwrapper : Oid Oid SemanticValue SemanticValue SemanticValue SemanticValue -> CMsg [ctor] .
+  op mwrapper : Oid Oid SemanticValue SemanticValue SemanticValue SemanticValue SemanticValue -> CMsg [ctor] .
   --- senderID receiverID sendFBID rcvFBID data minimumDelay
   op emptyBuffer : -> CMsgs [ctor] .
   op __ : CMsgs CMsgs -> CMsgs [ctor assoc comm id: emptyBuffer] .
@@ -277,8 +277,12 @@ mod COMMUNICATION is
   op checkMsg : CMsgs Oid PExp PExp ~> Bool .
   op validity :_ : Bool -> Attribute [ctor] .
   op buffer :_ : CMsgs -> Attribute [ctor] .
+  op minDelay :_ : PExp -> Attribute [ctor] .
+  op maxDelay :_ : PExp -> Attribute [ctor] .
 
   op minDelay : ~> SemanticValue . 
+  op initMinDelay : ~> PExp . 
+  op initMaxDelay : ~> PExp . 
 
   vars O O' : PExp .
   var TARGET : SemanticValue .
@@ -289,23 +293,25 @@ mod COMMUNICATION is
   var NEWM : CMsg .
   vars DATA DATA' SFBID RFBID : SemanticValue .
   var B : Bool .
-  vars T D D' CONST : SemanticValue .
+  vars T D D' MD MD' CONST CONST' : SemanticValue .
+  var T2 : Nat .
+  vars LOWER UPPER : PExp .
 
   eq mte(< L:Oid : Channel | ATTRS >, T) = [(true).Boolean] .
   eq envTimeEffect(< L:Oid : Channel | ATTRS >, T:Nat)
    = < L:Oid : Channel | ATTRS > .
 
-  eq insert(BUFFER mwrapper(O, O', SFBID, RFBID, DATA', D'), mwrapper(O, O', SFBID, RFBID, DATA, D))
-   = BUFFER mwrapper(O, O', SFBID, RFBID, DATA, D) .
+  eq insert(BUFFER mwrapper(O, O', SFBID, RFBID, DATA', D', MD'), mwrapper(O, O', SFBID, RFBID, DATA, D, MD))
+   = BUFFER mwrapper(O, O', SFBID, RFBID, DATA, D, MD) .
   eq insert(BUFFER, NEWM) = BUFFER NEWM [owise] .
-  eq checkMsg(BUFFER mwrapper(O, O', SFBID, RFBID, DATA, D), O, SFBID, RFBID) = true .
+  eq checkMsg(BUFFER mwrapper(O, O', SFBID, RFBID, DATA, D, MD), O, SFBID, RFBID) = true .
   eq checkMsg(BUFFER, O, SFBID, RFBID) = false [owise] .
 
   op timeEffect : CMsgs SemanticValue ~> CMsgs .
 
   eq timeEffect(emptyBuffer, T) = emptyBuffer .
-  eq timeEffect((mwrapper(O, O', SFBID, RFBID, DATA, D) BUFFER), T)
-   = mwrapper(O, O', SFBID, RFBID, DATA, D - T) timeEffect(BUFFER, T) .
+  eq timeEffect((mwrapper(O, O', SFBID, RFBID, DATA, D, MD) BUFFER), T)
+   = mwrapper(O, O', SFBID, RFBID, DATA, D - T, MD - T) timeEffect(BUFFER, T) .
 
   eq timeEffect(< link(O, O') : Channel | buffer : BUFFER, ATTRS > CONF:Configuration, T)
    = < link(O, O') : Channel | buffer : timeEffect(BUFFER, T), ATTRS > timeEffect(CONF:Configuration, T) .
@@ -315,19 +321,15 @@ mod COMMUNICATION is
  ceq [con-succ] :
      < O : PLCMachine | proc : k(connectRequest(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : false, ATTRS' >
-     tickTurn(false)
    = < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
-     tickTurn(true)
   if O' == sem2syn(TARGET) .
 
  ceq [con-back] :
      < O : PLCMachine | proc : k(connectRequest(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
-     tickTurn(false)
    = < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, ATTRS' >
-     tickTurn(true)
   if O' == sem2syn(TARGET) .
 
 ---(
@@ -351,10 +353,8 @@ mod COMMUNICATION is
  ceq [isConnected]:
      < O : PLCMachine | proc : k(isConnected(TARGET) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : B, ATTRS' >
-     tickTurn(false)
    = < O : PLCMachine | proc : k(if B then TRUE else FALSE fi ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : B, ATTRS' >
-     tickTurn(true)
   if O' == sem2syn(TARGET) .
 
 ---(
@@ -364,10 +364,10 @@ mod COMMUNICATION is
 ---)
  crl [sendData] :
      < O : PLCMachine | proc : k(sendData(TARGET, SFBID, RFBID, DATA) ~> K) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
+     < link(O, O') : Channel | validity : true, buffer : BUFFER, minDelay : LOWER, maxDelay : UPPER, ATTRS' >
      tickTurn(false)
   => < O : PLCMachine | proc : k(TRUE ~> K) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : insert(BUFFER, mwrapper(O, O', SFBID, RFBID, DATA, minDelay)), ATTRS' >
+     < link(O, O') : Channel | validity : true, buffer : insert(BUFFER, mwrapper(O, O', SFBID, RFBID, DATA, syn2sem(LOWER), syn2sem(UPPER))), ATTRS' >
      tickTurn(true)
      if O' == sem2syn(TARGET) .
 
@@ -382,14 +382,14 @@ mod COMMUNICATION is
 
  crl [rcvData] :
      < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
-     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFBID, RFBID, DATA, D)), ATTRS' >
+     < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFBID, RFBID, DATA, D, MD)), ATTRS' >
      tickTurn(false)
      tconst(CONST)
   => < O : PLCMachine | proc : k(DATA ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
      tickTurn(true)
      tconst(CONST AND (D < [(0/1).Real]))
-     if O' == sem2syn(TARGET) /\ checkSAT(CONST AND D < [(0/1).Real]) .
+     if O' == sem2syn(TARGET) /\ checkSAT(CONST AND D < [(0/1).Real] AND MD >= [(0/1).Real]) . 
 
  crl [rcv-fail] :
      < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
@@ -400,6 +400,7 @@ mod COMMUNICATION is
      tickTurn(true)
      if O' == sem2syn(TARGET) .
 
+---(
  crl [wrcvData] :
      < O : PLCMachine | proc : k(wrcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : (BUFFER mwrapper(O', O, SFBID, RFBID, DATA, D)), ATTRS' >
@@ -410,12 +411,36 @@ mod COMMUNICATION is
      tickTurn(true)
      tconst(CONST AND D < [(0/1).Real])
      if O' == sem2syn(TARGET) /\ checkSAT(CONST AND D < [(0/1).Real]) .
+---)
 
  crl [rcv-noMsg] :
      < O : PLCMachine | proc : k(rcvData(TARGET, SFBID, RFBID) ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' >
+     tickTurn(false)
   => < O : PLCMachine | proc : k(rcvError ~> K) KC, ATTRS >
      < link(O, O') : Channel | validity : true, buffer : BUFFER, ATTRS' > 
+     tickTurn(true)
   if O' == sem2syn(TARGET) /\ not checkMsg(BUFFER, O', SFBID, RFBID) .
+
+ ceq [assertTime] :
+      tconst(CONST)
+      < O : PLCMachine | timer : T, proc : k(@assertTime(LOWER, UPPER) ~> K) cycleTime(T2) KC, ATTRS > 
+    = tconst(CONST')
+      < O : PLCMachine | timer : T, proc : k(K) cycleTime(T2) KC, ATTRS > 
+   if CONST' := CONST AND syn2sem(LOWER) <= [T2] - T AND syn2sem(UPPER) >= [T2] - T /\
+      checkSAT(CONST') .
+
+  eq [delay] :
+     < O : PLCMachine | proc : k(@delay(O, O', LOWER, UPPER) ~> K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, minDelay : A:PExp, maxDelay : B:PExp, ATTRS' >
+   = < O : PLCMachine | proc : k(K) KC, ATTRS >
+     < link(O, O') : Channel | validity : true, minDelay : LOWER, maxDelay : UPPER , ATTRS' > .
+
+  eq < link(O, O') : Channel | validity : BB:Bool, buffer : BUFFER >
+   = < link(O, O') : Channel | validity : BB:Bool, buffer : BUFFER, minDelay : initMinDelay , maxDelay : initMaxDelay > .
+
+  eq initMinDelay = # (1/1) .
+  eq initMaxDelay = # (10000/1) .
 endm
+
 
