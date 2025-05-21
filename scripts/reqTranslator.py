@@ -231,7 +231,7 @@ class ReqFileTranslator:
 "    eq counter(N, {TERM:Term, TYPE:Type})\n" \
 "     = counter(s N, metaSrewrite(upModule('POR, false), upTerm(appExt), ('porStar)[[empty]], breadthFirst, s N)) .\n" \
 " endsm\n" \
-"srew appExt using porStar ; fail ."
+"srew appExt using porStar ; goalState ."
         if "symbolic" in visitor.INPUTSTREAM:
             self.symbolicOrconcrete = "symbolic"
         else:

@@ -1,0 +1,18 @@
+INPUT:
+nsCar :: incoming |-> repeat(??)
+ewCar :: incoming |-> repeat(??)
+nsPed :: incoming |-> repeat(FALSE)
+ewPed :: incoming |-> repeat(FALSE)
+
+BOUND:
+500
+
+ADAPTER:
+nsCar |-> first / 1
+ewCar |-> first / 1
+nsPed |-> first / 1
+ewPed |-> first / 1
+
+CONDITION:
+GLOBALLY (NOT (nsCar :: red OR ewCar :: red))
+
