@@ -1,0 +1,133 @@
+load /home/jlee/plc-release/scripts/../semantics/interpreter/environment 
+load /home/jlee/plc-release/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+ops projectFile : -> StratonProject .
+eq projectFile =
+(
+BEGINCONFIG
+PROGRAMS
+'Thermostat ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 3
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'Thermostat
+
+BEGINVAR
+'t1 : DINT : ##IN ;
+'t2 : DINT : ##IN ;
+'switch1 : DINT : ##OUT ;
+'switch2 : DINT : ##OUT ;
+ENDVAR
+
+
+CODE
+IF 't1 + 't2 < # 15 THEN
+  'switch1 := # 1 ;
+  'switch2 := # 1 ;
+ELSE
+  IF 't1 < 't2 THEN
+    'switch1 := # 1 ;
+    'switch2 := # 0 ;
+  ELSE
+    'switch1 := # 0 ;
+    'switch2 := # 1 ;
+  ENDIF ;
+ENDIF ;
+
+ENDCODE
+ENDPROGRAM
+ENDPOUS
+) .
+
+
+  op linkedFile : -> StratonProject .
+  eq linkedFile = projectFile <-load- lib .
+  op app : -> KConfig .
+  eq app = [[[ linkedFile ]]] .
+
+endm
+
+mod MC is
+  inc APP .
+  inc COMMUNICATION . 
+
+  op t : -> Var [ctor] .
+  op init : ~> World .
+  eq minDelay = [(1/1).Real] .
+
+  eq init =
+{< # "thermostat" : PLCMachine | proc : app, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0,
+                                senList : ('t1 , 't2), 
+                                actList : ('switch1, 'switch2),
+                                state : (('t1 ||-> [(15).NzNat]), ('t2 ||-> [(16).NzNat]),
+                                         ('switch1 ||-> [(0).Zero]), ('switch2 ||-> [(0).Zero])),
+                                flow : ('t1(t) = s['t1] + ((s['switch1] + c[[(-1).Int / (10).Nat]]) * v[t]) ;;
+                                        't2(t) = s['t2] + ((s['switch2] + c[[(-1).Int / (10).Nat]]) * v[t])) >
+  cconst([(true).Boolean]) tconst([(true).Boolean]) tickTurn((false).Bool) tgen((0).Nat)} .
+
+  op X_X : Configuration -> World [ctor frozen] .
+ ceq { < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration }
+   = X < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration X
+  if float(T:Nat) >= 12.0 .
+
+endm 
+
+smod POR is
+  inc MC .
+
+  strat internal @ Configuration .
+  strat commu @ Configuration .
+  strat allRules @ Configuration .
+  strat porStep @ Configuration .
+  strat indiv : Oid @ Configuration .
+
+  sd internal := arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .
+  sd commu := discon-vol | sendData | rcvData | rcv-fail | rcv-noMsg .
+  sd allRules := internal | commu | tick | start .
+
+  var I : Oid .
+  sd indiv(I) := matchrew {< I : PLCMachine | proc : P:KConfig, ATTRS:AttributeSet > CONF:Configuration} by P:KConfig using internal .
+
+  sd porStep := (start ? idle : (indiv(# "thermostat") ? idle : (commu ? idle : tick))) .
+
+  strat goalState @ Configuration .
+  sd goalState := match {< # "thermostat" : PLCMachine | state : (('t1 ||-> SM:SemanticValue), ('t2 ||-> SM2:SemanticValue), REST:Map{PExp, SemanticValue}), ATTRS:AttributeSet > CONF:Configuration}
+                  s.t. checkSAT(SM:SemanticValue < [(11).NzNat] OR SM:SemanticValue > [(30).NzNat]
+                    OR SM2:SemanticValue < [(11).NzNat] OR SM2:SemanticValue > [(30).NzNat]) .
+
+  strat porStar @ Configuration .
+  sd porStar := (porStep *) .
+
+  strat noPor @ Configuration .
+  sd noPor := (allRules *) .
+endsm
+
+srew [1] init using (allRules * ; fail) .
+
+eof
+search [1]  init
+=>*
+{< # "thermostat" : PLCMachine | state : (('t1 ||-> SM:SemanticValue), ('t2 ||-> SM2:SemanticValue), REST:Map{PExp, SemanticValue}), ATTRS:AttributeSet > R:Configuration} 
+such that checkSAT(SM:SemanticValue < [(10).NzNat] OR SM:SemanticValue > [(20).NzNat]
+                   OR SM2:SemanticValue < [(10).NzNat] OR SM2:SemanticValue > [(20).NzNat]) .
+

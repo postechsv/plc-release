@@ -1,0 +1,188 @@
+load /home/jlee/plc-release/scripts/../semantics/interpreter/environment 
+load /home/jlee/plc-release/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+ops projectFile1 projectFile2 : -> StratonProject .
+eq projectFile1 =
+(
+BEGINCONFIG
+PROGRAMS
+'VehicleControl ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 10
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'VehicleControl 
+
+
+BEGINVAR
+'v1x : INT : ##IN ;
+'input : BOOL : ##PRIV ;
+'signal : DINT : ##OUT ;
+'comm1 : fbtype [ 'CONNECT ] : ##PRIV ; 
+'send : fbtype [ 'USEND ] : ##PRIV ; 
+ENDVAR
+
+CODE
+'comm1 ( TRUE , # "plc2" ) ; 
+IF NOT ('comm1 . 'VALID) THEN 
+return ; 
+ENDIF ;
+
+'signal := boolUserInput ;
+'send(TRUE, # "plc2", # "rcv", 'signal) ;
+@assertTime(# 0, # 3) ;
+ENDCODE
+ENDPROGRAM
+ENDPOUS
+) .
+
+
+eq projectFile2 =
+(
+BEGINCONFIG
+PROGRAMS
+'VehicleControl ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 10
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'VehicleControl 
+BEGINVAR
+'v2y : INT : ##IN ;
+'signal : INT : ##OUT ;
+'comm1 : fbtype [ 'CONNECT ] : ##PRIV ;
+'rcv : fbtype [ 'URCV ] : ##PRIV ;
+ENDVAR
+
+CODE
+'comm1 ( TRUE , # "plc1" ) ; 
+IF NOT ('comm1 . 'VALID) THEN 
+return ; 
+ENDIF ;
+
+'rcv( TRUE, # "plc1", # "send") ; 
+@assertTime(# 5, # 8) ;
+'signal := ('rcv . 'DATA) ;
+'signal := # 1 - 'signal ;
+
+ENDCODE
+ENDPROGRAM
+ENDPOUS
+
+) .
+
+  ops linkedFile1 linkedFile2 : -> StratonProject .
+  eq linkedFile1 = projectFile1 <-load- lib .
+  eq linkedFile2 = projectFile2 <-load- lib .
+  ops app1 app2 : -> KConfig .
+  eq app1 = [[[ linkedFile1 ]]] .
+  eq app2 = [[[ linkedFile2 ]]] .
+
+endm
+
+
+mod MC is
+  inc APP .
+  inc COMMUNICATION . 
+
+  op t : -> Var [ctor] .
+  op init : ~> World .
+  eq minDelay = [(1/1).Real] .
+
+  eq init =
+{
+< # "plc1" : PLCMachine | proc : app1, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0, 
+                          senList : ('v1x), 
+                          actList : ('signal),
+                          state : (('v1x ||-> [(0).NzNat]), ('signal ||-> [(0).Zero])),
+                          flow : ('v1x(t) = s['v1x] + (s['signal] * v[t])) >
+< # "plc2" : PLCMachine | proc : app2, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0,
+                          senList : ('v2y), 
+                          actList : ('signal),
+                          state : (('v2y ||-> [(0).NzNat]), ('signal ||-> [(0).Zero])),
+                          flow : ('v2y(t) = s['v2y] + (s['signal] * v[t])) >
+< link(# "plc1", # "plc2") : Channel | validity : false, buffer : emptyBuffer >
+  cconst([(true).Boolean]) tconst([(true).Boolean]) tickTurn((false).Bool) tgen((0).Nat)} .
+
+  op X_X : Configuration -> World [ctor frozen] .
+ ceq { < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration }
+   = X < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration X
+  if float(T:Nat) >= 80.0 .
+endm 
+
+smod POR is
+  inc MC .
+
+  strat internal @ Configuration .
+  strat commu @ Configuration .
+  strat allRules @ Configuration .
+  strat porStep @ Configuration .
+  strat indiv : Oid @ Configuration .
+
+  sd internal := arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .
+  sd commu := discon-vol | sendData | rcvData | rcv-fail | rcv-noMsg .
+  sd allRules := internal | commu | tick | start .
+
+  var I : Oid .
+  sd indiv(I) := matchrew {< I : PLCMachine | proc : P:KConfig, ATTRS:AttributeSet > CONF:Configuration} by P:KConfig using internal .
+
+  sd porStep := (start ? idle : ((indiv(# "plc1") ? idle : indiv(# "plc2")) ? idle : (commu ? idle : tick))) .
+
+  strat goalState @ Configuration .
+  sd goalState := match {< # "plc1" : PLCMachine | state : (('v1x ||-> SM:SemanticValue), REST:Map{PExp, SemanticValue}), ATTRS:AttributeSet > < # "plc2" : PLCMachine | state : (('v2y ||-> SM2:SemanticValue), REST2:Map{PExp, SemanticValue}), ATTRS2:AttributeSet > CONF:Configuration}
+                  s.t. checkSAT(SM:SemanticValue ==== [(10).NzNat] AND SM2:SemanticValue ==== [(10).NzNat]) .
+
+  strat porStar @ Configuration .
+  sd porStar := (porStep *) .
+
+  strat noPor @ Configuration .
+  sd noPor := (allRules *) .
+endsm
+
+
+srew [1] init using (porStep * ; fail) .
+
+eof
+search [1]  init
+=>*
+{< # "plc1" : PLCMachine | state : (('v1x ||-> SM:SemanticValue), REST1:Map{PExp, SemanticValue}), ATTRS1:AttributeSet >
+ < # "plc2" : PLCMachine | state : (('v2y ||-> SM2:SemanticValue), REST2:Map{PExp, SemanticValue}), ATTRS2:AttributeSet > R:Configuration } 
+such that checkSAT(SM:SemanticValue ==== [(10).Nat] OR SM2:SemanticValue ==== [(10).Nat]) .
+
+

@@ -1,0 +1,142 @@
+load /home/jlee/plc-release/scripts/../semantics/interpreter/environment 
+load /home/jlee/plc-release/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+op projectFile : -> StratonProject .
+eq projectFile =
+(
+BEGINCONFIG
+PROGRAMS
+'WaterTank1 ;; 
+'WaterTank2 ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 10
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'WaterTank1 
+BEGINVAR
+'min_level : DINT := ( # 0 ) : ##PRIV ; 
+'min1 : BOOL : ##PRIV ; 
+'P1_switch : BOOL : ##PRIV ; 
+'state : INT : ##PRIV ; 
+'water_level_t1 : DINT : ##IN ; 
+'P1 : DINT : ##OUT ; 
+ENDVAR
+
+CODE
+'P1 := boolUserInput ; 
+
+ENDCODE
+ENDPROGRAM
+
+PROGRAM 'WaterTank2 
+BEGINVAR
+'min_level : DINT := ( # 0 ) : ##PRIV ; 
+'min2 : BOOL : ##PRIV ; 
+'P2_switch : BOOL : ##PRIV ; 
+'state : INT : ##PRIV ; 
+'water_level_t2 : DINT : ##IN ; 
+'P2 : DINT : ##OUT ; 
+ENDVAR
+
+CODE
+'P2 := boolUserInput ; 
+
+ENDCODE
+ENDPROGRAM
+
+ENDPOUS
+
+) .
+  op linkedFile : -> StratonProject .
+  eq linkedFile = projectFile <-load- lib .
+  op app : -> KConfig .
+  eq app = [[[ linkedFile ]]] .
+
+endm
+
+mod MC is
+  inc APP .
+  inc COMMUNICATION . 
+
+  op t : -> Var [ctor] .
+  op init : ~> World .
+  eq minDelay = [(1/1).Real] .
+  eq init =
+{< # "plant" : PLCMachine | proc : app, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0,
+                            senList : ('water_level_t1 , 'water_level_t2), 
+                            actList : ('P1, 'P2),
+                            state : (('water_level_t1 ||-> [(20).NzNat]), ('water_level_t2 ||-> [(20).NzNat]),
+                                     ('P1 ||-> [(0).Zero]), ('P2 ||-> [(0).Zero])),
+                            flow : ('water_level_t1(t) = s['water_level_t1] + (c[[(- 3).Int]] * s['P1] * v[t]) + (c[[(4).Nat]] * s['P2] * v[t]) ;;
+                                    'water_level_t2(t) = s['water_level_t2] + (c[[(3).Nat]] * s['P1] * v[t]) + (c[[(- 4).Int]] * s['P2] * v[t])) >
+  cconst([(true).Boolean]) tconst([(true).Boolean]) tickTurn((false).Bool) tgen((0).Nat)} .
+
+  op X_X : Configuration -> World [ctor frozen] .
+ ceq { < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration }
+   = X < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration X
+  if float(T:Nat) >= 60.0 .
+
+endm 
+
+smod POR is
+  inc MC .
+
+  strat internal @ Configuration .
+  strat commu @ Configuration .
+  strat allRules @ Configuration .
+  strat porStep @ Configuration .
+  strat indiv : Oid @ Configuration .
+
+  sd internal := arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .
+  sd commu := discon-vol | sendData | rcvData | rcv-fail | rcv-noMsg .
+  sd allRules := internal | commu | tick | start .
+
+  var I : Oid .
+  sd indiv(I) := matchrew {< I : PLCMachine | proc : P:KConfig, ATTRS:AttributeSet > CONF:Configuration} by P:KConfig using internal .
+
+  sd porStep := (start ? idle : (indiv(# "plant") ? idle : (commu ? idle : tick))) .
+
+  strat goalState @ Configuration .
+  sd goalState := match {< # "plant" : PLCMachine | state : (('water_level_t1 ||-> SM:SemanticValue), ('water_level_t2 ||-> SM2:SemanticValue),
+                                     REST:Map{PExp, SemanticValue}), ATTRS:AttributeSet > CONF:Configuration}
+                  s.t. checkSAT(SM:SemanticValue < [(0).NzNat] OR SM:SemanticValue > [(20).NzNat]
+                    OR SM2:SemanticValue < [(0).NzNat] OR SM2:SemanticValue > [(35).NzNat]) .
+
+  strat porStar @ Configuration .
+  sd porStar := (porStep *) .
+
+  strat noPor @ Configuration .
+  sd noPor := (allRules *) .
+endsm
+
+srew init using (porStep *) .
+
+eof
+search [1]  init
+=>*
+{< # "plant" : PLCMachine | state : (('water_level_t1 ||-> SM:SemanticValue), ('water_level_t2 ||-> SM2:SemanticValue),
+                                     REST:Map{PExp, SemanticValue}), ATTRS:AttributeSet > CONF:Configuration} 
+such that checkSAT(SM:SemanticValue < [(3).Nat]
+                   OR SM2:SemanticValue < [(8).Nat]) .
+
+

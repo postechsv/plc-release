@@ -1,8 +1,0 @@
-		     \||||||||||||||||||/
-		   --- Welcome to Maude ---
-		     /||||||||||||||||||\
-	     Maude 3.0 built: Mar 15 2020 23:55:47
-	     Copyright 1997-2019 SRI International
-		   Sat Apr 20 20:13:33 2024
-==========================================
-srewrite in REPORTER : appExt using porStar ; fail .

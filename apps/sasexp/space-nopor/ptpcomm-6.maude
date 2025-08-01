@@ -1,0 +1,200 @@
+load /home/jlee/plc-release/scripts/../semantics/interpreter/environment 
+load /home/jlee/plc-release/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+ops projectFile1 projectFile2 envFile : -> StratonProject .
+eq projectFile1 =
+(
+BEGINCONFIG
+PROGRAMS
+'WaterTankControl ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 10
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'WaterTankControl 
+BEGINVAR
+'safety_h : REAL := ( # 80 ) : ##PRIV ; 
+'safety_l : REAL := ( # 20 ) : ##PRIV ; 
+'signal_out : INT : ##PRIV ; 
+'signal_in : INT : ##PRIV ; 
+'pump_switch : INT : ##OUT ;
+'comm : fbtype [ 'CONNECT ] : ##PRIV ; 
+'send : fbtype [ 'USEND ] : ##PRIV ; 
+'rcv : fbtype [ 'URCV ] : ##PRIV ;
+'water_level : INT : ##IN ;
+ENDVAR
+
+CODE
+'comm ( TRUE , # "plc2" ) ; 
+IF  NOT 'comm . 'VALID THEN 
+return ; 
+ENDIF ;
+
+'signal_out := boolUserInput ;
+ 
+'send ( TRUE , # "plc2" , # "rcv" , 'signal_out ) ; 
+@assertTime(# 0, # 2) ;
+
+'rcv( TRUE, # "plc2", # "send") ;
+@assertTime(# 8, # 9) ;
+'signal_in := 'rcv . 'DATA ;
+'pump_switch := 'signal_out - 'signal_in ;
+
+ENDCODE
+ENDPROGRAM
+
+ENDPOUS
+
+) .
+
+eq projectFile2 =
+(
+BEGINCONFIG
+PROGRAMS
+'WaterTankControl ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 10
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'WaterTankControl 
+BEGINVAR
+'safety_h : INT := ( # 80 ) : ##PRIV ; 
+'safety_l : INT := ( # 20 ) : ##PRIV ; 
+'signal_out : INT : ##PRIV ; 
+'signal_in : INT : ##PRIV ;
+'pump_switch : INT : ##OUT ; 
+'comm : fbtype [ 'CONNECT ] : ##PRIV ; 
+'send : fbtype [ 'USEND ] : ##PRIV ; 
+'rcv : fbtype [ 'URCV ] : ##PRIV ;
+'water_level : INT : ##IN ;
+ENDVAR
+
+CODE
+'comm ( TRUE , # "plc1" ) ; 
+IF  NOT 'comm . 'VALID THEN 
+return ; 
+ENDIF ;
+
+'signal_out := boolUserInput ; 
+'rcv( TRUE, # "plc1", # "send") ;
+@assertTime(# 4, # 5) ; 
+'send ( TRUE , # "plc1" , # "rcv" , 'signal_out ) ; 
+@assertTime(# 5, # 6) ;
+'signal_in := 'rcv . 'DATA ;
+'pump_switch := 'signal_out - 'signal_in ;
+
+ENDCODE
+ENDPROGRAM
+ENDPOUS
+
+) .
+
+  ops linkedFile1 linkedFile2 : -> StratonProject .
+  eq linkedFile1 = projectFile1 <-load- lib .
+  eq linkedFile2 = projectFile2 <-load- lib .
+  ops app1 app2 : -> KConfig .
+  eq app1 = [[[ linkedFile1 ]]] .
+  eq app2 = [[[ linkedFile2 ]]] .
+endm
+
+
+mod MC is
+  inc APP .
+  inc COMMUNICATION . 
+
+  op t : -> Var [ctor] .
+  op init : ~> World .
+  eq minDelay = [(1/1).Real] .
+
+  eq init =
+{
+< # "plc1" : PLCMachine | proc : app1, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0, 
+                          senList : ('water_level), 
+                          actList : ('pump_switch),
+                          state : (('water_level ||-> [(5).NzNat]), ('pump_switch ||-> [(0).Zero])),
+                          flow : ('water_level(t) = s['water_level] - (s['pump_switch] * v[t])) >
+< # "plc2" : PLCMachine | proc : app2, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0,
+                          senList : ('water_level), 
+                          actList : ('pump_switch),
+                          state : (('water_level ||-> [(45).NzNat]), ('pump_switch ||-> [(0).Zero])),
+                          flow : ('water_level(t) = s['water_level] - (s['pump_switch] * v[t])) >
+< link(# "plc1", # "plc2") : Channel | validity : false, buffer : emptyBuffer >
+  cconst([(true).Boolean]) tconst([(true).Boolean]) tickTurn((false).Bool) tgen((0).Nat)} .
+  op X_X : Configuration -> World [ctor frozen] .
+ ceq { < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration }
+   = X < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration X
+  if float(T:Nat) >= 60.0 .
+endm 
+
+
+smod POR is
+  inc MC .
+
+  strat internal @ Configuration .
+  strat commu @ Configuration .
+  strat allRules @ Configuration .
+  strat porStep @ Configuration .
+  strat indiv : Oid @ Configuration .
+
+  sd internal := arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .
+  sd commu := discon-vol | sendData | rcvData | rcv-fail | rcv-noMsg .
+  sd allRules := internal | commu | tick | start .
+
+  var I : Oid .
+  sd indiv(I) := matchrew {< I : PLCMachine | proc : P:KConfig, ATTRS:AttributeSet > CONF:Configuration} by P:KConfig using internal .
+
+  sd porStep := (start ? idle : ((indiv(# "plc1") ? idle : indiv(# "plc2")) ? idle : (commu ? idle : tick))) .
+
+  strat goalState @ Configuration .
+  sd goalState := match {< # "plc1" : PLCMachine | state : (('water_level_t1 ||-> SM:SemanticValue), REST:Map{PExp, SemanticValue}), ATTRS:AttributeSet > < # "plc2" : PLCMachine | state : (('water_level_t2 ||-> SM2:SemanticValue), REST2:Map{PExp, SemanticValue}), ATTRS2:AttributeSet > CONF:Configuration}
+                  s.t. checkSAT(SM:SemanticValue < [(0).NzNat] OR SM:SemanticValue > [(20).NzNat]
+                    OR SM2:SemanticValue < [(0).NzNat] OR SM2:SemanticValue > [(35).NzNat]) .
+
+  strat porStar @ Configuration .
+  sd porStar := (porStep *) .
+
+  strat noPor @ Configuration .
+  sd noPor := (allRules *) .
+endsm
+
+srew init using (allRules *) .
+
+
+
+

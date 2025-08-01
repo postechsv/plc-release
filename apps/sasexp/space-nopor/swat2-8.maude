@@ -1,0 +1,244 @@
+load /home/jlee/plc-release/scripts/../semantics/interpreter/environment 
+load /home/jlee/plc-release/scripts/../libs/libcollection.maude
+ 
+
+mod APP is 
+inc PLC-CORE .
+inc PLC-LIB .
+ops projectFile1 projectFile2 projectFile3 : -> StratonProject .
+eq projectFile1 =
+(
+BEGINCONFIG
+PROGRAMS
+'Process2 ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 400
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'Process2 
+BEGINVAR
+'H : DINT := ( # 500 ) : ##PRIV ; 
+'L : DINT := ( # 800 ) : ##PRIV ; 
+'FIT201 : INT := ( # 1 ) : ##OUT ; 
+'LIT301 : INT := ( # 1 ) : ##OUT ; 
+'comm1 : fbtype [ 'CONNECT ] : ##PRIV ; 
+'comm2 : fbtype [ 'CONNECT ] : ##PRIV ; 
+'rcv1 : fbtype [ 'URCV ] : ##PRIV ;
+'rcv2 : fbtype [ 'URCV ] : ##PRIV ;
+'LIT101 : INT : ##IN ;
+ENDVAR
+
+CODE
+'comm1( TRUE , # "plc2" ) ;
+'comm2( TRUE , # "plc3" ) ;
+
+IF NOT (('comm1 . 'VALID ) OR ( 'comm2 . 'VALID )) THEN
+return ;
+ENDIF ;
+
+
+'rcv1 ( TRUE, # "plc2", # "send") ;
+@assertTime(# 300, # 350) ;
+'FIT201 := 'rcv1 . 'DATA ;
+'rcv2 ( TRUE, # "plc3", # "send") ;
+'LIT301 := 'rcv2 . 'DATA ;
+
+ENDCODE
+ENDPROGRAM
+
+ENDPOUS
+
+) .
+
+
+eq projectFile2 =
+(
+BEGINCONFIG
+PROGRAMS
+'Process2 ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 400
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'Process2 
+BEGINVAR
+'FIT201 : INT := ( # 1 ) : ##PRIV ; 
+'comm : fbtype [ 'CONNECT ] : ##PRIV ; 
+'send : fbtype [ 'USEND ] : ##PRIV ; 
+ENDVAR
+
+CODE
+'comm ( TRUE, # "plc1" ) ;
+IF NOT 'comm . 'VALID THEN
+return ;
+ENDIF ;
+
+'send ( TRUE, # "plc1" , # "rcv1", 'FIT201 ) ;
+@assertTime(# 0, # 100) ;
+
+ENDCODE
+ENDPROGRAM
+ENDPOUS
+
+) .
+
+
+eq projectFile3 =
+(
+BEGINCONFIG
+PROGRAMS
+'Process2 ;; 
+PROGRAMSEND
+SUBPROGRAMS
+emptyProgramList
+SUBPROGRAMSEND
+
+TYPE
+emptyTypeDecl
+ENDTYPE
+
+
+
+BEGINVAR
+emptyVarDecl
+ENDVAR
+
+
+CycleTime: # 400
+ENDCONFIG
+
+BEGINPOUS
+PROGRAM 'Process2
+BEGINVAR
+'LIT301 : INT := ( # 1 ) : ##PRIV ; 
+'comm : fbtype [ 'CONNECT ] : ##PRIV ; 
+'send : fbtype [ 'USEND ] : ##PRIV ; 
+ENDVAR
+
+CODE
+'comm ( TRUE, # "plc1" ) ;
+IF NOT 'comm . 'VALID THEN
+return ;
+ENDIF ;
+
+'send ( TRUE, # "plc1" , # "rcv2", 'LIT301 ) ;
+@assertTime(# 0, # 100) ;
+
+ENDCODE
+ENDPROGRAM
+
+ENDPOUS
+
+) .
+  ops linkedFile1 linkedFile2 linkedFile3 : -> StratonProject .
+  eq linkedFile1 = projectFile1 <-load- lib .
+  eq linkedFile2 = projectFile2 <-load- lib .
+  eq linkedFile3 = projectFile3 <-load- lib .
+  ops app1 app2 app3 : -> KConfig .
+  eq app1 = [[[ linkedFile1 ]]] .
+  eq app2 = [[[ linkedFile2 ]]] .
+  eq app3 = [[[ linkedFile3 ]]] .
+
+endm
+
+mod MC is
+  inc APP .
+  inc COMMUNICATION . 
+
+  op t : -> Var [ctor] .
+  op init : ~> World .
+  eq minDelay = [(1/1).Real] .
+
+  eq init =
+{< # "plc1" : PLCMachine | proc : app1, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0,
+                           senList : ('LIT101), 
+                           actList : ('LIT301, 'FIT201),
+                           state : (('LIT101 ||-> [(800).NzNat]), ('LIT301 ||-> [(1).NzNat]),
+                                    ('FIT201 ||-> [(1).Zero])),
+                           flow : ('LIT101(t) = s['LIT101] - (s['FIT201] * v[t]) - (s['LIT301] * v[t])) > 
+< # "plc2" : PLCMachine | proc : app2, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0,
+                           senList : nilPExpList, 
+                           actList : nilPExpList,
+                           state : emptyMap,
+                           flow : noDynamics > 
+< # "plc3" : PLCMachine | proc : app3, timer : [(0).Integer], envTimer : 0, gen : 0, clock : 0,
+                           senList : nilPExpList, 
+                           actList : nilPExpList,
+                           state : emptyMap,
+                           flow : noDynamics > 
+< link(# "plc1", # "plc2") : Channel | validity : false, buffer : emptyBuffer >
+< link(# "plc1", # "plc3") : Channel | validity : false, buffer : emptyBuffer >
+ cconst([(true).Boolean]) tconst([(true).Boolean]) tickTurn((false).Bool) tgen((0).Nat)} .
+
+  op X_X : Configuration -> World [ctor frozen] .
+ ceq { < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration }
+   = X < O:Oid : PLCMachine |  ATTRS:AttributeSet, clock : T:Nat > REST:Configuration X
+  if float(T:Nat) >= 3200.0 .
+endm 
+
+
+smod POR is
+  inc MC .
+
+  strat internal @ Configuration .
+  strat commu @ Configuration .
+  strat allRules @ Configuration .
+  strat porStep @ Configuration .
+  strat indiv : Oid @ Configuration .
+
+  sd internal := arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .
+  sd commu := discon-vol | sendData | rcvData | rcv-fail | rcv-noMsg .
+  sd allRules := internal | commu | tick | start .
+
+  var I : Oid .
+  sd indiv(I) := matchrew {< I : PLCMachine | proc : P:KConfig, ATTRS:AttributeSet > CONF:Configuration} by P:KConfig using internal .
+
+  sd porStep := (start ? idle : ((indiv(# "plc1") ? idle : (indiv(# "plc2") ? idle : indiv(# "plc3"))) ? idle : (commu ? idle : tick))) .
+
+  strat goalState @ Configuration .
+  sd goalState := match {< # "plant" : PLCMachine | state : (('water_level_t1 ||-> SM:SemanticValue), ('water_level_t2 ||-> SM2:SemanticValue),
+                                     REST:Map{PExp, SemanticValue}), ATTRS:AttributeSet > CONF:Configuration}
+                  s.t. checkSAT(SM:SemanticValue < [(2).NzNat] OR SM:SemanticValue > [(30).NzNat]
+                    OR SM2:SemanticValue < [(2).NzNat] OR SM2:SemanticValue > [(30).NzNat]) .
+
+  strat porStar @ Configuration .
+  sd porStar := (porStep *) .
+
+  strat noPor @ Configuration .
+  sd noPor := (allRules *) .
+endsm
+
+srew init using (allRules *) .
+
