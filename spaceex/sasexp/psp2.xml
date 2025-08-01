@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<sspaceex xmlns="http://www-verimag.imag.fr/xml-namespaces/sspaceex" version="0.2" math="SpaceEx">
+  <component id="globalTimer">
+    <param name="GlobalTimer" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <location id="1" name="flow" x="295.0" y="159.0" width="202.0" height="118.0">
+      <invariant>GlobalTimer &lt; TotalDuration</invariant>
+      <flow>GlobalTimer' == 1</flow>
+    </location>
+  </component>
+  <component id="pump1">
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="wl1" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="userInput" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="pumpOpen" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <location id="3" name="Start" x="288.0" y="401.0" width="266.0" height="174.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl1' == pumpOpen &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+pumpOpen' == 0</flow>
+    </location>
+    <location id="5" name="calculateNext" x="583.0" y="135.0" width="276.0" height="216.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl1' == pumpOpen &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+pumpOpen' == 0</flow>
+    </location>
+    <location id="1" name="input" x="770.0" y="518.0" width="242.0" height="214.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl1' == pumpOpen &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+pumpOpen' == 0</flow>
+    </location>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration</guard>
+      <assignment>CycleTimer := 0 &amp;
+pumpOpen := userInput</assignment>
+      <labelposition x="-244.0" y="-92.0" width="212.0" height="90.0" />
+    </transition>
+    <transition source="3" target="1">
+      <guard>CycleTimer &gt; 0 &amp;
+CycleTimer &lt; CycleDuration</guard>
+      <assignment>userInput := 1</assignment>
+      <labelposition x="-70.0" y="-76.0" width="162.0" height="70.0" />
+    </transition>
+    <transition source="3" target="1">
+      <guard>CycleTimer &gt; 0 &amp;
+CycleTimer &lt; CycleDuration</guard>
+      <assignment>userInput := 0</assignment>
+      <labelposition x="-71.0" y="5.0" width="144.0" height="86.0" />
+      <middlepoint x="533.5" y="573.0" />
+    </transition>
+    <transition source="1" target="5">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <labelposition x="0.0" y="0.0" width="250.0" height="92.0" />
+    </transition>
+  </component>
+  <component id="pump2">
+    <param name="wl2" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="userInput" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="false" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="pumpOpen" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <location id="1" name="Start" x="208.0" y="258.0" width="176.0" height="144.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl2' == 0 - pumpOpen &amp;
+CycleTimer' == 1 &amp;
+pumpOpen' == 0</flow>
+    </location>
+    <location id="2" name="CalculateNext" x="666.0" y="141.0" width="192.0" height="142.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl2' == 0 - pumpOpen &amp;
+CycleTimer' == 1 &amp;
+pumpOpen' == 0</flow>
+    </location>
+    <transition source="2" target="1">
+      <guard>CycleTimer == CycleDuration</guard>
+      <assignment>CycleTimer := 0 &amp;
+pumpOpen := userInput</assignment>
+      <labelposition x="-54.0" y="-91.0" width="202.0" height="92.0" />
+    </transition>
+    <transition source="1" target="2">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <labelposition x="8.0" y="19.0" width="204.0" height="58.0" />
+      <middlepoint x="517.5" y="283.0" />
+    </transition>
+  </component>
+  <component id="plant">
+    <param name="GlobalTimer" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="297.0" y="68.0" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="userInput" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" />
+    <bind component="globalTimer" as="globalTimer_1" x="371.0" y="162.0">
+      <map key="GlobalTimer">GlobalTimer</map>
+      <map key="TotalDuration">TotalDuration</map>
+    </bind>
+    <bind component="pump1" as="pump1_1" x="264.0" y="241.0" width="92.0" height="54.0">
+      <map key="CycleDuration">CycleDuration</map>
+      <map key="userInput">userInput</map>
+    </bind>
+    <bind component="pump2" as="pump2_1" x="353.0" y="372.0" width="138.0" height="48.0">
+      <map key="CycleDuration">CycleDuration</map>
+      <map key="userInput">userInput</map>
+    </bind>
+  </component>
+</sspaceex>
+
+

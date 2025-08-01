@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<sspaceex xmlns="http://www-verimag.imag.fr/xml-namespaces/sspaceex" version="0.2" math="SpaceEx">
+  <component id="globalTimer">
+    <param name="GlobalTimer" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <location id="1" name="flow" x="295.0" y="159.0" width="202.0" height="118.0">
+      <invariant>GlobalTimer &lt; TotalDuration</invariant>
+      <flow>GlobalTimer' == 1</flow>
+    </location>
+  </component>
+  <component id="plc1">
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="LIT101" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="MV101" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="FIT101" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="nextMV" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <location id="3" name="Start" x="195.0" y="484.0" width="210.0" height="178.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>LIT101' == MV101 - FIT101 &amp;
+CycleTimer' == 1 &amp;
+MV101' == 0 &amp;
+FIT101' == 0 &amp;
+nextMV' == 0</flow>
+    </location>
+    <location id="5" name="calculateNext" x="583.0" y="135.0" width="276.0" height="216.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>LIT101' == MV101 - FIT101 &amp;
+CycleTimer' == 1 &amp;
+MV101' == 0 &amp;
+FIT101' == 0 &amp;
+nextMV' == 0</flow>
+    </location>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration</guard>
+      <assignment>CycleTimer := 0 &amp;
+MV101 := nextMV</assignment>
+      <labelposition x="-244.0" y="-92.0" width="212.0" height="90.0" />
+    </transition>
+    <transition source="3" target="5">
+      <guard>CycleTimer &lt; CycleDuration &amp;
+LIT101 &gt; 8</guard>
+      <assignment>nextMV := 1</assignment>
+      <labelposition x="17.0" y="-41.0" width="154.0" height="84.0" />
+      <middlepoint x="425.0" y="333.5" />
+    </transition>
+    <transition source="3" target="5">
+      <guard>CycleTimer &lt; CycleDuration &amp;
+LIT101 &lt; 5</guard>
+      <assignment>nextMV := 0</assignment>
+      <labelposition x="17.0" y="9.0" />
+      <middlepoint x="494.0" y="393.5" />
+    </transition>
+    <transition source="3" target="5">
+      <guard>CycleTimer &lt; CycleDuration &amp;
+LIT101 &lt;= 8 &amp;
+LIT101 &gt;= 5</guard>
+      <labelposition x="16.0" y="13.0" />
+      <middlepoint x="578.0" y="449.5" />
+    </transition>
+  </component>
+  <component id="plant">
+    <param name="GlobalTimer" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <bind component="globalTimer" as="globalTimer_1" x="263.0" y="114.0">
+      <map key="GlobalTimer">GlobalTimer</map>
+      <map key="TotalDuration">TotalDuration</map>
+    </bind>
+    <bind component="plc1" as="plc1_1" x="239.0" y="223.0">
+      <map key="CycleDuration">CycleDuration</map>
+    </bind>
+  </component>
+</sspaceex>
+

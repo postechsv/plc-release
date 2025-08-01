@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<sspaceex xmlns="http://www-verimag.imag.fr/xml-namespaces/sspaceex" version="0.2" math="SpaceEx">
+  <component id="port">
+    <param name="send" type="label" local="false" />
+    <param name="rcv" type="label" local="false" />
+    <param name="in" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="false" />
+    <param name="out" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="timer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <location id="1" name="standby" x="297.0" y="307.0">
+      <flow>out'== 0 &amp;
+timer'==0</flow>
+    </location>
+    <location id="2" name="flying" x="569.0" y="313.0">
+      <flow>out' == 0 &amp;
+timer' == -1</flow>
+    </location>
+    <location id="3" name="arrive" x="478.0" y="144.0">
+      <flow>out' == 0 &amp;
+timer' == 0</flow>
+    </location>
+    <transition source="1" target="2">
+      <label>send</label>
+      <assignment>timer := 1</assignment>
+      <labelposition x="-40.0" y="22.0" width="102.0" height="66.0" />
+      <middlepoint x="428.0" y="335.5" />
+    </transition>
+    <transition source="2" target="3">
+      <guard>timer &lt;= 0</guard>
+      <assignment>out := in</assignment>
+      <labelposition x="14.0" y="-36.0" width="120.0" height="56.0" />
+    </transition>
+    <transition source="3" target="1">
+      <label>rcv</label>
+      <assignment>timer := 0</assignment>
+      <labelposition x="-47.0" y="-64.0" width="108.0" height="50.0" />
+    </transition>
+  </component>
+  <component id="globalTimer">
+    <param name="GlobalTimer" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <location id="1" name="flow" x="295.0" y="159.0" width="202.0" height="118.0">
+      <invariant>GlobalTimer &lt; TotalDuration</invariant>
+      <flow>GlobalTimer' == 1</flow>
+    </location>
+  </component>
+  <component id="pump1">
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="wl1" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="userInput" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="userInput2" type="real" local="true" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="nextInput" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="nextInput2" type="real" local="true" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="send" type="label" local="false" />
+    <param name="rcv" type="label" local="false" />
+    <param name="signal_send" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="signal_rcv" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="false" />
+    <location id="3" name="Start" x="277.0" y="399.0" width="252.0" height="140.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl1' == userInput - userInput2 &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+nextInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <location id="5" name="calculateNext" x="583.0" y="135.0" width="234.0" height="154.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl1' == userInput - userInput2 &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+nextInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <location id="1" name="input" x="640.0" y="574.0" width="216.0" height="180.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl1' == userInput - userInput2 &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+nextInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <location id="2" name="comm1" x="990.0" y="487.0" width="178.0" height="154.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl1' == userInput - userInput2 &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+nextInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <location id="4" name="comm2" x="1002.0" y="215.0" width="182.0" height="132.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl1' == userInput - userInput2 &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+nextInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration</guard>
+      <assignment>CycleTimer := 0 &amp;
+userInput := nextInput &amp;
+userInput2 := nextInput2</assignment>
+      <labelposition x="-244.0" y="-92.0" width="212.0" height="90.0" />
+    </transition>
+    <transition source="3" target="1">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>nextInput := 1</assignment>
+      <labelposition x="-70.0" y="-76.0" width="162.0" height="70.0" />
+    </transition>
+    <transition source="3" target="1">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>nextInput := 0</assignment>
+      <labelposition x="-142.0" y="0.0" width="144.0" height="86.0" />
+      <middlepoint x="432.5" y="558.0" />
+    </transition>
+    <transition source="4" target="5">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <labelposition x="-9.0" y="-68.0" />
+    </transition>
+    <transition source="1" target="2">
+      <label>send</label>
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>signal_send := nextInput</assignment>
+      <labelposition x="-20.0" y="21.0" width="162.0" height="92.0" />
+    </transition>
+    <transition source="2" target="4">
+      <label>rcv</label>
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>nextInput2 := signal_rcv</assignment>
+      <labelposition x="-177.0" y="-39.0" width="182.0" height="68.0" />
+    </transition>
+  </component>
+  <component id="pump2">
+    <param name="wl2" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="userInput" type="real" local="true" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="userInput2" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="nextInput" type="real" local="true" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="nextInput2" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="signal_send" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="signal_rcv" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="send" type="label" local="false" />
+    <param name="rcv" type="label" local="false" />
+    <location id="1" name="Start" x="236.0" y="274.0" width="176.0" height="144.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl2' == userInput2 - userInput  &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+nextInput' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <location id="2" name="CalculateNext" x="666.0" y="141.0" width="192.0" height="142.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl2' == userInput2 - userInput  &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+nextInput' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <location id="3" name="input" x="546.0" y="543.0" width="198.0" height="138.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>wl2' == userInput2 - userInput  &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+nextInput' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <location id="4" name="comm" x="805.0" y="482.0" width="124.0" height="108.0">
+      <flow>wl2' == userInput2 - userInput  &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+nextInput' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <location id="5" name="comm2" x="951.0" y="295.0">
+      <flow>wl2' == userInput2 - userInput  &amp;
+CycleTimer' == 1 &amp;
+userInput' == 0 &amp;
+userInput2' == 0 &amp;
+nextInput2' == 0 &amp;
+nextInput' == 0 &amp;
+signal_send' == 0</flow>
+    </location>
+    <transition source="2" target="1">
+      <guard>CycleTimer == CycleDuration</guard>
+      <assignment>CycleTimer := 0 &amp;
+userInput := nextInput &amp;
+userInput2 := nextInput2</assignment>
+      <labelposition x="-111.0" y="-99.0" width="202.0" height="92.0" />
+    </transition>
+    <transition source="1" target="3">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>nextInput2 := 0</assignment>
+      <labelposition x="-48.0" y="-88.0" width="220.0" height="84.0" />
+    </transition>
+    <transition source="1" target="3">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>nextInput2 := 1</assignment>
+      <labelposition x="-151.0" y="31.0" width="184.0" height="92.0" />
+      <middlepoint x="402.5" y="391.5" />
+    </transition>
+    <transition source="5" target="2">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <labelposition x="-13.0" y="-51.0" width="196.0" height="52.0" />
+    </transition>
+    <transition source="3" target="4">
+      <label>rcv</label>
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>nextInput := signal_rcv</assignment>
+      <labelposition x="-54.0" y="7.0" width="190.0" height="76.0" />
+    </transition>
+    <transition source="4" target="5">
+      <label>send</label>
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>signal_send := nextInput2</assignment>
+      <labelposition x="0.0" y="0.0" />
+    </transition>
+  </component>
+  <component id="plant">
+    <param name="GlobalTimer" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="signal_send" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="194.0" y="148.0" />
+    <param name="signal_rcv" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="send1" type="label" local="false" x="244.0" y="181.0" />
+    <param name="rcv2" type="label" local="false" x="301.0" y="166.0" />
+    <param name="rcv1" type="label" local="false" x="355.0" y="156.0" />
+    <param name="send2" type="label" local="false" x="222.0" y="205.0" />
+    <param name="signal_send2" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="377.0" y="283.0" />
+    <param name="signal_rcv2" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="171.0" y="287.0" />
+    <bind component="globalTimer" as="globalTimer_1" x="613.0" y="127.0">
+      <map key="GlobalTimer">GlobalTimer</map>
+      <map key="TotalDuration">TotalDuration</map>
+    </bind>
+    <bind component="pump1" as="pump1_1" x="613.0" y="232.0" width="212.0" height="92.0">
+      <map key="CycleDuration">CycleDuration</map>
+      <map key="send">send1</map>
+      <map key="rcv">rcv1</map>
+      <map key="signal_send">signal_send</map>
+      <map key="signal_rcv">signal_rcv</map>
+    </bind>
+    <bind component="pump2" as="pump2_1" x="756.0" y="575.0">
+      <map key="CycleDuration">CycleDuration</map>
+      <map key="signal_send">signal_send2</map>
+      <map key="signal_rcv">signal_rcv2</map>
+      <map key="send">send2</map>
+      <map key="rcv">rcv2</map>
+    </bind>
+    <bind component="port" as="port_1" x="508.0" y="353.0">
+      <map key="send">send1</map>
+      <map key="rcv">rcv2</map>
+      <map key="in">signal_send</map>
+      <map key="out">signal_rcv2</map>
+    </bind>
+    <bind component="port" as="port_2" x="641.0" y="471.0">
+      <map key="send">send2</map>
+      <map key="rcv">rcv1</map>
+      <map key="in">signal_send2</map>
+      <map key="out">signal_rcv</map>
+    </bind>
+  </component>
+</sspaceex>
+

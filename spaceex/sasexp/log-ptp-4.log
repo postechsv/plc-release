@@ -1,0 +1,1912 @@
+Computing reachable states... 
+Iteration 0... 1 sym states passed, 4 waiting 0.00800001s
+Iteration 1... 2 sym states passed, 6 waiting 0.00300001s
+Iteration 2... 3 sym states passed, 8 waiting 0.00200001s
+Iteration 3... 4 sym states passed, 8 waiting 0.00300001s
+Iteration 4... 5 sym states passed, 8 waiting 0.00200001s
+Iteration 5... 6 sym states passed, 10 waiting 0.00200001s
+Iteration 6... 7 sym states passed, 10 waiting 0.00200001s
+Iteration 7... 8 sym states passed, 10 waiting 0.00100001s
+Iteration 8... 9 sym states passed, 12 waiting 0.00200001s
+Iteration 9... 10 sym states passed, 12 waiting 0.00200001s
+Iteration 10... 11 sym states passed, 12 waiting 0.00200001s
+Iteration 11... 12 sym states passed, 12 waiting 0.00200001s
+Iteration 12... 13 sym states passed, 12 waiting 0.00200001s
+Iteration 13... 14 sym states passed, 11 waiting 0.00200001s
+Iteration 14... 15 sym states passed, 12 waiting 0.00200001s
+Iteration 15... 16 sym states passed, 13 waiting 0.00100001s
+Iteration 16... 17 sym states passed, 13 waiting 0.00200001s
+Iteration 17... 18 sym states passed, 13 waiting 0.00100001s
+Iteration 18... 19 sym states passed, 12 waiting 0.00200001s
+Iteration 19... 20 sym states passed, 13 waiting 0.00100001s
+Iteration 20... 21 sym states passed, 14 waiting 0.00100001s
+Iteration 21... 22 sym states passed, 14 waiting 0.00200001s
+Iteration 22... 23 sym states passed, 14 waiting 0.00200001s
+Iteration 23... 24 sym states passed, 13 waiting 0.00200001s
+Iteration 24... 25 sym states passed, 12 waiting 0.00200001s
+Iteration 25... 26 sym states passed, 11 waiting 0.00200001s
+Iteration 26... 27 sym states passed, 12 waiting 0.00200001s
+Iteration 27... 28 sym states passed, 11 waiting 0.00200001s
+Iteration 28... 29 sym states passed, 12 waiting 0.00200001s
+Iteration 29... 30 sym states passed, 11 waiting 0.00200001s
+Iteration 30... 31 sym states passed, 10 waiting 0.00200001s
+Iteration 31... 32 sym states passed, 9 waiting 0.00200001s
+Iteration 32... 33 sym states passed, 10 waiting 0.00100001s
+Iteration 33... 34 sym states passed, 9 waiting 0.00200001s
+Iteration 34... 35 sym states passed, 10 waiting 0.00200001s
+Iteration 35... 36 sym states passed, 9 waiting 0.00200001s
+Iteration 36... 37 sym states passed, 8 waiting 0.00200001s
+Iteration 37... 38 sym states passed, 8 waiting 0.00200001s
+Iteration 38... 39 sym states passed, 7 waiting 0.00200001s
+Iteration 39... 40 sym states passed, 7 waiting 0.00200001s
+Iteration 40... 41 sym states passed, 6 waiting 0.00200001s
+Iteration 41... 42 sym states passed, 6 waiting 0.00200001s
+Iteration 42... 43 sym states passed, 5 waiting 0.00200001s
+Iteration 43... 44 sym states passed, 5 waiting 0.00200001s
+Iteration 44... 45 sym states passed, 4 waiting 0.00200001s
+Iteration 45... 46 sym states passed, 7 waiting 0.00300001s
+Iteration 46... 47 sym states passed, 10 waiting 0.00300001s
+Iteration 47... 48 sym states passed, 13 waiting 0.00300001s
+Iteration 48... 49 sym states passed, 16 waiting 0.00300001s
+Iteration 49... 50 sym states passed, 18 waiting 0.00200001s
+Iteration 50... 51 sym states passed, 20 waiting 0.00200001s
+Iteration 51... 52 sym states passed, 20 waiting 0.00300001s
+Iteration 52... 53 sym states passed, 20 waiting 0.00300001s
+Iteration 53... 54 sym states passed, 22 waiting 0.00200001s
+Iteration 54... 55 sym states passed, 24 waiting 0.00300001s
+Iteration 55... 56 sym states passed, 24 waiting 0.00300001s
+Iteration 56... 57 sym states passed, 24 waiting 0.00400001s
+Iteration 57... 58 sym states passed, 26 waiting 0.00200001s
+Iteration 58... 59 sym states passed, 28 waiting 0.00300001s
+Iteration 59... 60 sym states passed, 28 waiting 0.00400001s
+Iteration 60... 61 sym states passed, 28 waiting 0.00400001s
+Iteration 61... 62 sym states passed, 30 waiting 0.00200001s
+Iteration 62... 63 sym states passed, 32 waiting 0.00300001s
+Iteration 63... 64 sym states passed, 32 waiting 0.00500001s
+Iteration 64... 65 sym states passed, 32 waiting 0.00500001s
+Iteration 65... 66 sym states passed, 34 waiting 0.00300001s
+Iteration 66... 67 sym states passed, 34 waiting 0.00200001s
+Iteration 67... 68 sym states passed, 34 waiting 0.00200001s
+Iteration 68... 69 sym states passed, 36 waiting 0.00200001s
+Iteration 69... 70 sym states passed, 36 waiting 0.00200001s
+Iteration 70... 71 sym states passed, 36 waiting 0.00200001s
+Iteration 71... 72 sym states passed, 36 waiting 0.00300001s
+Iteration 72... 73 sym states passed, 36 waiting 0.00300001s
+Iteration 73... 74 sym states passed, 38 waiting 0.00300001s
+Iteration 74... 75 sym states passed, 38 waiting 0.00200001s
+Iteration 75... 76 sym states passed, 38 waiting 0.00200001s
+Iteration 76... 77 sym states passed, 40 waiting 0.00300001s
+Iteration 77... 78 sym states passed, 40 waiting 0.00200001s
+Iteration 78... 79 sym states passed, 40 waiting 0.00200001s
+Iteration 79... 80 sym states passed, 40 waiting 0.00400001s
+Iteration 80... 81 sym states passed, 40 waiting 0.00400001s
+Iteration 81... 82 sym states passed, 42 waiting 0.00300001s
+Iteration 82... 83 sym states passed, 42 waiting 0.00200001s
+Iteration 83... 84 sym states passed, 42 waiting 0.00200001s
+Iteration 84... 85 sym states passed, 44 waiting 0.00300001s
+Iteration 85... 86 sym states passed, 44 waiting 0.00300001s
+Iteration 86... 87 sym states passed, 44 waiting 0.00300001s
+Iteration 87... 88 sym states passed, 44 waiting 0.00400001s
+Iteration 88... 89 sym states passed, 44 waiting 0.00500001s
+Iteration 89... 90 sym states passed, 46 waiting 0.00300001s
+Iteration 90... 91 sym states passed, 46 waiting 0.00300001s
+Iteration 91... 92 sym states passed, 46 waiting 0.00300001s
+Iteration 92... 93 sym states passed, 48 waiting 0.00300001s
+Iteration 93... 94 sym states passed, 48 waiting 0.00300001s
+Iteration 94... 95 sym states passed, 48 waiting 0.00300001s
+Iteration 95... 96 sym states passed, 48 waiting 0.00500001s
+Iteration 96... 97 sym states passed, 48 waiting 0.00500001s
+Iteration 97... 98 sym states passed, 47 waiting 0.00300001s
+Iteration 98... 99 sym states passed, 48 waiting 0.00200001s
+Iteration 99... 100 sym states passed, 49 waiting 0.00200001s
+Iteration 100... 101 sym states passed, 49 waiting 0.00200001s
+Iteration 101... 102 sym states passed, 49 waiting 0.00200001s
+Iteration 102... 103 sym states passed, 48 waiting 0.00200001s
+Iteration 103... 104 sym states passed, 49 waiting 0.00200001s
+Iteration 104... 105 sym states passed, 50 waiting 0.00200001s
+Iteration 105... 106 sym states passed, 50 waiting 0.00200001s
+Iteration 106... 107 sym states passed, 50 waiting 0.00200001s
+Iteration 107... 108 sym states passed, 49 waiting 0.00200001s
+Iteration 108... 109 sym states passed, 48 waiting 0.00200001s
+Iteration 109... 110 sym states passed, 47 waiting 0.00300001s
+Iteration 110... 111 sym states passed, 48 waiting 0.00200001s
+Iteration 111... 112 sym states passed, 49 waiting 0.00200001s
+Iteration 112... 113 sym states passed, 49 waiting 0.00200001s
+Iteration 113... 114 sym states passed, 49 waiting 0.00200001s
+Iteration 114... 115 sym states passed, 48 waiting 0.00200001s
+Iteration 115... 116 sym states passed, 49 waiting 0.00200001s
+Iteration 116... 117 sym states passed, 50 waiting 0.00200001s
+Iteration 117... 118 sym states passed, 50 waiting 0.00300001s
+Iteration 118... 119 sym states passed, 50 waiting 0.00300001s
+Iteration 119... 120 sym states passed, 49 waiting 0.00200001s
+Iteration 120... 121 sym states passed, 48 waiting 0.00200001s
+Iteration 121... 122 sym states passed, 47 waiting 0.00300001s
+Iteration 122... 123 sym states passed, 48 waiting 0.00200001s
+Iteration 123... 124 sym states passed, 49 waiting 0.00200001s
+Iteration 124... 125 sym states passed, 49 waiting 0.00300001s
+Iteration 125... 126 sym states passed, 49 waiting 0.00300001s
+Iteration 126... 127 sym states passed, 48 waiting 0.00300001s
+Iteration 127... 128 sym states passed, 49 waiting 0.00200001s
+Iteration 128... 129 sym states passed, 50 waiting 0.00200001s
+Iteration 129... 130 sym states passed, 50 waiting 0.00300001s
+Iteration 130... 131 sym states passed, 50 waiting 0.00300001s
+Iteration 131... 132 sym states passed, 49 waiting 0.00300001s
+Iteration 132... 133 sym states passed, 48 waiting 0.00300001s
+Iteration 133... 134 sym states passed, 47 waiting 0.00300001s
+Iteration 134... 135 sym states passed, 48 waiting 0.00200001s
+Iteration 135... 136 sym states passed, 49 waiting 0.00200001s
+Iteration 136... 137 sym states passed, 49 waiting 0.00300001s
+Iteration 137... 138 sym states passed, 49 waiting 0.00300001s
+Iteration 138... 139 sym states passed, 48 waiting 0.00300001s
+Iteration 139... 140 sym states passed, 49 waiting 0.00200001s
+Iteration 140... 141 sym states passed, 50 waiting 0.00200001s
+Iteration 141... 142 sym states passed, 50 waiting 0.00300001s
+Iteration 142... 143 sym states passed, 50 waiting 0.00300001s
+Iteration 143... 144 sym states passed, 49 waiting 0.00300001s
+Iteration 144... 145 sym states passed, 48 waiting 0.00300001s
+Iteration 145... 146 sym states passed, 47 waiting 0.00200001s
+Iteration 146... 147 sym states passed, 48 waiting 0.00200001s
+Iteration 147... 148 sym states passed, 47 waiting 0.00200001s
+Iteration 148... 149 sym states passed, 48 waiting 0.00200001s
+Iteration 149... 150 sym states passed, 47 waiting 0.00200001s
+Iteration 150... 151 sym states passed, 46 waiting 0.00200001s
+Iteration 151... 152 sym states passed, 45 waiting 0.00200001s
+Iteration 152... 153 sym states passed, 46 waiting 0.00200001s
+Iteration 153... 154 sym states passed, 45 waiting 0.00200001s
+Iteration 154... 155 sym states passed, 46 waiting 0.00200001s
+Iteration 155... 156 sym states passed, 45 waiting 0.00200001s
+Iteration 156... 157 sym states passed, 44 waiting 0.00200001s
+Iteration 157... 158 sym states passed, 43 waiting 0.00200001s
+Iteration 158... 159 sym states passed, 44 waiting 0.00200001s
+Iteration 159... 160 sym states passed, 43 waiting 0.00200001s
+Iteration 160... 161 sym states passed, 44 waiting 0.00200001s
+Iteration 161... 162 sym states passed, 43 waiting 0.00200001s
+Iteration 162... 163 sym states passed, 42 waiting 0.00200001s
+Iteration 163... 164 sym states passed, 41 waiting 0.00200001s
+Iteration 164... 165 sym states passed, 42 waiting 0.00200001s
+Iteration 165... 166 sym states passed, 41 waiting 0.00200001s
+Iteration 166... 167 sym states passed, 42 waiting 0.00200001s
+Iteration 167... 168 sym states passed, 41 waiting 0.00200001s
+Iteration 168... 169 sym states passed, 40 waiting 0.00200001s
+Iteration 169... 170 sym states passed, 39 waiting 0.00200001s
+Iteration 170... 171 sym states passed, 40 waiting 0.00200001s
+Iteration 171... 172 sym states passed, 39 waiting 0.00200001s
+Iteration 172... 173 sym states passed, 40 waiting 0.00200001s
+Iteration 173... 174 sym states passed, 39 waiting 0.00200001s
+Iteration 174... 175 sym states passed, 38 waiting 0.00200001s
+Iteration 175... 176 sym states passed, 37 waiting 0.00200001s
+Iteration 176... 177 sym states passed, 38 waiting 0.00200001s
+Iteration 177... 178 sym states passed, 37 waiting 0.00200001s
+Iteration 178... 179 sym states passed, 38 waiting 0.00200001s
+Iteration 179... 180 sym states passed, 37 waiting 0.00200001s
+Iteration 180... 181 sym states passed, 36 waiting 0.00200001s
+Iteration 181... 182 sym states passed, 35 waiting 0.00200001s
+Iteration 182... 183 sym states passed, 36 waiting 0.00200001s
+Iteration 183... 184 sym states passed, 35 waiting 0.00200001s
+Iteration 184... 185 sym states passed, 36 waiting 0.00200001s
+Iteration 185... 186 sym states passed, 35 waiting 0.00200001s
+Iteration 186... 187 sym states passed, 34 waiting 0.00200001s
+Iteration 187... 188 sym states passed, 33 waiting 0.00200001s
+Iteration 188... 189 sym states passed, 34 waiting 0.00200001s
+Iteration 189... 190 sym states passed, 33 waiting 0.00200001s
+Iteration 190... 191 sym states passed, 34 waiting 0.00200001s
+Iteration 191... 192 sym states passed, 33 waiting 0.00200001s
+Iteration 192... 193 sym states passed, 32 waiting 0.00200001s
+Iteration 193... 194 sym states passed, 32 waiting 0.00300001s
+Iteration 194... 195 sym states passed, 31 waiting 0.00300001s
+Iteration 195... 196 sym states passed, 31 waiting 0.00300001s
+Iteration 196... 197 sym states passed, 30 waiting 0.00300001s
+Iteration 197... 198 sym states passed, 30 waiting 0.00300001s
+Iteration 198... 199 sym states passed, 29 waiting 0.00300001s
+Iteration 199... 200 sym states passed, 29 waiting 0.00300001s
+Iteration 200... 201 sym states passed, 28 waiting 0.00300001s
+Iteration 201... 202 sym states passed, 28 waiting 0.00300001s
+Iteration 202... 203 sym states passed, 27 waiting 0.00300001s
+Iteration 203... 204 sym states passed, 27 waiting 0.0100001s
+Iteration 204... 205 sym states passed, 26 waiting 0.00400001s
+Iteration 205... 206 sym states passed, 26 waiting 0.00300001s
+Iteration 206... 207 sym states passed, 25 waiting 0.00300001s
+Iteration 207... 208 sym states passed, 25 waiting 0.00300001s
+Iteration 208... 209 sym states passed, 24 waiting 0.00300001s
+Iteration 209... 210 sym states passed, 23 waiting 0.00300001s
+Iteration 210... 211 sym states passed, 22 waiting 0.00300001s
+Iteration 211... 212 sym states passed, 21 waiting 0.00300001s
+Iteration 212... 213 sym states passed, 20 waiting 0.00300001s
+Iteration 213... 214 sym states passed, 19 waiting 0.00300001s
+Iteration 214... 215 sym states passed, 18 waiting 0.00300001s
+Iteration 215... 216 sym states passed, 17 waiting 0.00300001s
+Iteration 216... 217 sym states passed, 16 waiting 0.00300001s
+Iteration 217... 218 sym states passed, 16 waiting 0.00300001s
+Iteration 218... 219 sym states passed, 15 waiting 0.00300001s
+Iteration 219... 220 sym states passed, 15 waiting 0.00300001s
+Iteration 220... 221 sym states passed, 14 waiting 0.00400001s
+Iteration 221... 222 sym states passed, 14 waiting 0.00300001s
+Iteration 222... 223 sym states passed, 13 waiting 0.00400001s
+Iteration 223... 224 sym states passed, 13 waiting 0.00300001s
+Iteration 224... 225 sym states passed, 12 waiting 0.00400001s
+Iteration 225... 226 sym states passed, 15 waiting 0.00600001s
+Iteration 226... 227 sym states passed, 18 waiting 0.00600001s
+Iteration 227... 228 sym states passed, 21 waiting 0.00600001s
+Iteration 228... 229 sym states passed, 24 waiting 0.00600001s
+Iteration 229... 230 sym states passed, 27 waiting 0.00600001s
+Iteration 230... 231 sym states passed, 30 waiting 0.00600001s
+Iteration 231... 232 sym states passed, 33 waiting 0.00600001s
+Iteration 232... 233 sym states passed, 36 waiting 0.00600001s
+Iteration 233... 234 sym states passed, 39 waiting 0.00600001s
+Iteration 234... 235 sym states passed, 42 waiting 0.00600001s
+Iteration 235... 236 sym states passed, 45 waiting 0.00700001s
+Iteration 236... 237 sym states passed, 48 waiting 0.00600001s
+Iteration 237... 238 sym states passed, 50 waiting 0.00400001s
+Iteration 238... 239 sym states passed, 52 waiting 0.00400001s
+Iteration 239... 240 sym states passed, 52 waiting 0.00600001s
+Iteration 240... 241 sym states passed, 52 waiting 0.00600001s
+Iteration 241... 242 sym states passed, 54 waiting 0.00400001s
+Iteration 242... 243 sym states passed, 56 waiting 0.00400001s
+Iteration 243... 244 sym states passed, 56 waiting 0.00600001s
+Iteration 244... 245 sym states passed, 56 waiting 0.00700001s
+Iteration 245... 246 sym states passed, 58 waiting 0.00400001s
+Iteration 246... 247 sym states passed, 60 waiting 0.00400001s
+Iteration 247... 248 sym states passed, 60 waiting 0.00700001s
+Iteration 248... 249 sym states passed, 60 waiting 0.00700001s
+Iteration 249... 250 sym states passed, 62 waiting 0.00400001s
+Iteration 250... 251 sym states passed, 64 waiting 0.00400001s
+Iteration 251... 252 sym states passed, 64 waiting 0.00800001s
+Iteration 252... 253 sym states passed, 64 waiting 0.00800001s
+Iteration 253... 254 sym states passed, 66 waiting 0.00500001s
+Iteration 254... 255 sym states passed, 68 waiting 0.00500001s
+Iteration 255... 256 sym states passed, 68 waiting 0.00800001s
+Iteration 256... 257 sym states passed, 68 waiting 0.00800001s
+Iteration 257... 258 sym states passed, 70 waiting 0.00500001s
+Iteration 258... 259 sym states passed, 72 waiting 0.00500001s
+Iteration 259... 260 sym states passed, 72 waiting 0.00900001s
+Iteration 260... 261 sym states passed, 72 waiting 0.00900001s
+Iteration 261... 262 sym states passed, 74 waiting 0.00500001s
+Iteration 262... 263 sym states passed, 76 waiting 0.00500001s
+Iteration 263... 264 sym states passed, 76 waiting 0.0100001s
+Iteration 264... 265 sym states passed, 76 waiting 0.0100001s
+Iteration 265... 266 sym states passed, 78 waiting 0.00500001s
+Iteration 266... 267 sym states passed, 80 waiting 0.00500001s
+Iteration 267... 268 sym states passed, 80 waiting 0.0100001s
+Iteration 268... 269 sym states passed, 80 waiting 0.0100001s
+Iteration 269... 270 sym states passed, 82 waiting 0.00500001s
+Iteration 270... 271 sym states passed, 84 waiting 0.00500001s
+Iteration 271... 272 sym states passed, 84 waiting 0.0110001s
+Iteration 272... 273 sym states passed, 84 waiting 0.0110001s
+Iteration 273... 274 sym states passed, 86 waiting 0.00500001s
+Iteration 274... 275 sym states passed, 88 waiting 0.00500001s
+Iteration 275... 276 sym states passed, 88 waiting 0.0120001s
+Iteration 276... 277 sym states passed, 88 waiting 0.0120001s
+Iteration 277... 278 sym states passed, 90 waiting 0.00500001s
+Iteration 278... 279 sym states passed, 92 waiting 0.00500001s
+Iteration 279... 280 sym states passed, 92 waiting 0.0120001s
+Iteration 280... 281 sym states passed, 92 waiting 0.0120001s
+Iteration 281... 282 sym states passed, 94 waiting 0.00500001s
+Iteration 282... 283 sym states passed, 96 waiting 0.00500001s
+Iteration 283... 284 sym states passed, 96 waiting 0.0120001s
+Iteration 284... 285 sym states passed, 96 waiting 0.0130001s
+Iteration 285... 286 sym states passed, 98 waiting 0.00500001s
+Iteration 286... 287 sym states passed, 98 waiting 0.00300001s
+Iteration 287... 288 sym states passed, 98 waiting 0.00300001s
+Iteration 288... 289 sym states passed, 100 waiting 0.00500001s
+Iteration 289... 290 sym states passed, 100 waiting 0.00300001s
+Iteration 290... 291 sym states passed, 100 waiting 0.00300001s
+Iteration 291... 292 sym states passed, 100 waiting 0.00600001s
+Iteration 292... 293 sym states passed, 100 waiting 0.00600001s
+Iteration 293... 294 sym states passed, 102 waiting 0.00500001s
+Iteration 294... 295 sym states passed, 102 waiting 0.00300001s
+Iteration 295... 296 sym states passed, 102 waiting 0.00300001s
+Iteration 296... 297 sym states passed, 104 waiting 0.00500001s
+Iteration 297... 298 sym states passed, 104 waiting 0.00300001s
+Iteration 298... 299 sym states passed, 104 waiting 0.00300001s
+Iteration 299... 300 sym states passed, 104 waiting 0.00700001s
+Iteration 300... 301 sym states passed, 104 waiting 0.00700001s
+Iteration 301... 302 sym states passed, 106 waiting 0.00500001s
+Iteration 302... 303 sym states passed, 106 waiting 0.00300001s
+Iteration 303... 304 sym states passed, 106 waiting 0.00300001s
+Iteration 304... 305 sym states passed, 108 waiting 0.00500001s
+Iteration 305... 306 sym states passed, 108 waiting 0.00400001s
+Iteration 306... 307 sym states passed, 108 waiting 0.00400001s
+Iteration 307... 308 sym states passed, 108 waiting 0.00700001s
+Iteration 308... 309 sym states passed, 108 waiting 0.00700001s
+Iteration 309... 310 sym states passed, 110 waiting 0.00500001s
+Iteration 310... 311 sym states passed, 110 waiting 0.00400001s
+Iteration 311... 312 sym states passed, 110 waiting 0.00400001s
+Iteration 312... 313 sym states passed, 112 waiting 0.00500001s
+Iteration 313... 314 sym states passed, 112 waiting 0.00400001s
+Iteration 314... 315 sym states passed, 112 waiting 0.00400001s
+Iteration 315... 316 sym states passed, 112 waiting 0.00800001s
+Iteration 316... 317 sym states passed, 112 waiting 0.00800001s
+Iteration 317... 318 sym states passed, 114 waiting 0.00600001s
+Iteration 318... 319 sym states passed, 114 waiting 0.00400001s
+Iteration 319... 320 sym states passed, 114 waiting 0.00400001s
+Iteration 320... 321 sym states passed, 116 waiting 0.00500001s
+Iteration 321... 322 sym states passed, 116 waiting 0.00400001s
+Iteration 322... 323 sym states passed, 116 waiting 0.00400001s
+Iteration 323... 324 sym states passed, 116 waiting 0.00900001s
+Iteration 324... 325 sym states passed, 116 waiting 0.00900001s
+Iteration 325... 326 sym states passed, 118 waiting 0.00600001s
+Iteration 326... 327 sym states passed, 118 waiting 0.00500001s
+Iteration 327... 328 sym states passed, 118 waiting 0.00500001s
+Iteration 328... 329 sym states passed, 120 waiting 0.00600001s
+Iteration 329... 330 sym states passed, 120 waiting 0.00500001s
+Iteration 330... 331 sym states passed, 120 waiting 0.00500001s
+Iteration 331... 332 sym states passed, 120 waiting 0.0100001s
+Iteration 332... 333 sym states passed, 120 waiting 0.0100001s
+Iteration 333... 334 sym states passed, 122 waiting 0.00600001s
+Iteration 334... 335 sym states passed, 122 waiting 0.00500001s
+Iteration 335... 336 sym states passed, 122 waiting 0.00500001s
+Iteration 336... 337 sym states passed, 124 waiting 0.00600001s
+Iteration 337... 338 sym states passed, 124 waiting 0.00500001s
+Iteration 338... 339 sym states passed, 124 waiting 0.00500001s
+Iteration 339... 340 sym states passed, 124 waiting 0.0100001s
+Iteration 340... 341 sym states passed, 124 waiting 0.0110001s
+Iteration 341... 342 sym states passed, 126 waiting 0.00600001s
+Iteration 342... 343 sym states passed, 126 waiting 0.00500001s
+Iteration 343... 344 sym states passed, 126 waiting 0.00500001s
+Iteration 344... 345 sym states passed, 128 waiting 0.00600001s
+Iteration 345... 346 sym states passed, 128 waiting 0.00500001s
+Iteration 346... 347 sym states passed, 128 waiting 0.00500001s
+Iteration 347... 348 sym states passed, 128 waiting 0.0110001s
+Iteration 348... 349 sym states passed, 128 waiting 0.0110001s
+Iteration 349... 350 sym states passed, 130 waiting 0.00600001s
+Iteration 350... 351 sym states passed, 130 waiting 0.00600001s
+Iteration 351... 352 sym states passed, 130 waiting 0.00600001s
+Iteration 352... 353 sym states passed, 132 waiting 0.00600001s
+Iteration 353... 354 sym states passed, 132 waiting 0.00600001s
+Iteration 354... 355 sym states passed, 132 waiting 0.00600001s
+Iteration 355... 356 sym states passed, 132 waiting 0.0120001s
+Iteration 356... 357 sym states passed, 132 waiting 0.0120001s
+Iteration 357... 358 sym states passed, 134 waiting 0.00700001s
+Iteration 358... 359 sym states passed, 134 waiting 0.00600001s
+Iteration 359... 360 sym states passed, 134 waiting 0.00600001s
+Iteration 360... 361 sym states passed, 136 waiting 0.00700001s
+Iteration 361... 362 sym states passed, 136 waiting 0.00600001s
+Iteration 362... 363 sym states passed, 136 waiting 0.00600001s
+Iteration 363... 364 sym states passed, 136 waiting 0.0130001s
+Iteration 364... 365 sym states passed, 136 waiting 0.0130001s
+Iteration 365... 366 sym states passed, 138 waiting 0.00700001s
+Iteration 366... 367 sym states passed, 138 waiting 0.00700001s
+Iteration 367... 368 sym states passed, 138 waiting 0.00700001s
+Iteration 368... 369 sym states passed, 140 waiting 0.00700001s
+Iteration 369... 370 sym states passed, 140 waiting 0.00700001s
+Iteration 370... 371 sym states passed, 140 waiting 0.00700001s
+Iteration 371... 372 sym states passed, 140 waiting 0.0140001s
+Iteration 372... 373 sym states passed, 140 waiting 0.0140001s
+Iteration 373... 374 sym states passed, 142 waiting 0.00700001s
+Iteration 374... 375 sym states passed, 142 waiting 0.00700001s
+Iteration 375... 376 sym states passed, 142 waiting 0.00700001s
+Iteration 376... 377 sym states passed, 144 waiting 0.00700001s
+Iteration 377... 378 sym states passed, 144 waiting 0.00700001s
+Iteration 378... 379 sym states passed, 144 waiting 0.00700001s
+Iteration 379... 380 sym states passed, 144 waiting 0.0140001s
+Iteration 380... 381 sym states passed, 144 waiting 0.0140001s
+Iteration 381... 382 sym states passed, 143 waiting 0.00400001s
+Iteration 382... 383 sym states passed, 144 waiting 0.00300001s
+Iteration 383... 384 sym states passed, 145 waiting 0.00300001s
+Iteration 384... 385 sym states passed, 145 waiting 0.00400001s
+Iteration 385... 386 sym states passed, 145 waiting 0.00400001s
+Iteration 386... 387 sym states passed, 144 waiting 0.00400001s
+Iteration 387... 388 sym states passed, 145 waiting 0.00300001s
+Iteration 388... 389 sym states passed, 146 waiting 0.00300001s
+Iteration 389... 390 sym states passed, 146 waiting 0.00400001s
+Iteration 390... 391 sym states passed, 146 waiting 0.00400001s
+Iteration 391... 392 sym states passed, 145 waiting 0.00300001s
+Iteration 392... 393 sym states passed, 144 waiting 0.00300001s
+Iteration 393... 394 sym states passed, 143 waiting 0.00400001s
+Iteration 394... 395 sym states passed, 144 waiting 0.00300001s
+Iteration 395... 396 sym states passed, 145 waiting 0.00300001s
+Iteration 396... 397 sym states passed, 145 waiting 0.00400001s
+Iteration 397... 398 sym states passed, 145 waiting 0.00400001s
+Iteration 398... 399 sym states passed, 144 waiting 0.00400001s
+Iteration 399... 400 sym states passed, 145 waiting 0.00300001s
+Iteration 400... 401 sym states passed, 146 waiting 0.00300001s
+Iteration 401... 402 sym states passed, 146 waiting 0.00500001s
+Iteration 402... 403 sym states passed, 146 waiting 0.00500001s
+Iteration 403... 404 sym states passed, 145 waiting 0.00300001s
+Iteration 404... 405 sym states passed, 144 waiting 0.00300001s
+Iteration 405... 406 sym states passed, 143 waiting 0.00400001s
+Iteration 406... 407 sym states passed, 144 waiting 0.00400001s
+Iteration 407... 408 sym states passed, 145 waiting 0.00300001s
+Iteration 408... 409 sym states passed, 145 waiting 0.00500001s
+Iteration 409... 410 sym states passed, 145 waiting 0.00500001s
+Iteration 410... 411 sym states passed, 144 waiting 0.00400001s
+Iteration 411... 412 sym states passed, 145 waiting 0.00400001s
+Iteration 412... 413 sym states passed, 146 waiting 0.00300001s
+Iteration 413... 414 sym states passed, 146 waiting 0.00500001s
+Iteration 414... 415 sym states passed, 146 waiting 0.00500001s
+Iteration 415... 416 sym states passed, 145 waiting 0.00300001s
+Iteration 416... 417 sym states passed, 144 waiting 0.00300001s
+Iteration 417... 418 sym states passed, 143 waiting 0.00400001s
+Iteration 418... 419 sym states passed, 144 waiting 0.00400001s
+Iteration 419... 420 sym states passed, 145 waiting 0.00300001s
+Iteration 420... 421 sym states passed, 145 waiting 0.00500001s
+Iteration 421... 422 sym states passed, 145 waiting 0.00500001s
+Iteration 422... 423 sym states passed, 144 waiting 0.00400001s
+Iteration 423... 424 sym states passed, 145 waiting 0.00400001s
+Iteration 424... 425 sym states passed, 146 waiting 0.00300001s
+Iteration 425... 426 sym states passed, 146 waiting 0.00600001s
+Iteration 426... 427 sym states passed, 146 waiting 0.00500001s
+Iteration 427... 428 sym states passed, 145 waiting 0.00300001s
+Iteration 428... 429 sym states passed, 144 waiting 0.00300001s
+Iteration 429... 430 sym states passed, 143 waiting 0.00400001s
+Iteration 430... 431 sym states passed, 144 waiting 0.00400001s
+Iteration 431... 432 sym states passed, 145 waiting 0.00400001s
+Iteration 432... 433 sym states passed, 145 waiting 0.00600001s
+Iteration 433... 434 sym states passed, 145 waiting 0.00500001s
+Iteration 434... 435 sym states passed, 144 waiting 0.00400001s
+Iteration 435... 436 sym states passed, 145 waiting 0.00400001s
+Iteration 436... 437 sym states passed, 146 waiting 0.00400001s
+Iteration 437... 438 sym states passed, 146 waiting 0.00600001s
+Iteration 438... 439 sym states passed, 146 waiting 0.00600001s
+Iteration 439... 440 sym states passed, 145 waiting 0.00400001s
+Iteration 440... 441 sym states passed, 144 waiting 0.00300001s
+Iteration 441... 442 sym states passed, 143 waiting 0.00400001s
+Iteration 442... 443 sym states passed, 144 waiting 0.00400001s
+Iteration 443... 444 sym states passed, 145 waiting 0.00400001s
+Iteration 444... 445 sym states passed, 145 waiting 0.00600001s
+Iteration 445... 446 sym states passed, 145 waiting 0.00600001s
+Iteration 446... 447 sym states passed, 144 waiting 0.00500001s
+Iteration 447... 448 sym states passed, 145 waiting 0.00400001s
+Iteration 448... 449 sym states passed, 146 waiting 0.00400001s
+Iteration 449... 450 sym states passed, 146 waiting 0.00600001s
+Iteration 450... 451 sym states passed, 146 waiting 0.00600001s
+Iteration 451... 452 sym states passed, 145 waiting 0.00400001s
+Iteration 452... 453 sym states passed, 144 waiting 0.00400001s
+Iteration 453... 454 sym states passed, 143 waiting 0.00500001s
+Iteration 454... 455 sym states passed, 144 waiting 0.00400001s
+Iteration 455... 456 sym states passed, 145 waiting 0.00400001s
+Iteration 456... 457 sym states passed, 145 waiting 0.00600001s
+Iteration 457... 458 sym states passed, 145 waiting 0.00600001s
+Iteration 458... 459 sym states passed, 144 waiting 0.00500001s
+Iteration 459... 460 sym states passed, 145 waiting 0.00400001s
+Iteration 460... 461 sym states passed, 146 waiting 0.00400001s
+Iteration 461... 462 sym states passed, 146 waiting 0.00700001s
+Iteration 462... 463 sym states passed, 146 waiting 0.00600001s
+Iteration 463... 464 sym states passed, 145 waiting 0.00400001s
+Iteration 464... 465 sym states passed, 144 waiting 0.00400001s
+Iteration 465... 466 sym states passed, 143 waiting 0.00500001s
+Iteration 466... 467 sym states passed, 144 waiting 0.00400001s
+Iteration 467... 468 sym states passed, 145 waiting 0.00400001s
+Iteration 468... 469 sym states passed, 145 waiting 0.00700001s
+Iteration 469... 470 sym states passed, 145 waiting 0.00700001s
+Iteration 470... 471 sym states passed, 144 waiting 0.00500001s
+Iteration 471... 472 sym states passed, 145 waiting 0.00400001s
+Iteration 472... 473 sym states passed, 146 waiting 0.00400001s
+Iteration 473... 474 sym states passed, 146 waiting 0.00700001s
+Iteration 474... 475 sym states passed, 146 waiting 0.00700001s
+Iteration 475... 476 sym states passed, 145 waiting 0.00400001s
+Iteration 476... 477 sym states passed, 144 waiting 0.00400001s
+Iteration 477... 478 sym states passed, 143 waiting 0.00500001s
+Iteration 478... 479 sym states passed, 144 waiting 0.00400001s
+Iteration 479... 480 sym states passed, 145 waiting 0.00400001s
+Iteration 480... 481 sym states passed, 145 waiting 0.00700001s
+Iteration 481... 482 sym states passed, 145 waiting 0.00700001s
+Iteration 482... 483 sym states passed, 144 waiting 0.00500001s
+Iteration 483... 484 sym states passed, 145 waiting 0.00400001s
+Iteration 484... 485 sym states passed, 146 waiting 0.00400001s
+Iteration 485... 486 sym states passed, 146 waiting 0.00700001s
+Iteration 486... 487 sym states passed, 146 waiting 0.00700001s
+Iteration 487... 488 sym states passed, 145 waiting 0.00400001s
+Iteration 488... 489 sym states passed, 144 waiting 0.00400001s
+Iteration 489... 490 sym states passed, 143 waiting 0.00500001s
+Iteration 490... 491 sym states passed, 144 waiting 0.00400001s
+Iteration 491... 492 sym states passed, 145 waiting 0.00400001s
+Iteration 492... 493 sym states passed, 145 waiting 0.00700001s
+Iteration 493... 494 sym states passed, 145 waiting 0.00700001s
+Iteration 494... 495 sym states passed, 144 waiting 0.00500001s
+Iteration 495... 496 sym states passed, 145 waiting 0.00400001s
+Iteration 496... 497 sym states passed, 146 waiting 0.00400001s
+Iteration 497... 498 sym states passed, 146 waiting 0.00800001s
+Iteration 498... 499 sym states passed, 146 waiting 0.00800001s
+Iteration 499... 500 sym states passed, 145 waiting 0.00400001s
+Iteration 500... 501 sym states passed, 144 waiting 0.00400001s
+Iteration 501... 502 sym states passed, 143 waiting 0.00500001s
+Iteration 502... 503 sym states passed, 144 waiting 0.00400001s
+Iteration 503... 504 sym states passed, 145 waiting 0.00400001s
+Iteration 504... 505 sym states passed, 145 waiting 0.00800001s
+Iteration 505... 506 sym states passed, 145 waiting 0.00800001s
+Iteration 506... 507 sym states passed, 144 waiting 0.00500001s
+Iteration 507... 508 sym states passed, 145 waiting 0.00400001s
+Iteration 508... 509 sym states passed, 146 waiting 0.00400001s
+Iteration 509... 510 sym states passed, 146 waiting 0.00800001s
+Iteration 510... 511 sym states passed, 146 waiting 0.00800001s
+Iteration 511... 512 sym states passed, 145 waiting 0.00400001s
+Iteration 512... 513 sym states passed, 144 waiting 0.00400001s
+Iteration 513... 514 sym states passed, 143 waiting 0.00500001s
+Iteration 514... 515 sym states passed, 144 waiting 0.00400001s
+Iteration 515... 516 sym states passed, 145 waiting 0.00400001s
+Iteration 516... 517 sym states passed, 145 waiting 0.00800001s
+Iteration 517... 518 sym states passed, 145 waiting 0.00800001s
+Iteration 518... 519 sym states passed, 144 waiting 0.00500001s
+Iteration 519... 520 sym states passed, 145 waiting 0.00400001s
+Iteration 520... 521 sym states passed, 146 waiting 0.00400001s
+Iteration 521... 522 sym states passed, 146 waiting 0.00800001s
+Iteration 522... 523 sym states passed, 146 waiting 0.00800001s
+Iteration 523... 524 sym states passed, 145 waiting 0.00500001s
+Iteration 524... 525 sym states passed, 144 waiting 0.00400001s
+Iteration 525... 526 sym states passed, 143 waiting 0.00400001s
+Iteration 526... 527 sym states passed, 144 waiting 0.00500001s
+Iteration 527... 528 sym states passed, 143 waiting 0.00400001s
+Iteration 528... 529 sym states passed, 144 waiting 0.00500001s
+Iteration 529... 530 sym states passed, 143 waiting 0.00400001s
+Iteration 530... 531 sym states passed, 142 waiting 0.00400001s
+Iteration 531... 532 sym states passed, 141 waiting 0.00400001s
+Iteration 532... 533 sym states passed, 142 waiting 0.00500001s
+Iteration 533... 534 sym states passed, 141 waiting 0.00400001s
+Iteration 534... 535 sym states passed, 142 waiting 0.00500001s
+Iteration 535... 536 sym states passed, 141 waiting 0.00400001s
+Iteration 536... 537 sym states passed, 140 waiting 0.00400001s
+Iteration 537... 538 sym states passed, 139 waiting 0.00400001s
+Iteration 538... 539 sym states passed, 140 waiting 0.00500001s
+Iteration 539... 540 sym states passed, 139 waiting 0.00400001s
+Iteration 540... 541 sym states passed, 140 waiting 0.00500001s
+Iteration 541... 542 sym states passed, 139 waiting 0.00400001s
+Iteration 542... 543 sym states passed, 138 waiting 0.00400001s
+Iteration 543... 544 sym states passed, 137 waiting 0.00400001s
+Iteration 544... 545 sym states passed, 138 waiting 0.00500001s
+Iteration 545... 546 sym states passed, 137 waiting 0.00400001s
+Iteration 546... 547 sym states passed, 138 waiting 0.00500001s
+Iteration 547... 548 sym states passed, 137 waiting 0.00400001s
+Iteration 548... 549 sym states passed, 136 waiting 0.00400001s
+Iteration 549... 550 sym states passed, 135 waiting 0.00400001s
+Iteration 550... 551 sym states passed, 136 waiting 0.00500001s
+Iteration 551... 552 sym states passed, 135 waiting 0.00400001s
+Iteration 552... 553 sym states passed, 136 waiting 0.00500001s
+Iteration 553... 554 sym states passed, 135 waiting 0.00400001s
+Iteration 554... 555 sym states passed, 134 waiting 0.00400001s
+Iteration 555... 556 sym states passed, 133 waiting 0.00400001s
+Iteration 556... 557 sym states passed, 134 waiting 0.00500001s
+Iteration 557... 558 sym states passed, 133 waiting 0.00400001s
+Iteration 558... 559 sym states passed, 134 waiting 0.00500001s
+Iteration 559... 560 sym states passed, 133 waiting 0.00400001s
+Iteration 560... 561 sym states passed, 132 waiting 0.00400001s
+Iteration 561... 562 sym states passed, 131 waiting 0.00400001s
+Iteration 562... 563 sym states passed, 132 waiting 0.00500001s
+Iteration 563... 564 sym states passed, 131 waiting 0.00400001s
+Iteration 564... 565 sym states passed, 132 waiting 0.00500001s
+Iteration 565... 566 sym states passed, 131 waiting 0.00400001s
+Iteration 566... 567 sym states passed, 130 waiting 0.00400001s
+Iteration 567... 568 sym states passed, 129 waiting 0.00400001s
+Iteration 568... 569 sym states passed, 130 waiting 0.00500001s
+Iteration 569... 570 sym states passed, 129 waiting 0.00400001s
+Iteration 570... 571 sym states passed, 130 waiting 0.00500001s
+Iteration 571... 572 sym states passed, 129 waiting 0.00400001s
+Iteration 572... 573 sym states passed, 128 waiting 0.00400001s
+Iteration 573... 574 sym states passed, 127 waiting 0.00400001s
+Iteration 574... 575 sym states passed, 128 waiting 0.00500001s
+Iteration 575... 576 sym states passed, 127 waiting 0.00400001s
+Iteration 576... 577 sym states passed, 128 waiting 0.00500001s
+Iteration 577... 578 sym states passed, 127 waiting 0.00400001s
+Iteration 578... 579 sym states passed, 126 waiting 0.00400001s
+Iteration 579... 580 sym states passed, 125 waiting 0.00400001s
+Iteration 580... 581 sym states passed, 126 waiting 0.00500001s
+Iteration 581... 582 sym states passed, 125 waiting 0.00400001s
+Iteration 582... 583 sym states passed, 126 waiting 0.00500001s
+Iteration 583... 584 sym states passed, 125 waiting 0.00400001s
+Iteration 584... 585 sym states passed, 124 waiting 0.00400001s
+Iteration 585... 586 sym states passed, 123 waiting 0.00400001s
+Iteration 586... 587 sym states passed, 124 waiting 0.00500001s
+Iteration 587... 588 sym states passed, 123 waiting 0.00400001s
+Iteration 588... 589 sym states passed, 124 waiting 0.00500001s
+Iteration 589... 590 sym states passed, 123 waiting 0.00400001s
+Iteration 590... 591 sym states passed, 122 waiting 0.00400001s
+Iteration 591... 592 sym states passed, 121 waiting 0.00400001s
+Iteration 592... 593 sym states passed, 122 waiting 0.00500001s
+Iteration 593... 594 sym states passed, 121 waiting 0.00400001s
+Iteration 594... 595 sym states passed, 122 waiting 0.00500001s
+Iteration 595... 596 sym states passed, 121 waiting 0.00400001s
+Iteration 596... 597 sym states passed, 120 waiting 0.00400001s
+Iteration 597... 598 sym states passed, 119 waiting 0.00400001s
+Iteration 598... 599 sym states passed, 120 waiting 0.00500001s
+Iteration 599... 600 sym states passed, 119 waiting 0.00400001s
+Iteration 600... 601 sym states passed, 120 waiting 0.00500001s
+Iteration 601... 602 sym states passed, 119 waiting 0.00400001s
+Iteration 602... 603 sym states passed, 118 waiting 0.00400001s
+Iteration 603... 604 sym states passed, 117 waiting 0.00400001s
+Iteration 604... 605 sym states passed, 118 waiting 0.00500001s
+Iteration 605... 606 sym states passed, 117 waiting 0.00400001s
+Iteration 606... 607 sym states passed, 118 waiting 0.00500001s
+Iteration 607... 608 sym states passed, 117 waiting 0.00400001s
+Iteration 608... 609 sym states passed, 116 waiting 0.00400001s
+Iteration 609... 610 sym states passed, 115 waiting 0.00400001s
+Iteration 610... 611 sym states passed, 116 waiting 0.00500001s
+Iteration 611... 612 sym states passed, 115 waiting 0.00400001s
+Iteration 612... 613 sym states passed, 116 waiting 0.00500001s
+Iteration 613... 614 sym states passed, 115 waiting 0.00400001s
+Iteration 614... 615 sym states passed, 114 waiting 0.00400001s
+Iteration 615... 616 sym states passed, 113 waiting 0.00400001s
+Iteration 616... 617 sym states passed, 114 waiting 0.00500001s
+Iteration 617... 618 sym states passed, 113 waiting 0.00400001s
+Iteration 618... 619 sym states passed, 114 waiting 0.00500001s
+Iteration 619... 620 sym states passed, 113 waiting 0.00400001s
+Iteration 620... 621 sym states passed, 112 waiting 0.00400001s
+Iteration 621... 622 sym states passed, 111 waiting 0.00400001s
+Iteration 622... 623 sym states passed, 112 waiting 0.00500001s
+Iteration 623... 624 sym states passed, 111 waiting 0.00400001s
+Iteration 624... 625 sym states passed, 112 waiting 0.00500001s
+Iteration 625... 626 sym states passed, 111 waiting 0.00400001s
+Iteration 626... 627 sym states passed, 110 waiting 0.00400001s
+Iteration 627... 628 sym states passed, 109 waiting 0.00400001s
+Iteration 628... 629 sym states passed, 110 waiting 0.00500001s
+Iteration 629... 630 sym states passed, 109 waiting 0.00400001s
+Iteration 630... 631 sym states passed, 110 waiting 0.00500001s
+Iteration 631... 632 sym states passed, 109 waiting 0.00400001s
+Iteration 632... 633 sym states passed, 108 waiting 0.00400001s
+Iteration 633... 634 sym states passed, 107 waiting 0.00400001s
+Iteration 634... 635 sym states passed, 108 waiting 0.00500001s
+Iteration 635... 636 sym states passed, 107 waiting 0.00400001s
+Iteration 636... 637 sym states passed, 108 waiting 0.00500001s
+Iteration 637... 638 sym states passed, 107 waiting 0.00400001s
+Iteration 638... 639 sym states passed, 106 waiting 0.00400001s
+Iteration 639... 640 sym states passed, 105 waiting 0.00400001s
+Iteration 640... 641 sym states passed, 106 waiting 0.00500001s
+Iteration 641... 642 sym states passed, 105 waiting 0.00400001s
+Iteration 642... 643 sym states passed, 106 waiting 0.00500001s
+Iteration 643... 644 sym states passed, 105 waiting 0.00500001s
+Iteration 644... 645 sym states passed, 104 waiting 0.00400001s
+Iteration 645... 646 sym states passed, 103 waiting 0.00400001s
+Iteration 646... 647 sym states passed, 104 waiting 0.00600001s
+Iteration 647... 648 sym states passed, 103 waiting 0.00400001s
+Iteration 648... 649 sym states passed, 104 waiting 0.00600001s
+Iteration 649... 650 sym states passed, 103 waiting 0.00400001s
+Iteration 650... 651 sym states passed, 102 waiting 0.00400001s
+Iteration 651... 652 sym states passed, 101 waiting 0.00400001s
+Iteration 652... 653 sym states passed, 102 waiting 0.00600001s
+Iteration 653... 654 sym states passed, 101 waiting 0.00400001s
+Iteration 654... 655 sym states passed, 102 waiting 0.00600001s
+Iteration 655... 656 sym states passed, 101 waiting 0.00400001s
+Iteration 656... 657 sym states passed, 100 waiting 0.00400001s
+Iteration 657... 658 sym states passed, 99 waiting 0.00400001s
+Iteration 658... 659 sym states passed, 100 waiting 0.00500001s
+Iteration 659... 660 sym states passed, 99 waiting 0.00400001s
+Iteration 660... 661 sym states passed, 100 waiting 0.00500001s
+Iteration 661... 662 sym states passed, 99 waiting 0.00400001s
+Iteration 662... 663 sym states passed, 98 waiting 0.00400001s
+Iteration 663... 664 sym states passed, 97 waiting 0.00400001s
+Iteration 664... 665 sym states passed, 98 waiting 0.00500001s
+Iteration 665... 666 sym states passed, 97 waiting 0.00400001s
+Iteration 666... 667 sym states passed, 98 waiting 0.00500001s
+Iteration 667... 668 sym states passed, 97 waiting 0.00500001s
+Iteration 668... 669 sym states passed, 96 waiting 0.00400001s
+Iteration 669... 670 sym states passed, 96 waiting 0.00600001s
+Iteration 670... 671 sym states passed, 95 waiting 0.00600001s
+Iteration 671... 672 sym states passed, 95 waiting 0.00600001s
+Iteration 672... 673 sym states passed, 94 waiting 0.00600001s
+Iteration 673... 674 sym states passed, 94 waiting 0.00600001s
+Iteration 674... 675 sym states passed, 93 waiting 0.00600001s
+Iteration 675... 676 sym states passed, 93 waiting 0.00600001s
+Iteration 676... 677 sym states passed, 92 waiting 0.00600001s
+Iteration 677... 678 sym states passed, 92 waiting 0.00600001s
+Iteration 678... 679 sym states passed, 91 waiting 0.00600001s
+Iteration 679... 680 sym states passed, 91 waiting 0.00600001s
+Iteration 680... 681 sym states passed, 90 waiting 0.00600001s
+Iteration 681... 682 sym states passed, 90 waiting 0.00600001s
+Iteration 682... 683 sym states passed, 89 waiting 0.00700001s
+Iteration 683... 684 sym states passed, 89 waiting 0.00600001s
+Iteration 684... 685 sym states passed, 88 waiting 0.00700001s
+Iteration 685... 686 sym states passed, 87 waiting 0.00600001s
+Iteration 686... 687 sym states passed, 86 waiting 0.00700001s
+Iteration 687... 688 sym states passed, 85 waiting 0.00600001s
+Iteration 688... 689 sym states passed, 84 waiting 0.00700001s
+Iteration 689... 690 sym states passed, 83 waiting 0.00600001s
+Iteration 690... 691 sym states passed, 82 waiting 0.00700001s
+Iteration 691... 692 sym states passed, 81 waiting 0.00600001s
+Iteration 692... 693 sym states passed, 80 waiting 0.00700001s
+Iteration 693... 694 sym states passed, 80 waiting 0.00600001s
+Iteration 694... 695 sym states passed, 79 waiting 0.00700001s
+Iteration 695... 696 sym states passed, 79 waiting 0.00600001s
+Iteration 696... 697 sym states passed, 78 waiting 0.00700001s
+Iteration 697... 698 sym states passed, 78 waiting 0.00600001s
+Iteration 698... 699 sym states passed, 77 waiting 0.00700001s
+Iteration 699... 700 sym states passed, 77 waiting 0.00600001s
+Iteration 700... 701 sym states passed, 76 waiting 0.00700001s
+Iteration 701... 702 sym states passed, 75 waiting 0.00600001s
+Iteration 702... 703 sym states passed, 74 waiting 0.00700001s
+Iteration 703... 704 sym states passed, 73 waiting 0.00600001s
+Iteration 704... 705 sym states passed, 72 waiting 0.00700001s
+Iteration 705... 706 sym states passed, 71 waiting 0.00600001s
+Iteration 706... 707 sym states passed, 70 waiting 0.00700001s
+Iteration 707... 708 sym states passed, 69 waiting 0.00600001s
+Iteration 708... 709 sym states passed, 68 waiting 0.00700001s
+Iteration 709... 710 sym states passed, 67 waiting 0.00600001s
+Iteration 710... 711 sym states passed, 66 waiting 0.00700001s
+Iteration 711... 712 sym states passed, 65 waiting 0.00600001s
+Iteration 712... 713 sym states passed, 64 waiting 0.00700001s
+Iteration 713... 714 sym states passed, 63 waiting 0.00600001s
+Iteration 714... 715 sym states passed, 62 waiting 0.00700001s
+Iteration 715... 716 sym states passed, 61 waiting 0.00600001s
+Iteration 716... 717 sym states passed, 60 waiting 0.00700001s
+Iteration 717... 718 sym states passed, 59 waiting 0.00600001s
+Iteration 718... 719 sym states passed, 58 waiting 0.00700001s
+Iteration 719... 720 sym states passed, 57 waiting 0.00600001s
+Iteration 720... 721 sym states passed, 56 waiting 0.00700001s
+Iteration 721... 722 sym states passed, 55 waiting 0.00600001s
+Iteration 722... 723 sym states passed, 54 waiting 0.00700001s
+Iteration 723... 724 sym states passed, 53 waiting 0.00600001s
+Iteration 724... 725 sym states passed, 52 waiting 0.00700001s
+Iteration 725... 726 sym states passed, 52 waiting 0.00600001s
+Iteration 726... 727 sym states passed, 51 waiting 0.00700001s
+Iteration 727... 728 sym states passed, 51 waiting 0.00600001s
+Iteration 728... 729 sym states passed, 50 waiting 0.00700001s
+Iteration 729... 730 sym states passed, 50 waiting 0.00600001s
+Iteration 730... 731 sym states passed, 49 waiting 0.00700001s
+Iteration 731... 732 sym states passed, 49 waiting 0.00600001s
+Iteration 732... 733 sym states passed, 48 waiting 0.00700001s
+Iteration 733... 734 sym states passed, 47 waiting 0.00600001s
+Iteration 734... 735 sym states passed, 46 waiting 0.00700001s
+Iteration 735... 736 sym states passed, 45 waiting 0.00600001s
+Iteration 736... 737 sym states passed, 44 waiting 0.00700001s
+Iteration 737... 738 sym states passed, 43 waiting 0.00600001s
+Iteration 738... 739 sym states passed, 42 waiting 0.00700001s
+Iteration 739... 740 sym states passed, 41 waiting 0.00600001s
+Iteration 740... 741 sym states passed, 40 waiting 0.00700001s
+Iteration 741... 742 sym states passed, 39 waiting 0.00600001s
+Iteration 742... 743 sym states passed, 38 waiting 0.00700001s
+Iteration 743... 744 sym states passed, 37 waiting 0.00600001s
+Iteration 744... 745 sym states passed, 36 waiting 0.00700001s
+Iteration 745... 746 sym states passed, 35 waiting 0.00600001s
+Iteration 746... 747 sym states passed, 34 waiting 0.00700001s
+Iteration 747... 748 sym states passed, 33 waiting 0.00600001s
+Iteration 748... 749 sym states passed, 32 waiting 0.00800001s
+Iteration 749... 750 sym states passed, 31 waiting 0.00600001s
+Iteration 750... 751 sym states passed, 30 waiting 0.00800001s
+Iteration 751... 752 sym states passed, 29 waiting 0.00600001s
+Iteration 752... 753 sym states passed, 28 waiting 0.00800001s
+Iteration 753... 754 sym states passed, 27 waiting 0.00600001s
+Iteration 754... 755 sym states passed, 26 waiting 0.00700001s
+Iteration 755... 756 sym states passed, 25 waiting 0.00600001s
+Iteration 756... 757 sym states passed, 24 waiting 0.00700001s
+Iteration 757... 758 sym states passed, 24 waiting 0.00600001s
+Iteration 758... 759 sym states passed, 23 waiting 0.00800001s
+Iteration 759... 760 sym states passed, 23 waiting 0.00600001s
+Iteration 760... 761 sym states passed, 22 waiting 0.00800001s
+Iteration 761... 762 sym states passed, 22 waiting 0.00600001s
+Iteration 762... 763 sym states passed, 21 waiting 0.00700001s
+Iteration 763... 764 sym states passed, 21 waiting 0.00600001s
+Iteration 764... 765 sym states passed, 20 waiting 0.00800001s
+Iteration 765... 766 sym states passed, 23 waiting 0.0150001s
+Iteration 766... 767 sym states passed, 26 waiting 0.0150001s
+Iteration 767... 768 sym states passed, 29 waiting 0.0150001s
+Iteration 768... 769 sym states passed, 32 waiting 0.0150001s
+Iteration 769... 770 sym states passed, 35 waiting 0.0150001s
+Iteration 770... 771 sym states passed, 38 waiting 0.0150001s
+Iteration 771... 772 sym states passed, 41 waiting 0.0150001s
+Iteration 772... 773 sym states passed, 44 waiting 0.0150001s
+Iteration 773... 774 sym states passed, 47 waiting 0.0150001s
+Iteration 774... 775 sym states passed, 50 waiting 0.0160001s
+Iteration 775... 776 sym states passed, 53 waiting 0.0160001s
+Iteration 776... 777 sym states passed, 56 waiting 0.0160001s
+Iteration 777... 778 sym states passed, 59 waiting 0.0150001s
+Iteration 778... 779 sym states passed, 62 waiting 0.0160001s
+Iteration 779... 780 sym states passed, 65 waiting 0.0160001s
+Iteration 780... 781 sym states passed, 68 waiting 0.0160001s
+Iteration 781... 782 sym states passed, 71 waiting 0.0150001s
+Iteration 782... 783 sym states passed, 74 waiting 0.0160001s
+Iteration 783... 784 sym states passed, 77 waiting 0.0160001s
+Iteration 784... 785 sym states passed, 80 waiting 0.0160001s
+Iteration 785... 786 sym states passed, 82 waiting 0.0100001s
+Iteration 786... 787 sym states passed, 84 waiting 0.0100001s
+Iteration 787... 788 sym states passed, 84 waiting 0.0160001s
+Iteration 788... 789 sym states passed, 84 waiting 0.0150001s
+Iteration 789... 790 sym states passed, 86 waiting 0.0100001s
+Iteration 790... 791 sym states passed, 88 waiting 0.0100001s
+Iteration 791... 792 sym states passed, 88 waiting 0.0160001s
+Iteration 792... 793 sym states passed, 88 waiting 0.0160001s
+Iteration 793... 794 sym states passed, 90 waiting 0.0100001s
+Iteration 794... 795 sym states passed, 92 waiting 0.0100001s
+Iteration 795... 796 sym states passed, 92 waiting 0.0160001s
+Iteration 796... 797 sym states passed, 92 waiting 0.0160001s
+Iteration 797... 798 sym states passed, 94 waiting 0.0100001s
+Iteration 798... 799 sym states passed, 96 waiting 0.0100001s
+Iteration 799... 800 sym states passed, 96 waiting 0.0170001s
+Iteration 800... 801 sym states passed, 96 waiting 0.0170001s
+Iteration 801... 802 sym states passed, 98 waiting 0.0110001s
+Iteration 802... 803 sym states passed, 100 waiting 0.0100001s
+Iteration 803... 804 sym states passed, 100 waiting 0.0180001s
+Iteration 804... 805 sym states passed, 100 waiting 0.0180001s
+Iteration 805... 806 sym states passed, 102 waiting 0.0110001s
+Iteration 806... 807 sym states passed, 104 waiting 0.0110001s
+Iteration 807... 808 sym states passed, 104 waiting 0.0180001s
+Iteration 808... 809 sym states passed, 104 waiting 0.0190001s
+Iteration 809... 810 sym states passed, 106 waiting 0.0110001s
+Iteration 810... 811 sym states passed, 108 waiting 0.0110001s
+Iteration 811... 812 sym states passed, 108 waiting 0.0190001s
+Iteration 812... 813 sym states passed, 108 waiting 0.0190001s
+Iteration 813... 814 sym states passed, 110 waiting 0.0110001s
+Iteration 814... 815 sym states passed, 112 waiting 0.0110001s
+Iteration 815... 816 sym states passed, 112 waiting 0.0200001s
+Iteration 816... 817 sym states passed, 112 waiting 0.0200001s
+Iteration 817... 818 sym states passed, 114 waiting 0.0110001s
+Iteration 818... 819 sym states passed, 116 waiting 0.0110001s
+Iteration 819... 820 sym states passed, 116 waiting 0.0200001s
+Iteration 820... 821 sym states passed, 116 waiting 0.0210001s
+Iteration 821... 822 sym states passed, 118 waiting 0.0110001s
+Iteration 822... 823 sym states passed, 120 waiting 0.0110001s
+Iteration 823... 824 sym states passed, 120 waiting 0.0210001s
+Iteration 824... 825 sym states passed, 120 waiting 0.0210001s
+Iteration 825... 826 sym states passed, 122 waiting 0.0110001s
+Iteration 826... 827 sym states passed, 124 waiting 0.0110001s
+Iteration 827... 828 sym states passed, 124 waiting 0.0220001s
+Iteration 828... 829 sym states passed, 124 waiting 0.0220001s
+Iteration 829... 830 sym states passed, 126 waiting 0.0110001s
+Iteration 830... 831 sym states passed, 128 waiting 0.0110001s
+Iteration 831... 832 sym states passed, 128 waiting 0.0220001s
+Iteration 832... 833 sym states passed, 128 waiting 0.0220001s
+Iteration 833... 834 sym states passed, 130 waiting 0.0110001s
+Iteration 834... 835 sym states passed, 132 waiting 0.0110001s
+Iteration 835... 836 sym states passed, 132 waiting 0.0230001s
+Iteration 836... 837 sym states passed, 132 waiting 0.0230001s
+Iteration 837... 838 sym states passed, 134 waiting 0.0120001s
+Iteration 838... 839 sym states passed, 136 waiting 0.0110001s
+Iteration 839... 840 sym states passed, 136 waiting 0.0240001s
+Iteration 840... 841 sym states passed, 136 waiting 0.0240001s
+Iteration 841... 842 sym states passed, 138 waiting 0.0120001s
+Iteration 842... 843 sym states passed, 140 waiting 0.0120001s
+Iteration 843... 844 sym states passed, 140 waiting 0.0240001s
+Iteration 844... 845 sym states passed, 140 waiting 0.0240001s
+Iteration 845... 846 sym states passed, 142 waiting 0.0120001s
+Iteration 846... 847 sym states passed, 144 waiting 0.0110001s
+Iteration 847... 848 sym states passed, 144 waiting 0.0250001s
+Iteration 848... 849 sym states passed, 144 waiting 0.0250001s
+Iteration 849... 850 sym states passed, 146 waiting 0.0110001s
+Iteration 850... 851 sym states passed, 148 waiting 0.0110001s
+Iteration 851... 852 sym states passed, 148 waiting 0.0250001s
+Iteration 852... 853 sym states passed, 148 waiting 0.0260001s
+Iteration 853... 854 sym states passed, 150 waiting 0.0120001s
+Iteration 854... 855 sym states passed, 152 waiting 0.0120001s
+Iteration 855... 856 sym states passed, 152 waiting 0.0260001s
+Iteration 856... 857 sym states passed, 152 waiting 0.0260001s
+Iteration 857... 858 sym states passed, 154 waiting 0.0120001s
+Iteration 858... 859 sym states passed, 156 waiting 0.0120001s
+Iteration 859... 860 sym states passed, 156 waiting 0.0270001s
+Iteration 860... 861 sym states passed, 156 waiting 0.0270001s
+Iteration 861... 862 sym states passed, 158 waiting 0.0120001s
+Iteration 862... 863 sym states passed, 160 waiting 0.0120001s
+Iteration 863... 864 sym states passed, 160 waiting 0.0270001s
+Iteration 864... 865 sym states passed, 160 waiting 0.0270001s
+Iteration 865... 866 sym states passed, 161 waiting 0.00800001s
+Iteration 866... 867 sym states passed, 161 waiting 0.00600001s
+Iteration 867... 868 sym states passed, 161 waiting 0.00500001s
+Iteration 868... 869 sym states passed, 162 waiting 0.00800001s
+Iteration 869... 870 sym states passed, 162 waiting 0.00500001s
+Iteration 870... 871 sym states passed, 162 waiting 0.00500001s
+Iteration 871... 872 sym states passed, 161 waiting 0.0130001s
+Iteration 872... 873 sym states passed, 160 waiting 0.0130001s
+Iteration 873... 874 sym states passed, 161 waiting 0.00800001s
+Iteration 874... 875 sym states passed, 161 waiting 0.00600001s
+Iteration 875... 876 sym states passed, 161 waiting 0.00600001s
+Iteration 876... 877 sym states passed, 162 waiting 0.00700001s
+Iteration 877... 878 sym states passed, 162 waiting 0.00600001s
+Iteration 878... 879 sym states passed, 162 waiting 0.00600001s
+Iteration 879... 880 sym states passed, 161 waiting 0.0130001s
+Iteration 880... 881 sym states passed, 160 waiting 0.0130001s
+Iteration 881... 882 sym states passed, 161 waiting 0.00800001s
+Iteration 882... 883 sym states passed, 161 waiting 0.00600001s
+Iteration 883... 884 sym states passed, 161 waiting 0.00600001s
+Iteration 884... 885 sym states passed, 162 waiting 0.00800001s
+Iteration 885... 886 sym states passed, 162 waiting 0.00600001s
+Iteration 886... 887 sym states passed, 162 waiting 0.00600001s
+Iteration 887... 888 sym states passed, 161 waiting 0.0140001s
+Iteration 888... 889 sym states passed, 160 waiting 0.0140001s
+Iteration 889... 890 sym states passed, 161 waiting 0.00800001s
+Iteration 890... 891 sym states passed, 161 waiting 0.00600001s
+Iteration 891... 892 sym states passed, 161 waiting 0.00600001s
+Iteration 892... 893 sym states passed, 162 waiting 0.00800001s
+Iteration 893... 894 sym states passed, 162 waiting 0.00600001s
+Iteration 894... 895 sym states passed, 162 waiting 0.00600001s
+Iteration 895... 896 sym states passed, 161 waiting 0.0140001s
+Iteration 896... 897 sym states passed, 160 waiting 0.0140001s
+Iteration 897... 898 sym states passed, 161 waiting 0.00800001s
+Iteration 898... 899 sym states passed, 161 waiting 0.00700001s
+Iteration 899... 900 sym states passed, 161 waiting 0.00700001s
+Iteration 900... 901 sym states passed, 162 waiting 0.00800001s
+Iteration 901... 902 sym states passed, 162 waiting 0.00700001s
+Iteration 902... 903 sym states passed, 162 waiting 0.00700001s
+Iteration 903... 904 sym states passed, 161 waiting 0.0150001s
+Iteration 904... 905 sym states passed, 160 waiting 0.0150001s
+Iteration 905... 906 sym states passed, 161 waiting 0.00800001s
+Iteration 906... 907 sym states passed, 161 waiting 0.00700001s
+Iteration 907... 908 sym states passed, 161 waiting 0.00700001s
+Iteration 908... 909 sym states passed, 162 waiting 0.00800001s
+Iteration 909... 910 sym states passed, 162 waiting 0.00700001s
+Iteration 910... 911 sym states passed, 162 waiting 0.00700001s
+Iteration 911... 912 sym states passed, 161 waiting 0.0160001s
+Iteration 912... 913 sym states passed, 160 waiting 0.0160001s
+Iteration 913... 914 sym states passed, 161 waiting 0.00800001s
+Iteration 914... 915 sym states passed, 161 waiting 0.00800001s
+Iteration 915... 916 sym states passed, 161 waiting 0.00800001s
+Iteration 916... 917 sym states passed, 162 waiting 0.00800001s
+Iteration 917... 918 sym states passed, 162 waiting 0.00800001s
+Iteration 918... 919 sym states passed, 162 waiting 0.00800001s
+Iteration 919... 920 sym states passed, 161 waiting 0.0160001s
+Iteration 920... 921 sym states passed, 160 waiting 0.0170001s
+Iteration 921... 922 sym states passed, 161 waiting 0.00800001s
+Iteration 922... 923 sym states passed, 161 waiting 0.00800001s
+Iteration 923... 924 sym states passed, 161 waiting 0.00800001s
+Iteration 924... 925 sym states passed, 162 waiting 0.00800001s
+Iteration 925... 926 sym states passed, 162 waiting 0.00800001s
+Iteration 926... 927 sym states passed, 162 waiting 0.00800001s
+Iteration 927... 928 sym states passed, 161 waiting 0.0170001s
+Iteration 928... 929 sym states passed, 160 waiting 0.0170001s
+Iteration 929... 930 sym states passed, 161 waiting 0.00800001s
+Iteration 930... 931 sym states passed, 161 waiting 0.00900001s
+Iteration 931... 932 sym states passed, 161 waiting 0.00800001s
+Iteration 932... 933 sym states passed, 162 waiting 0.00800001s
+Iteration 933... 934 sym states passed, 162 waiting 0.00900001s
+Iteration 934... 935 sym states passed, 162 waiting 0.00900001s
+Iteration 935... 936 sym states passed, 161 waiting 0.0180001s
+Iteration 936... 937 sym states passed, 160 waiting 0.0180001s
+Iteration 937... 938 sym states passed, 161 waiting 0.00900001s
+Iteration 938... 939 sym states passed, 161 waiting 0.00900001s
+Iteration 939... 940 sym states passed, 161 waiting 0.00900001s
+Iteration 940... 941 sym states passed, 162 waiting 0.00800001s
+Iteration 941... 942 sym states passed, 162 waiting 0.00900001s
+Iteration 942... 943 sym states passed, 162 waiting 0.00900001s
+Iteration 943... 944 sym states passed, 161 waiting 0.0180001s
+Iteration 944... 945 sym states passed, 160 waiting 0.0190001s
+Iteration 945... 946 sym states passed, 161 waiting 0.00900001s
+Iteration 946... 947 sym states passed, 161 waiting 0.0100001s
+Iteration 947... 948 sym states passed, 161 waiting 0.00900001s
+Iteration 948... 949 sym states passed, 162 waiting 0.00800001s
+Iteration 949... 950 sym states passed, 162 waiting 0.0100001s
+Iteration 950... 951 sym states passed, 162 waiting 0.0100001s
+Iteration 951... 952 sym states passed, 161 waiting 0.0190001s
+Iteration 952... 953 sym states passed, 160 waiting 0.0190001s
+Iteration 953... 954 sym states passed, 161 waiting 0.00900001s
+Iteration 954... 955 sym states passed, 161 waiting 0.0100001s
+Iteration 955... 956 sym states passed, 161 waiting 0.0100001s
+Iteration 956... 957 sym states passed, 162 waiting 0.00800001s
+Iteration 957... 958 sym states passed, 162 waiting 0.0100001s
+Iteration 958... 959 sym states passed, 162 waiting 0.0100001s
+Iteration 959... 960 sym states passed, 161 waiting 0.0200001s
+Iteration 960... 961 sym states passed, 160 waiting 0.0200001s
+Iteration 961... 962 sym states passed, 161 waiting 0.00800001s
+Iteration 962... 963 sym states passed, 161 waiting 0.0100001s
+Iteration 963... 964 sym states passed, 161 waiting 0.0100001s
+Iteration 964... 965 sym states passed, 162 waiting 0.00800001s
+Iteration 965... 966 sym states passed, 162 waiting 0.0100001s
+Iteration 966... 967 sym states passed, 162 waiting 0.0100001s
+Iteration 967... 968 sym states passed, 161 waiting 0.0200001s
+Iteration 968... 969 sym states passed, 160 waiting 0.0200001s
+Iteration 969... 970 sym states passed, 161 waiting 0.00900001s
+Iteration 970... 971 sym states passed, 161 waiting 0.0110001s
+Iteration 971... 972 sym states passed, 161 waiting 0.0110001s
+Iteration 972... 973 sym states passed, 162 waiting 0.00900001s
+Iteration 973... 974 sym states passed, 162 waiting 0.0110001s
+Iteration 974... 975 sym states passed, 162 waiting 0.0110001s
+Iteration 975... 976 sym states passed, 161 waiting 0.0210001s
+Iteration 976... 977 sym states passed, 160 waiting 0.0210001s
+Iteration 977... 978 sym states passed, 161 waiting 0.00900001s
+Iteration 978... 979 sym states passed, 161 waiting 0.0110001s
+Iteration 979... 980 sym states passed, 161 waiting 0.0110001s
+Iteration 980... 981 sym states passed, 162 waiting 0.00900001s
+Iteration 981... 982 sym states passed, 162 waiting 0.0110001s
+Iteration 982... 983 sym states passed, 162 waiting 0.0110001s
+Iteration 983... 984 sym states passed, 161 waiting 0.0220001s
+Iteration 984... 985 sym states passed, 160 waiting 0.0220001s
+Iteration 985... 986 sym states passed, 161 waiting 0.00900001s
+Iteration 986... 987 sym states passed, 161 waiting 0.0110001s
+Iteration 987... 988 sym states passed, 161 waiting 0.0110001s
+Iteration 988... 989 sym states passed, 162 waiting 0.00800001s
+Iteration 989... 990 sym states passed, 162 waiting 0.0110001s
+Iteration 990... 991 sym states passed, 162 waiting 0.0110001s
+Iteration 991... 992 sym states passed, 161 waiting 0.0220001s
+Iteration 992... 993 sym states passed, 160 waiting 0.0220001s
+Iteration 993... 994 sym states passed, 161 waiting 0.00900001s
+Iteration 994... 995 sym states passed, 161 waiting 0.0110001s
+Iteration 995... 996 sym states passed, 161 waiting 0.0110001s
+Iteration 996... 997 sym states passed, 162 waiting 0.00800001s
+Iteration 997... 998 sym states passed, 162 waiting 0.0110001s
+Iteration 998... 999 sym states passed, 162 waiting 0.0110001s
+Iteration 999... 1000 sym states passed, 161 waiting 0.0230001s
+Iteration 1000... 1001 sym states passed, 160 waiting 0.0230001s
+Iteration 1001... 1002 sym states passed, 161 waiting 0.00900001s
+Iteration 1002... 1003 sym states passed, 161 waiting 0.0120001s
+Iteration 1003... 1004 sym states passed, 161 waiting 0.0120001s
+Iteration 1004... 1005 sym states passed, 162 waiting 0.00900001s
+Iteration 1005... 1006 sym states passed, 162 waiting 0.0120001s
+Iteration 1006... 1007 sym states passed, 162 waiting 0.0120001s
+Iteration 1007... 1008 sym states passed, 161 waiting 0.0240001s
+Iteration 1008... 1009 sym states passed, 160 waiting 0.0240001s
+Iteration 1009... 1010 sym states passed, 161 waiting 0.00900001s
+Iteration 1010... 1011 sym states passed, 161 waiting 0.0120001s
+Iteration 1011... 1012 sym states passed, 161 waiting 0.0120001s
+Iteration 1012... 1013 sym states passed, 162 waiting 0.00900001s
+Iteration 1013... 1014 sym states passed, 162 waiting 0.0120001s
+Iteration 1014... 1015 sym states passed, 162 waiting 0.0120001s
+Iteration 1015... 1016 sym states passed, 161 waiting 0.0240001s
+Iteration 1016... 1017 sym states passed, 160 waiting 0.0240001s
+Iteration 1017... 1018 sym states passed, 161 waiting 0.00900001s
+Iteration 1018... 1019 sym states passed, 161 waiting 0.0120001s
+Iteration 1019... 1020 sym states passed, 161 waiting 0.0120001s
+Iteration 1020... 1021 sym states passed, 162 waiting 0.00900001s
+Iteration 1021... 1022 sym states passed, 162 waiting 0.0120001s
+Iteration 1022... 1023 sym states passed, 162 waiting 0.0120001s
+Iteration 1023... 1024 sym states passed, 161 waiting 0.0240001s
+Iteration 1024... 1025 sym states passed, 160 waiting 0.0240001s
+Iteration 1025... 1026 sym states passed, 160 waiting 0.00300001s
+Iteration 1026... 1027 sym states passed, 160 waiting 0.00200001s
+Iteration 1027... 1028 sym states passed, 159 waiting 0.00500001s
+Iteration 1028... 1029 sym states passed, 158 waiting 0.00500001s
+Iteration 1029... 1030 sym states passed, 158 waiting 0.00300001s
+Iteration 1030... 1031 sym states passed, 158 waiting 0.00200001s
+Iteration 1031... 1032 sym states passed, 157 waiting 0.00500001s
+Iteration 1032... 1033 sym states passed, 156 waiting 0.00500001s
+Iteration 1033... 1034 sym states passed, 156 waiting 0.00200001s
+Iteration 1034... 1035 sym states passed, 156 waiting 0.00200001s
+Iteration 1035... 1036 sym states passed, 155 waiting 0.00500001s
+Iteration 1036... 1037 sym states passed, 154 waiting 0.00500001s
+Iteration 1037... 1038 sym states passed, 154 waiting 0.00200001s
+Iteration 1038... 1039 sym states passed, 154 waiting 0.00200001s
+Iteration 1039... 1040 sym states passed, 153 waiting 0.00500001s
+Iteration 1040... 1041 sym states passed, 152 waiting 0.00500001s
+Iteration 1041... 1042 sym states passed, 152 waiting 0.00200001s
+Iteration 1042... 1043 sym states passed, 152 waiting 0.00200001s
+Iteration 1043... 1044 sym states passed, 151 waiting 0.00500001s
+Iteration 1044... 1045 sym states passed, 150 waiting 0.00500001s
+Iteration 1045... 1046 sym states passed, 150 waiting 0.00300001s
+Iteration 1046... 1047 sym states passed, 150 waiting 0.00300001s
+Iteration 1047... 1048 sym states passed, 149 waiting 0.00600001s
+Iteration 1048... 1049 sym states passed, 148 waiting 0.00600001s
+Iteration 1049... 1050 sym states passed, 148 waiting 0.00200001s
+Iteration 1050... 1051 sym states passed, 148 waiting 0.00200001s
+Iteration 1051... 1052 sym states passed, 147 waiting 0.00500001s
+Iteration 1052... 1053 sym states passed, 146 waiting 0.00600001s
+Iteration 1053... 1054 sym states passed, 146 waiting 0.00200001s
+Iteration 1054... 1055 sym states passed, 146 waiting 0.00200001s
+Iteration 1055... 1056 sym states passed, 145 waiting 0.00600001s
+Iteration 1056... 1057 sym states passed, 144 waiting 0.00600001s
+Iteration 1057... 1058 sym states passed, 144 waiting 0.00300001s
+Iteration 1058... 1059 sym states passed, 144 waiting 0.00300001s
+Iteration 1059... 1060 sym states passed, 143 waiting 0.00600001s
+Iteration 1060... 1061 sym states passed, 142 waiting 0.00600001s
+Iteration 1061... 1062 sym states passed, 142 waiting 0.00300001s
+Iteration 1062... 1063 sym states passed, 142 waiting 0.00300001s
+Iteration 1063... 1064 sym states passed, 141 waiting 0.00600001s
+Iteration 1064... 1065 sym states passed, 140 waiting 0.00600001s
+Iteration 1065... 1066 sym states passed, 140 waiting 0.00300001s
+Iteration 1066... 1067 sym states passed, 140 waiting 0.00300001s
+Iteration 1067... 1068 sym states passed, 139 waiting 0.00600001s
+Iteration 1068... 1069 sym states passed, 138 waiting 0.00600001s
+Iteration 1069... 1070 sym states passed, 138 waiting 0.00300001s
+Iteration 1070... 1071 sym states passed, 138 waiting 0.00300001s
+Iteration 1071... 1072 sym states passed, 137 waiting 0.00700001s
+Iteration 1072... 1073 sym states passed, 136 waiting 0.00700001s
+Iteration 1073... 1074 sym states passed, 136 waiting 0.00300001s
+Iteration 1074... 1075 sym states passed, 136 waiting 0.00300001s
+Iteration 1075... 1076 sym states passed, 135 waiting 0.00700001s
+Iteration 1076... 1077 sym states passed, 134 waiting 0.00700001s
+Iteration 1077... 1078 sym states passed, 134 waiting 0.00300001s
+Iteration 1078... 1079 sym states passed, 134 waiting 0.00300001s
+Iteration 1079... 1080 sym states passed, 133 waiting 0.00700001s
+Iteration 1080... 1081 sym states passed, 132 waiting 0.00700001s
+Iteration 1081... 1082 sym states passed, 132 waiting 0.00300001s
+Iteration 1082... 1083 sym states passed, 132 waiting 0.00300001s
+Iteration 1083... 1084 sym states passed, 131 waiting 0.00700001s
+Iteration 1084... 1085 sym states passed, 130 waiting 0.00700001s
+Iteration 1085... 1086 sym states passed, 130 waiting 0.00300001s
+Iteration 1086... 1087 sym states passed, 130 waiting 0.00300001s
+Iteration 1087... 1088 sym states passed, 129 waiting 0.00700001s
+Iteration 1088... 1089 sym states passed, 128 waiting 0.00700001s
+Iteration 1089... 1090 sym states passed, 128 waiting 0.00300001s
+Iteration 1090... 1091 sym states passed, 128 waiting 0.00300001s
+Iteration 1091... 1092 sym states passed, 127 waiting 0.00700001s
+Iteration 1092... 1093 sym states passed, 126 waiting 0.00700001s
+Iteration 1093... 1094 sym states passed, 126 waiting 0.00300001s
+Iteration 1094... 1095 sym states passed, 126 waiting 0.00300001s
+Iteration 1095... 1096 sym states passed, 125 waiting 0.00800001s
+Iteration 1096... 1097 sym states passed, 124 waiting 0.00800001s
+Iteration 1097... 1098 sym states passed, 124 waiting 0.00300001s
+Iteration 1098... 1099 sym states passed, 124 waiting 0.00300001s
+Iteration 1099... 1100 sym states passed, 123 waiting 0.00800001s
+Iteration 1100... 1101 sym states passed, 122 waiting 0.00800001s
+Iteration 1101... 1102 sym states passed, 122 waiting 0.00300001s
+Iteration 1102... 1103 sym states passed, 122 waiting 0.00300001s
+Iteration 1103... 1104 sym states passed, 121 waiting 0.00800001s
+Iteration 1104... 1105 sym states passed, 120 waiting 0.00800001s
+Iteration 1105... 1106 sym states passed, 120 waiting 0.00300001s
+Iteration 1106... 1107 sym states passed, 120 waiting 0.00300001s
+Iteration 1107... 1108 sym states passed, 119 waiting 0.00800001s
+Iteration 1108... 1109 sym states passed, 118 waiting 0.00800001s
+Iteration 1109... 1110 sym states passed, 118 waiting 0.00300001s
+Iteration 1110... 1111 sym states passed, 118 waiting 0.00300001s
+Iteration 1111... 1112 sym states passed, 117 waiting 0.00900001s
+Iteration 1112... 1113 sym states passed, 116 waiting 0.00900001s
+Iteration 1113... 1114 sym states passed, 116 waiting 0.00300001s
+Iteration 1114... 1115 sym states passed, 116 waiting 0.00300001s
+Iteration 1115... 1116 sym states passed, 115 waiting 0.00900001s
+Iteration 1116... 1117 sym states passed, 114 waiting 0.00900001s
+Iteration 1117... 1118 sym states passed, 114 waiting 0.00300001s
+Iteration 1118... 1119 sym states passed, 114 waiting 0.00300001s
+Iteration 1119... 1120 sym states passed, 113 waiting 0.00900001s
+Iteration 1120... 1121 sym states passed, 112 waiting 0.00900001s
+Iteration 1121... 1122 sym states passed, 112 waiting 0.00300001s
+Iteration 1122... 1123 sym states passed, 112 waiting 0.00300001s
+Iteration 1123... 1124 sym states passed, 111 waiting 0.00900001s
+Iteration 1124... 1125 sym states passed, 110 waiting 0.00900001s
+Iteration 1125... 1126 sym states passed, 110 waiting 0.00300001s
+Iteration 1126... 1127 sym states passed, 110 waiting 0.00300001s
+Iteration 1127... 1128 sym states passed, 109 waiting 0.00900001s
+Iteration 1128... 1129 sym states passed, 108 waiting 0.00900001s
+Iteration 1129... 1130 sym states passed, 108 waiting 0.00300001s
+Iteration 1130... 1131 sym states passed, 108 waiting 0.00300001s
+Iteration 1131... 1132 sym states passed, 107 waiting 0.00900001s
+Iteration 1132... 1133 sym states passed, 106 waiting 0.00900001s
+Iteration 1133... 1134 sym states passed, 106 waiting 0.00300001s
+Iteration 1134... 1135 sym states passed, 106 waiting 0.00300001s
+Iteration 1135... 1136 sym states passed, 105 waiting 0.00900001s
+Iteration 1136... 1137 sym states passed, 104 waiting 0.00900001s
+Iteration 1137... 1138 sym states passed, 104 waiting 0.00300001s
+Iteration 1138... 1139 sym states passed, 104 waiting 0.00300001s
+Iteration 1139... 1140 sym states passed, 103 waiting 0.0100001s
+Iteration 1140... 1141 sym states passed, 102 waiting 0.0100001s
+Iteration 1141... 1142 sym states passed, 102 waiting 0.00400001s
+Iteration 1142... 1143 sym states passed, 102 waiting 0.00300001s
+Iteration 1143... 1144 sym states passed, 101 waiting 0.0100001s
+Iteration 1144... 1145 sym states passed, 100 waiting 0.0100001s
+Iteration 1145... 1146 sym states passed, 100 waiting 0.00300001s
+Iteration 1146... 1147 sym states passed, 100 waiting 0.00300001s
+Iteration 1147... 1148 sym states passed, 99 waiting 0.0100001s
+Iteration 1148... 1149 sym states passed, 98 waiting 0.0100001s
+Iteration 1149... 1150 sym states passed, 98 waiting 0.00300001s
+Iteration 1150... 1151 sym states passed, 98 waiting 0.00300001s
+Iteration 1151... 1152 sym states passed, 97 waiting 0.0100001s
+Iteration 1152... 1153 sym states passed, 96 waiting 0.0100001s
+Iteration 1153... 1154 sym states passed, 96 waiting 0.00300001s
+Iteration 1154... 1155 sym states passed, 96 waiting 0.00300001s
+Iteration 1155... 1156 sym states passed, 95 waiting 0.0100001s
+Iteration 1156... 1157 sym states passed, 94 waiting 0.0100001s
+Iteration 1157... 1158 sym states passed, 94 waiting 0.00300001s
+Iteration 1158... 1159 sym states passed, 94 waiting 0.00300001s
+Iteration 1159... 1160 sym states passed, 93 waiting 0.0100001s
+Iteration 1160... 1161 sym states passed, 92 waiting 0.0100001s
+Iteration 1161... 1162 sym states passed, 92 waiting 0.00400001s
+Iteration 1162... 1163 sym states passed, 92 waiting 0.00300001s
+Iteration 1163... 1164 sym states passed, 91 waiting 0.0110001s
+Iteration 1164... 1165 sym states passed, 90 waiting 0.0110001s
+Iteration 1165... 1166 sym states passed, 90 waiting 0.00400001s
+Iteration 1166... 1167 sym states passed, 90 waiting 0.00400001s
+Iteration 1167... 1168 sym states passed, 89 waiting 0.0110001s
+Iteration 1168... 1169 sym states passed, 88 waiting 0.0110001s
+Iteration 1169... 1170 sym states passed, 88 waiting 0.00400001s
+Iteration 1170... 1171 sym states passed, 88 waiting 0.00400001s
+Iteration 1171... 1172 sym states passed, 87 waiting 0.0110001s
+Iteration 1172... 1173 sym states passed, 86 waiting 0.0110001s
+Iteration 1173... 1174 sym states passed, 86 waiting 0.00400001s
+Iteration 1174... 1175 sym states passed, 86 waiting 0.00400001s
+Iteration 1175... 1176 sym states passed, 85 waiting 0.0110001s
+Iteration 1176... 1177 sym states passed, 84 waiting 0.0110001s
+Iteration 1177... 1178 sym states passed, 84 waiting 0.00300001s
+Iteration 1178... 1179 sym states passed, 84 waiting 0.00300001s
+Iteration 1179... 1180 sym states passed, 83 waiting 0.0110001s
+Iteration 1180... 1181 sym states passed, 82 waiting 0.0110001s
+Iteration 1181... 1182 sym states passed, 82 waiting 0.00300001s
+Iteration 1182... 1183 sym states passed, 82 waiting 0.00300001s
+Iteration 1183... 1184 sym states passed, 81 waiting 0.0110001s
+Iteration 1184... 1185 sym states passed, 80 waiting 0.0110001s
+Iteration 1185... 1186 sym states passed, 79 waiting 0.00200001s
+Iteration 1186... 1187 sym states passed, 78 waiting 0.00200001s
+Iteration 1187... 1188 sym states passed, 77 waiting 0.00200001s
+Iteration 1188... 1189 sym states passed, 76 waiting 0.00200001s
+Iteration 1189... 1190 sym states passed, 75 waiting 0.00200001s
+Iteration 1190... 1191 sym states passed, 74 waiting 0.00200001s
+Iteration 1191... 1192 sym states passed, 73 waiting 0.00200001s
+Iteration 1192... 1193 sym states passed, 72 waiting 0.00200001s
+Iteration 1193... 1194 sym states passed, 71 waiting 0.00200001s
+Iteration 1194... 1195 sym states passed, 70 waiting 0.00200001s
+Iteration 1195... 1196 sym states passed, 69 waiting 0.00200001s
+Iteration 1196... 1197 sym states passed, 68 waiting 0.00200001s
+Iteration 1197... 1198 sym states passed, 67 waiting 0.00200001s
+Iteration 1198... 1199 sym states passed, 66 waiting 0.00200001s
+Iteration 1199... 1200 sym states passed, 65 waiting 0.00200001s
+Iteration 1200... 1201 sym states passed, 64 waiting 0.00200001s
+Iteration 1201... 1202 sym states passed, 63 waiting 0.00200001s
+Iteration 1202... 1203 sym states passed, 62 waiting 0.00200001s
+Iteration 1203... 1204 sym states passed, 61 waiting 0.00200001s
+Iteration 1204... 1205 sym states passed, 60 waiting 0.00200001s
+Iteration 1205... 1206 sym states passed, 59 waiting 0.00200001s
+Iteration 1206... 1207 sym states passed, 58 waiting 0.00200001s
+Iteration 1207... 1208 sym states passed, 57 waiting 0.00200001s
+Iteration 1208... 1209 sym states passed, 56 waiting 0.00200001s
+Iteration 1209... 1210 sym states passed, 55 waiting 0.00200001s
+Iteration 1210... 1211 sym states passed, 54 waiting 0.00200001s
+Iteration 1211... 1212 sym states passed, 53 waiting 0.00200001s
+Iteration 1212... 1213 sym states passed, 52 waiting 0.00200001s
+Iteration 1213... 1214 sym states passed, 51 waiting 0.00200001s
+Iteration 1214... 1215 sym states passed, 50 waiting 0.00200001s
+Iteration 1215... 1216 sym states passed, 49 waiting 0.00200001s
+Iteration 1216... 1217 sym states passed, 48 waiting 0.00200001s
+Iteration 1217... 1218 sym states passed, 47 waiting 0.00200001s
+Iteration 1218... 1219 sym states passed, 46 waiting 0.00200001s
+Iteration 1219... 1220 sym states passed, 45 waiting 0.00200001s
+Iteration 1220... 1221 sym states passed, 44 waiting 0.00200001s
+Iteration 1221... 1222 sym states passed, 43 waiting 0.00200001s
+Iteration 1222... 1223 sym states passed, 42 waiting 0.00200001s
+Iteration 1223... 1224 sym states passed, 41 waiting 0.00200001s
+Iteration 1224... 1225 sym states passed, 40 waiting 0.00200001s
+Iteration 1225... 1226 sym states passed, 39 waiting 0.00200001s
+Iteration 1226... 1227 sym states passed, 38 waiting 0.00200001s
+Iteration 1227... 1228 sym states passed, 37 waiting 0.00200001s
+Iteration 1228... 1229 sym states passed, 36 waiting 0.00200001s
+Iteration 1229... 1230 sym states passed, 35 waiting 0.00200001s
+Iteration 1230... 1231 sym states passed, 34 waiting 0.00200001s
+Iteration 1231... 1232 sym states passed, 33 waiting 0.00200001s
+Iteration 1232... 1233 sym states passed, 32 waiting 0.00200001s
+Iteration 1233... 1234 sym states passed, 31 waiting 0.00200001s
+Iteration 1234... 1235 sym states passed, 30 waiting 0.00200001s
+Iteration 1235... 1236 sym states passed, 29 waiting 0.00200001s
+Iteration 1236... 1237 sym states passed, 28 waiting 0.00200001s
+Iteration 1237... 1238 sym states passed, 27 waiting 0.00200001s
+Iteration 1238... 1239 sym states passed, 26 waiting 0.00200001s
+Iteration 1239... 1240 sym states passed, 25 waiting 0.00200001s
+Iteration 1240... 1241 sym states passed, 24 waiting 0.00200001s
+Iteration 1241... 1242 sym states passed, 23 waiting 0.00200001s
+Iteration 1242... 1243 sym states passed, 22 waiting 0.00200001s
+Iteration 1243... 1244 sym states passed, 21 waiting 0.00200001s
+Iteration 1244... 1245 sym states passed, 20 waiting 0.00200001s
+Iteration 1245... 1246 sym states passed, 19 waiting 0.00200001s
+Iteration 1246... 1247 sym states passed, 18 waiting 0.00200001s
+Iteration 1247... 1248 sym states passed, 17 waiting 0.00200001s
+Iteration 1248... 1249 sym states passed, 16 waiting 0.00200001s
+Iteration 1249... 1250 sym states passed, 15 waiting 0.00200001s
+Iteration 1250... 1251 sym states passed, 14 waiting 0.00200001s
+Iteration 1251... 1252 sym states passed, 13 waiting 0.00200001s
+Iteration 1252... 1253 sym states passed, 12 waiting 0.00200001s
+Iteration 1253... 1254 sym states passed, 11 waiting 0.00200001s
+Iteration 1254... 1255 sym states passed, 10 waiting 0.00200001s
+Iteration 1255... 1256 sym states passed, 9 waiting 0.00200001s
+Iteration 1256... 1257 sym states passed, 8 waiting 0.00200001s
+Iteration 1257... 1258 sym states passed, 7 waiting 0.00200001s
+Iteration 1258... 1259 sym states passed, 6 waiting 0.00200001s
+Iteration 1259... 1260 sym states passed, 5 waiting 0.00200001s
+Iteration 1260... 1261 sym states passed, 4 waiting 0.00200001s
+Iteration 1261... 1262 sym states passed, 3 waiting 0.00200001s
+Iteration 1262... 1263 sym states passed, 2 waiting 0.00200001s
+Iteration 1263... 1264 sym states passed, 1 waiting 0.00200001s
+Iteration 1264... 1265 sym states passed, 0 waiting 0.00200001s
+Found fixpoint after 1265 iterations.
+Computing reachable states done after 8.64301s
+Forbidden states are reachable.
+Output of reachable bad states... 0 10 1 40 0 10 1 30 40 10 0 1 0
+3 10 1 37 0 7 1 27 40 7 0 1 0
+0 10 10 0 1 1 30 40 1 40 0 10 1
+3 10 7 0 1 1 27 40 1 37 0 7 1
+0 10 10 0 1 0 30 40 1 40 0 10 1
+3 10 7 0 1 0 27 40 1 37 0 7 1
+0 10 0 40 0 10 1 30 40 10 0 1 0
+3 10 0 37 0 7 1 27 40 7 0 1 0
+0 10 1 40 0 10 1 30 40 10 0 1 0
+3 10 1 37 0 7 1 27 40 7 0 1 0
+0 10 10 0 1 1 30 40 1 40 0 10 1
+3 10 7 0 1 1 27 40 1 37 0 7 1
+0 10 0 40 0 10 1 30 40 10 0 1 1
+3 10 0 37 0 7 1 27 40 7 0 1 1
+0 10 1 40 0 10 1 30 40 10 0 1 1
+3 10 1 37 0 7 1 27 40 7 0 1 1
+0 10 10 0 1 0 30 40 1 40 0 10 1
+3 10 7 0 1 0 27 40 1 37 0 7 1
+0 10 0 40 0 10 1 30 40 10 0 1 0
+3 10 0 37 0 7 1 27 40 7 0 1 0
+0 10 1 40 0 10 1 30 40 10 0 1 0
+3 10 1 37 0 7 1 27 40 7 0 1 0
+0 10 0 40 0 10 1 30 40 10 0 1 0
+3 10 0 37 0 7 1 27 40 7 0 1 0
+0 10 1 40 0 10 1 30 40 10 0 1 0
+3 10 1 37 0 7 1 27 40 7 0 1 0
+0 10 0 1 1 1 30 40 1 40 0 10 1
+0 10 0 40 0 10 1 30 40 10 0 1 1
+3 10 0 37 0 7 1 27 40 7 0 1 1
+0 10 1 40 0 10 1 30 40 10 0 1 1
+3 10 1 37 0 7 1 27 40 7 0 1 1
+0 10 0 40 0 10 1 30 40 10 0 1 1
+3 10 0 37 0 7 1 27 40 7 0 1 1
+0 10 1 40 0 10 1 30 40 10 0 1 1
+3 10 1 37 0 7 1 27 40 7 0 1 1
+0 10 0 0 1 0 30 40 1 40 0 10 1
+0 10 0 40 0 10 1 30 40 10 0 1 0
+3 10 0 37 0 7 1 27 40 7 0 1 0
+0 10 1 40 0 10 1 30 40 10 0 1 0
+3 10 1 37 0 7 1 27 40 7 0 1 0
+0 10 0 40 0 10 1 30 40 10 0 1 0
+3 10 0 37 0 7 1 27 40 7 0 1 0
+0 10 1 40 0 10 1 30 40 10 0 1 0
+3 10 1 37 0 7 1 27 40 7 0 1 0
+0 10 0 40 0 0 0 30 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 10 0 1 0
+0 10 0 1 0 1 30 40 0 40 0 10 1
+0 10 0 40 0 10 1 30 40 10 0 1 1
+3 10 0 37 0 7 1 27 40 7 0 1 1
+0 10 0 1 1 1 30 40 1 40 0 10 1
+0 10 1 40 0 10 1 30 40 10 0 1 1
+3 10 1 37 0 7 1 27 40 7 0 1 1
+0 10 0 40 1 0 0 30 40 10 0 1 1
+0 10 1 40 1 0 1 30 40 10 0 1 1
+0 10 0 0 0 0 30 40 0 40 0 10 1
+0 10 0 40 0 10 1 30 40 10 0 1 0
+3 10 0 37 0 7 1 27 40 7 0 1 0
+0 10 0 0 1 0 30 40 1 40 0 10 1
+0 10 1 40 0 10 1 30 40 10 0 1 0
+3 10 1 37 0 7 1 27 40 7 0 1 0
+0 10 0 40 0 0 0 30 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 10 0 1 0
+0 10 0 1 0 1 30 40 0 40 0 10 1
+0 10 0 40 1 0 0 30 40 10 0 1 1
+0 10 0 1 1 1 30 40 1 40 0 10 1
+0 10 1 40 1 0 1 30 40 10 0 1 1
+0 10 0 0 0 0 30 40 0 40 0 10 1
+0 10 0 40 0 0 0 30 40 10 0 1 0
+0 10 0 0 1 0 30 40 1 40 0 10 1
+0 10 1 40 0 0 1 30 40 10 0 1 0
+0 10 1 40 0 10 1 40 40 10 0 1 0
+3 10 1 37 0 7 1 37 40 7 0 1 0
+0 10 0 40 1 0 0 30 40 0 1 0 1
+3 10 0 37 1 3 0 33 40 3 1 0 1
+0 10 1 40 1 0 1 30 40 0 1 1 1
+0 10 1 40 1 10 1 40 40 10 1 1 1
+0 10 0 40 0 0 0 30 40 0 0 0 0
+0 10 0 40 0 10 0 40 40 10 0 0 0
+-10 10 1 50 0 10 1 40 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 0 0 1 0
+0 10 10 0 1 1 40 40 1 40 0 10 1
+3 10 7 0 1 1 37 40 1 37 0 7 1
+0 10 10 0 1 0 40 40 1 40 0 10 1
+3 10 7 0 1 0 37 40 1 37 0 7 1
+0 10 0 40 0 10 1 40 40 10 0 1 0
+3 10 0 37 0 7 1 37 40 7 0 1 0
+0 10 1 40 0 10 1 40 40 10 0 1 0
+3 10 1 37 0 7 1 37 40 7 0 1 0
+0 10 0 1 0 1 30 40 0 40 1 0 0
+3 10 3 1 0 1 33 40 0 37 1 3 0
+0 10 0 1 0 0 30 40 0 40 1 0 0
+3 10 3 1 0 0 33 40 0 37 1 3 0
+0 10 0 40 1 0 0 30 40 0 1 0 1
+3 10 0 37 1 3 0 33 40 3 1 0 1
+0 10 1 40 1 0 0 30 40 0 1 0 1
+3 10 1 37 1 3 0 33 40 3 1 0 1
+0 10 0 1 1 1 30 40 1 40 1 0 1
+0 10 10 1 1 1 40 40 1 40 1 10 1
+0 10 0 1 1 0 30 40 1 40 1 0 1
+0 10 10 1 1 0 40 40 1 40 1 10 1
+0 10 0 40 1 0 1 30 40 0 1 1 1
+0 10 0 40 1 10 1 40 40 10 1 1 1
+0 10 1 40 1 0 1 30 40 0 1 1 1
+0 10 1 40 1 10 1 40 40 10 1 1 1
+0 10 0 0 0 1 30 40 0 40 0 0 0
+0 10 10 0 0 1 40 40 0 40 0 10 0
+0 10 0 0 0 0 30 40 0 40 0 0 0
+0 10 10 0 0 0 40 40 0 40 0 10 0
+0 10 0 40 0 0 0 30 40 0 0 0 0
+0 10 0 40 0 10 0 40 40 10 0 0 0
+0 10 1 40 0 0 0 30 40 0 0 0 0
+0 10 1 40 0 10 0 40 40 10 0 0 0
+-10 10 10 0 1 1 40 40 1 50 0 10 1
+0 10 0 0 1 1 30 40 1 40 0 0 1
+-10 10 10 0 1 0 40 40 1 50 0 10 1
+0 10 0 0 1 0 30 40 1 40 0 0 1
+-10 10 0 50 0 10 1 40 40 10 0 1 0
+0 10 0 40 0 0 1 30 40 0 0 1 0
+-10 10 1 50 0 10 1 40 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 0 0 1 0
+0 10 10 0 1 1 40 40 1 40 0 10 1
+3 10 7 0 1 1 37 40 1 37 0 7 1
+0 10 0 40 0 10 1 40 40 10 0 1 1
+3 10 0 37 0 7 1 37 40 7 0 1 1
+0 10 1 40 0 10 1 40 40 10 0 1 1
+3 10 1 37 0 7 1 37 40 7 0 1 1
+0 10 10 0 1 0 40 40 1 40 0 10 1
+3 10 7 0 1 0 37 40 1 37 0 7 1
+0 10 0 40 0 10 1 40 40 10 0 1 0
+3 10 0 37 0 7 1 37 40 7 0 1 0
+0 10 1 40 0 10 1 40 40 10 0 1 0
+3 10 1 37 0 7 1 37 40 7 0 1 0
+0 10 0 40 0 10 1 40 40 10 0 1 0
+3 10 0 37 0 7 1 37 40 7 0 1 0
+0 10 1 40 0 10 1 40 40 10 0 1 0
+3 10 1 37 0 7 1 37 40 7 0 1 0
+0 10 0 1 0 1 30 40 0 40 1 0 0
+3 10 3 1 0 1 33 40 0 37 1 3 0
+0 10 0 40 1 0 0 30 40 0 1 0 1
+3 10 0 37 1 3 0 33 40 3 1 0 1
+0 10 1 40 1 0 0 30 40 0 1 0 1
+3 10 1 37 1 3 0 33 40 3 1 0 1
+0 10 0 1 0 0 30 40 0 40 1 0 0
+3 10 3 1 0 0 33 40 0 37 1 3 0
+0 10 0 40 1 0 0 30 40 0 1 0 0
+3 10 0 37 1 3 0 33 40 3 1 0 0
+0 10 1 40 1 0 0 30 40 0 1 0 0
+3 10 1 37 1 3 0 33 40 3 1 0 0
+0 10 0 40 1 0 0 30 40 0 1 0 1
+3 10 0 37 1 3 0 33 40 3 1 0 1
+0 10 1 40 1 0 0 30 40 0 1 0 1
+3 10 1 37 1 3 0 33 40 3 1 0 1
+0 10 0 1 1 1 30 40 1 40 1 0 1
+0 10 10 1 1 1 40 40 1 40 1 10 1
+0 10 0 40 1 0 1 30 40 0 1 1 1
+0 10 0 40 1 10 1 40 40 10 1 1 1
+0 10 1 40 1 0 1 30 40 0 1 1 1
+0 10 1 40 1 10 1 40 40 10 1 1 1
+0 10 0 1 1 0 30 40 1 40 1 0 1
+0 10 10 1 1 0 40 40 1 40 1 10 1
+0 10 0 40 1 0 1 30 40 0 1 1 0
+0 10 0 40 1 10 1 40 40 10 1 1 0
+0 10 1 40 1 0 1 30 40 0 1 1 0
+0 10 1 40 1 10 1 40 40 10 1 1 0
+0 10 0 40 1 0 1 30 40 0 1 1 1
+0 10 0 40 1 10 1 40 40 10 1 1 1
+0 10 1 40 1 0 1 30 40 0 1 1 1
+0 10 1 40 1 10 1 40 40 10 1 1 1
+0 10 0 0 0 1 30 40 0 40 0 0 0
+0 10 10 0 0 1 40 40 0 40 0 10 0
+0 10 0 40 0 0 0 30 40 0 0 0 1
+0 10 0 40 0 10 0 40 40 10 0 0 1
+0 10 1 40 0 0 0 30 40 0 0 0 1
+0 10 1 40 0 10 0 40 40 10 0 0 1
+0 10 0 0 0 0 30 40 0 40 0 0 0
+0 10 10 0 0 0 40 40 0 40 0 10 0
+0 10 0 40 0 0 0 30 40 0 0 0 0
+0 10 0 40 0 10 0 40 40 10 0 0 0
+0 10 1 40 0 0 0 30 40 0 0 0 0
+0 10 1 40 0 10 0 40 40 10 0 0 0
+0 10 0 40 0 0 0 30 40 0 0 0 0
+0 10 0 40 0 10 0 40 40 10 0 0 0
+0 10 1 40 0 0 0 30 40 0 0 0 0
+0 10 1 40 0 10 0 40 40 10 0 0 0
+-10 10 10 0 1 1 40 40 1 50 0 10 1
+0 10 0 0 1 1 30 40 1 40 0 0 1
+-10 10 0 50 0 10 1 40 40 10 0 1 1
+0 10 0 40 0 0 1 30 40 0 0 1 1
+-10 10 1 50 0 10 1 40 40 10 0 1 1
+0 10 1 40 0 0 1 30 40 0 0 1 1
+-10 10 10 0 1 0 40 40 1 50 0 10 1
+0 10 0 0 1 0 30 40 1 40 0 0 1
+-10 10 0 50 0 10 1 40 40 10 0 1 0
+0 10 0 40 0 0 1 30 40 0 0 1 0
+-10 10 1 50 0 10 1 40 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 0 0 1 0
+-10 10 0 50 0 10 1 40 40 10 0 1 0
+0 10 0 40 0 0 1 30 40 0 0 1 0
+-10 10 1 50 0 10 1 40 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 0 0 1 0
+0 10 0 40 0 10 1 40 40 10 0 1 1
+3 10 0 37 0 7 1 37 40 7 0 1 1
+0 10 1 40 0 10 1 40 40 10 0 1 1
+3 10 1 37 0 7 1 37 40 7 0 1 1
+0 10 0 40 0 10 1 40 40 10 0 1 1
+3 10 0 37 0 7 1 37 40 7 0 1 1
+0 10 1 40 0 10 1 40 40 10 0 1 1
+3 10 1 37 0 7 1 37 40 7 0 1 1
+0 10 0 40 0 10 1 40 40 10 0 1 0
+3 10 0 37 0 7 1 37 40 7 0 1 0
+0 10 1 40 0 10 1 40 40 10 0 1 0
+3 10 1 37 0 7 1 37 40 7 0 1 0
+0 10 0 40 0 10 1 40 40 10 0 1 0
+3 10 0 37 0 7 1 37 40 7 0 1 0
+0 10 1 40 0 10 1 40 40 10 0 1 0
+3 10 1 37 0 7 1 37 40 7 0 1 0
+0 10 0 40 1 0 0 30 40 0 1 0 1
+3 10 0 37 1 3 0 33 40 3 1 0 1
+0 10 1 40 1 0 0 30 40 0 1 0 1
+3 10 1 37 1 3 0 33 40 3 1 0 1
+0 10 0 40 1 0 0 30 40 0 1 0 1
+3 10 0 37 1 3 0 33 40 3 1 0 1
+0 10 1 40 1 0 0 30 40 0 1 0 1
+3 10 1 37 1 3 0 33 40 3 1 0 1
+0 10 0 40 1 0 0 30 40 0 1 0 0
+3 10 0 37 1 3 0 33 40 3 1 0 0
+0 10 1 40 1 0 0 30 40 0 1 0 0
+3 10 1 37 1 3 0 33 40 3 1 0 0
+0 10 0 40 1 0 0 30 40 0 1 0 0
+3 10 0 37 1 3 0 33 40 3 1 0 0
+0 10 1 40 1 0 0 30 40 0 1 0 0
+3 10 1 37 1 3 0 33 40 3 1 0 0
+0 10 0 40 1 0 1 30 40 0 1 1 1
+0 10 0 40 1 10 1 40 40 10 1 1 1
+0 10 1 40 1 0 1 30 40 0 1 1 1
+0 10 1 40 1 10 1 40 40 10 1 1 1
+0 10 0 40 1 0 1 30 40 0 1 1 1
+0 10 0 40 1 10 1 40 40 10 1 1 1
+0 10 1 40 1 0 1 30 40 0 1 1 1
+0 10 1 40 1 10 1 40 40 10 1 1 1
+0 10 0 40 1 0 1 30 40 0 1 1 0
+0 10 0 40 1 10 1 40 40 10 1 1 0
+0 10 1 40 1 0 1 30 40 0 1 1 0
+0 10 1 40 1 10 1 40 40 10 1 1 0
+0 10 0 40 1 0 1 30 40 0 1 1 0
+0 10 0 40 1 10 1 40 40 10 1 1 0
+0 10 1 40 1 0 1 30 40 0 1 1 0
+0 10 1 40 1 10 1 40 40 10 1 1 0
+0 10 0 40 0 0 0 30 40 0 0 0 1
+0 10 0 40 0 10 0 40 40 10 0 0 1
+0 10 1 40 0 0 0 30 40 0 0 0 1
+0 10 1 40 0 10 0 40 40 10 0 0 1
+0 10 0 40 0 0 0 30 40 0 0 0 1
+0 10 0 40 0 10 0 40 40 10 0 0 1
+0 10 1 40 0 0 0 30 40 0 0 0 1
+0 10 1 40 0 10 0 40 40 10 0 0 1
+0 10 0 40 0 0 0 30 40 0 0 0 0
+0 10 0 40 0 10 0 40 40 10 0 0 0
+0 10 1 40 0 0 0 30 40 0 0 0 0
+0 10 1 40 0 10 0 40 40 10 0 0 0
+0 10 0 40 0 0 0 30 40 0 0 0 0
+0 10 0 40 0 10 0 40 40 10 0 0 0
+0 10 1 40 0 0 0 30 40 0 0 0 0
+0 10 1 40 0 10 0 40 40 10 0 0 0
+-10 10 0 50 0 10 1 40 40 10 0 1 1
+0 10 0 40 0 0 1 30 40 0 0 1 1
+-10 10 1 50 0 10 1 40 40 10 0 1 1
+0 10 1 40 0 0 1 30 40 0 0 1 1
+-10 10 0 50 0 10 1 40 40 10 0 1 1
+0 10 0 40 0 0 1 30 40 0 0 1 1
+-10 10 1 50 0 10 1 40 40 10 0 1 1
+0 10 1 40 0 0 1 30 40 0 0 1 1
+-10 10 0 50 0 10 1 40 40 10 0 1 0
+0 10 0 40 0 0 1 30 40 0 0 1 0
+-10 10 1 50 0 10 1 40 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 0 0 1 0
+-10 10 0 50 0 10 1 40 40 10 0 1 0
+0 10 0 40 0 0 1 30 40 0 0 1 0
+-10 10 1 50 0 10 1 40 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 0 0 1 0
+0 10 0 40 0 10 1 40 40 10 0 1 1
+3 10 0 37 0 7 1 37 40 7 0 1 1
+0 10 1 40 0 10 1 40 40 10 0 1 1
+3 10 1 37 0 7 1 37 40 7 0 1 1
+0 10 0 40 0 10 1 40 40 10 0 1 0
+3 10 0 37 0 7 1 37 40 7 0 1 0
+0 10 1 40 0 10 1 40 40 10 0 1 0
+3 10 1 37 0 7 1 37 40 7 0 1 0
+0 10 0 40 1 0 0 30 40 0 1 0 1
+3 10 0 37 1 3 0 33 40 3 1 0 1
+0 10 1 40 1 0 0 30 40 0 1 0 1
+3 10 1 37 1 3 0 33 40 3 1 0 1
+0 10 0 40 1 0 0 30 40 0 1 0 0
+3 10 0 37 1 3 0 33 40 3 1 0 0
+0 10 1 40 1 0 0 30 40 0 1 0 0
+3 10 1 37 1 3 0 33 40 3 1 0 0
+0 10 0 40 1 0 1 30 40 0 1 1 1
+0 10 0 40 1 10 1 40 40 10 1 1 1
+0 10 1 40 1 0 1 30 40 0 1 1 1
+0 10 1 40 1 10 1 40 40 10 1 1 1
+0 10 0 40 1 0 1 30 40 0 1 1 0
+0 10 0 40 1 10 1 40 40 10 1 1 0
+0 10 1 40 1 0 1 30 40 0 1 1 0
+0 10 1 40 1 10 1 40 40 10 1 1 0
+0 10 0 40 0 0 0 30 40 0 0 0 1
+0 10 0 40 0 10 0 40 40 10 0 0 1
+0 10 1 40 0 0 0 30 40 0 0 0 1
+0 10 1 40 0 10 0 40 40 10 0 0 1
+0 10 0 40 0 0 0 30 40 0 0 0 0
+0 10 0 40 0 10 0 40 40 10 0 0 0
+0 10 1 40 0 0 0 30 40 0 0 0 0
+0 10 1 40 0 10 0 40 40 10 0 0 0
+-10 10 0 50 0 10 1 40 40 10 0 1 1
+0 10 0 40 0 0 1 30 40 0 0 1 1
+-10 10 1 50 0 10 1 40 40 10 0 1 1
+0 10 1 40 0 0 1 30 40 0 0 1 1
+-10 10 0 50 0 10 1 40 40 10 0 1 0
+0 10 0 40 0 0 1 30 40 0 0 1 0
+-10 10 1 50 0 10 1 40 40 10 0 1 0
+0 10 1 40 0 0 1 30 40 0 0 1 0
+0 10 0 1 10 0 30 40 40 10 1 0 1
+8 10 0 1 2 0 22 40 32 2 1 0 1
+0 10 40 10 1 0 1 30 40 0 1 10 0
+8 10 32 2 1 0 1 22 40 0 1 2 0
+0 10 40 10 1 0 0 30 40 0 1 10 0
+8 10 32 2 1 0 0 22 40 0 1 2 0
+0 10 0 1 10 0 30 40 40 10 1 0 1
+8 10 0 1 2 0 22 40 32 2 1 0 1
+0 10 1 1 10 0 30 40 40 10 1 0 1
+8 10 1 1 2 0 22 40 32 2 1 0 1
+0 10 40 10 1 0 1 30 40 0 1 10 0
+8 10 32 2 1 0 1 22 40 0 1 2 0
+0 10 0 1 10 0 30 40 40 10 1 0 1
+8 10 0 1 2 0 22 40 32 2 1 0 1
+0 10 1 1 10 0 30 40 40 10 1 0 1
+8 10 1 1 2 0 22 40 32 2 1 0 1
+0 10 40 10 1 0 0 30 40 0 1 10 0
+8 10 32 2 1 0 0 22 40 0 1 2 0
+0 10 0 1 10 0 30 40 40 10 1 0 0
+8 10 0 1 2 0 22 40 32 2 1 0 0
+0 10 1 1 10 0 30 40 40 10 1 0 0
+8 10 1 1 2 0 22 40 32 2 1 0 0
+0 10 0 1 10 0 30 40 40 10 1 0 1
+8 10 0 1 2 0 22 40 32 2 1 0 1
+0 10 1 1 10 0 30 40 40 10 1 0 1
+8 10 1 1 2 0 22 40 32 2 1 0 1
+0 10 40 0 1 0 1 30 40 0 1 10 0
+0 10 0 1 10 0 30 40 40 10 1 0 1
+8 10 0 1 2 0 22 40 32 2 1 0 1
+0 10 1 1 10 0 30 40 40 10 1 0 1
+8 10 1 1 2 0 22 40 32 2 1 0 1
+0 10 0 1 10 0 30 40 40 10 1 0 1
+8 10 0 1 2 0 22 40 32 2 1 0 1
+0 10 1 1 10 0 30 40 40 10 1 0 1
+8 10 1 1 2 0 22 40 32 2 1 0 1
+0 10 40 0 0 0 0 30 40 0 1 10 0
+0 10 0 1 10 0 30 40 40 10 1 0 0
+8 10 0 1 2 0 22 40 32 2 1 0 0
+0 10 1 1 10 0 30 40 40 10 1 0 0
+8 10 1 1 2 0 22 40 32 2 1 0 0
+0 10 0 1 10 0 30 40 40 10 1 0 0
+8 10 0 1 2 0 22 40 32 2 1 0 0
+0 10 1 1 10 0 30 40 40 10 1 0 0
+8 10 1 1 2 0 22 40 32 2 1 0 0
+0 10 0 1 0 0 30 40 40 10 1 0 1
+0 10 1 1 0 1 30 40 40 10 1 0 1
+0 10 40 0 1 0 1 30 40 0 1 10 0
+0 10 0 1 10 0 30 40 40 10 1 0 1
+8 10 0 1 2 0 22 40 32 2 1 0 1
+0 10 40 0 1 1 1 30 40 1 1 10 0
+0 10 1 1 10 0 30 40 40 10 1 0 1
+8 10 1 1 2 0 22 40 32 2 1 0 1
+0 10 0 1 0 0 30 40 40 10 1 0 1
+0 10 1 1 0 1 30 40 40 10 1 0 1
+0 10 40 0 0 0 0 30 40 0 1 10 0
+0 10 0 1 10 0 30 40 40 10 1 0 0
+8 10 0 1 2 0 22 40 32 2 1 0 0
+0 10 40 0 0 1 0 30 40 1 1 10 0
+0 10 1 1 10 0 30 40 40 10 1 0 0
+8 10 1 1 2 0 22 40 32 2 1 0 0
+0 10 0 0 0 0 30 40 40 10 1 0 0
+0 10 1 0 0 1 30 40 40 10 1 0 0
+0 10 40 0 1 0 1 30 40 0 1 10 0
+0 10 0 1 0 0 30 40 40 10 1 0 1
+0 10 40 0 1 1 1 30 40 1 1 10 0
+0 10 1 1 0 1 30 40 40 10 1 0 1
+0 10 40 0 0 0 0 30 40 0 1 10 0
+0 10 0 0 0 0 30 40 40 10 1 0 0
+0 10 40 0 0 1 0 30 40 1 1 10 0
+0 10 1 0 0 1 30 40 40 10 1 0 0
+-10 10 0 1 10 0 40 40 50 10 1 0 1
+0 10 0 1 0 0 30 40 40 0 1 0 1
+0 10 1 1 0 1 30 40 40 0 1 1 1
+0 10 1 1 10 1 40 40 40 10 1 1 1
+0 10 0 0 0 0 30 40 40 0 0 0 0
+0 10 0 0 10 0 40 40 40 10 0 0 0
+0 10 1 0 0 1 30 40 40 0 0 1 0
+8 10 1 0 8 1 38 40 32 8 0 1 0
+0 10 0 1 10 0 40 40 40 10 1 0 1
+8 10 0 1 2 0 32 40 32 2 1 0 1
+-10 10 50 10 1 0 1 40 40 0 1 10 0
+0 10 40 0 1 0 1 30 40 0 1 0 0
+-10 10 50 10 1 0 0 40 40 0 1 10 0
+0 10 40 0 1 0 0 30 40 0 1 0 0
+-10 10 0 1 10 0 40 40 50 10 1 0 1
+0 10 0 1 0 0 30 40 40 0 1 0 1
+-10 10 1 1 10 0 40 40 50 10 1 0 1
+0 10 1 1 0 0 30 40 40 0 1 0 1
+0 10 40 0 1 1 1 30 40 1 1 0 1
+0 10 40 10 1 1 1 40 40 1 1 10 1
+0 10 40 0 1 1 0 30 40 1 1 0 1
+0 10 40 10 1 1 0 40 40 1 1 10 1
+0 10 0 1 0 1 30 40 40 0 1 1 1
+0 10 0 1 10 1 40 40 40 10 1 1 1
+0 10 1 1 0 1 30 40 40 0 1 1 1
+0 10 1 1 10 1 40 40 40 10 1 1 1
+0 10 40 0 0 0 1 30 40 0 0 0 0
+0 10 40 10 0 0 1 40 40 0 0 10 0
+0 10 40 0 0 0 0 30 40 0 0 0 0
+0 10 40 10 0 0 0 40 40 0 0 10 0
+0 10 0 0 0 0 30 40 40 0 0 0 0
+0 10 0 0 10 0 40 40 40 10 0 0 0
+0 10 1 0 0 0 30 40 40 0 0 0 0
+0 10 1 0 10 0 40 40 40 10 0 0 0
+0 10 40 0 0 1 1 30 40 1 0 0 1
+8 10 32 8 0 1 1 38 40 1 0 8 1
+0 10 40 0 0 1 0 30 40 1 0 0 1
+8 10 32 8 0 1 0 38 40 1 0 8 1
+0 10 0 0 0 1 30 40 40 0 0 1 0
+8 10 0 0 8 1 38 40 32 8 0 1 0
+0 10 1 0 0 1 30 40 40 0 0 1 0
+8 10 1 0 8 1 38 40 32 8 0 1 0
+0 10 40 10 1 0 1 40 40 0 1 10 0
+8 10 32 2 1 0 1 32 40 0 1 2 0
+0 10 40 10 1 0 0 40 40 0 1 10 0
+8 10 32 2 1 0 0 32 40 0 1 2 0
+0 10 0 1 10 0 40 40 40 10 1 0 1
+8 10 0 1 2 0 32 40 32 2 1 0 1
+0 10 1 1 10 0 40 40 40 10 1 0 1
+8 10 1 1 2 0 32 40 32 2 1 0 1
+-10 10 50 10 1 0 1 40 40 0 1 10 0
+0 10 40 0 1 0 1 30 40 0 1 0 0
+-10 10 0 1 10 0 40 40 50 10 1 0 1
+0 10 0 1 0 0 30 40 40 0 1 0 1
+-10 10 1 1 10 0 40 40 50 10 1 0 1
+0 10 1 1 0 0 30 40 40 0 1 0 1
+-10 10 50 10 1 0 0 40 40 0 1 10 0
+0 10 40 0 1 0 0 30 40 0 1 0 0
+-10 10 0 1 10 0 40 40 50 10 1 0 0
+0 10 0 1 0 0 30 40 40 0 1 0 0
+-10 10 1 1 10 0 40 40 50 10 1 0 0
+0 10 1 1 0 0 30 40 40 0 1 0 0
+-10 10 0 1 10 0 40 40 50 10 1 0 1
+0 10 0 1 0 0 30 40 40 0 1 0 1
+-10 10 1 1 10 0 40 40 50 10 1 0 1
+0 10 1 1 0 0 30 40 40 0 1 0 1
+0 10 40 0 1 1 1 30 40 1 1 0 1
+0 10 40 10 1 1 1 40 40 1 1 10 1
+0 10 0 1 0 1 30 40 40 0 1 1 1
+0 10 0 1 10 1 40 40 40 10 1 1 1
+0 10 1 1 0 1 30 40 40 0 1 1 1
+0 10 1 1 10 1 40 40 40 10 1 1 1
+0 10 40 0 1 1 0 30 40 1 1 0 1
+0 10 40 10 1 1 0 40 40 1 1 10 1
+0 10 0 1 0 1 30 40 40 0 1 1 0
+0 10 0 1 10 1 40 40 40 10 1 1 0
+0 10 1 1 0 1 30 40 40 0 1 1 0
+0 10 1 1 10 1 40 40 40 10 1 1 0
+0 10 0 1 0 1 30 40 40 0 1 1 1
+0 10 0 1 10 1 40 40 40 10 1 1 1
+0 10 1 1 0 1 30 40 40 0 1 1 1
+0 10 1 1 10 1 40 40 40 10 1 1 1
+0 10 40 0 0 0 1 30 40 0 0 0 0
+0 10 40 10 0 0 1 40 40 0 0 10 0
+0 10 0 0 0 0 30 40 40 0 0 0 1
+0 10 0 0 10 0 40 40 40 10 0 0 1
+0 10 1 0 0 0 30 40 40 0 0 0 1
+0 10 1 0 10 0 40 40 40 10 0 0 1
+0 10 40 0 0 0 0 30 40 0 0 0 0
+0 10 40 10 0 0 0 40 40 0 0 10 0
+0 10 0 0 0 0 30 40 40 0 0 0 0
+0 10 0 0 10 0 40 40 40 10 0 0 0
+0 10 1 0 0 0 30 40 40 0 0 0 0
+0 10 1 0 10 0 40 40 40 10 0 0 0
+0 10 0 0 0 0 30 40 40 0 0 0 0
+0 10 0 0 10 0 40 40 40 10 0 0 0
+0 10 1 0 0 0 30 40 40 0 0 0 0
+0 10 1 0 10 0 40 40 40 10 0 0 0
+0 10 40 0 0 1 1 30 40 1 0 0 1
+8 10 32 8 0 1 1 38 40 1 0 8 1
+0 10 0 0 0 1 30 40 40 0 0 1 1
+8 10 0 0 8 1 38 40 32 8 0 1 1
+0 10 1 0 0 1 30 40 40 0 0 1 1
+8 10 1 0 8 1 38 40 32 8 0 1 1
+0 10 40 0 0 1 0 30 40 1 0 0 1
+8 10 32 8 0 1 0 38 40 1 0 8 1
+0 10 0 0 0 1 30 40 40 0 0 1 0
+8 10 0 0 8 1 38 40 32 8 0 1 0
+0 10 1 0 0 1 30 40 40 0 0 1 0
+8 10 1 0 8 1 38 40 32 8 0 1 0
+0 10 0 0 0 1 30 40 40 0 0 1 0
+8 10 0 0 8 1 38 40 32 8 0 1 0
+0 10 1 0 0 1 30 40 40 0 0 1 0
+8 10 1 0 8 1 38 40 32 8 0 1 0
+0 10 40 10 1 0 1 40 40 0 1 10 0
+8 10 32 2 1 0 1 32 40 0 1 2 0
+0 10 0 1 10 0 40 40 40 10 1 0 1
+8 10 0 1 2 0 32 40 32 2 1 0 1
+0 10 1 1 10 0 40 40 40 10 1 0 1
+8 10 1 1 2 0 32 40 32 2 1 0 1
+0 10 40 10 1 0 0 40 40 0 1 10 0
+8 10 32 2 1 0 0 32 40 0 1 2 0
+0 10 0 1 10 0 40 40 40 10 1 0 0
+8 10 0 1 2 0 32 40 32 2 1 0 0
+0 10 1 1 10 0 40 40 40 10 1 0 0
+8 10 1 1 2 0 32 40 32 2 1 0 0
+0 10 0 1 10 0 40 40 40 10 1 0 1
+8 10 0 1 2 0 32 40 32 2 1 0 1
+0 10 1 1 10 0 40 40 40 10 1 0 1
+8 10 1 1 2 0 32 40 32 2 1 0 1
+-10 10 0 1 10 0 40 40 50 10 1 0 1
+0 10 0 1 0 0 30 40 40 0 1 0 1
+-10 10 1 1 10 0 40 40 50 10 1 0 1
+0 10 1 1 0 0 30 40 40 0 1 0 1
+-10 10 0 1 10 0 40 40 50 10 1 0 1
+0 10 0 1 0 0 30 40 40 0 1 0 1
+-10 10 1 1 10 0 40 40 50 10 1 0 1
+0 10 1 1 0 0 30 40 40 0 1 0 1
+-10 10 0 1 10 0 40 40 50 10 1 0 0
+0 10 0 1 0 0 30 40 40 0 1 0 0
+-10 10 1 1 10 0 40 40 50 10 1 0 0
+0 10 1 1 0 0 30 40 40 0 1 0 0
+-10 10 0 1 10 0 40 40 50 10 1 0 0
+0 10 0 1 0 0 30 40 40 0 1 0 0
+-10 10 1 1 10 0 40 40 50 10 1 0 0
+0 10 1 1 0 0 30 40 40 0 1 0 0
+0 10 0 1 0 1 30 40 40 0 1 1 1
+0 10 0 1 10 1 40 40 40 10 1 1 1
+0 10 1 1 0 1 30 40 40 0 1 1 1
+0 10 1 1 10 1 40 40 40 10 1 1 1
+0 10 0 1 0 1 30 40 40 0 1 1 1
+0 10 0 1 10 1 40 40 40 10 1 1 1
+0 10 1 1 0 1 30 40 40 0 1 1 1
+0 10 1 1 10 1 40 40 40 10 1 1 1
+0 10 0 1 0 1 30 40 40 0 1 1 0
+0 10 0 1 10 1 40 40 40 10 1 1 0
+0 10 1 1 0 1 30 40 40 0 1 1 0
+0 10 1 1 10 1 40 40 40 10 1 1 0
+0 10 0 1 0 1 30 40 40 0 1 1 0
+0 10 0 1 10 1 40 40 40 10 1 1 0
+0 10 1 1 0 1 30 40 40 0 1 1 0
+0 10 1 1 10 1 40 40 40 10 1 1 0
+0 10 0 0 0 0 30 40 40 0 0 0 1
+0 10 0 0 10 0 40 40 40 10 0 0 1
+0 10 1 0 0 0 30 40 40 0 0 0 1
+0 10 1 0 10 0 40 40 40 10 0 0 1
+0 10 0 0 0 0 30 40 40 0 0 0 1
+0 10 0 0 10 0 40 40 40 10 0 0 1
+0 10 1 0 0 0 30 40 40 0 0 0 1
+0 10 1 0 10 0 40 40 40 10 0 0 1
+0 10 0 0 0 0 30 40 40 0 0 0 0
+0 10 0 0 10 0 40 40 40 10 0 0 0
+0 10 1 0 0 0 30 40 40 0 0 0 0
+0 10 1 0 10 0 40 40 40 10 0 0 0
+0 10 0 0 0 0 30 40 40 0 0 0 0
+0 10 0 0 10 0 40 40 40 10 0 0 0
+0 10 1 0 0 0 30 40 40 0 0 0 0
+0 10 1 0 10 0 40 40 40 10 0 0 0
+0 10 0 0 0 1 30 40 40 0 0 1 1
+8 10 0 0 8 1 38 40 32 8 0 1 1
+0 10 1 0 0 1 30 40 40 0 0 1 1
+8 10 1 0 8 1 38 40 32 8 0 1 1
+0 10 0 0 0 1 30 40 40 0 0 1 1
+8 10 0 0 8 1 38 40 32 8 0 1 1
+0 10 1 0 0 1 30 40 40 0 0 1 1
+8 10 1 0 8 1 38 40 32 8 0 1 1
+0 10 0 0 0 1 30 40 40 0 0 1 0
+8 10 0 0 8 1 38 40 32 8 0 1 0
+0 10 1 0 0 1 30 40 40 0 0 1 0
+8 10 1 0 8 1 38 40 32 8 0 1 0
+0 10 0 0 0 1 30 40 40 0 0 1 0
+8 10 0 0 8 1 38 40 32 8 0 1 0
+0 10 1 0 0 1 30 40 40 0 0 1 0
+8 10 1 0 8 1 38 40 32 8 0 1 0
+0 10 0 1 10 0 40 40 40 10 1 0 1
+8 10 0 1 2 0 32 40 32 2 1 0 1
+0 10 1 1 10 0 40 40 40 10 1 0 1
+8 10 1 1 2 0 32 40 32 2 1 0 1
+0 10 0 1 10 0 40 40 40 10 1 0 1
+8 10 0 1 2 0 32 40 32 2 1 0 1
+0 10 1 1 10 0 40 40 40 10 1 0 1
+8 10 1 1 2 0 32 40 32 2 1 0 1
+0 10 0 1 10 0 40 40 40 10 1 0 0
+8 10 0 1 2 0 32 40 32 2 1 0 0
+0 10 1 1 10 0 40 40 40 10 1 0 0
+8 10 1 1 2 0 32 40 32 2 1 0 0
+0 10 0 1 10 0 40 40 40 10 1 0 0
+8 10 0 1 2 0 32 40 32 2 1 0 0
+0 10 1 1 10 0 40 40 40 10 1 0 0
+8 10 1 1 2 0 32 40 32 2 1 0 0
+-10 10 0 1 10 0 40 40 50 10 1 0 1
+0 10 0 1 0 0 30 40 40 0 1 0 1
+-10 10 1 1 10 0 40 40 50 10 1 0 1
+0 10 1 1 0 0 30 40 40 0 1 0 1
+-10 10 0 1 10 0 40 40 50 10 1 0 0
+0 10 0 1 0 0 30 40 40 0 1 0 0
+-10 10 1 1 10 0 40 40 50 10 1 0 0
+0 10 1 1 0 0 30 40 40 0 1 0 0
+0 10 0 1 0 1 30 40 40 0 1 1 1
+0 10 0 1 10 1 40 40 40 10 1 1 1
+0 10 1 1 0 1 30 40 40 0 1 1 1
+0 10 1 1 10 1 40 40 40 10 1 1 1
+0 10 0 1 0 1 30 40 40 0 1 1 0
+0 10 0 1 10 1 40 40 40 10 1 1 0
+0 10 1 1 0 1 30 40 40 0 1 1 0
+0 10 1 1 10 1 40 40 40 10 1 1 0
+0 10 0 0 0 0 30 40 40 0 0 0 1
+0 10 0 0 10 0 40 40 40 10 0 0 1
+0 10 1 0 0 0 30 40 40 0 0 0 1
+0 10 1 0 10 0 40 40 40 10 0 0 1
+0 10 0 0 0 0 30 40 40 0 0 0 0
+0 10 0 0 10 0 40 40 40 10 0 0 0
+0 10 1 0 0 0 30 40 40 0 0 0 0
+0 10 1 0 10 0 40 40 40 10 0 0 0
+0 10 0 0 0 1 30 40 40 0 0 1 1
+8 10 0 0 8 1 38 40 32 8 0 1 1
+0 10 1 0 0 1 30 40 40 0 0 1 1
+8 10 1 0 8 1 38 40 32 8 0 1 1
+0 10 0 0 0 1 30 40 40 0 0 1 0
+8 10 0 0 8 1 38 40 32 8 0 1 0
+0 10 1 0 0 1 30 40 40 0 0 1 0
+8 10 1 0 8 1 38 40 32 8 0 1 0
+0 10 0 1 10 0 40 40 40 10 1 0 1
+8 10 0 1 2 0 32 40 32 2 1 0 1
+0 10 1 1 10 0 40 40 40 10 1 0 1
+8 10 1 1 2 0 32 40 32 2 1 0 1
+0 10 0 1 10 0 40 40 40 10 1 0 0
+8 10 0 1 2 0 32 40 32 2 1 0 0
+0 10 1 1 10 0 40 40 40 10 1 0 0
+8 10 1 1 2 0 32 40 32 2 1 0 0
+2.66101s
+11.67user 0.02system 0:11.76elapsed 99%CPU (0avgtext+0avgdata 39212maxresident)k
+896inputs+208outputs (20major+8538minor)pagefaults 0swaps

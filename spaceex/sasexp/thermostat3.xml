@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<sspaceex xmlns="http://www-verimag.imag.fr/xml-namespaces/sspaceex" version="0.2" math="SpaceEx">
+  <component id="room1">
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="T1" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="T2" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="false" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="MinSum" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="heater1" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <location id="3" name="HeaterOn" x="259.0" y="495.0" width="208.0" height="126.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T1' == heater1 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater1' == 0</flow>
+    </location>
+    <location id="5" name="calculateNext" x="661.0" y="143.0" width="206.0" height="134.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T1' == heater1 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater1' == 0</flow>
+    </location>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &gt;= MinSum &amp;
+T1 &lt; T2</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater1 := 1</assignment>
+      <labelposition x="-213.0" y="-167.0" width="328.0" height="136.0" />
+      <middlepoint x="564.5" y="436.0" />
+    </transition>
+    <transition source="3" target="5">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <labelposition x="8.0" y="0.0" width="254.0" height="90.0" />
+      <middlepoint x="806.5" y="584.0" />
+    </transition>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &gt;= MinSum &amp;
+T1 &gt; T2</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater1 := 0</assignment>
+      <labelposition x="-281.0" y="-133.0" width="268.0" height="136.0" />
+      <middlepoint x="443.0" y="285.0" />
+    </transition>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &lt; MinSum</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater1 := 1</assignment>
+      <labelposition x="-31.0" y="-28.0" width="188.0" height="142.0" />
+      <middlepoint x="636.5" y="464.0" />
+    </transition>
+  </component>
+  <component id="room2">
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="MinSum" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="T1" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="false" />
+    <param name="T2" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="heater2" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <location id="1" name="HeaterOn" x="244.0" y="345.0" width="202.0" height="218.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T2' == heater2 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater2' == 0</flow>
+    </location>
+    <location id="2" name="CalculateNext" x="689.0" y="191.0" width="186.0" height="164.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T2' == heater2 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater2' == 0</flow>
+    </location>
+    <transition source="1" target="2">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <labelposition x="13.0" y="21.0" width="236.0" height="58.0" />
+      <middlepoint x="553.5" y="438.5" />
+    </transition>
+    <transition source="2" target="1">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &gt;= MinSum &amp;
+T1 &gt; T2</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater2 := 1</assignment>
+      <labelposition x="-56.0" y="-74.0" width="216.0" height="102.0" />
+      <middlepoint x="374.5" y="154.0" />
+    </transition>
+    <transition source="2" target="1">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &gt;= MinSum &amp;
+T1 &lt; T2</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater2 := 0</assignment>
+      <labelposition x="-119.0" y="-90.0" width="212.0" height="128.0" />
+    </transition>
+    <transition source="2" target="1">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &lt; MinSum</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater2 := 1</assignment>
+      <labelposition x="-16.0" y="-12.0" width="178.0" height="104.0" />
+      <middlepoint x="484.5" y="324.0" />
+    </transition>
+  </component>
+  <component id="globalTimer">
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="GlobalTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <location id="1" name="flow" x="265.0" y="168.0" width="194.0" height="100.0">
+      <invariant>GlobalTimer &lt; TotalDuration</invariant>
+      <flow>GlobalTimer' == 1</flow>
+    </location>
+  </component>
+  <component id="thermostat">
+    <param name="T1" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="150.0" y="45.0" />
+    <param name="T2" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="197.0" y="92.0" />
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="MinSum" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <bind component="room1" as="room1_1" x="361.0" y="229.0" width="64.0" height="60.0">
+      <map key="T1">T1</map>
+      <map key="T2">T2</map>
+      <map key="CycleDuration">CycleDuration</map>
+      <map key="MinSum">MinSum</map>
+    </bind>
+    <bind component="room2" as="room2_1" x="367.0" y="334.0" width="70.0" height="62.0">
+      <map key="CycleDuration">CycleDuration</map>
+      <map key="MinSum">MinSum</map>
+      <map key="T1">T1</map>
+      <map key="T2">T2</map>
+    </bind>
+    <bind component="globalTimer" as="globalTimer_1" x="383.0" y="81.0">
+      <map key="TotalDuration">TotalDuration</map>
+    </bind>
+  </component>
+</sspaceex>
+

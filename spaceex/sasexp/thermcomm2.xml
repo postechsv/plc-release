@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<sspaceex xmlns="http://www-verimag.imag.fr/xml-namespaces/sspaceex" version="0.2" math="SpaceEx">
+  <component id="room1">
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="T1" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="T2" type="real" local="true" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="MinSum" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="heater1" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="send" type="label" local="false" />
+    <param name="rcv" type="label" local="false" />
+    <param name="T1send" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="T2rcv" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="false" />
+    <location id="3" name="HeaterOn" x="259.0" y="495.0" width="208.0" height="126.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T1' == heater1 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater1' == 0 &amp;
+T2' == 0 &amp;
+T1send' == 0</flow>
+    </location>
+    <location id="5" name="calculateNext" x="661.0" y="143.0" width="206.0" height="134.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T1' == heater1 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater1' == 0 &amp;
+T2' == 0 &amp;
+T1send' == 0</flow>
+    </location>
+    <location id="1" name="comm1" x="670.0" y="600.0" width="132.0" height="118.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T1' == heater1 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater1' == 0 &amp;
+T2' == 0 &amp;
+T1send' == 0</flow>
+    </location>
+    <location id="2" name="comm2" x="926.0" y="457.0" width="156.0" height="116.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T1' == heater1 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater1' == 0 &amp;
+T2' == 0 &amp;
+T1send' == 0</flow>
+    </location>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &gt;= MinSum &amp;
+T1 &lt; T2</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater1 := 1</assignment>
+      <labelposition x="-213.0" y="-167.0" width="252.0" height="114.0" />
+      <middlepoint x="525.5" y="395.0" />
+    </transition>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &gt;= MinSum &amp;
+T1 &gt; T2</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater1 := 0</assignment>
+      <labelposition x="-281.0" y="-133.0" width="268.0" height="136.0" />
+      <middlepoint x="443.0" y="285.0" />
+    </transition>
+    <transition source="5" target="3">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &lt; MinSum</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater1 := 1</assignment>
+      <labelposition x="-90.0" y="-119.0" width="188.0" height="142.0" />
+      <middlepoint x="636.5" y="464.0" />
+    </transition>
+    <transition source="2" target="5">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <labelposition x="25.0" y="-60.0" width="194.0" height="72.0" />
+    </transition>
+    <transition source="3" target="1">
+      <label>send</label>
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>T1send := T1</assignment>
+      <labelposition x="-94.0" y="19.0" width="202.0" height="102.0" />
+    </transition>
+    <transition source="1" target="2">
+      <label>rcv</label>
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>T2 := T2rcv</assignment>
+      <labelposition x="-47.0" y="7.0" width="186.0" height="70.0" />
+    </transition>
+  </component>
+  <component id="room2">
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="MinSum" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <param name="T1" type="real" local="true" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="T2" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="CycleTimer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="heater2" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <param name="send" type="label" local="false" />
+    <param name="rcv" type="label" local="false" />
+    <param name="T1rcv" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="false" />
+    <param name="T2send" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <location id="1" name="HeaterOn" x="244.0" y="345.0" width="202.0" height="218.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T2' == heater2 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater2' == 0 &amp;
+T1' == 0 &amp;
+T2send' == 0</flow>
+    </location>
+    <location id="2" name="CalculateNext" x="689.0" y="191.0" width="186.0" height="164.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T2' == heater2 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater2' == 0 &amp;
+T1' == 0 &amp;
+T2send' == 0</flow>
+    </location>
+    <location id="3" name="comm1" x="576.0" y="573.0" width="192.0" height="116.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T2' == heater2 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater2' == 0 &amp;
+T1' == 0 &amp;
+T2send' == 0</flow>
+    </location>
+    <location id="4" name="comm2" x="928.0" y="476.0" width="164.0" height="110.0">
+      <invariant>CycleTimer &lt;= CycleDuration</invariant>
+      <flow>T2' == heater2 - 0.1 &amp;
+CycleTimer' == 1 &amp;
+heater2' == 0 &amp;
+T1' == 0 &amp;
+T2send' == 0</flow>
+    </location>
+    <transition source="2" target="1">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &gt;= MinSum &amp;
+T1 &gt; T2</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater2 := 1</assignment>
+      <labelposition x="-56.0" y="-74.0" width="216.0" height="102.0" />
+      <middlepoint x="374.5" y="154.0" />
+    </transition>
+    <transition source="2" target="1">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &gt;= MinSum &amp;
+T1 &lt; T2</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater2 := 0</assignment>
+      <labelposition x="-119.0" y="-90.0" width="212.0" height="128.0" />
+    </transition>
+    <transition source="2" target="1">
+      <guard>CycleTimer == CycleDuration &amp;
+T1 + T2 &lt; MinSum</guard>
+      <assignment>CycleTimer := 0 &amp;
+heater2 := 1</assignment>
+      <labelposition x="-16.0" y="-12.0" width="178.0" height="104.0" />
+      <middlepoint x="484.5" y="324.0" />
+    </transition>
+    <transition source="4" target="2">
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <labelposition x="15.0" y="-43.0" width="206.0" height="66.0" />
+    </transition>
+    <transition source="1" target="3">
+      <label>rcv</label>
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>T1 := T1rcv</assignment>
+      <labelposition x="-47.0" y="23.0" width="102.0" height="72.0" />
+    </transition>
+    <transition source="3" target="4">
+      <label>send</label>
+      <guard>CycleTimer &lt; CycleDuration</guard>
+      <assignment>T2send := T2</assignment>
+      <labelposition x="0.0" y="0.0" />
+    </transition>
+  </component>
+  <component id="port">
+    <param name="send" type="label" local="false" />
+    <param name="rcv" type="label" local="false" />
+    <param name="in" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="false" />
+    <param name="out" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="timer" type="real" local="true" d1="1" d2="1" dynamics="any" />
+    <location id="1" name="standby" x="297.0" y="307.0">
+      <flow>out'== 0 &amp;
+timer'==0</flow>
+    </location>
+    <location id="2" name="flying" x="569.0" y="313.0">
+      <flow>timer' == -1 &amp;
+out' == 0</flow>
+    </location>
+    <location id="3" name="arrive" x="478.0" y="144.0">
+      <flow>out'== 0 &amp;
+timer'==0</flow>
+    </location>
+    <transition source="1" target="2">
+      <label>send</label>
+      <assignment>timer := 1</assignment>
+      <labelposition x="-40.0" y="22.0" width="102.0" height="66.0" />
+      <middlepoint x="428.0" y="335.5" />
+    </transition>
+    <transition source="2" target="3">
+      <guard>timer &lt;= 0</guard>
+      <assignment>out := in</assignment>
+      <labelposition x="14.0" y="-36.0" width="120.0" height="56.0" />
+    </transition>
+    <transition source="3" target="1">
+      <label>rcv</label>
+      <assignment>timer := 0</assignment>
+      <labelposition x="-47.0" y="-64.0" width="108.0" height="50.0" />
+    </transition>
+  </component>
+  <component id="globalTimer">
+    <param name="GlobalTimer" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" />
+    <location id="1" name="flow" x="295.0" y="159.0" width="202.0" height="118.0">
+      <invariant>GlobalTimer &lt; TotalDuration</invariant>
+      <flow>GlobalTimer' == 1</flow>
+    </location>
+  </component>
+  <component id="thermostat">
+    <param name="CycleDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="MinSum" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="send2" type="label" local="false" x="237.0" y="136.0" />
+    <param name="rcv1" type="label" local="false" x="211.0" y="168.0" />
+    <param name="T1send" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" />
+    <param name="T2send" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="165.0" y="193.0" />
+    <param name="out1" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="180.0" y="286.0" />
+    <param name="GlobalTimer" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="307.0" y="120.0" />
+    <param name="TotalDuration" type="real" local="false" d1="1" d2="1" dynamics="const" controlled="true" />
+    <param name="send1" type="label" local="false" x="275.0" y="188.0" />
+    <param name="rcv2" type="label" local="false" x="316.0" y="281.0" />
+    <param name="out2" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="380.0" y="171.0" />
+    <bind component="room1" as="room1_1" x="531.0" y="244.0" width="100.0" height="76.0">
+      <map key="CycleDuration">CycleDuration</map>
+      <map key="MinSum">MinSum</map>
+      <map key="send">send1</map>
+      <map key="rcv">rcv1</map>
+      <map key="T1send">T1send</map>
+      <map key="T2rcv">out2</map>
+    </bind>
+    <bind component="room2" as="room2_1" x="424.0" y="544.0" width="120.0" height="104.0">
+      <map key="CycleDuration">CycleDuration</map>
+      <map key="MinSum">MinSum</map>
+      <map key="send">send2</map>
+      <map key="rcv">rcv2</map>
+      <map key="T1rcv">out1</map>
+      <map key="T2send">T2send</map>
+    </bind>
+    <bind component="port" as="port_1" x="573.0" y="351.0" width="108.0" height="80.0">
+      <map key="send">send1</map>
+      <map key="rcv">rcv2</map>
+      <map key="in">T1send</map>
+      <map key="out">out1</map>
+    </bind>
+    <bind component="port" as="port_2" x="644.0" y="439.0" width="86.0" height="74.0">
+      <map key="send">send2</map>
+      <map key="rcv">rcv1</map>
+      <map key="in">T2send</map>
+      <map key="out">out2</map>
+    </bind>
+    <bind component="globalTimer" as="globalTimer_1" x="900.0" y="140.0">
+      <map key="GlobalTimer">GlobalTimer</map>
+      <map key="TotalDuration">TotalDuration</map>
+    </bind>
+  </component>
+</sspaceex>
+
