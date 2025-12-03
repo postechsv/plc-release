@@ -46,24 +46,22 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
   var VS : VSet .
   var LOG : Log .
   var RA : Qid .
+  var G : Bool .
 
 --- assignment
 
   op @store : Location SemanticValue -> KLabel [ctor] .
- ceq task(k(@store(LOCATION,V) ~> K) REST) store(STORE) 
+ crl [localAssign] : task(k(@store(LOCATION,V) ~> K) REST) store(STORE) 
    = task(k(K) REST) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
-  if loc(LOCINDEX, TYPE) := LOCATION /\ $hasMapping(STORE,LOCATION) .
+  if loc(LOCINDEX, TYPE, false) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
-  --- global
-  rl [globalAssign] :
-     log(LOG)
-     task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS)
-  => log(LOG (I , 'globalAssign, V))
-     task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
+ crl [globalAssign] : task(k(@store(LOCATION,V) ~> K) REST) store(STORE) 
+   = task(k(K) REST) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
+  if loc(LOCINDEX, TYPE, true) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
- crl [localAssign] : task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-  => task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-  if not in(I, VS) .
+  eq task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST)
+   = task(k(@store(ENV[I],V) ~> K) callStack(ENV :: ENVSTACK) REST) .
+
 
 ---  eq task(k(InsLoc(INSLOC) . I := V ~> K) REST) inss(INSS) 
 ---   = task(k(@store(getInsEnv(INSLOC,INSS)[I],V) ~> K) REST) inss(INSS) .
@@ -79,16 +77,10 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 
   --- Pid
   --- global
-  rl [globalLookup] :
-     log(LOG) store(STORE)
-     task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) 
-  => log(LOG (I , 'globalLookUp, placeHolder)) store(STORE)
-     task(k(STORE[ENV[I]] ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(@(I) VS) .
+  crl [lookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST)
+   => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) .
 
-  crl [localLookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-   => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) globalVars(VS)
-   if not in(I, VS) .
-  --- _._._._
+ --- _._._._
   eq task(k(InsLoc(INSLOC) . I ~> K)                 REST) inss(INSS) 
    = task(k(@lookup(getInsEnv(INSLOC,INSS)[I]) ~> K) REST) inss(INSS) .
 
@@ -352,6 +344,7 @@ fmod STREAM-UPDATE-STREAM-DATA is
   var SV1 : SemanticValue .
   var READYMAINLIST : List{PExp} . 
   vars NOTMAIN1 NOTMAIN2 : List{PExp} .
+  var G : Bool .
 
   op simplifyStore : Map{Location, SemanticValue} -> Map{Location, SemanticValue} .
   eq simplifyStore(((LOCATION |-> SV1), STORE)) = ((LOCATION |-> simplify(SV1)) , simplifyStore(STORE)) .
@@ -375,7 +368,7 @@ fmod STREAM-UPDATE-STREAM-DATA is
   op findLocType : PExp KConfig KConfig ~> PType .
   
   ceq findLocType(InsLoc(INSLOC) . I, (task(id(INSLOC) mem(ENV) REST) RESTINSS), store(STORE)) = LOCTYPE 
-  if loc(LOCN, LOCTYPE) := ENV[I] .
+  if loc(LOCN, LOCTYPE, G) := ENV[I] .
 
   eq findLocType(PE1 . I, RESTINSS, store(STORE)) = findLocType(findLocVal(PE1 , RESTINSS, store(STORE)) . I, RESTINSS, store(STORE)) .
 endfm
@@ -476,7 +469,7 @@ mod STREAM-EXTENSION is
 
   op @getType : Pid Env ~> PType .
  ceq @getType(ID, ENV) = LOCTYPE
-  if loc(LOCN, LOCTYPE) := ENV[ID] . 
+  if loc(LOCN, LOCTYPE, G) := ENV[ID] . 
 
   --- streamMap tail
   op @tail : List{StreamValue} ~> List{StreamValue} . 

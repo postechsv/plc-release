@@ -28,16 +28,18 @@ fmod HELPER-FUNCTIONS is
   var VSC : VarSection .
   var VDC VDC1 VDC2 : VarDeclSet .
   var TODOLIST : List{Triple} .
+  var G : Bool .
+
   op initiArrayLoc : PType Nat Nat Nat  -> ArrayEnv .
   eq initiArrayLoc(TYPE, LocPos, NowPos, EndPos) 
-  = (NowPos , loc(LocPos, TYPE) ), initiArrayLoc(TYPE, LocPos + 1, NowPos + 1, EndPos ) [owise] .
-  eq initiArrayLoc(TYPE, LocPos, NowPos, NowPos) = (NowPos , loc(LocPos, TYPE) ) .
+  = (NowPos , loc(LocPos, TYPE, false) ), initiArrayLoc(TYPE, LocPos + 1, NowPos + 1, EndPos ) [owise] .
+  eq initiArrayLoc(TYPE, LocPos, NowPos, NowPos) = (NowPos , loc(LocPos, TYPE, false) ) .
   op initElement : List{PValue} PType Nat Nat -> Map{Location, SemanticValue} .
   op @initElement : PType Nat Nat Nat -> Map{Location, SemanticValue} .
   
   op @initArr : PType Nat List{PValue} -> Map{Location, SemanticValue} .
   eq @initArr(TYPE, N, nilPExpList) = empty .
-  eq @initArr(TYPE, N, (V, VL)) = (loc(N, TYPE) |-> syn2sem(V, TYPE) , @initArr(TYPE, N + 1, (VL))) .
+  eq @initArr(TYPE, N, (V, VL)) = (loc(N, TYPE, false) |-> syn2sem(V, TYPE) , @initArr(TYPE, N + 1, (VL))) .
 
   op @countLength : List{PValue} -> Nat .
   eq @countLength(nilPExpList) = 0 .
@@ -45,9 +47,9 @@ fmod HELPER-FUNCTIONS is
 
   eq initElement(VL, TYPE, LocPos, EndPos) = @initArr(TYPE, LocPos, VL) , @initElement(TYPE, LocPos, @countLength(VL), EndPos) .
   ceq @initElement(TYPE, LocPos, NowPos, EndPos) 
-  = loc(LocPos + NowPos, TYPE) |-> syn2sem(# 0 , TYPE) , @initElement(TYPE, LocPos, NowPos + 1, EndPos) if NowPos <= EndPos [owise] .
+  = loc(LocPos + NowPos, TYPE, false) |-> syn2sem(# 0 , TYPE) , @initElement(TYPE, LocPos, NowPos + 1, EndPos) if NowPos <= EndPos [owise] .
   ceq @initElement(BOOL, LocPos, NowPos, EndPos) 
-  = loc(LocPos + NowPos, BOOL) |-> syn2sem(FALSE) , @initElement(BOOL, LocPos, NowPos + 1, EndPos) if NowPos <= EndPos .
+  = loc(LocPos + NowPos, BOOL, false) |-> syn2sem(FALSE) , @initElement(BOOL, LocPos, NowPos + 1, EndPos) if NowPos <= EndPos .
   ceq @initElement(TYPE, LocPos, NowPos, EndPos) = empty if NowPos > EndPos .
   op combineSTR : Map{Location, SemanticValue} Map{Location, SemanticValue} -> Map{Location, SemanticValue} .
   eq combineSTR(STR, empty) = STR .
@@ -140,7 +142,6 @@ fmod PREPROCESSING is
   op getDataForbuildSingleIns : Triple KConfig -> preprocessingPair .
   op makeInsAndProc : Triple KConfig Env -> KConfig .
   op getVarSection : KConfig -> VarSection .
-  op makeGVSet : VarDeclSet ~> VSet .
   op initCond : ~> SemanticValue . 
 
   ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR) ENDCONFIG) POUs]]]
@@ -148,7 +149,7 @@ fmod PREPROCESSING is
     MAINLIST store(STR') 
     pickInss(preprocessPOUs(NEWINSS), inss(empty))
     randomSeed(0) newVarIndex(0) activeJob(None)
-    globalVars(makeGVSet(VDC)) globalTime(0, 0) recentAction('none) 
+    globalTime(0, 0) recentAction('none) 
     log(emptyLog)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
@@ -180,12 +181,6 @@ fmod PREPROCESSING is
   eq makeParmeterList(VARNAME : ARRAY [# 0 .. # M] OF TYPE : ##INOUT ; VDC) = (VARNAME, ##INOUT) makeParmeterList(VDC) .
   eq makeParmeterList(VDC2 ; VDC) = makeParmeterList(VDC) [owise] .
   eq makeParmeterList(emptyVarDecl) = emptyVarSecTypePairList .
-
-  eq makeGVSet(VARNAME : TYPE := V : ##GLOBAL ; VDC)
-   = (@(VARNAME) makeGVSet(VDC)) .
-  eq makeGVSet(VARNAME : TYPE : ##GLOBAL ; VDC)
-   = (@(VARNAME) makeGVSet(VDC)) .
-  eq makeGVSet(emptyVarDecl) = emptyVSet .
 
   eq makeProgramList(emptyProgramList, INSLOC) = nil .
   eq makeProgramList(PNAME([# PR, # IN, # OF]) ;; ML, INSLOC) = (PNAME, program[ PNAME ], INSLOC) makeProgramList(ML, INSLOC + 1) . 
@@ -241,48 +236,48 @@ fmod PREPROCESSING is
   eq buildSingleInsEnvStore((PNAME, TYPE, INSLOC),  ENV,  STR , KCF , emptyVarSection , NEXTLOC) = {ENV , STR, nil, empty} .
 
   eq buildEnvStore((VARNAME : TYPE := V : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, TYPE)), (loc(NEXTLOC, TYPE) |-> syn2sem(V, TYPE)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) [owise]  .
+  = {(VARNAME |-> loc(NEXTLOC, TYPE, VSTYPE == ##GLOBAL)), (loc(NEXTLOC, TYPE, VSTYPE == ##GLOBAL) |-> syn2sem(V, TYPE)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) [owise]  .
   
   ceq buildEnvStore((VARNAME : TYPE : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, TYPE)), (loc(NEXTLOC, TYPE) |-> syn2sem(# 0, TYPE)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) if TYPE in NUMERIC .
+  = {(VARNAME |-> loc(NEXTLOC, TYPE, VSTYPE == ##GLOBAL)), (loc(NEXTLOC, TYPE, VSTYPE == ##GLOBAL) |-> syn2sem(# 0, TYPE)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) if TYPE in NUMERIC .
 
   eq buildEnvStore((VARNAME : enumtype[ENAME] := ENAME # EVAL : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, enumtype[ENAME])), (loc(NEXTLOC, enumtype[ENAME]) |-> [enumVal(ENAME, EVAL)]), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) .
+  = {(VARNAME |-> loc(NEXTLOC, enumtype[ENAME], VSTYPE == ##GLOBAL)), (loc(NEXTLOC, enumtype[ENAME], VSTYPE == ##GLOBAL) |-> [enumVal(ENAME, EVAL)]), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) .
 
   eq buildEnvStore((VARNAME : enumtype[ENAME] := V : VSTYPE ; VDC),  ((enumTypes(ENUM1 ; (ENAME ## (EVALPVALREST', V , EVALPVALREST) )  ; ENUM2)) KCF), NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, enumtype[ENAME])), (loc(NEXTLOC, enumtype[ENAME]) |-> syn2sem(V)), nil, empty} buildEnvStore(VDC, ((enumTypes(ENUM1 ; (ENAME ##  (EVALPVALREST', V , EVALPVALREST) )  ; ENUM2)) KCF), NEXTLOC + 1)  .
+  = {(VARNAME |-> loc(NEXTLOC, enumtype[ENAME], VSTYPE == ##GLOBAL)), (loc(NEXTLOC, enumtype[ENAME], VSTYPE == ##GLOBAL) |-> syn2sem(V)), nil, empty} buildEnvStore(VDC, ((enumTypes(ENUM1 ; (ENAME ##  (EVALPVALREST', V , EVALPVALREST) )  ; ENUM2)) KCF), NEXTLOC + 1)  .
 
 
   eq buildEnvStore((VARNAME : enumtype[ENAME] : VSTYPE ; VDC),  ((enumTypes(ENUM1 ; (ENAME ## (EVAL , RESTENUM) )  ; ENUM2)) KCF), NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, enumtype[ENAME])), (loc(NEXTLOC, enumtype[ENAME]) |-> [enumVal(ENAME, EVAL)]), nil, empty} buildEnvStore(VDC, ((enumTypes(ENUM1 ; (ENAME ## (EVAL , RESTENUM) )  ; ENUM2)) KCF), NEXTLOC + 1)  .
+  = {(VARNAME |-> loc(NEXTLOC, enumtype[ENAME], VSTYPE == ##GLOBAL)), (loc(NEXTLOC, enumtype[ENAME], VSTYPE == ##GLOBAL) |-> [enumVal(ENAME, EVAL)]), nil, empty} buildEnvStore(VDC, ((enumTypes(ENUM1 ; (ENAME ## (EVAL , RESTENUM) )  ; ENUM2)) KCF), NEXTLOC + 1)  .
 
    eq buildEnvStore((VARNAME : enumtype[ENAME] : VSTYPE ; VDC),  ((enumTypes(ENUM1 ; (ENAME ## (EVALPVAL , EVALPVALREST) )  ; ENUM2)) KCF), NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, enumtype[ENAME])), (loc(NEXTLOC, enumtype[ENAME]) |-> syn2sem(EVALPVAL)), nil, empty} buildEnvStore(VDC, ((enumTypes(ENUM1 ; (ENAME ## (EVALPVAL , EVALPVALREST) )  ; ENUM2)) KCF), NEXTLOC + 1)  .
+  = {(VARNAME |-> loc(NEXTLOC, enumtype[ENAME], VSTYPE == ##GLOBAL)), (loc(NEXTLOC, enumtype[ENAME], VSTYPE == ##GLOBAL) |-> syn2sem(EVALPVAL)), nil, empty} buildEnvStore(VDC, ((enumTypes(ENUM1 ; (ENAME ## (EVALPVAL , EVALPVALREST) )  ; ENUM2)) KCF), NEXTLOC + 1)  .
 
 
   eq buildEnvStore((VARNAME : BOOL : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, BOOL)), (loc(NEXTLOC, BOOL) |-> syn2sem(FALSE)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) .
+  = {(VARNAME |-> loc(NEXTLOC, BOOL, VSTYPE == ##GLOBAL)), (loc(NEXTLOC, BOOL, VSTYPE == ##GLOBAL) |-> syn2sem(FALSE)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) .
 
   eq buildEnvStore((VARNAME : TIME : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, TIME)), (loc(NEXTLOC, TIME) |-> syn2sem(T# 0 ms)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) .
+  = {(VARNAME |-> loc(NEXTLOC, TIME, VSTYPE == ##GLOBAL)), (loc(NEXTLOC, TIME, VSTYPE == ##GLOBAL) |-> syn2sem(T# 0 ms)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) .
 
   eq buildEnvStore((VARNAME : TIME := T# RV ms : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, TIME)), (loc(NEXTLOC, TIME) |-> syn2sem(T# RV ms)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) .
+  = {(VARNAME |-> loc(NEXTLOC, TIME, VSTYPE == ##GLOBAL)), (loc(NEXTLOC, TIME, VSTYPE == ##GLOBAL) |-> syn2sem(T# RV ms)), nil, empty} buildEnvStore(VDC, KCF, NEXTLOC + 1) .
 
   eq buildEnvStore((VARNAME : ARRAY [# 0 .. # M] OF TYPE : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, TYPE)), ((loc(NEXTLOC, TYPE) |-> arrayLoc(initiArrayLoc(TYPE, NEXTLOC + 1, 0, M))), initElement(nilPExpList, TYPE, NEXTLOC + 1, M)), nil, empty} 
+  = {(VARNAME |-> loc(NEXTLOC, TYPE, VSTYPE == ##GLOBAL)), ((loc(NEXTLOC, TYPE, VSTYPE == ##GLOBAL) |-> arrayLoc(initiArrayLoc(TYPE, NEXTLOC + 1, 0, M))), initElement(nilPExpList, TYPE, NEXTLOC + 1, M)), nil, empty} 
     buildEnvStore(VDC, KCF, NEXTLOC + (M + 1 + 1)) .
 
   eq buildEnvStore((VARNAME : ARRAY [# 0 .. # M] OF TYPE := VL : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, array[TYPE] )), ( (loc(NEXTLOC, array[TYPE])|-> arrayLoc(initiArrayLoc(TYPE, NEXTLOC + 1, 0, M))), initElement(VL, TYPE, NEXTLOC + 1, M)), nil, empty} 
+  = {(VARNAME |-> loc(NEXTLOC, array[TYPE] , VSTYPE == ##GLOBAL)), ( (loc(NEXTLOC, array[TYPE], VSTYPE == ##GLOBAL)|-> arrayLoc(initiArrayLoc(TYPE, NEXTLOC + 1, 0, M))), initElement(VL, TYPE, NEXTLOC + 1, M)), nil, empty} 
     buildEnvStore(VDC, KCF, NEXTLOC + (M + 1 + 1)) .
 
   eq buildEnvStore((VARNAME : fbtype[FBNAME] : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, fbtype[FBNAME])), (loc(NEXTLOC, fbtype[FBNAME]) |-> InsLoc(NEXTLOC)), (VARNAME, fbtype[FBNAME], NEXTLOC), empty} 
+  = {(VARNAME |-> loc(NEXTLOC, fbtype[FBNAME], VSTYPE == ##GLOBAL)), (loc(NEXTLOC, fbtype[FBNAME], VSTYPE == ##GLOBAL) |-> InsLoc(NEXTLOC)), (VARNAME, fbtype[FBNAME], NEXTLOC), empty} 
     buildEnvStore(VDC, KCF, NEXTLOC + 1) .
 
   eq buildEnvStore((VARNAME : structype[FBNAME] : VSTYPE ; VDC), KCF, NEXTLOC) 
-  = {(VARNAME |-> loc(NEXTLOC, structype[FBNAME])), (loc(NEXTLOC, structype[FBNAME]) |-> InsLoc(NEXTLOC)), (VARNAME, structype[FBNAME], NEXTLOC), empty} 
+  = {(VARNAME |-> loc(NEXTLOC, structype[FBNAME], VSTYPE == ##GLOBAL)), (loc(NEXTLOC, structype[FBNAME], VSTYPE == ##GLOBAL) |-> InsLoc(NEXTLOC)), (VARNAME, structype[FBNAME], NEXTLOC), empty} 
     buildEnvStore(VDC, KCF, NEXTLOC + 1) .
 
   eq buildEnvStore(emptyVarDecl, KCF, NEXTLOC) 

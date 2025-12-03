@@ -17,15 +17,16 @@ fmod LOCATION is
   inc PLC-TYPES .
 
   sort Location .
-  op loc : Nat PType -> Location [ctor] .
+  op loc : Nat PType Bool -> Location [ctor] .
 
   vars N M : Nat .
   var TYPE : PType .
+  var G : Bool .
 
   op _+loc_ : Location Nat -> Location .
   op next : Location -> Location .
-  eq next(loc(N, TYPE)) = loc(s N, TYPE) .
-  eq loc(N, TYPE) +loc M = loc(N + M, TYPE) . 
+  eq next(loc(N, TYPE, G)) = loc(s N, TYPE, G) .
+  eq loc(N, TYPE, G) +loc M = loc(N + M, TYPE, G) . 
 endfm
 
 fmod K-CONFIG is
