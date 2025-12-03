@@ -493,41 +493,44 @@ mod STREAM-EXTENSION is
 
   eq streamLength(((KEY |-> SEQ), RESTMAP)) = @size(SEQ) .
 
-  op genFormula : LTLFormula Nat Nat ~> PExp .
+  op genFormula : LTLFormula Nat Nat ~> PExp . --- legacy
+  op expand : LTLFormula Nat Nat ~> PExp .
+  eq genFormula(LTLF:LTLFormula, CURR, BOUND) = expand(LTLF:LTLFormula, CURR, BOUND) .
+
   --- base
-  eq genFormula(emptyLTLFormula, CURR, BOUND) = emptyLTLFormula .
----  eq genFormula(FVAR, CURR, BOUND) = FVAR .
-  eq genFormula(KEY{s N}, CURR, BOUND) = NEXT(KEY{N}) .
-  eq genFormula(KEY{0}, CURR, BOUND) = genFormula(KEY, CURR, BOUND) .
-  eq genFormula(PV:PValue, CURR, BOUND) = PV:PValue .
-  eq genFormula(KEY, CURR, BOUND) = KEY{CURR} .
+  eq expand(emptyLTLFormula, CURR, BOUND) = emptyLTLFormula .
+---  eq expand(FVAR, CURR, BOUND) = FVAR .
+  eq expand(KEY{s N}, CURR, BOUND) = NEXT(KEY{N}) .
+  eq expand(KEY{0}, CURR, BOUND) = expand(KEY, CURR, BOUND) .
+  eq expand(PV:PValue, CURR, BOUND) = PV:PValue .
+  eq expand(KEY, CURR, BOUND) = KEY{CURR} .
 
-  eq genFormula(OP1 ==== OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) ==== genFormula(OP2, CURR, BOUND) .
-  eq genFormula(OP1 <> OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) <> genFormula(OP2, CURR, BOUND) .
-  eq genFormula(OP1 <> OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) <> genFormula(OP2, CURR, BOUND) .
-  eq genFormula(OP1 < OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) < genFormula(OP2, CURR, BOUND) .
-  eq genFormula(OP1 > OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) > genFormula(OP2, CURR, BOUND) .
-  eq genFormula(OP1 <= OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) <= genFormula(OP2, CURR, BOUND) .
-  eq genFormula(OP1 >= OP2, CURR, BOUND) = genFormula(OP1, CURR, BOUND) >= genFormula(OP2, CURR, BOUND) .
+  eq expand(OP1 ==== OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) ==== expand(OP2, CURR, BOUND) .
+  eq expand(OP1 <> OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) <> expand(OP2, CURR, BOUND) .
+  eq expand(OP1 <> OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) <> expand(OP2, CURR, BOUND) .
+  eq expand(OP1 < OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) < expand(OP2, CURR, BOUND) .
+  eq expand(OP1 > OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) > expand(OP2, CURR, BOUND) .
+  eq expand(OP1 <= OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) <= expand(OP2, CURR, BOUND) .
+  eq expand(OP1 >= OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) >= expand(OP2, CURR, BOUND) .
 
-  eq genFormula(NOT COND, CURR, BOUND) = (NOT genFormula(COND, CURR, BOUND)) .
-  eq genFormula(COND AND COND2, CURR, BOUND) = genFormula(COND, CURR, BOUND) AND genFormula(COND2, CURR, BOUND) .
-  eq genFormula(COND OR COND2, CURR, BOUND) = genFormula(COND, CURR, BOUND) OR genFormula(COND2, CURR, BOUND) .
+  eq expand(NOT COND, CURR, BOUND) = (NOT expand(COND, CURR, BOUND)) .
+  eq expand(COND AND COND2, CURR, BOUND) = expand(COND, CURR, BOUND) AND expand(COND2, CURR, BOUND) .
+  eq expand(COND OR COND2, CURR, BOUND) = expand(COND, CURR, BOUND) OR expand(COND2, CURR, BOUND) .
 
   --- IMPLICATION
-  eq genFormula(COND ==> COND2, CURR, BOUND) 
-   = (NOT genFormula(COND, CURR, BOUND)) OR genFormula(COND2, CURR, BOUND) .
+  eq expand(COND ==> COND2, CURR, BOUND) 
+   = (NOT expand(COND, CURR, BOUND)) OR expand(COND2, CURR, BOUND) .
   --- NEXT
- ceq genFormula(NEXT(COND), CURR, BOUND) = genFormula(COND, CURR + 1, BOUND) if BOUND > CURR .
- ceq genFormula(NEXT(COND), CURR, BOUND) = FALSE if CURR >= BOUND .
- ceq genFormula(WNEXT(COND), CURR, BOUND) = genFormula(COND, CURR + 1, BOUND) if BOUND > CURR .
- ceq genFormula(WNEXT(COND), CURR, BOUND) = TRUE if CURR >= BOUND .
+ ceq expand(NEXT(COND), CURR, BOUND) = expand(COND, CURR + 1, BOUND) if BOUND > CURR .
+ ceq expand(NEXT(COND), CURR, BOUND) = FALSE if CURR >= BOUND .
+ ceq expand(WNEXT(COND), CURR, BOUND) = expand(COND, CURR + 1, BOUND) if BOUND > CURR .
+ ceq expand(WNEXT(COND), CURR, BOUND) = TRUE if CURR >= BOUND .
  --- FINALLY
-  eq genFormula(FINALLY(COND), CURR, BOUND) = genFormula(COND, CURR, BOUND) OR genFormula(NEXT(FINALLY(COND)), CURR, BOUND) .
+  eq expand(FINALLY(COND), CURR, BOUND) = expand(COND, CURR, BOUND) OR expand(NEXT(FINALLY(COND)), CURR, BOUND) .
   --- GLOBALLY
-  eq genFormula(GLOBALLY(COND), CURR, BOUND) = genFormula(COND, CURR, BOUND) AND genFormula(WNEXT(GLOBALLY(COND)), CURR, BOUND) .
+  eq expand(GLOBALLY(COND), CURR, BOUND) = expand(COND, CURR, BOUND) AND expand(WNEXT(GLOBALLY(COND)), CURR, BOUND) .
   --- UNTIL
-  eq genFormula(COND UNTIL COND2, CURR, BOUND) = genFormula(COND2, CURR, BOUND) OR (genFormula(COND, CURR, BOUND) AND NEXT(COND UNTIL COND2)) .
+  eq expand(COND UNTIL COND2, CURR, BOUND) = expand(COND2, CURR, BOUND) OR (expand(COND, CURR, BOUND) AND NEXT(COND UNTIL COND2)) .
 endm
 
 --- starting new cycle
