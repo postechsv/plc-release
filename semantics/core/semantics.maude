@@ -582,7 +582,7 @@ mod SCHEDULING-SEMANTICS is
   ops @input @output @timerUpdate : -> KLabel [ctor] .
   ops @takeInput @writeOutput : List{PExp} -> KLabel [ctor] .  
   op getVarList : SKSet Pid ~> List{PExp} .
-  eq getVarList(PNAME :: VAR nnn INVARS, PNAME)
+  eq getVarList(PNAME :: VAR ;;; INVARS, PNAME)
    = (VAR, getVarList(INVARS, PNAME)) . 
   eq getVarList(INVARS, PNAME) = nilPExpList [owise] .
 

@@ -69,7 +69,7 @@ fmod STREAM is
   sort SKSet .
   subsort StreamKey < SKSet . 
   op emptySKSet : -> SKSet [ctor] .
-  op _nnn_ : SKSet SKSet -> SKSet [ctor assoc comm id: emptySKSet] .
+  op _;;;_ : SKSet SKSet -> SKSet [ctor assoc comm id: emptySKSet] .
   op setDiff : SKSet SKSet ~> SKSet .
   op streamKeySet : StreamMap ~> SKSet .
   op genEmptyStream : SKSet ~> StreamMap .
@@ -79,20 +79,20 @@ fmod STREAM is
   var SEQ : List{StreamValue} .
   var RESTMAP : StreamMap .
 
-  eq KEY nnn KEY = KEY .
+  eq KEY ;;; KEY = KEY .
 
   eq minSize(KEY |-> SEQ) = len(SEQ) .
   eq minSize((KEY |-> SEQ), RESTMAP) = min(len(SEQ), minSize(RESTMAP)) .
 
   eq setDiff(SKS1, emptySKSet) = SKS1 .
-  eq setDiff((KEY nnn SKS1), (KEY nnn SKS2)) = setDiff(SKS1, SKS2) .
-  eq setDiff(SKS1, (KEY nnn SKS2)) = setDiff(SKS1, SKS2) [owise] .
+  eq setDiff((KEY ;;; SKS1), (KEY ;;; SKS2)) = setDiff(SKS1, SKS2) .
+  eq setDiff(SKS1, (KEY ;;; SKS2)) = setDiff(SKS1, SKS2) [owise] .
 
   eq streamKeySet(empty) = emptySKSet .
-  eq streamKeySet((KEY |-> SEQ), RESTMAP) = (KEY nnn streamKeySet(RESTMAP)) . 
+  eq streamKeySet((KEY |-> SEQ), RESTMAP) = (KEY ;;; streamKeySet(RESTMAP)) . 
 
   eq genEmptyStream(emptySKSet) = empty .
-  eq genEmptyStream((KEY nnn SKS1)) = ((KEY |-> nilSemanticList), genEmptyStream(SKS1)) .
+  eq genEmptyStream((KEY ;;; SKS1)) = ((KEY |-> nilSemanticList), genEmptyStream(SKS1)) .
 
   --- adapter
   sort Adapter .
@@ -181,17 +181,17 @@ fmod LTLFORMULA is
   eq collectKeySet(WNEXT(COND)) = collectKeySet(COND) .
 
   eq collectKeySet(NOT COND) = collectKeySet(COND) .
-  eq collectKeySet(COND AND COND2) = ((collectKeySet(COND) nnn collectKeySet(COND2))) .
-  eq collectKeySet(COND OR COND2) = ((collectKeySet(COND) nnn collectKeySet(COND2))) .
-  eq collectKeySet(COND ==> COND2) = ((collectKeySet(COND) nnn collectKeySet(COND2))) .
-  eq collectKeySet(COND UNTIL COND2) = ((collectKeySet(COND) nnn collectKeySet(COND2))) .
-  eq collectKeySet(OP1 > OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 >= OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 < OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 <= OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 ==== OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 <> OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
-  eq collectKeySet(OP1 <> OP2) = collectKeySet(OP1) nnn collectKeySet(OP2) . 
+  eq collectKeySet(COND AND COND2) = ((collectKeySet(COND) ;;; collectKeySet(COND2))) .
+  eq collectKeySet(COND OR COND2) = ((collectKeySet(COND) ;;; collectKeySet(COND2))) .
+  eq collectKeySet(COND ==> COND2) = ((collectKeySet(COND) ;;; collectKeySet(COND2))) .
+  eq collectKeySet(COND UNTIL COND2) = ((collectKeySet(COND) ;;; collectKeySet(COND2))) .
+  eq collectKeySet(OP1 > OP2) = collectKeySet(OP1) ;;; collectKeySet(OP2) . 
+  eq collectKeySet(OP1 >= OP2) = collectKeySet(OP1) ;;; collectKeySet(OP2) . 
+  eq collectKeySet(OP1 < OP2) = collectKeySet(OP1) ;;; collectKeySet(OP2) . 
+  eq collectKeySet(OP1 <= OP2) = collectKeySet(OP1) ;;; collectKeySet(OP2) . 
+  eq collectKeySet(OP1 ==== OP2) = collectKeySet(OP1) ;;; collectKeySet(OP2) . 
+  eq collectKeySet(OP1 <> OP2) = collectKeySet(OP1) ;;; collectKeySet(OP2) . 
+  eq collectKeySet(OP1 <> OP2) = collectKeySet(OP1) ;;; collectKeySet(OP2) . 
   eq collectKeySet(KEY{N}) = KEY . --- concrete base case
   eq collectKeySet(KEY) = KEY . --- symbolic base case
   eq collectKeySet(OP1) = emptySKSet [owise] .
