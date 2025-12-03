@@ -205,9 +205,9 @@ class ReqFileTranslator:
 "  strat noMem @ KConfig .\n" \
 "  strat pjRed @ KConfig .\n" \
 "  strat rest @ KConfig .\n" \
-"  sd noMem := localLookup | globalLookup | fbcall | return | arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .\n" \
+"  sd noMem := lookup | localAssign | fbcall | return | arrayLookup | array | iteTrue | iteFalse | IFTRUE | IFFALSE | IFFALSE-ELSIF | IFFALSE-ELSE | caseMatch | caseMatchRanged | caseNotMatch | caseNotMatchRanged | arrayArgBind .\n" \
 "  sd pjRed := placeJob-por | placeJob-wait-por .\n" \
-"  sd rest := localAssign | globalAssign | globalLookup | schedule | endProgram | preempt | placeJob | placeJob-wait . \n" \
+"  sd rest :=  globalAssign | schedule | endProgram | preempt | placeJob | placeJob-wait . \n" \
 "  sd porStep := (noMem ? idle : ((pjRed ? idle : rest) | tick)) .\n" \
 "  strat goalState @ KConfig .\n" \
 "  sd goalState := match constraints(CONST)\n" \

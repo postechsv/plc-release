@@ -52,11 +52,11 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 
   op @store : Location SemanticValue -> KLabel [ctor] .
  crl [localAssign] : task(k(@store(LOCATION,V) ~> K) REST) store(STORE) 
-   = task(k(K) REST) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
+  => task(k(K) REST) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
   if loc(LOCINDEX, TYPE, false) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
  crl [globalAssign] : task(k(@store(LOCATION,V) ~> K) REST) store(STORE) 
-   = task(k(K) REST) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
+  => task(k(K) REST) store(insert(LOCATION, conversion0and1toBOOL(TYPE,V), STORE))
   if loc(LOCINDEX, TYPE, true) := LOCATION /\ $hasMapping(STORE,LOCATION) .
 
   eq task(k(I := V ~> K) callStack(ENV :: ENVSTACK) REST)
@@ -77,8 +77,8 @@ mod ASSIGNMENT-LOOKUP-SEMANTICS is
 
   --- Pid
   --- global
-  crl [lookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST)
-   => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) .
+  rl [lookup] : task(k(I ~> K) callStack(ENV :: ENVSTACK) REST)
+  => task(k(@lookup(ENV[I]) ~> K) callStack(ENV :: ENVSTACK) REST) .
 
  --- _._._._
   eq task(k(InsLoc(INSLOC) . I ~> K)                 REST) inss(INSS) 
@@ -458,6 +458,7 @@ mod STREAM-EXTENSION is
   var LOCTYPE : PType .
   var LOCN : Nat . 
   var SKSET : SKSet .
+  var G : Bool .
 
   op transformISKey : StreamMap ~> StreamMap .
 
@@ -575,7 +576,7 @@ mod SCHEDULING-SEMANTICS is
   ops @input @output @timerUpdate : -> KLabel [ctor] .
   ops @takeInput @writeOutput : List{PExp} -> KLabel [ctor] .  
   op getVarList : SKSet Pid ~> List{PExp} .
-  eq getVarList(PNAME :: VAR ;;; INVARS, PNAME)
+  eq getVarList(PNAME :: VAR ;;;; INVARS, PNAME)
    = (VAR, getVarList(INVARS, PNAME)) . 
   eq getVarList(INVARS, PNAME) = nilPExpList [owise] .
 
