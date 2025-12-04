@@ -2,8 +2,8 @@ PROGRAMS
 timer([1, 250, 0]) ;;
 nsCar([2, 500, 0]) ;;
 ewCar([2, 500, 0]) ;;
-nsPed([2, 500, 0]) ;;
-ewPed([2, 500, 0]) ;;
+nsPed([2, 250, 0]) ;;
+ewPed([2, 250, 0]) ;;
 PROGRAMSEND
 
 TYPE
