@@ -188,10 +188,10 @@ class ReqFileTranslator:
 "              ) . \n" \
 "  eq ranges = genRanges(app, bound) . \n"\
 "  eq is = genIS(annotateType(rawis, app), ranges) .  \n" \
-"  eq os = genEmptyStream(setDiff(collectKeySet(cond), streamKeySet(transformISKey(is)))) .\n" \
+"  eq os = genEmptyStream(setDiff(collectKeySet(cond), streamKeySet(rename(is)))) .\n" \
 "  eq am = ( \n" + visitor.AMAP + \
 "           ) . \n" \
-"  eq appExt = app maxTime(bound) inStream(is) outStream(os) inVars(streamKeySet(is)) outVars(streamKeySet(os)) LTLCondition(cond). \n" \
+"  eq appExt = app maxTime(bound) inStream(is) outStream(os) streamVars(composeSV(streamKeySet(is), streamKeySet(os))) LTLCondition(cond). \n" \
 "  var CONST : SemanticValue . \n" \
 "  vars IS' OS' : StreamMap . \n" \
 " ceq log(LOG:Log) = log(emptyLog) if LOG:Log =/= emptyLog . \n" \
@@ -213,7 +213,7 @@ class ReqFileTranslator:
 "  sd goalState := match constraints(CONST)\n" \
 "                        outStream(OS') REST \n" \
 "                  s.t. \n" \
-"checkSAT((adapt((transformISKey(is), OS'), am) |= genFormula(NOT cond, 0, srange - 1)) AND CONST) . \n" \
+"checkSAT(eval(expand(NOT cond, 0, adaptedLength(is, am), adaptedLength(OS', am), false) AND CONST, adapt((rename(is), OS'), am))) . \n"  \
 "  strat porStar @ KConfig .\n" \
 "  sd porStar := (porStep *) .\n" \
 "  strat noPor @ KConfig .\n" \

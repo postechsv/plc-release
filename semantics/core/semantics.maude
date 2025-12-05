@@ -391,6 +391,7 @@ mod STREAM-SEMANTICS is
 
   op _{_} : StreamKey Nat -> PProperExp [prec 1] .
   op _|=_ : StreamMap PExp -> [SemanticValue] .
+  op eval : PExp StreamMap -> [SemanticValue] .
   op @_|=_ : StreamMap KConfig -> [SemanticValue] .
   op @_|=_ : StreamMap PValue -> [SemanticValue] .
 
@@ -401,6 +402,7 @@ mod STREAM-SEMANTICS is
  ceq refer(VAL, (NN:Nat)) = UNKNOWNOUTPUTVAL if NN:Nat > 0 .
   eq refer(nilSemanticList, NN:Nat) = UNKNOWNOUTPUTVAL .
 
+  eq eval(EXP, STREAM) = STREAM |= EXP .
   eq STREAM |= EXP = @ STREAM |= k(EXP) .
 
   eq (@ STREAM |= k(UNKNOWNOUTPUTVAL)) = syn2sem(FALSE) .  
@@ -446,7 +448,7 @@ mod STREAM-EXTENSION is
   vars RESTMAP RESTMAP2 : [StreamMap] .
   vars KCF INSS : KConfig .
   vars STORE : Map{Location, SemanticValue} .
-  vars N CURR BOUND NEWVARNUM NEWVARNUM1 NEWVARNUM2 : Nat .
+  vars N CURR BOUND NEWVARNUM NEWVARNUM1 NEWVARNUM2 SS : Nat .
   vars E E1 E2 E3: StreamValue .
   var FVAR : SemanticValue .
   var FN : Pid .
@@ -458,12 +460,12 @@ mod STREAM-EXTENSION is
   var LOCTYPE : PType .
   var LOCN : Nat . 
   var SKSET : SKSet .
-  var G : Bool .
+  vars G B : Bool .
 
-  op transformISKey : StreamMap ~> StreamMap .
+  op rename : StreamMap ~> StreamMap .
 
-  eq transformISKey(((FN :: ID  |-> SEQ), RESTMAP)) = ((I[FN :: ID] |-> SEQ), transformISKey(RESTMAP)) .
-  eq transformISKey(empty) = empty .
+  eq rename(((FN :: ID  |-> SEQ), RESTMAP)) = ((I[FN :: ID] |-> SEQ), rename(RESTMAP)) .
+  eq rename(empty) = empty .
 
   --- sym variable generation
   op @genSym : StreamKey PType Nat ~> List{StreamValue} .
@@ -488,43 +490,45 @@ mod STREAM-EXTENSION is
   eq streamLength(((KEY |-> SEQ), RESTMAP)) = @size(SEQ) .
 
   op genFormula : LTLFormula Nat Nat ~> PExp . --- legacy
-  op expand : LTLFormula Nat Nat ~> PExp .
-  eq genFormula(LTLF:LTLFormula, CURR, BOUND) = expand(LTLF:LTLFormula, CURR, BOUND) .
+  op expand : LTLFormula Nat Nat Nat Bool ~> PExp .
+---  eq genFormula(LTLF:LTLFormula, CURR, BOUND) = expand(LTLF:LTLFormula, CURR, BOUND) .
 
   --- base
-  eq expand(emptyLTLFormula, CURR, BOUND) = emptyLTLFormula .
+  eq expand(emptyLTLFormula, CURR, BOUND, SS, B) = emptyLTLFormula .
 ---  eq expand(FVAR, CURR, BOUND) = FVAR .
-  eq expand(KEY{s N}, CURR, BOUND) = NEXT(KEY{N}) .
-  eq expand(KEY{0}, CURR, BOUND) = expand(KEY, CURR, BOUND) .
-  eq expand(PV:PValue, CURR, BOUND) = PV:PValue .
-  eq expand(KEY, CURR, BOUND) = KEY{CURR} .
+  eq expand(KEY{s N}, CURR, BOUND, SS, B) = NEXT(KEY{N}) .
+  eq expand(KEY{0}, CURR, BOUND, SS, B) = expand(KEY, CURR, BOUND, SS, B) .
+  eq expand(PV:PValue, CURR, BOUND, SS, B) = PV:PValue .
+  eq expand(KEY, CURR, BOUND, SS, B) = KEY{CURR} .
 
-  eq expand(OP1 ==== OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) ==== expand(OP2, CURR, BOUND) .
-  eq expand(OP1 <> OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) <> expand(OP2, CURR, BOUND) .
-  eq expand(OP1 <> OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) <> expand(OP2, CURR, BOUND) .
-  eq expand(OP1 < OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) < expand(OP2, CURR, BOUND) .
-  eq expand(OP1 > OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) > expand(OP2, CURR, BOUND) .
-  eq expand(OP1 <= OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) <= expand(OP2, CURR, BOUND) .
-  eq expand(OP1 >= OP2, CURR, BOUND) = expand(OP1, CURR, BOUND) >= expand(OP2, CURR, BOUND) .
+  eq expand(OP1 ==== OP2, CURR, BOUND, SS, B) = expand(OP1, CURR, BOUND, SS, B) ==== expand(OP2, CURR, BOUND, SS, B) .
+  eq expand(OP1 <> OP2, CURR, BOUND, SS, B) = expand(OP1, CURR, BOUND, SS, B) <> expand(OP2, CURR, BOUND, SS, B) .
+  eq expand(OP1 <> OP2, CURR, BOUND, SS, B) = expand(OP1, CURR, BOUND, SS, B) <> expand(OP2, CURR, BOUND, SS, B) .
+  eq expand(OP1 < OP2, CURR, BOUND, SS, B) = expand(OP1, CURR, BOUND, SS, B) < expand(OP2, CURR, BOUND, SS, B) .
+  eq expand(OP1 > OP2, CURR, BOUND, SS, B) = expand(OP1, CURR, BOUND, SS, B) > expand(OP2, CURR, BOUND, SS, B) .
+  eq expand(OP1 <= OP2, CURR, BOUND, SS, B) = expand(OP1, CURR, BOUND, SS, B) <= expand(OP2, CURR, BOUND, SS, B) .
+  eq expand(OP1 >= OP2, CURR, BOUND, SS, B) = expand(OP1, CURR, BOUND, SS, B) >= expand(OP2, CURR, BOUND, SS, B) .
 
-  eq expand(NOT COND, CURR, BOUND) = (NOT expand(COND, CURR, BOUND)) .
-  eq expand(COND AND COND2, CURR, BOUND) = expand(COND, CURR, BOUND) AND expand(COND2, CURR, BOUND) .
-  eq expand(COND OR COND2, CURR, BOUND) = expand(COND, CURR, BOUND) OR expand(COND2, CURR, BOUND) .
+  eq expand(NOT COND, CURR, BOUND, SS, B) = (NOT expand(COND, CURR, BOUND, SS, not B)) .
+  eq expand(COND AND COND2, CURR, BOUND, SS, B) = expand(COND, CURR, BOUND, SS, B) AND expand(COND2, CURR, BOUND, SS, B) .
+  eq expand(COND OR COND2, CURR, BOUND, SS, B) = expand(COND, CURR, BOUND, SS, B) OR expand(COND2, CURR, BOUND, SS, B) .
 
   --- IMPLICATION
-  eq expand(COND ==> COND2, CURR, BOUND) 
-   = (NOT expand(COND, CURR, BOUND)) OR expand(COND2, CURR, BOUND) .
+  eq expand(COND ==> COND2, CURR, BOUND, SS, B) 
+   = (NOT expand(COND, CURR, BOUND, SS, B)) OR expand(COND2, CURR, BOUND, SS, B) .
   --- NEXT
- ceq expand(NEXT(COND), CURR, BOUND) = expand(COND, CURR + 1, BOUND) if BOUND > CURR .
- ceq expand(NEXT(COND), CURR, BOUND) = FALSE if CURR >= BOUND .
- ceq expand(WNEXT(COND), CURR, BOUND) = expand(COND, CURR + 1, BOUND) if BOUND > CURR .
- ceq expand(WNEXT(COND), CURR, BOUND) = TRUE if CURR >= BOUND .
+
+  eq expand(NEXT(COND), CURR, BOUND, SS, B) 
+   = if CURR >= SS then (if B then TRUE else FALSE fi) else (if CURR + 1 >= BOUND then FALSE else expand(COND, CURR + 1, BOUND, SS, B) fi) fi .
+  eq expand(WNEXT(COND), CURR, BOUND, SS, B) 
+   = if CURR >= SS then (if B then TRUE else FALSE fi) else (if CURR + 1 >= BOUND then  TRUE else expand(COND, CURR + 1, BOUND, SS, B) fi) fi .
+
  --- FINALLY
-  eq expand(FINALLY(COND), CURR, BOUND) = expand(COND, CURR, BOUND) OR expand(NEXT(FINALLY(COND)), CURR, BOUND) .
+  eq expand(FINALLY(COND), CURR, BOUND, SS, B) = expand(COND, CURR, BOUND, SS, B) OR expand(NEXT(FINALLY(COND)), CURR, BOUND, SS, B) .
   --- GLOBALLY
-  eq expand(GLOBALLY(COND), CURR, BOUND) = expand(COND, CURR, BOUND) AND expand(WNEXT(GLOBALLY(COND)), CURR, BOUND) .
+  eq expand(GLOBALLY(COND), CURR, BOUND, SS, B) = expand(COND, CURR, BOUND, SS, B) AND expand(WNEXT(GLOBALLY(COND)), CURR, BOUND, SS, B) .
   --- UNTIL
-  eq expand(COND UNTIL COND2, CURR, BOUND) = expand(COND2, CURR, BOUND) OR (expand(COND, CURR, BOUND) AND NEXT(COND UNTIL COND2)) .
+  eq expand(COND UNTIL COND2, CURR, BOUND, SS, B) = expand(COND2, CURR, BOUND, SS, B) OR (expand(COND, CURR, BOUND, SS, B) AND NEXT(COND UNTIL COND2)) .
 endm
 
 --- starting new cycle
@@ -554,10 +558,10 @@ mod SCHEDULING-SEMANTICS is
   var LTLRESULT LTLRESULT' : checkSATResult .
   vars FVARMAP FVARMAP' FVARMAP'' : FreshVarMap .
   var FVARMAPFORMULA : LTLFormula .
-  vars SQ Q1 Q2 : JobList .
-  vars JOBS JS1 JS2 : JobSet .
+  vars SQ Q1 Q2 : TaskList .
+  vars JOBS JS1 JS2 : TaskSet .
   var IM : Map{ProcessId, Nat} .
-  vars INVARS OUTVARS : SKSet .
+  vars INVARS OUTVARS : IdSet .
   var VAR : PExp .
   var VARS : List{PExp} .
   var VAL : SemanticValue .
@@ -572,27 +576,29 @@ mod SCHEDULING-SEMANTICS is
   var ENVSTACK : ProgramStack .
   var TYPE : PType .
   var RA : Qid .
+  var AMAP : AdapterMap .
+  var SV : StreamVars .
 
   ops @input @output @timerUpdate : -> KLabel [ctor] .
   ops @takeInput @writeOutput : List{PExp} -> KLabel [ctor] .  
-  op getVarList : SKSet Pid ~> List{PExp} .
-  eq getVarList(PNAME :: VAR ;;;; INVARS, PNAME)
-   = (VAR, getVarList(INVARS, PNAME)) . 
-  eq getVarList(INVARS, PNAME) = nilPExpList [owise] .
+  op getVarList : IdSet ~> List{PExp} .
+  eq getVarList(VAR ;;;; INVARS)
+   = (VAR, getVarList(INVARS)) . 
+  eq getVarList(INVARS) = nilPExpList [owise] .
 
   eq task(id(PRID) k(@input ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
-     inVars(INVARS)
-   = task(id(PRID) k(@takeInput(getVarList(INVARS, PNAME)) ~> K) REST)
+     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV))
+   = task(id(PRID) k(@takeInput(getVarList(INVARS)) ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
-     inVars(INVARS) . 
+     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
 
   eq task(id(PRID) k(@output ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
-     outVars(OUTVARS)
-   = task(id(PRID) k(@writeOutput(getVarList(OUTVARS, PNAME)) ~> K) REST)
+     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV))
+   = task(id(PRID) k(@writeOutput(getVarList(OUTVARS)) ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
-     outVars(OUTVARS) . 
+     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
 
   eq k(@takeInput(nilPExpList) ~> K)
    = k(K) .
@@ -640,20 +646,27 @@ mod SCHEDULING-SEMANTICS is
   op empty : -> Ranges [ctor] .
   op __ : Ranges Ranges -> Ranges [ctor assoc comm id: empty] .
   op _|->_ : Pid Nat -> Range [ctor] .
+
+
+  op streamLength : StreamMap ~> Nat .
+  eq streamLength(((PNAME :: VAR |-> SSEQ), STREAM)) = len(SSEQ) .
+  
+  op adaptedLength : StreamMap AdapterMap ~> Nat .
+  eq adaptedLength(STREAM, AMAP) = streamLength(adapt(STREAM, AMAP)) . 
  
   op genRanges : KConfig Nat ~> Ranges .
   eq genRanges(inss(ins(fbtype(PNAME) id(PRID) REST) RESTINSS) 
                interval((PRID |-> INTERVAL, IM))
-               futureJobs((JS1 @j(PRID, PR, ES, DL))) REST2, MAXTIME)
+               futureTS((JS1 @t(PRID, PR, ES, DL))) REST2, MAXTIME)
              = (PNAME |-> ((MAXTIME - ES) quo INTERVAL)) genRanges(
                inss(RESTINSS) REST2
                interval((PRID |-> INTERVAL, IM))
-               futureJobs((JS1 @j(PRID, PR, ES, DL))), MAXTIME) .
+               futureTS((JS1 @t(PRID, PR, ES, DL))), MAXTIME) .
 
   eq genRanges(REST, MAXTIME) = empty [owise] .
 
   op srange : Ranges AdapterMap ~> Nat .
-  eq srange(((PNAME |-> N) RR), ((PNAME |-> AD:Adapter / M), AMAP:AdapterMap))
+  eq srange(((PNAME |-> N) RR), ((PNAME |-> AD:Adapter / M), AMAP))
    = N quo M + (if N rem M > 0 then 1 else 0 fi) .
 
   op genIS : StreamMap Ranges ~> StreamMap .
@@ -785,42 +798,29 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(K) REST)
      inss(ins(timer(@timer(TNAT + syn2sem(T# INTERVAL ms))) REST2) RESTINSS) .
 
----(
- ceq [invalid] :
-     globalTime(MCT)
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(PRID) k(K) REST)
-     futureJobs(@j(PRID2, PR2, ES2, DL2) JOBS)
-   = globalTime(MCT)
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     task(id(- PRID) k(@block ~> K) REST)
-     futureJobs(@j(PRID2, PR2, ES2, DL2) JOBS)
-  if DL2 < MCT .
----)
-
   --- is minimum current time necessary?
   rl [schedule] :
      log(LOG) 
-     activeJob(None)
-     sQueue((@j(PRID, PR, ES, DL), SQ))
+     active(None)
+     pQueue((@t(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(@block ~> K) REST)
   => log(LOG (getProgramName(PRID), 'schedule, syn2sem(# ES))) 
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     sQueue((@j(PRID, PR, ES, DL), SQ))
+     active(PRID)
+     pQueue((@t(PRID, PR, ES, DL), SQ))
      task(id(PRID) k(K) REST) .
 
   rl [endProgram] :
      log(LOG) 
-     activeJob(Some(@j(PRID, PR, ES, DL)))
+     active(PRID)
      task(id(PRID) k(.K) REST)
-     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
-     futureJobs(JOBS)
+     pQueue((Q1, @t(PRID, PR, ES, DL), Q2))
+     futureTS(JOBS)
      interval((PRID |-> INTERVAL, IM))
   => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES))) 
-     activeJob(None)
+     active(None)
      task(id(PRID) k(.K) REST)
-     sQueue((Q1, Q2))
-     futureJobs((JOBS @j(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
+     pQueue((Q1, Q2))
+     futureTS((JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
      interval((PRID |-> INTERVAL, IM)) .
 
 
@@ -832,79 +832,79 @@ mod SCHEDULING-SEMANTICS is
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S) .
 
-  op isFirst : JobList Job ~> Bool .
-  eq isFirst((@j(PRID, PR, ES, DL), Q1), @j(PRID, PR, ES, DL)) = true .
-  eq isFirst(Q1, @j(PRID, PR, ES, DL)) = false [owise] .
+  op isFirst : TaskList Task ~> Bool .
+  eq isFirst((@t(PRID, PR, ES, DL), Q1), @t(PRID, PR, ES, DL)) = true .
+  eq isFirst(Q1, @t(PRID, PR, ES, DL)) = false [owise] .
 
  crl [placeJob-por] :
      log(LOG) 
      globalTime(MINT, MAXT)
-     futureJobs((@j(PRID, PR, ES, DL) JOBS))
-     sQueue(SQ)
+     futureTS((@t(PRID, PR, ES, DL) JOBS))
+     pQueue(SQ)
      task(id(PRID) k(.K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) 
      globalTime(MINT, MAXT)
-     futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     futureTS(JOBS)
+     pQueue(add(SQ, @t(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
   if ES < MAXT
-  /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
+  /\ not isFirst(add(SQ, @t(PRID, PR, ES, DL)), @t(PRID, PR, ES, DL)) .
 
 
  crl [placeJob] :
      log(LOG) 
      globalTime(MINT, MAXT)
-     futureJobs((@j(PRID, PR, ES, DL) JOBS))
-     sQueue(SQ)
+     futureTS((@t(PRID, PR, ES, DL) JOBS))
+     pQueue(SQ)
      task(id(PRID) k(.K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) 
      globalTime(MINT, MAXT)
-     futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     futureTS(JOBS)
+     pQueue(add(SQ, @t(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
   if ES < MAXT
-  /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
+  /\ isFirst(add(SQ, @t(PRID, PR, ES, DL)), @t(PRID, PR, ES, DL)) .
 
  crl [placeJob-wait-por] :
      log(LOG) 
      globalTime(MINT, MAXT)
-     futureJobs((@j(PRID, PR, ES, DL) JOBS))
-     sQueue(SQ)
+     futureTS((@t(PRID, PR, ES, DL) JOBS))
+     pQueue(SQ)
      task(id(PRID) k(@block ~> K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) 
      globalTime(MINT, MAXT)
-     futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     futureTS(JOBS)
+     pQueue(add(SQ, @t(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
   if ES < MAXT
-  /\ not isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
+  /\ not isFirst(add(SQ, @t(PRID, PR, ES, DL)), @t(PRID, PR, ES, DL)) .
 
  crl [placeJob-wait] :
      log(LOG) 
      globalTime(MINT, MAXT)
-     futureJobs((@j(PRID, PR, ES, DL) JOBS))
-     sQueue(SQ)
+     futureTS((@t(PRID, PR, ES, DL) JOBS))
+     pQueue(SQ)
      task(id(PRID) k(@block ~> K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
      globalTime(MINT, MAXT)
-     futureJobs(JOBS)
-     sQueue(add(SQ, @j(PRID, PR, ES, DL)))
+     futureTS(JOBS)
+     pQueue(add(SQ, @t(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
   if ES < MAXT
-  /\ isFirst(add(SQ, @j(PRID, PR, ES, DL)), @j(PRID, PR, ES, DL)) .
+  /\ isFirst(add(SQ, @t(PRID, PR, ES, DL)), @t(PRID, PR, ES, DL)) .
 
 
   rl [preempt] :
      log(LOG)
-     activeJob(Some(@j(PRID2, PR2, ES2, DL2)))
-     sQueue((@j(PRID, PR, ES, DL), Q1,
-             @j(PRID2, PR2, ES2, DL2), Q2))
+     active(PRID2)
+     pQueue((@t(PRID, PR, ES, DL), Q1,
+             @t(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(@block ~> K1) REST)
      task(id(PRID2) k(K2) REST2)
   => log(LOG (getProgramName(PRID), 'preempt, syn2sem(# ES)))
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     sQueue((@j(PRID, PR, ES, DL), Q1,
-             @j(PRID2, PR2, ES2, DL2), Q2))
+     active(PRID)
+     pQueue((@t(PRID, PR, ES, DL), Q1,
+             @t(PRID2, PR2, ES2, DL2), Q2))
      task(id(PRID) k(K1) REST)
      task(id(PRID2) k(@block ~> K2) REST2) .
 
@@ -915,31 +915,31 @@ mod SCHEDULING-SEMANTICS is
      inss(ins(id(PRID) fbtype(PNAME) REST) INSS) .
 
 
- ceq futureJobs(JOBS @j(PRID, PR, ES, DL)) maxTime(MAXTIME)
-   = futureJobs(JOBS) maxTime(MAXTIME)
+ ceq futureTS(JOBS @t(PRID, PR, ES, DL)) maxTime(MAXTIME)
+   = futureTS(JOBS) maxTime(MAXTIME)
   if ES >= MAXTIME .
 
-  op maxES : JobList ~> Nat .
-  op minDL : JobList ~> Nat .
-  op minDL : JobSet ~> Nat .
+  op maxES : TaskList ~> Nat .
+  op minDL : TaskList ~> Nat .
+  op minDL : TaskSet ~> Nat .
 
   eq maxES(emptyJList) = 0 .
-  eq maxES((@j(PRID, PR, ES, DL), SQ)) = max(ES, maxES(SQ)) .
+  eq maxES((@t(PRID, PR, ES, DL), SQ)) = max(ES, maxES(SQ)) .
 
   eq minDL(emptyJList) = 1000000 .
   eq minDL(emptyJSet) = 1000000 .
 
-  eq minDL((@j(PRID, PR, ES, DL), SQ)) = min(DL, minDL(SQ)) .
-  eq minDL((@j(PRID, PR, ES, DL) JOBS)) = min(DL, minDL(JOBS)) .
+  eq minDL((@t(PRID, PR, ES, DL), SQ)) = min(DL, minDL(SQ)) .
+  eq minDL((@t(PRID, PR, ES, DL) JOBS)) = min(DL, minDL(JOBS)) .
 
 
  crl [tick] : 
      log(LOG)
      globalTime(MINT, MAXT)
-     sQueue(SQ) futureJobs(JOBS) maxTime(M)
+     pQueue(SQ) futureTS(JOBS) maxTime(M)
   => log(LOG (' , 'tick, placeHolder))
      globalTime(if SQ == emptyJList then MINT else maxES(SQ) fi, min(minDL(SQ), minDL(JOBS)))
-     sQueue(SQ) futureJobs(JOBS) maxTime(M)
+     pQueue(SQ) futureTS(JOBS) maxTime(M)
   if maxES(SQ) < M .
 endm
 
@@ -957,98 +957,23 @@ mod WAIT-SEMANTICS is
   vars D P : Nat .
   var REST : KConfig .
   vars PR ES DL IN WT N : Nat .
-  var JOBS : JobSet .
-  vars Q1 Q2 : JobList .
+  var JOBS : TaskSet .
+  vars Q1 Q2 : TaskList .
   var IM : Map{ProcessId, Nat} .
   var LOG : Log .
 
   eq k(WAIT(E) ~> K) = k(IF E THEN skip ; ELSE @release ; WAIT(E) ; ENDIF   ~> K) .
 
-  eq activeJob(Some(@j(PRID, PR, ES, DL)))
-     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
-     futureJobs(JOBS)
+  eq active(PRID)
+     pQueue((Q1, @t(PRID, PR, ES, DL), Q2))
+     futureTS(JOBS)
      interval((PRID |-> IN, IM))
      task(id(PRID) (k(@release ~> K)) REST)
-   = activeJob(None)
-     sQueue(Q1, Q2)
-     futureJobs((JOBS @j(PRID, PR, ES + IN, DL + IN)))
+   = active(None)
+     pQueue(Q1, Q2)
+     futureTS((JOBS @t(PRID, PR, ES + IN, DL + IN)))
      interval((PRID |-> IN, IM))
      task(id(PRID) (k(@output ~> @block ~> @input ~>  @timerUpdate ~> K)) REST) .
-
----(
- crl [waitTimeDecrease] :
-     log(LOG)
-     globalTime(MCT)
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
-     futureJobs(JOBS)
-     interval((PRID |-> IN, IM))
-     task(id(PRID) (k(WAITTIME(V1) ~> K)) REST)
-     constraints(CONST)
-  => log(LOG (getProgramName(PRID), 'waitTimeDecrease, V1))
-     globalTime(MCT)
-     activeJob(None)
-     sQueue(Q1, Q2)
-     futureJobs((JOBS @j(PRID, PR, ES + IN, DL + IN)))
-     interval((PRID |-> IN, IM))
-     task(id(PRID) (k(@output ~> @block ~> @input ~> @timerUpdate ~> WAITTIME(V1 - syn2sem(T# IN ms)) ~> K)) REST)
-     constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
-  if checkSAT(V1 > syn2sem(T# 0 ms)) .
-
-
- crl [waitTimeEnd] :
-     log(LOG)
-     globalTime(MCT)
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
-     futureJobs(JOBS)
-     interval((PRID |-> IN, IM))
-     task(id(PRID) (k(WAITTIME(V1) ~> K)) REST)
-     tindex(N)
-     constraints(CONST)
-  => log(LOG (getProgramName(PRID), 'waitTimeEnd, V1))
-     globalTime(MCT)
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
-     futureJobs(JOBS)
-     interval((PRID |-> IN, IM))
-     task(id(PRID) (k(K)) REST)
-     tindex(s N)
-     constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
-  if CONST' := CONST AND tv(N) < tv(s N) AND tv(s N) - syn2sem(# ES) >= V1 
-  /\ checkSAT(CONST') .
-
----( this works only in concrete case
- crl [WAITTIMEEND] :
-     globalTime(MCT)
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
-     futureJobs(JOBS)
-     interval((PRID |-> IN, IM))
-     task(id(PRID) (k(WAITTIME(V1) ~> K)) REST)
-  => globalTime(MCT + WT)
-     activeJob(Some(@j(PRID, PR, ES, DL)))
-     sQueue((Q1, @j(PRID, PR, ES, DL), Q2))
-     futureJobs(JOBS)
-     interval((PRID |-> IN, IM))
-     task(id(PRID) (k(K)) REST)
-  if checkSAT(V1 <= syn2sem(T# IN ms))
-  /\ V1 := T[WT]  .
----)
----)
-
----(
-  crl [WAITTIMEDECREASE] : jobQueue(PRID :: TKS) mainList(ML1 @m(PRID, D, P) ML2) 
-                           task(id(PRID) (k(WAITTIME(V1) ~> K)) REST) cycleTime(CT) constraints(CONST)
-     => decideWhatProcToRun(jobQueue(TKS), task( id(PRID) (k(WAITTIME(V1 - syn2sem(T# CT ms)) ~> K)) REST) )
-        mainList(ML1 @m(PRID, 1, P) ML2) 
-        cycleTime(CT)  constraints(simplify(CONST AND V1 > syn2sem(T# 0 ms)))
-        if checkSAT(V1 > syn2sem(T# 0 ms)) .
-
-  crl [WAITTIMEND] : jobQueue(PRID :: TKS) task(id(PRID)  (k(WAITTIME(V1) ~> K)) REST) constraints(CONST)
-   => jobQueue(PRID :: TKS) task(id(PRID)  (k(K)) REST) constraints(simplify(CONST AND V1 <= syn2sem(T# 0 ms)))
-   if checkSAT(V1 <= syn2sem(T# 0 ms)) .
----)
 endm
 
 --- semantics for time-related FBs (TON, ...)

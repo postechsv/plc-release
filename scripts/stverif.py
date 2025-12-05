@@ -23,44 +23,44 @@ def checkWhetherFailorNot(testOut, STEPSIZE, maudeFile, projectName, reqName):
 
     logfilePath = os.path.dirname(maudeFile) + "/" + projectName + "-" + reqName + '.log'
 
-    csvFile = open(os.path.dirname(maudeFile) + "/" + projectName + "-" + reqName + "-result" + '.csv', 'w', newline='')
+#    csvFile = open(os.path.dirname(maudeFile) + "/" + projectName + "-" + reqName + "-result" + '.csv', 'w', newline='')
 
-    csvWr = csv.writer(csvFile)
-    csvWr.writerow(['ProjectName', projectName])
-    csvWr.writerow(['RequirementFile', reqName])
+#    csvWr = csv.writer(csvFile)
+#    csvWr.writerow(['ProjectName', projectName])
+#    csvWr.writerow(['RequirementFile', reqName])
 
     if ("No solution." in testOut):
-        csvWr.writerow(['Result', "test succeeded"])
-        csvWr.writerow([" "])
+#        csvWr.writerow(['Result', "test succeeded"])
+#        csvWr.writerow([" "])
         print ("test succeeded")
 
     elif ("Solution" in testOut):
-        csvWr.writerow(['Result', "test failed"])
-        csvWr.writerow([" "])
+#        csvWr.writerow(['Result', "test failed"])
+#        csvWr.writerow([" "])
         print("test failed")
 
-        csvDataExtractor = csvTranslator.CSVTranslator(logfilePath, STEPSIZE)
-        csvInputResult, csvOutputResult, maxLength = csvDataExtractor.results()
+#        csvDataExtractor = csvTranslator.CSVTranslator(logfilePath, STEPSIZE)
+#        csvInputResult, csvOutputResult, maxLength = csvDataExtractor.results()
 
-        csvWr.writerow([" - ", " - ", "Step"])
-        csvWr.writerow(["VarName", "VarType"] + [i for i in range(maxLength)])
-        for varName in csvInputResult.keys():
-            listOfsteps = list()
-            for ith, singleVal in enumerate(csvInputResult[varName]):
-                listOfsteps.append(singleVal)
-            csvWr.writerow([varName, "IN"] + listOfsteps)
+#        csvWr.writerow([" - ", " - ", "Step"])
+#        csvWr.writerow(["VarName", "VarType"] + [i for i in range(maxLength)])
+#        for varName in csvInputResult.keys():
+#            listOfsteps = list()
+#            for ith, singleVal in enumerate(csvInputResult[varName]):
+#                listOfsteps.append(singleVal)
+#            csvWr.writerow([varName, "IN"] + listOfsteps)
 
-        for varName in csvOutputResult.keys():
-            listOfsteps = list()
-            for ith, singleVal in enumerate(csvOutputResult[varName]):
-                listOfsteps.append(singleVal)
-            csvWr.writerow([varName, "OUT"] + listOfsteps)
+#        for varName in csvOutputResult.keys():
+#            listOfsteps = list()
+#            for ith, singleVal in enumerate(csvOutputResult[varName]):
+#                listOfsteps.append(singleVal)
+ #           csvWr.writerow([varName, "OUT"] + listOfsteps)
     else:
-        csvWr.writerow(['Result', "run time error \nPlease check req file"])
+#        csvWr.writerow(['Result', "run time error \nPlease check req file"])
         print("run time error")
         print("Please check req file")
 
-    csvFile.close()
+#    csvFile.close()
 
 
 def makeFileToAnalyze(fullPathOfMaudeFile, searchFormat):
