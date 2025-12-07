@@ -816,12 +816,14 @@ mod SCHEDULING-SEMANTICS is
      pQueue((Q1, @t(PRID, PR, ES, DL), Q2))
      futureTS(JOBS)
      interval((PRID |-> INTERVAL, IM))
+     globalTime(MINT, MAXT)
   => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES))) 
      active(None)
      task(id(PRID) k(.K) REST)
      pQueue((Q1, Q2))
      futureTS((JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
-     interval((PRID |-> INTERVAL, IM)) .
+     interval((PRID |-> INTERVAL, IM))
+     globalTime(max(maxES((Q1, Q2)), ES), min(minDL((Q1, Q2)), minDL(JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)))) .
 
 
   eq [loadNBlock] :
@@ -843,7 +845,7 @@ mod SCHEDULING-SEMANTICS is
      pQueue(SQ)
      task(id(PRID) k(.K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) 
-     globalTime(MINT, MAXT)
+     globalTime(max(MINT, ES), MAXT)
      futureTS(JOBS)
      pQueue(add(SQ, @t(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
@@ -858,7 +860,7 @@ mod SCHEDULING-SEMANTICS is
      pQueue(SQ)
      task(id(PRID) k(.K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) 
-     globalTime(MINT, MAXT)
+     globalTime(max(MINT, ES), MAXT)
      futureTS(JOBS)
      pQueue(add(SQ, @t(PRID, PR, ES, DL)))
      task(id(PRID) k(@loadNBlock) REST) 
@@ -872,7 +874,7 @@ mod SCHEDULING-SEMANTICS is
      pQueue(SQ)
      task(id(PRID) k(@block ~> K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES))) 
-     globalTime(MINT, MAXT)
+     globalTime(max(MINT, ES), MAXT)
      futureTS(JOBS)
      pQueue(add(SQ, @t(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
@@ -886,7 +888,7 @@ mod SCHEDULING-SEMANTICS is
      pQueue(SQ)
      task(id(PRID) k(@block ~> K) REST)
   => log(LOG (getProgramName(PRID), 'placeJob, syn2sem(# ES)))
-     globalTime(MINT, MAXT)
+     globalTime(max(MINT, ES), MAXT)
      futureTS(JOBS)
      pQueue(add(SQ, @t(PRID, PR, ES, DL)))
      task(id(PRID) k(@block ~> K) REST) 
@@ -919,12 +921,11 @@ mod SCHEDULING-SEMANTICS is
    = futureTS(JOBS) maxTime(MAXTIME)
   if ES >= MAXTIME .
 
-  op maxES : TaskList ~> Nat .
-  op minDL : TaskList ~> Nat .
-  op minDL : TaskSet ~> Nat .
 
   eq maxES(emptyJList) = 0 .
   eq maxES((@t(PRID, PR, ES, DL), SQ)) = max(ES, maxES(SQ)) .
+
+
 
   eq minDL(emptyJList) = 1000000 .
   eq minDL(emptyJSet) = 1000000 .

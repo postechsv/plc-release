@@ -144,17 +144,21 @@ fmod PREPROCESSING is
   op getVarSection : KConfig -> VarSection .
   op initCond : ~> SemanticValue . 
 
+  var FTS : TaskSet .
+  var PQ : TaskList . 
+  var IMAP : Map{ProcessId, Nat} .
+
   ceq [[[(BEGINCONFIG (PROGRAMS ML PROGRAMSEND) (SUBPROGRAMS SUBML SUBPROGRAMSEND) (TYPE TDS ENDTYPE) (BEGINVAR VDC ENDVAR) ENDCONFIG) POUs]]]
   = constraints(initCond) 
-    MAINLIST store(STR') 
+    pQueue(PQ) futureTS(FTS) interval(IMAP) store(STR') 
     pickInss(preprocessPOUs(NEWINSS), inss(empty))
     randomSeed(0) newVarIndex(0) active(None)
-    globalTime(0, 0) recentAction('none) 
+    globalTime(0, minDL(FTS)) recentAction('none) 
     log(emptyLog)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
     /\ SUBPROTODOLIST := makeSubProgramList(SUBML, countVarDecl(VDC) + countTODOLIST(TODOLIST'))
-    /\ MAINLIST := makeProgramKConfig(TODOLIST', ML, interval(empty) pQueue(emptyJList) futureTS(emptyJSet)) 
+    /\ pQueue(PQ) futureTS(FTS) interval(IMAP) := makeProgramKConfig(TODOLIST', ML, interval(empty) pQueue(emptyJList) futureTS(emptyJSet)) 
     /\ {ENV', STR', nil, NEWINSS} := buildIns(TODOLIST TODOLIST' SUBPROTODOLIST , GENV, STR, (getPOUs(POUs) enumTypes(TDS)),  countVarDecl(VDC) + countTODOLIST(TODOLIST') + countTODOLIST(SUBPROTODOLIST)) 
      .
   
