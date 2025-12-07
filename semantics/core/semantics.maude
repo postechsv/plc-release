@@ -823,7 +823,8 @@ mod SCHEDULING-SEMANTICS is
      pQueue((Q1, Q2))
      futureTS((JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
      interval((PRID |-> INTERVAL, IM))
-     globalTime(max(maxES((Q1, Q2)), ES), min(minDL((Q1, Q2)), minDL(JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)))) .
+     globalTime(maxES((JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)), (PRID |-> INTERVAL, IM), (Q1, Q2)), 
+                minDL((JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)), (Q1, Q2))) .
 
 
   eq [loadNBlock] :
@@ -922,26 +923,31 @@ mod SCHEDULING-SEMANTICS is
   if ES >= MAXTIME .
 
 
-  eq maxES(emptyJList) = 0 .
-  eq maxES((@t(PRID, PR, ES, DL), SQ)) = max(ES, maxES(SQ)) .
+  eq @maxES(emptyJList) = 0 .
+  eq @maxES((@t(PRID, PR, ES, DL), SQ)) = max(ES, @maxES(SQ)) .
+
+  eq @maxES(emptyJSet, IM) = 0 .
+  eq @maxES((@t(PRID, PR, ES, DL) JOBS), ((PRID |-> INTERVAL), IM))
+   = max(ES - INTERVAL, @maxES(JOBS, IM)) .
+  eq maxES(JOBS, IM, SQ) = max(0, max(@maxES(SQ), @maxES(JOBS, IM))) .
 
 
+  eq @minDL(emptyJList) = 1000000 .
+  eq @minDL(emptyJSet) = 1000000 .
 
-  eq minDL(emptyJList) = 1000000 .
-  eq minDL(emptyJSet) = 1000000 .
+  eq @minDL((@t(PRID, PR, ES, DL), SQ)) = min(DL, @minDL(SQ)) .
+  eq @minDL((@t(PRID, PR, ES, DL) JOBS)) = min(DL, @minDL(JOBS)) .
 
-  eq minDL((@t(PRID, PR, ES, DL), SQ)) = min(DL, minDL(SQ)) .
-  eq minDL((@t(PRID, PR, ES, DL) JOBS)) = min(DL, minDL(JOBS)) .
-
+  eq minDL(JOBS, SQ) = min(@minDL(JOBS), @minDL(SQ)) .
 
  crl [tick] : 
      log(LOG)
      globalTime(MINT, MAXT)
-     pQueue(SQ) futureTS(JOBS) maxTime(M)
+     pQueue(SQ) futureTS(JOBS) interval(IM) maxTime(M)
   => log(LOG (' , 'tick, placeHolder))
-     globalTime(if SQ == emptyJList then MINT else maxES(SQ) fi, min(minDL(SQ), minDL(JOBS)))
-     pQueue(SQ) futureTS(JOBS) maxTime(M)
-  if maxES(SQ) < M .
+     globalTime(maxES(JOBS, IM, SQ), minDL(SQ, JOBS))
+     pQueue(SQ) futureTS(JOBS) interval(IM) maxTime(M)
+  if maxES(JOBS, IM, SQ) < M .
 endm
 
 --- wait semantics

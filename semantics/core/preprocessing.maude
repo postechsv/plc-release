@@ -153,7 +153,7 @@ fmod PREPROCESSING is
     pQueue(PQ) futureTS(FTS) interval(IMAP) store(STR') 
     pickInss(preprocessPOUs(NEWINSS), inss(empty))
     randomSeed(0) newVarIndex(0) active(None)
-    globalTime(0, minDL(FTS)) recentAction('none) 
+    globalTime(0, minDL(FTS, PQ)) recentAction('none) 
     log(emptyLog)
   if {GENV, STR, TODOLIST, empty} := buildEnvStore(VDC, empty, 0)
     /\ TODOLIST' := makeProgramList(ML, countVarDecl(VDC))
