@@ -579,27 +579,17 @@ mod SCHEDULING-SEMANTICS is
   var AMAP : AdapterMap .
   var SV : StreamVars .
 
-  ops @input @output @timerUpdate : -> KLabel [ctor] .
-  ops @takeInput @writeOutput : List{PExp} -> KLabel [ctor] .  
+  ops @timerUpdate @execute : -> KLabel [ctor] .
+  ops @in @out : List{PExp} -> KLabel [ctor] .  
   op getVarList : IdSet ~> List{PExp} .
   eq getVarList(VAR ;;;; INVARS)
    = (VAR, getVarList(INVARS)) . 
   eq getVarList(INVARS) = nilPExpList [owise] .
 
-  eq task(id(PRID) k(@input ~> K) REST)
-     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV))
-   = task(id(PRID) k(@takeInput(getVarList(INVARS)) ~> K) REST)
-     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
-
-  eq task(id(PRID) k(@output ~> K) REST)
-     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV))
-   = task(id(PRID) k(@writeOutput(getVarList(OUTVARS)) ~> K) REST)
-     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
-
-  eq k(@takeInput(nilPExpList) ~> K)
+  eq k(@in(nilPExpList) ~> K)
    = k(K) .
 
-  eq k(@writeOutput(nilPExpList) ~> K)
+  eq k(@out(nilPExpList) ~> K)
    = k(K) .
 
   op getType : StreamKey KConfig ~> PType .
@@ -761,28 +751,28 @@ mod SCHEDULING-SEMANTICS is
    = @genSym(PNAME :: VAR, TIME, M), repSeq(PNAME :: VAR, (SSEQ, symB), s M, N)
   if M < N .
 
-  eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
+  eq task(id(PRID) k(@in(VAR, VARS) ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      inStream((PNAME :: VAR |-> VAL), STREAM)
-   = task(id(PRID) k(botWrite(VAR, VAL) ~> @takeInput(VARS) ~> K) REST)
+   = task(id(PRID) k(botWrite(VAR, VAL) ~> @in(VARS) ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      inStream((PNAME :: VAR |-> nilStreamList), STREAM) .
 
-  eq task(id(PRID) k(@takeInput(VAR, VARS) ~> K) REST)
+  eq task(id(PRID) k(@in(VAR, VARS) ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      inStream((PNAME :: VAR |-> VAL, SEQ), STREAM)
-   = task(id(PRID) k(botWrite(VAR, VAL) ~> @takeInput(VARS) ~> K) REST)
+   = task(id(PRID) k(botWrite(VAR, VAL) ~> @in(VARS) ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      inStream((PNAME :: VAR |-> SEQ), STREAM) .
 
-  eq k(@writeOutput(VAR, VARS) ~> K)
-   = k(botSpace(VAR) ~> @writeOutput(VAR, VARS) ~> K) .
+  eq k(@out(VAR, VARS) ~> K)
+   = k(botSpace(VAR) ~> @out(VAR, VARS) ~> K) .
 
   --- output
-  eq task(id(PRID) k(VAL ~> @writeOutput(VAR, VARS) ~> K) REST)
+  eq task(id(PRID) k(VAL ~> @out(VAR, VARS) ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      outStream((PNAME :: VAR |-> SEQ), STREAM)
-   = task(id(PRID) k(@writeOutput(VARS) ~> K) REST)
+   = task(id(PRID) k(@out(VARS) ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      outStream((PNAME :: VAR |-> SEQ, VAL), STREAM) . 
 
@@ -827,9 +817,19 @@ mod SCHEDULING-SEMANTICS is
      task(id(PRID) k(@loadNBlock) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S)
-   = task(id(PRID) k(@block ~> @input ~> @timerUpdate ~> S ~> @output) REST)
+     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV))
+   = task(id(PRID) k(@block ~> @in(getVarList(INVARS)) ~> @timerUpdate ~> @execute ~> @out(getVarList(OUTVARS))) REST)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     PARDef(PNAME, PARMETERDATA, S)
+     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
+
+  eq task(id(PRID) k(@execute ~> K) REST)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     PARDef(PNAME, PARMETERDATA, S)
+   = task(id(PRID) k(S ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S) .
+
 
   op isFirst : TaskList Task ~> Bool .
   eq isFirst((@t(PRID, PR, ES, DL), Q1), @t(PRID, PR, ES, DL)) = true .
@@ -958,12 +958,16 @@ mod WAIT-SEMANTICS is
   vars MCT : Rat .
   vars V1 CONST CONST' : SemanticValue .
   vars D P : Nat .
-  var REST : KConfig .
+  vars REST REST2 : KConfig .
   vars PR ES DL IN WT N : Nat .
   var JOBS : TaskSet .
   vars Q1 Q2 : TaskList .
   var IM : Map{ProcessId, Nat} .
   var LOG : Log .
+  var SV : StreamVars .
+  vars INVARS OUTVARS : IdSet .
+  var PNAME : Pid . 
+  var INSS : KConfig . 
 
   eq k(WAIT(E) ~> K) = k(IF E THEN skip ; ELSE @release ; WAIT(E) ; ENDIF   ~> K) .
 
@@ -971,12 +975,16 @@ mod WAIT-SEMANTICS is
      pQueue((Q1, @t(PRID, PR, ES, DL), Q2))
      futureTS(JOBS)
      interval((PRID |-> IN, IM))
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      task(id(PRID) (k(@release ~> K)) REST)
+     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV))
    = active(None)
      pQueue(Q1, Q2)
      futureTS((JOBS @t(PRID, PR, ES + IN, DL + IN)))
      interval((PRID |-> IN, IM))
-     task(id(PRID) (k(@output ~> @block ~> @input ~>  @timerUpdate ~> K)) REST) .
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     task(id(PRID) (k(@out(getVarList(OUTVARS)) ~> @block ~> @in(getVarList(INVARS)) ~>  @timerUpdate ~> K)) REST) 
+     streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
 endm
 
 --- semantics for time-related FBs (TON, ...)
