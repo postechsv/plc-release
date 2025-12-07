@@ -587,17 +587,13 @@ mod SCHEDULING-SEMANTICS is
   eq getVarList(INVARS) = nilPExpList [owise] .
 
   eq task(id(PRID) k(@input ~> K) REST)
-     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV))
    = task(id(PRID) k(@takeInput(getVarList(INVARS)) ~> K) REST)
-     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
 
   eq task(id(PRID) k(@output ~> K) REST)
-     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV))
    = task(id(PRID) k(@writeOutput(getVarList(OUTVARS)) ~> K) REST)
-     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
 
   eq k(@takeInput(nilPExpList) ~> K)
