@@ -14,5 +14,5 @@ nsPed |-> last / 2
 ewPed |-> last / 2
 
 CONDITION:
-GLOBALLY (NOT (nsCar :: red OR ewCar :: red))
+GLOBALLY (NOT (nsCar :: green) AND NOT (ewCar :: green))
 

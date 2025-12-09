@@ -805,12 +805,12 @@ mod SCHEDULING-SEMANTICS is
      globalTime(MINT, MAXT)
   => log(LOG (getProgramName(PRID), 'endProgram, syn2sem(# ES))) 
      active(None)
-     task(id(PRID) k(.K) REST)
+     task(id(PRID) k(@loadNBlock) REST)
      pQueue((Q1, Q2))
      futureTS((JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)))
      interval((PRID |-> INTERVAL, IM))
-     globalTime(maxES((JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)), (PRID |-> INTERVAL, IM), (Q1, Q2)), 
-                minDL((JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)), (Q1, Q2))) .
+     globalTime(maxES((Q1, Q2), (JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)), (PRID |-> INTERVAL, IM)), 
+                minDL((Q1, Q2), (JOBS @t(PRID, PR, ES + INTERVAL, DL + INTERVAL)))) .
 
 
   eq [loadNBlock] :
@@ -822,6 +822,16 @@ mod SCHEDULING-SEMANTICS is
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
      PARDef(PNAME, PARMETERDATA, S)
      streamVars(((PNAME |-> (INVARS, OUTVARS)) , SV)) .
+
+  eq [loadNBlock] :
+     task(id(PRID) k(@loadNBlock) REST)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     PARDef(PNAME, PARMETERDATA, S)
+     streamVars(SV)
+   = task(id(PRID) k(@block ~> @timerUpdate ~> @execute) REST)
+     inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
+     PARDef(PNAME, PARMETERDATA, S)
+     streamVars(SV) [owise] .
 
   eq task(id(PRID) k(@execute ~> K) REST)
      inss(ins(id(PRID) fbtype(PNAME) REST2) INSS)
@@ -845,7 +855,7 @@ mod SCHEDULING-SEMANTICS is
      globalTime(max(MINT, ES), MAXT)
      futureTS(JOBS)
      pQueue(add(SQ, @t(PRID, PR, ES, DL)))
-     task(id(PRID) k(@loadNBlock) REST) 
+     task(id(PRID) k(.K) REST) 
   if ES < MAXT
   /\ not isFirst(add(SQ, @t(PRID, PR, ES, DL)), @t(PRID, PR, ES, DL)) .
 
@@ -860,7 +870,7 @@ mod SCHEDULING-SEMANTICS is
      globalTime(max(MINT, ES), MAXT)
      futureTS(JOBS)
      pQueue(add(SQ, @t(PRID, PR, ES, DL)))
-     task(id(PRID) k(@loadNBlock) REST) 
+     task(id(PRID) k(.K) REST) 
   if ES < MAXT
   /\ isFirst(add(SQ, @t(PRID, PR, ES, DL)), @t(PRID, PR, ES, DL)) .
 
@@ -925,7 +935,7 @@ mod SCHEDULING-SEMANTICS is
   eq @maxES(emptyJSet, IM) = 0 .
   eq @maxES((@t(PRID, PR, ES, DL) JOBS), ((PRID |-> INTERVAL), IM))
    = max(ES - INTERVAL, @maxES(JOBS, IM)) .
-  eq maxES(JOBS, IM, SQ) = max(0, max(@maxES(SQ), @maxES(JOBS, IM))) .
+  eq maxES(SQ, JOBS, IM) = max(0, max(@maxES(SQ), @maxES(JOBS, IM))) .
 
 
   eq @minDL(emptyJList) = 1000000 .
@@ -934,16 +944,16 @@ mod SCHEDULING-SEMANTICS is
   eq @minDL((@t(PRID, PR, ES, DL), SQ)) = min(DL, @minDL(SQ)) .
   eq @minDL((@t(PRID, PR, ES, DL) JOBS)) = min(DL, @minDL(JOBS)) .
 
-  eq minDL(JOBS, SQ) = min(@minDL(JOBS), @minDL(SQ)) .
+  eq minDL(SQ, JOBS) = min(@minDL(JOBS), @minDL(SQ)) .
 
  crl [tick] : 
      log(LOG)
      globalTime(MINT, MAXT)
      pQueue(SQ) futureTS(JOBS) interval(IM) maxTime(M)
   => log(LOG (' , 'tick, placeHolder))
-     globalTime(maxES(JOBS, IM, SQ), minDL(SQ, JOBS))
+     globalTime(maxES(SQ, JOBS, IM), minDL(SQ, JOBS))
      pQueue(SQ) futureTS(JOBS) interval(IM) maxTime(M)
-  if maxES(JOBS, IM, SQ) < M .
+  if maxES(SQ, JOBS, IM) < M .
 endm
 
 --- wait semantics

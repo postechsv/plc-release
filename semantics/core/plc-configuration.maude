@@ -354,10 +354,10 @@ fmod CODE-CONFIG is
 
   op task : KConfig -> KConfig [ctor] . --- ProcessId K ProgramStack interval phase priority futureTS
 
-  op maxES : TaskSet Map{ProcessId, Nat} TaskList ~> Nat .
+  op maxES : TaskList TaskSet Map{ProcessId, Nat} ~> Nat .
   op @maxES : TaskList ~> Nat .
   op @maxES : TaskSet Map{ProcessId, Nat} ~> Nat .
-  op minDL : TaskSet TaskList ~> Nat .
+  op minDL : TaskList TaskSet ~> Nat .
   op @minDL : TaskList ~> Nat .
   op @minDL : TaskSet ~> Nat .
 
